@@ -1,0 +1,627 @@
+swagger: '2.0'
+info:
+  title: Griffin API
+  description: Store and load case management fragments using BPMN and a JSON API.
+  version: 1.0.0
+schemes:
+  - http
+basePath: /api
+produces:
+  - application/json
+paths:
+  /scenario/{id}:
+    get:
+      summary: Scenario
+      description: |
+        The scenario endpoint delivers information about a certain scenario, including
+        revision, termination condition, all data objects and all fragments.
+      parameters:
+        - name: id
+          in: path
+          description: The scenario id.
+          required: true
+          type: number
+          format: integer
+      tags:
+        - Scenario
+      responses:
+        '200':
+          description: An scenario
+          schema:
+            $ref: '#/definitions/Scenario'
+        '404':
+          description: Scenario not found.
+          schema:
+            $ref: '#/definitions/Error'   
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'      
+    post:
+      summary: Updates a given scenario
+      description: |
+        If used, the repository will update the scenario that's using this idea. The repository doesn't care if the ID in the scenario object and the ID given via path match. The revision-attribute will be updated if there's an difference between the old and the new version.
+      parameters:
+        - name: id
+          in: path
+          description: The scenario id.
+          required: true
+          type: number
+          format: integer
+        - name: scenario
+          in: body
+          description: The scenario object.
+          required: true
+          schema:
+            $ref: '#/definitions/Scenario'
+      tags:
+        - Scenario
+      responses:
+        '200':
+          description: The updated scenario, possibly with updated revision.
+          schema:
+            $ref: '#/definitions/Scenario'
+        '404':
+          description: Scenario not found.
+          schema:
+            $ref: '#/definitions/Error'   
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'      
+  /scenario:
+    get:
+      summary: Returns a list of all available scenarios.
+      description: |
+        Returns a list of all scenarios. This list might be filtered by searching
+        using a name.
+      parameters:
+        - name: query
+          in: query
+          description: Might be used to filter the scenarios.
+          required: false
+          type: string
+          format: string
+      tags:
+      - Scenario
+      responses:
+        '200':
+          description: The list of scenarios
+          schema:
+            $ref: '#/definitions/ScenarioList'
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'      
+    post:
+      summary: Creates a new scenario
+      description: |
+        This endpoint stores a new scenario on the server. The DataObjects and 
+        Fragments will be added later using the associated endpoints. Any DomainModels and 
+        Fragments given in the objects server by the provided scenario object will be 
+        validated and added to the new scenario anyway.
+      parameters:
+        - name: scenario
+          in: body
+          description: The scenario object.
+          required: true
+          schema:
+            $ref: '#/definitions/Scenario'
+      tags:
+        - Scenario
+      responses:
+        '200':
+          description: The updated scenario, maybe with updated revision.
+          schema:
+            $ref: '#/definitions/Scenario' 
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'      
+  /fragment/{id}:
+    get:
+      summary: Returns an fragment.
+      description: |
+        This endpoint returns a fragment based on the given ID.
+      parameters:
+        - name: id
+          in: path
+          description: The fragments id.
+          required: true
+          type: number
+          format: integer
+      tags:
+        - Fragment
+      responses:
+        '200':
+          description: The fragment if found.
+        '404':
+          description: Fragment not found.
+          schema:
+            $ref: '#/definitions/Error'   
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'      
+    post:
+      summary: Updates a fragment.
+      description: |
+        This endpoint updates a fragment based on the given ID. The repository
+        doesn't care wether the ID in the path and the ID in the fragment match,
+        it always uses the fragment. The fragments revision will be increased if
+        it differs (XML based) from earlier versions. All scenarios that are
+        associated with the given fragment will also get upated 
+        (including a new revision). The repository will also parse the fragment 
+        into an Object, by parsing the given XML. The parsed structure will be 
+        used for validation and the structure endpoint.
+      parameters:
+        - name: id
+          in: path
+          description: The fragments id.
+          required: true
+          type: number
+          format: integer
+        - name: fragment
+          in: body
+          description: The fragment.
+          required: true
+          schema:
+            $ref: '#/definitions/Fragment'
+      tags:
+        - Fragment
+      responses:
+        '200':
+          description: The fragment if found and update was succesfull.
+          schema:
+            $ref: '#/definitions/Fragment'
+        '404':
+          description: Fragment not found.
+          schema:
+            $ref: '#/definitions/Error'   
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'    
+  /fragment/{id}/structure:
+    get:
+      summary: Returns a fragments BPMN-structure
+      description: |
+        This returns the BPMN structure of a given fragment. This is done by 
+        parsing the XMl stripping all attributes that are not used for the 
+        data structure (attributes that are just used for visualisation).
+      parameters:
+        - name: id
+          in: path
+          description: The fragments id.
+          required: true
+          type: number
+          format: integer
+      tags:
+        - Fragment
+      responses:
+        '200':
+          description: The fragment if found.
+          schema:
+            $ref: '#/definitions/FragmentStructureObject'
+        '404':
+          description: Fragment not found.
+          schema:
+            $ref: '#/definitions/Error'   
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /fragment:
+    get:
+      summary: Returns a list of all available fragments.
+      description: |
+        Returns a list of all fragments. This list might be filtered by searching
+        using a name.
+      parameters:
+        - name: query
+          in: query
+          description: Might be used to filter the fragments by name.
+          required: false
+          type: string
+          format: string
+      tags:
+      - Fragment
+      responses:
+        '200':
+          description: The list of fragments.
+          schema:
+            $ref: '#/definitions/FragmentList'
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'      
+    post:
+      summary: Creates a new scenario
+      description: |
+        This endpoint stores a new fragment on the server.
+      parameters:
+        - name: scenario
+          in: body
+          description: The fragment object.
+          required: true
+          schema:
+            $ref: '#/definitions/Fragment'
+      tags:
+        - Fragment
+      responses:
+        '200':
+          description: The updated scenario, maybe with updated revision.
+          schema:
+            $ref: '#/definitions/Fragment'
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'    
+  /scenario/associatefragment:
+    post:
+      summary: Associated a fragment with a scenario.
+      description: |
+        This allows it to associate (add) a fragment with a scenario. To add a
+        fragment to a scenario to steps are required. First upload the fragment
+        using /fragment POST and then associate it with the scenario using this 
+        endpoint.
+      parameters:
+        - name: fragmentid
+          in: query
+          description: The fragment to associate.
+          required: true
+          type: number
+          format: integer
+        - name: scenarioid
+          in: query
+          description: The scenarios id.
+          type: number
+          format: integer
+          required: true
+      tags:
+        - Fragment
+        - Scenario
+      responses:
+        '200':
+          description: The updated scenario if found.
+          schema:
+            $ref: '#/definitions/Scenario'
+        '404':
+          description: Fragment or scenario not found.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /scenario/associatedomainmodel:
+    post:
+      summary: Associates a domain model with a scenario.
+      description: |
+        This allows it to associate (add) a domain model with a scenario. To add 
+        a domain model to a scenario to steps are required. First upload the 
+        domain model using /domainmodel POST and then associate it with the 
+        scenario using this endpoint.
+      parameters:
+        - name: domainmodelid
+          in: query
+          description: The domainmodel to associate.
+          type: number
+          format: integer
+          required: true
+        - name: scenarioid
+          in: query
+          description: The scenarios id.
+          type: number
+          format: integer
+          required: true
+      tags:
+        - DomainModel
+        - Scenario
+      responses:
+        '200':
+          description: The updated scenario if found.
+          schema:
+            $ref: '#/definitions/Scenario'
+        '404':
+          description: Domainmodel or scenario not found.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /domainmodel/{id}:
+    get:
+      summary: Returns a domain model based on its ID.
+      description: |
+        Returns a full domain model including all attributes.
+      parameters:
+        - name: id
+          in: path
+          description: The domain models id.
+          type: number
+          format: integer
+          required: true
+      tags:
+        - DomainModel
+      responses:
+        '200':
+          description: The domain model if found.
+          schema:
+            $ref: '#/definitions/DomainModel'
+        '404':
+          description: Model not found.
+          schema:
+            $ref: '#/definitions/Error'   
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'  
+    post:
+      summary: Updates a domain model.
+      description: |
+        This endpoint updates a domain model based on its ID. If the attributes differ from earlier version, the revision will be increased. Also, all scenarios that reference a domain model will get increased an revision. The repository doesn't care if the id given in the object differs from the id given in the path. It will always use the paths ID.
+      parameters:
+        - name: id
+          in: path
+          description: The domain models id.
+          required: true
+          type: number
+          format: integer
+        - name: domainmodel
+          in: body
+          description: The domain models content.
+          required: true
+          schema:
+            $ref: '#/definitions/DomainModel'
+      tags:
+        - Fragment
+      responses:
+        '200':
+          description: The domain model if found and update was succesfull.
+          schema:
+            $ref: '#/definitions/DomainModel'
+        '404':
+          description: Model not found.
+          schema:
+            $ref: '#/definitions/Error'   
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'    
+  /domainmodel:
+    get:
+      summary: |
+        Returns a list of all available domain models.
+        des  Returns a list of all domain models. This list might be filtered by searching
+        using a name.
+      parameters:
+        - name: query
+          in: query
+          description: Might be used to filter the domain models by name.
+          required: false
+          type: string
+          format: string
+      tags:
+      - DomainModel
+      responses:
+        '200':
+          description: The list of domain models.
+          schema:
+            $ref: '#/definitions/DomainModelList'
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'      
+    post:
+      summary: Creates a new domain model
+      description: |
+        This endpoint stores a new domain model on the server.
+      parameters:
+        - name: domainmodel
+          in: body
+          description: The model object.
+          required: true
+          schema:
+            $ref: '#/definitions/DomainModel'
+      tags:
+        - DomainModel
+      responses:
+        '200':
+          description: The updated model, with updated id.
+          schema:
+            $ref: '#/definitions/DomainModel'
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /scenario/{id}/validate:
+    get:
+      summary: Validates a scenario.
+      description: |
+        This endpoint validates a scenario. If an fragment ID is given just the fragment will get validated. It will return an Array of Suggestions that might be used to correct all errors found. See the description of ValidationReport for further information.
+      parameters:
+        - name: id
+          in: path
+          description: The scenarios id.
+          required: true
+          type: number
+          format: integer
+        - name: fragment_id
+          in: query
+          description: A fragment id. If set only the specified fragment will get validated.
+          required: false
+          type: boolean
+          format: boolean
+      tags:
+        - Scenario
+        - Fragment
+        - DomainModel
+      responses:
+        '200':
+          description: The validation report.
+          schema:
+            $ref: '#/definitions/ValidationReport'
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        
+definitions:
+  Scenario:
+    type: object
+    properties:
+      name:
+        type: string
+        description: 'The scenarios name'
+      _id:
+        type: number
+        format: integer
+        description: 'Unique identifier of any scenario.'
+      termination_condition:
+        type: string
+        description: 'The termination condition that is used.'
+      domain_models:
+        type: array
+        items:
+          type: number
+          format: integer
+        description: 'The IDs of associated data objects.'
+      fragments:
+        type: array
+        items:
+          type: number
+          format: integer
+        description: 'The IDs of associated fragments.'
+      revision:
+        type: number
+        format: integer
+        description: |
+          The scenarios revision. Is increased automatically if the
+          fragments, the data_objects or the termination condition is different 
+          from the last version
+  Fragment:
+    type: object
+    properties:
+      name:
+        type: string
+        description: 'The fragments name.'
+      _id:
+        type: number
+        format: integer
+        description: 'The fragments unique identifier.'
+      content:
+        type: string
+        format: integer
+        description: 'The BPMN-XML used to describe the content.'
+      revision:
+        type: number
+        format: integer
+        description: 'The fragments revision. Gets increased everytime the fragment is updated.'
+  FragmentStructureObject:
+    type: object
+  DomainModel:
+    type: object
+    required:
+      - name
+      - attributes
+    properties:
+      name:
+        type: string
+        description: 'The name of the domain model.'
+      _id:
+        type: number
+        format: integer
+        description: 'The unique identifier of the domain model.'
+      revision:
+        type: number
+        format: integer
+        description: 'The domain models revision. Gets increased everytime the domain model is updated.'
+      attributes:
+        type: array
+        description: 'The domain models attributes.'
+        items:
+          $ref: '#/definitions/DomainModelAttribute'
+  DomainModelAttribute:
+    type: object
+    properties:
+      name:
+        type: string
+        description: 'The name of the attribute.'
+      datatype:
+        type: string
+        description: 'The datatype of the attribute.'
+  ValidationReport:
+    type: object
+    properties:
+      scenario:
+        $ref: '#/definitions/Scenario'
+        description: 'The validated scenario.'
+      correct:
+        type: boolean
+        description: 'True if no errors were found. Otherwise false.'
+      errors:
+        type: array
+        description: 'All errors found.'
+        items:
+          $ref: '#/definitions/ValidationError'
+  ValidationError:
+    type: object
+    properties:
+      message:
+        type: string
+        description: 'The message for this error. This should be displayed to the user.'
+      type:
+        type: string
+        description: 'The type of the error.'
+      level:
+        type: number
+        format: integer
+        description: 'The level of the error (1 Error, 2 Warning, 3 Notice).'
+  ScenarioList:
+    type: object
+    properties:
+      content_length:
+        type: number
+        format: integer
+        description: 'The number of scenarios found.'
+      scenarios:
+        type: array
+        description: 'All scenarios found.'
+        items:
+          $ref: '#/definitions/Scenario'
+  FragmentList:
+    type: object
+    properties:
+      content_length:
+        type: number
+        format: integer
+        description: 'The number of fragments found.'
+      scenarios:
+        type: array
+        description: 'All fragments found.'
+        items:
+          $ref: '#/definitions/Fragment'
+  DomainModelList:
+    type: object
+    properties:
+      content_length:
+        type: number
+        format: integer
+        description: 'The number of domain models found.'
+      scenarios:
+        type: array
+        description: 'All models found.'
+        items:
+          $ref: '#/definitions/DomainModel'
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string
