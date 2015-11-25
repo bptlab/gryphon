@@ -123,4 +123,21 @@ router.get('/:fragID/structure', function(req, res, next) {
     });
 });
 
+router.get('/:fragID/xml', function(req, res, next){
+    var id = req.params.fragID;
+    Fragment.model.findOne({_id:id},function(err, result){
+        if (err) {
+            console.error(err);
+            res.status(500).end();
+            return;
+        }
+        if (result !== null) {
+            res.set('Content-Type','text/xml');
+            res.send(result.content);
+        } else {
+            res.status(404).end();
+        }
+    });
+});
+
 module.exports = router;
