@@ -7,6 +7,7 @@ var JSONHelper = require('./../helpers/json');
 /* GET fragment belonging to scenario and fragment. */
 router.get('/:fragID', function(req, res, next) {
     var id = req.params.fragID;
+    var deliver_xml = req.query.deliver_xml;
     Fragment.model.findOne({_id:id},function(err, result){
         if (err) {
             console.error(err);
@@ -14,6 +15,9 @@ router.get('/:fragID', function(req, res, next) {
             return;
         }
         if (result !== null) {
+            if (!deliver_xml) {
+                delete result.content;
+            }
             res.json(result)
         } else {
             res.status(404).end();
