@@ -107,7 +107,7 @@ router.post('/', function(req, res, next) {
         } else {
             res.json(db_fragment);
         }
-    })
+    });
 });
 
 router.get('/:fragID/structure', function(req, res, next) {
