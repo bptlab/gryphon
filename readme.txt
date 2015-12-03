@@ -1,5 +1,7 @@
 Steps to get everything up and running:
 0. Install nodejs
+0.0.1. Install mongodb
+0.0.1.1 Set up MongoDB host in config.js
 1. run: npm install
 2. to run the express server: node app.js
 
