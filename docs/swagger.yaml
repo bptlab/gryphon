@@ -525,7 +525,7 @@ definitions:
     type: object
     required:
       - name
-      - attributes
+      - dataclasses
     properties:
       name:
         type: string
@@ -538,12 +538,27 @@ definitions:
         type: number
         format: integer
         description: 'The domain models revision. Gets increased everytime the domain model is updated.'
+      dataclasses:
+        type: array
+        description: 'The data classes belonging to the domain model.'
+        items:
+          $ref: '#/definitions/DataClass'
+  DataClass:
+    type: object
+    properties:
+      name:
+        type: string
+        description: 'The name of the data class.'
+      _id:
+        type: number
+        format: integer
+        description: 'The unique identifier the data class.'
       attributes:
         type: array
-        description: 'The domain models attributes.'
+        description: 'The attributes of the data class.'
         items:
-          $ref: '#/definitions/DomainModelAttribute'
-  DomainModelAttribute:
+          $ref: '#/definitions/DataClassAttribute'
+  DataClassAttribute:
     type: object
     properties:
       name:
