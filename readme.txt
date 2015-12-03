@@ -10,6 +10,6 @@ The raw UI files are stored in ./public_src. The files provided by the server ar
 As the JS-Files are the only ones that need to compile atm, there is just the ./public_src/js directory.
 To compile the JS files starting with index.js run:
 
-browserify -t [ babelify --presets [ react ] ] index.js -o ../../public/js/bundle.js
+browserify -t [ babelify --presets [ react ] ] ./public_src/js/index.js -o ./public/js/bundle.js
 
 Run the server and look at the index.html to continue.
