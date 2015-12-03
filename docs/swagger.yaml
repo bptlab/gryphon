@@ -532,7 +532,7 @@ definitions:
         description: 'The name of the domain model.'
       _id:
         type: number
-        format: integer
+        format: long
         description: 'The unique identifier of the domain model.'
       revision:
         type: number
@@ -543,6 +543,11 @@ definitions:
         description: 'The data classes belonging to the domain model.'
         items:
           $ref: '#/definitions/DataClass'
+      aggregations:
+        type: array
+        description: 'The aggregation relationships between the data classes of this domain model.'
+        items:
+          $ref: '#/definitions/Aggregation'
   DataClass:
     type: object
     properties:
@@ -551,7 +556,7 @@ definitions:
         description: 'The name of the data class.'
       _id:
         type: number
-        format: integer
+        format: long
         description: 'The unique identifier the data class.'
       is_root: 
         type: boolean
@@ -570,6 +575,25 @@ definitions:
       datatype:
         type: string
         description: 'The datatype of the attribute.'
+  Aggregation:
+    type: object
+    properties:
+      sourceMultiplicity:
+        type: string
+        format: x..y
+        description: 'The source multiplicity of the aggregation relationship.'
+      targetMultiplicity:
+        type: string
+        format: x..y
+        description: 'The target multiplicity of the aggregation relationship.'
+      sourceNode:
+        type: number
+        format: long
+        description: 'The id of the aggregation relationship source node.'
+      targetNode:
+        type: number
+        format: long
+        description: 'The id of the aggregation relationship target node.'
   ValidationReport:
     type: object
     properties:
