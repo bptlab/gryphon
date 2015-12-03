@@ -1,5 +1,5 @@
 var RestClient = require('node-rest-client').Client;
-var Config = require('./conf')
+var Config = require('./config')
 
 var API = function(host) {
     this.host = host;
