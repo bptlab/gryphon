@@ -33,4 +33,4 @@ var parseToBPMNObject = function (xml) {
     return parsed.definitions[0].process[0];
 };
 
-module.exports({parseToBPMNObject: parseToBPMNObject})
+module.exports = {parseToBPMNObject: parseToBPMNObject}

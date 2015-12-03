@@ -7,6 +7,7 @@ var JSONHelper = require('./../helpers/json');
 /* GET fragment belonging to scenario and fragment. */
 router.get('/:fragID', function(req, res, next) {
     var id = req.params.fragID;
+    var deliver_xml = req.query.deliver_xml;
     Fragment.model.findOne({_id:id},function(err, result){
         if (err) {
             console.error(err);
@@ -14,6 +15,9 @@ router.get('/:fragID', function(req, res, next) {
             return;
         }
         if (result !== null) {
+            if (!deliver_xml) {
+                delete result.content;
+            }
             res.json(result)
         } else {
             res.status(404).end();
@@ -103,7 +107,7 @@ router.post('/', function(req, res, next) {
         } else {
             res.json(db_fragment);
         }
-    })
+    });
 });
 
 router.get('/:fragID/structure', function(req, res, next) {
@@ -117,6 +121,23 @@ router.get('/:fragID/structure', function(req, res, next) {
         if (result !== null) {
             var parsed = JSONHelper.parseToBPMNObject(result.content);
             res.json(parsed);
+        } else {
+            res.status(404).end();
+        }
+    });
+});
+
+router.get('/:fragID/xml', function(req, res, next){
+    var id = req.params.fragID;
+    Fragment.model.findOne({_id:id},function(err, result){
+        if (err) {
+            console.error(err);
+            res.status(500).end();
+            return;
+        }
+        if (result !== null) {
+            res.set('Content-Type','text/xml');
+            res.send(result.content);
         } else {
             res.status(404).end();
         }
