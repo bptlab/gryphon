@@ -3,7 +3,7 @@ Steps to get everything up and running:
 0.0.1. Install mongodb
 0.0.1.1 Set up MongoDB host in config.js
 1. run: npm install
-2. to run the express server: node app.js
+2. to run the express server: node bin/www
 
 About the UI:
 The raw UI files are stored in ./public_src. The files provided by the server are store in ./public.
@@ -13,3 +13,7 @@ To compile the JS files starting with index.js run:
 browserify -t [ babelify --presets [ react ] ] ./public_src/js/index.js -o ./public/js/bundle.js
 
 Run the server and look at the index.html to continue.
+
+When running Windows, make sure to have the following additional dependencies installed:
+* Python 2.7 (Python >= 3 won't work!)
+* Any version of Visual Studio (use the --msvs_version=20XY switch for Visual Studio 20XY)
