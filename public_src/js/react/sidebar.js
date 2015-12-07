@@ -3,8 +3,26 @@ var API = require('./../api');
 var Link = require('react-router').Link;
 
 var SideBarScenarios = React.createClass({
+    getInitialState: function() {
+        return {
+            list: []
+        }
+    },
+    loadScenarioList: function() {
+        API.getAllScenarios(function(data) {
+            console.log(data);
+            if (data.scenarios) {
+                this.setState({list: data.scenarios});
+            }
+        }.bind(this))
+    },
+    componentDidMount: function() {
+        this.loadScenarioList();
+        setInterval(this.saveDiagram,1000*60);
+    },
     render: function() {
-        var list = this.props.list.map(function (scenario){
+
+        var list = this.state.list.map(function (scenario){
             return (
                 <li>
                     <button type="button" className="btn btn-danger btn-xs pull-right"><i className="fa fa-trash"></i></button>
@@ -50,15 +68,12 @@ var SideBarFragments = React.createClass({
 });
 
 var SideBarDomainModel = React.createClass({
-    handleClick: function() {
-        //Show DM-Editor
-    },
     render: function() {
         return (
             <div className="link-green">
-                <a href="#" onClick={this.handleClick}>
+                <Link to={"domainmodel/" + this.props.dmid}>
                     <i className="fa fa-table"></i> Domain Model
-                </a>
+                </Link>
             </div>
         );
     }

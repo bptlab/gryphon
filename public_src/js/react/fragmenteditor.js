@@ -15,20 +15,22 @@ var FragmentEditorComponent = React.createClass({
     },
     componentDidMount: function() {
         var editor = new Editor($('#fragment-canvas'));
-        this.state.editor = editor;
-        API.getFragment(this.props.params.id,function(data,resp) {
-            this.state.fragment = data;
+        this.setState({editor: editor});
+        API.getFragment(this.props.params.id,function(data) {
+            console.log(data.toString());
+            console.log(typeof data);
+            this.setState({fragment: data});
             editor.openDiagram(data.content, function(err){
-                //TODO Handle Error!
-            })
-        });
-        setInterval(this.saveDiagram,this.props.saveinterval);
+                console.log(err);
+            });
+        }.bind(this));
+        setInterval(this.saveDiagram,1000*60*3);
     },
     saveDiagram: function() {
         if (this.state.editor !== null && this.state.fragment !== null) {
-            //this.state.editor.exportFragment(this.state.fragment, function(err){
-            //TODO Handle Error!
-            //});
+            this.state.editor.exportFragment(this.state.fragment, function(err){
+                console.log(err);
+            });
         }
     },
     componentWillUnmount: function() {

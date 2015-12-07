@@ -8,7 +8,7 @@ var JSONHelper = require('./../helpers/json');
 router.get('/:fragID', function(req, res, next) {
     var id = req.params.fragID;
     var deliver_xml = req.query.deliver_xml;
-    Fragment.model.findOne({_id:id},function(err, result){
+    Fragment.findOne({_id:id},function(err, result){
         if (err) {
             console.error(err);
             res.status(500).end();
@@ -129,7 +129,7 @@ router.get('/:fragID/structure', function(req, res, next) {
 
 router.get('/:fragID/xml', function(req, res, next){
     var id = req.params.fragID;
-    Fragment.model.findOne({_id:id},function(err, result){
+    Fragment.findOne({_id:id},function(err, result){
         if (err) {
             console.error(err);
             res.status(500).end();

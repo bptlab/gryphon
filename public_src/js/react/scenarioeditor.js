@@ -1,4 +1,6 @@
 var React = require('react');
+var Link = require('react-router').Link;
+var API = require('./../api');
 
 var ScenarioEditForm = React.createClass({
     render: function() {
@@ -8,7 +10,7 @@ var ScenarioEditForm = React.createClass({
                     <h3 className="panel-title">Scenario Stats</h3>
                 </div>
                 <div className="panel-body">
-                    <form class="form-horizontal">
+                    <form className="form-horizontal">
                     <div className="form-group">
                         <label htmlFor="scenarioname" className="col-sm-2 control-label">Name</label>
                         <div className="col-sm-10">
@@ -47,7 +49,7 @@ var ScenarioStatsForm = React.createClass({
                                 Fragments
                             </td>
                             <td>
-                                3
+                                {this.props.scenario.fragments.length}
                             </td>
                         </tr>
                         <tr>
@@ -55,7 +57,7 @@ var ScenarioStatsForm = React.createClass({
                                 Domain Model Classes
                             </td>
                             <td>
-                                7
+                                {this.props.scenario.domainmodel.dataclasses.length}
                             </td>
                         </tr>
                     </tbody>
@@ -67,13 +69,9 @@ var ScenarioStatsForm = React.createClass({
 
 var ScenarioFragmentList = React.createClass({
     render: function() {
-        var fragments = [
-            "fragment1",
-            "fragment2"
-        ];
-        fragments = fragments.map(function(fragmentname) {
+        var fragments = this.props.fragments.map(function(fragment) {
             return (
-                <li className="list-group-item">{fragmentname}</li>
+                <li className="list-group-item"><Link to={"fragment/" + fragment._id}>{fragment.name}</Link></li>
             );
         });
         return (
@@ -92,13 +90,9 @@ var ScenarioFragmentList = React.createClass({
 
 var ScenarioDomainModelList = React.createClass({
     render: function() {
-        var fragments = [
-            "dm1",
-            "dm2"
-        ];
-        fragments = fragments.map(function(fragmentname) {
+        var classes = this.props.classes.map(function(dataclass) {
             return (
-                <li className="list-group-item">{fragmentname}</li>
+                <li className="list-group-item">{dataclass.name}</li>
             );
         });
         return (
@@ -108,7 +102,7 @@ var ScenarioDomainModelList = React.createClass({
                     <p>All domain model classes.</p>
                 </div>
                 <ul className="list-group">
-                    {fragments}
+                    {classes}
                 </ul>
             </div>
         )
@@ -116,23 +110,49 @@ var ScenarioDomainModelList = React.createClass({
 });
 
 var ScenarioEditorComponent = React.createClass({
+    getInitialState: function() {
+        return {
+            scenario: {
+                name: "",
+                revision: 0,
+                fragments: [],
+                domainmodel: {
+                    name: "",
+                    revision: 0,
+                    dataclasses: []
+                }
+            }
+        }
+    },
+    loadScenario: function() {
+        var scen_id = this.props.params.id;
+        API.getFullScenario(scen_id,'1',function(data){
+            this.setState({scenario: data});
+        }.bind(this));
+    },
+    componentDidMount: function() {
+        this.loadScenario();
+    },
+    componentDidUpdate: function() {
+        this.loadScenario();
+    },
     render: function() {
         return (
             <div className="col-md-12">
                 <div className="row">
                     <div className="col-md-6">
-                        <ScenarioEditForm />
+                        <ScenarioEditForm scenario={this.state.scenario}/>
                     </div>
                     <div className="col-md-6">
-                        <ScenarioStatsForm />
+                        <ScenarioStatsForm scenario={this.state.scenario} />
                     </div>
                 </div>
                 <div className="row">
                     <div className="col-md-6">
-                        <ScenarioFragmentList />
+                        <ScenarioFragmentList fragments={this.state.scenario.fragments} />
                     </div>
                     <div className="col-md-6">
-                        <ScenarioDomainModelList />
+                        <ScenarioDomainModelList classes={this.state.scenario.domainmodel.dataclasses}/>
                     </div>
                 </div>
             </div>

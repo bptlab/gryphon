@@ -4,11 +4,12 @@ var Scenario = require('./../models/scenario').model;
 var Fragment = require('./../models/fragment').model;
 var DomainModel = require('./../models/domainmodel').model;
 var _ = require('lodash');
+var Config = require('./../config');
 
 router.get('/', function(req, res, next) {
     var name = req.query.query;
 
-    Scenario.find({name: new RegExp('^'+name+'$', "i")},function(err, result){
+    Scenario.find({name: new RegExp(name, "i")},function(err, result){
         if (err) {
             console.error(err);
             res.status(500).end();
@@ -39,27 +40,53 @@ router.post('/', function(req, res, next) {
         fragments: []
     });
 
-    if (DomainModel.find({_id:scenario.domainmodel}).count() !== 1) {
-        res.status(500).end();
-        return;
-    } else {
-        db_scenario.domainmodel = scenario.domainmodel;
+    if (scenario.domainmodel == null) {
+        var new_domainmodel = new DomainModel();
+        new_domainmodel.revision = 1;
+        new_domainmodel.name = scenario.name;
+        new_domainmodel.dataclasses = [];
+        new_domainmodel.save();
+        scenario.domainmodel = new_domainmodel._id;
+        db_scenario.domainmodel = new_domainmodel._id;
     }
 
-    scenario.fragments.forEach(function(fm_id){
-        if (Fragment.find(fm_id).count() === 1) {
-            db_scenario.fragments.append(dm_id);
+    DomainModel.find({_id:scenario.domainmodel}).count(function(err, count) {
+
+        if (count !== 1) {
+            res.status(500).end();
+            return;
+        } else {
+            db_scenario.domainmodel = scenario.domainmodel;
         }
+
+        //scenario.fragments.forEach(function(fm_id){
+        //    if (Fragment.find(fm_id).count() === 1) {
+        //        db_scenario.fragments.append(dm_id);
+        //    }
+        //});
+
+        if (scenario.fragments == null) {
+            var new_fragment = new Fragment();
+            new_fragment.name = "First Fragment";
+            new_fragment.content = Config.DEFAULT_FRAGMENT_XML;
+            new_fragment.revision = 1;
+            new_fragment.save();
+            scenario.fragments = [];
+            db_scenario.fragments.push(new_fragment._id);
+        }
+
+        db_scenario.save(function(err){
+            if (err) {
+                console.error(err);
+                res.status(500).end();
+            } else {
+                res.json(db_scenario);
+            }
+        })
     });
 
-    db_scenario.save(function(err){
-        if (err) {
-            console.error(err);
-            res.status(500).end();
-        } else {
-            res.json(db_scenario);
-        }
-    })
+
+
 });
 
 router.post('/associatefragment', function(req, res, next) {
@@ -119,7 +146,12 @@ router.post('/validate', function(req, res, next){
 /* GET fragment belonging to scenario and fragment. */
 router.get('/:scenID', function(req, res, next) {
     var id = req.params.scenID;
-    Scenario.findOne({_id:id},function(err, result){
+    var populate = req.query.populate;
+    var query = Scenario.findOne({_id:id});
+    if (populate) {
+        query = query.populate('fragments').populate('domainmodel');
+    }
+    query.exec(function(err, result){
         if (err) {
             console.error(err);
             res.status(500).end();

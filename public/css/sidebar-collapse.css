@@ -80,7 +80,7 @@
 }
 
 .sidebar-links div.selected ul.sub-links {
-	max-height: 150px;
+	max-height: 500px;
 	padding: 12px 0 12px 30px;
 }
 

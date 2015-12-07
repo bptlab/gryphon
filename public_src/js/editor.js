@@ -9,7 +9,7 @@ var Editor = function(canvas) {
     this.renderer = new BpmnModeler({
         container: canvas
     });
-    this.createNewDiagram();
+    //this.createNewDiagram();
 };
 
 Editor.prototype.loadDiagramStub = function() {

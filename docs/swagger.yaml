@@ -22,6 +22,11 @@ paths:
           required: true
           type: number
           format: integer
+        - name: populate
+          in: query
+          description: If true, the scenario will be populated with all child-objects.
+          required: false
+          type: boolean
       tags:
         - Scenario
       responses:
