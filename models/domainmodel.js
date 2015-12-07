@@ -4,7 +4,14 @@ var Schema = mongoose.Schema
 var DomainModelSchema = new Schema({
     name: String,
     revision: Number,
-    attributes: [{name: String, datatype: String}]
+    dataclasses: [{
+        name: String,
+        is_root: Boolean,
+        attributes: [{
+            name: String,
+            datatype: String
+        }]
+    }]
 });
 
 module.exports = {

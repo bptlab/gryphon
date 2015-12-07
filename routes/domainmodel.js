@@ -39,8 +39,8 @@ router.post('/:dmID', function(req, res, next) {
                 changed = true;
             }
 
-            if (!_.isEqual(new_dm.attributes, result.attributes)) {
-                result.attributes = new_dm.attributes;
+            if (!_.isEqual(new_dm.dataclasses, result.dataclasses)) {
+                result.dataclasses = new_dm.dataclasses;
                 changed = true;
             }
 
@@ -89,7 +89,7 @@ router.post('/', function(req, res, next) {
 
     var db_domainmodel = new DomainModel({
         name: domainmodel.name,
-        attributes: domainmodel.attributes,
+        attributes: domainmodel.dataclasses,
         revision: 1
     });
 

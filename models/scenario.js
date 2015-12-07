@@ -6,7 +6,7 @@ var ScenarioSchema = new Schema({
     terminationCondition: String,
     revision: Number,
     fragments: [{type: mongoose.Schema.Types.ObjectId, ref: 'Fragment'}],
-    domainmodels: [{type: mongoose.Schema.Types.ObjectId, ref: 'DomainModel'}]
+    domainmodel: {type: mongoose.Schema.Types.ObjectId, ref: 'DomainModel'}
 });
 
 module.exports = {

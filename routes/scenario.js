@@ -35,15 +35,16 @@ router.post('/', function(req, res, next) {
         name: scenario.name,
         termination_condition: scenario.termination_condition,
         revision: 1,
-        domainmodels: [],
+        domainmodel: -1,
         fragments: []
     });
 
-    scenario.domainmodels.forEach(function(dm_id){
-        if (DomainModel.find({_id:dm_id}).count() === 1) {
-            db_scenario.domainmodels.append(dm_id);
-        }
-    });
+    if (DomainModel.find({_id:scenario.domainmodel}).count() !== 1) {
+        res.status(500).end();
+        return;
+    } else {
+        db_scenario.domainmodel = scenario.domainmodel;
+    }
 
     scenario.fragments.forEach(function(fm_id){
         if (Fragment.find(fm_id).count() === 1) {
@@ -55,7 +56,6 @@ router.post('/', function(req, res, next) {
         if (err) {
             console.error(err);
             res.status(500).end();
-            return;
         } else {
             res.json(db_scenario);
         }
@@ -88,10 +88,10 @@ router.post('/associatefragment', function(req, res, next) {
 });
 
 router.post('/associatedomainmodel', function(req, res, next) {
-    var fragment_id = req.query.domainmodel_id;
+    var domainmodel_id = req.query.domainmodel_id;
     var scenario_id = req.query.scenario_id;
 
-    var dm_count = DomainModel.find({_id:fragment_id}).count();
+    var dm_count = DomainModel.find({_id:domainmodel_id}).count();
 
     Scenario.findOne({_id:scenario_id}, function(err, result){
         if (err) {
@@ -100,8 +100,8 @@ router.post('/associatedomainmodel', function(req, res, next) {
             return;
         }
         if ((result !== null) && (dm_count === 1)) {
-            if (result.domainmodels.indexOf(fragment_id) === -1) {
-                result.domainmodels.append(fragment_id);
+            if (result.domainmodel !== domainmodel_id) {
+                result.domainmodel = domainmodel_id;
                 result.revision++;
                 result.save()
             }
@@ -142,15 +142,6 @@ var validateFragmentList = function(list) {
     return true;
 };
 
-var validateDomainModelList = function(list) {
-    list.forEach(function(dm_id){
-        if (DomainModel.find({_id:dm_id}).count() === 0) {
-            return false;
-        }
-    });
-    return true;
-};
-
 /* Post new fragment to a given scenario. If fragment name already exists post new revision */
 router.post('/:scenID', function(req, res, next) {
     var scenID = req.params.scenID;
@@ -181,8 +172,8 @@ router.post('/:scenID', function(req, res, next) {
                 changed = true;
             }
 
-            if (_.isEqual(result.domainmodels, new_scen.domainmodels) && validateDomainModelList(new_scen.domainmodels)) {
-                result.domainmodels = new_scen.domain;
+            if (result.domainmodel !== new_scen.domainmodel) {
+                result.domainmodel = new_scen.domainmodel;
                 changed = true;
             }
 

@@ -35,4 +35,5 @@ API.prototype.postFragment = function(fragment, callback) {
     this.client.methods.postFragment(args, callback);
 };
 
-module.exports = new API(Config.API_HOST);
+module.exports = {};
+//module.exports = new API(Config.API_HOST);

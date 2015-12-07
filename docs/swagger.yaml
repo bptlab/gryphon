@@ -482,12 +482,10 @@ definitions:
       termination_condition:
         type: string
         description: 'The termination condition that is used.'
-      domain_models:
-        type: array
-        items:
-          type: number
-          format: integer
-        description: 'The IDs of associated data objects.'
+      domain_model:
+        type: number
+        format: integer
+        description: 'The ID of the associated domain model.'
       fragments:
         type: array
         items:
