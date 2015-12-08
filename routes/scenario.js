@@ -34,7 +34,7 @@ router.post('/', function(req, res, next) {
 
     var db_scenario = new Scenario({
         name: scenario.name,
-        termination_condition: scenario.termination_condition,
+        terminationcondition: scenario.terminationcondition,
         revision: 1,
         domainmodel: -1,
         fragments: []
@@ -166,12 +166,13 @@ router.get('/:scenID', function(req, res, next) {
 });
 
 var validateFragmentList = function(list) {
-   list.forEach(function(fm_id){
+    var found = true;
+    list.forEach(function(fm_id){
         if (Fragment.find(fm_id).count() === 0) {
-            return false;
+            found = false;
         }
     });
-    return true;
+    return found;
 };
 
 /* Post new fragment to a given scenario. If fragment name already exists post new revision */
@@ -179,7 +180,7 @@ router.post('/:scenID', function(req, res, next) {
     var scenID = req.params.scenID;
     var new_scen = req.body;
 
-    Scenario.findOne({_id:scenID}, function(err, result){_id:id},function(err, result){
+    Scenario.findOne({_id:scenID}, function(err, result){
         if (err) {
             console.error(err);
             res.status(500).end();
@@ -189,22 +190,22 @@ router.post('/:scenID', function(req, res, next) {
 
             var changed = false;
 
-            if (result.name !== new_scen.name) {
+            if (new_scen.name != null && result.name !== new_scen.name) {
                 result.name = new_scen.name;
                 changed = true;
             }
 
-            if (result.termination_condition !== new_scen.termination_condition) {
-                result.termination_condition = new_scen.termination_condition;
+            if (new_scen.terminationcondition != null && result.terminationcondition !== new_scen.terminationcondition) {
+                result.terminationcondition = new_scen.terminationcondition;
                 changed = true;
             }
 
-            if (_.isEqual(result.fragments, new_scen.fragments) && validateFragmentList(new_scen.fragments)) {
+            if (new_scen.fragments != null && _.isEqual(result.fragments, new_scen.fragments) && validateFragmentList(new_scen.fragments)) {
                 result.fragments = new_scen.fragments;
                 changed = true;
             }
 
-            if (result.domainmodel !== new_scen.domainmodel) {
+            if (new_scen.domainmodel != null && result.domainmodel !== new_scen.domainmodel) {
                 result.domainmodel = new_scen.domainmodel;
                 changed = true;
             }
@@ -216,12 +217,12 @@ router.post('/:scenID', function(req, res, next) {
                         console.error(err);
                         res.status(500).end();
                     }
-                })
+                });
             }
-
+            res.json(result);
         } else {
             res.status(404).end();
-        };
+        }
     })
 });
 

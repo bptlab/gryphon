@@ -3,6 +3,38 @@ var Link = require('react-router').Link;
 var API = require('./../api');
 
 var ScenarioEditForm = React.createClass({
+    getInitialState: function() {
+        return {
+            'name': '',
+            'terminationcondition': '',
+            '_id': ''
+        }
+    },
+    componentDidMount: function() {
+        this.setState({
+            name: this.props.scenario.name,
+            terminationcondition: this.props.scenario.terminationcondition,
+            _id: this.props.scenario._id
+        });
+    },
+    handleNameChange: function(e) {
+        this.setState({name: e.target.value});
+    },
+    handleTerminationConditionChange: function(e) {
+        this.setState({terminationcondition: e.target.value});
+    },
+    componentDidUpdate: function() {
+        if (this.props.scenario._id != this.state._id) {
+            this.setState({
+                name: this.props.scenario.name,
+                terminationcondition: this.props.scenario.terminationcondition,
+                _id: this.props.scenario._id
+            });
+        }
+    },
+    handleSubmit: function(e) {
+        API.exportScenario(this.state, false, function(res){});
+    },
     render: function() {
         return (
             <div className="panel panel-default">
@@ -10,17 +42,31 @@ var ScenarioEditForm = React.createClass({
                     <h3 className="panel-title">Scenario Stats</h3>
                 </div>
                 <div className="panel-body">
-                    <form className="form-horizontal">
+                    <form className="form-horizontal" onSubmit={this.handleSubmit} >
                     <div className="form-group">
                         <label htmlFor="scenarioname" className="col-sm-2 control-label">Name</label>
                         <div className="col-sm-10">
-                            <input type="email" className="form-control" id="scenarioname" placeholder="Name" />
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="scenarioname"
+                                placeholder="Name"
+                                value={this.state.name}
+                                onChange = {this.handleNameChange}
+                            />
                         </div>
                     </div>
                     <div className="form-group">
                         <label htmlFor="terminationcondition" className="col-sm-2 control-label">Termination Condition</label>
                         <div className="col-sm-10">
-                            <input type="email" className="form-control" id="terminationcondition" placeholder="Termination Condition" />
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="terminationcondition"
+                                placeholder="Termination Condition"
+                                value = {this.state.terminationcondition}
+                                onChange = {this.handleTerminationConditionChange}
+                            />
                         </div>
                     </div>
                     <div className="form-group">
@@ -134,7 +180,9 @@ var ScenarioEditorComponent = React.createClass({
         this.loadScenario();
     },
     componentDidUpdate: function() {
-        this.loadScenario();
+        if (this.state.scenario._id !== this.props.params.id) {
+            this.loadScenario();
+        }
     },
     render: function() {
         return (

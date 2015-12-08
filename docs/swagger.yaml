@@ -484,7 +484,7 @@ definitions:
         type: number
         format: integer
         description: 'Unique identifier of any scenario.'
-      termination_condition:
+      terminationcondition:
         type: string
         description: 'The termination condition that is used.'
       domain_model:

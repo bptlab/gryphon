@@ -96874,13 +96874,27 @@ API.prototype.getFullScenario = function (id, populate, callback) {
     $.getJSON(this.createURL("scenario/" + id + "?populate=" + populate), callback);
 };
 
-API.prototype.getAllScenarios = function (callback, populate) {
+API.prototype.getAllScenarios = function (callback) {
     $.getJSON(this.createURL("scenario"), callback);
     //this.client.methods.getAllScenarios(callback);
 };
 
 API.prototype.exportFragment = function (fragment, callback) {
     $.post(this.createURL("fragment/" + fragment._id), fragment, callback);
+};
+
+API.prototype.exportScenario = function (scenario, depopulate, callback) {
+    if (typeof callback === 'undefined') {
+        callback = depopulate;
+        depopulate = false;
+    }
+    if (depopulate) {
+        scenario.fragments = scenario.fragments.map(function (fragment) {
+            return fragment._id;
+        });
+        scenario.domainmodel = scenario.domainmodel._id;
+    }
+    $.post(this.createURL("scenario/" + scenario._id), scenario, callback);
 };
 
 module.exports = new API(Config.API_HOST);
@@ -97095,6 +97109,38 @@ var API = require('./../api');
 var ScenarioEditForm = React.createClass({
     displayName: 'ScenarioEditForm',
 
+    getInitialState: function () {
+        return {
+            'name': '',
+            'terminationcondition': '',
+            '_id': ''
+        };
+    },
+    componentDidMount: function () {
+        this.setState({
+            name: this.props.scenario.name,
+            terminationcondition: this.props.scenario.terminationcondition,
+            _id: this.props.scenario._id
+        });
+    },
+    handleNameChange: function (e) {
+        this.setState({ name: e.target.value });
+    },
+    handleTerminationConditionChange: function (e) {
+        this.setState({ terminationcondition: e.target.value });
+    },
+    componentDidUpdate: function () {
+        if (this.props.scenario._id != this.state._id) {
+            this.setState({
+                name: this.props.scenario.name,
+                terminationcondition: this.props.scenario.terminationcondition,
+                _id: this.props.scenario._id
+            });
+        }
+    },
+    handleSubmit: function (e) {
+        API.exportScenario(this.state, false, function (res) {});
+    },
     render: function () {
         return React.createElement(
             'div',
@@ -97113,7 +97159,7 @@ var ScenarioEditForm = React.createClass({
                 { className: 'panel-body' },
                 React.createElement(
                     'form',
-                    { className: 'form-horizontal' },
+                    { className: 'form-horizontal', onSubmit: this.handleSubmit },
                     React.createElement(
                         'div',
                         { className: 'form-group' },
@@ -97125,7 +97171,14 @@ var ScenarioEditForm = React.createClass({
                         React.createElement(
                             'div',
                             { className: 'col-sm-10' },
-                            React.createElement('input', { type: 'email', className: 'form-control', id: 'scenarioname', placeholder: 'Name' })
+                            React.createElement('input', {
+                                type: 'text',
+                                className: 'form-control',
+                                id: 'scenarioname',
+                                placeholder: 'Name',
+                                value: this.state.name,
+                                onChange: this.handleNameChange
+                            })
                         )
                     ),
                     React.createElement(
@@ -97139,7 +97192,14 @@ var ScenarioEditForm = React.createClass({
                         React.createElement(
                             'div',
                             { className: 'col-sm-10' },
-                            React.createElement('input', { type: 'email', className: 'form-control', id: 'terminationcondition', placeholder: 'Termination Condition' })
+                            React.createElement('input', {
+                                type: 'text',
+                                className: 'form-control',
+                                id: 'terminationcondition',
+                                placeholder: 'Termination Condition',
+                                value: this.state.terminationcondition,
+                                onChange: this.handleTerminationConditionChange
+                            })
                         )
                     ),
                     React.createElement(
@@ -97322,7 +97382,9 @@ var ScenarioEditorComponent = React.createClass({
         this.loadScenario();
     },
     componentDidUpdate: function () {
-        this.loadScenario();
+        if (this.state.scenario._id !== this.props.params.id) {
+            this.loadScenario();
+        }
     },
     render: function () {
         return React.createElement(

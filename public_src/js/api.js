@@ -36,13 +36,27 @@ API.prototype.getFullScenario = function(id, populate, callback) {
     $.getJSON(this.createURL("scenario/" + id + "?populate=" + populate), callback);
 };
 
-API.prototype.getAllScenarios = function(callback, populate) {
+API.prototype.getAllScenarios = function(callback) {
     $.getJSON(this.createURL("scenario"), callback);
     //this.client.methods.getAllScenarios(callback);
 };
 
 API.prototype.exportFragment = function(fragment, callback) {
     $.post(this.createURL("fragment/" + fragment._id),fragment,callback);
+};
+
+API.prototype.exportScenario = function(scenario, depopulate, callback) {
+    if (typeof callback === 'undefined') {
+        callback = depopulate;
+        depopulate = false;
+    }
+    if (depopulate) {
+        scenario.fragments = scenario.fragments.map(function(fragment) {
+            return fragment._id;
+        });
+        scenario.domainmodel = scenario.domainmodel._id;
+    }
+    $.post(this.createURL("scenario/" + scenario._id),scenario,callback);
 };
 
 module.exports = new API(Config.API_HOST);

@@ -3,7 +3,7 @@ var Schema = mongoose.Schema
 
 var ScenarioSchema = new Schema({
     name: {type: String, index: { unique: true }},
-    terminationCondition: String,
+    terminationcondition: String,
     revision: Number,
     fragments: [{type: mongoose.Schema.Types.ObjectId, ref: 'Fragment'}],
     domainmodel: {type: mongoose.Schema.Types.ObjectId, ref: 'DomainModel'}
