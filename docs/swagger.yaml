@@ -487,7 +487,7 @@ definitions:
       termination_conditions:
         type: array
         items:
-          type: String
+          $ref: '#/definitions/TerminationCondition'
         description: 'The termination conditions that are used.'  
       domain_model:
         type: number
@@ -506,6 +506,15 @@ definitions:
           The scenarios revision. Is increased automatically if the
           fragments, the data_objects or the termination condition is different 
           from the last version
+  TerminationCondition:
+    type: object
+    properties:
+      dataobjectname:
+        type: string
+        description: |
+          For each DataObject involved in this TerminationCondition, add a
+          Key/Value-Pair where the Key is the name of the DataObject and the
+          Value is the name of the state. 
   Fragment:
     type: object
     properties:
