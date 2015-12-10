@@ -47,8 +47,8 @@
 }
 
 .sidebar-links div.selected > a{
-	background-color: #ffffff;
-	color: #565d63;
+	background-color: #35393e;
+	color: #b3bcc5;
 	line-height: 2.3;
 	margin: 0;
 }

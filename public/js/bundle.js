@@ -96869,13 +96869,41 @@ API.prototype.postFragment = function (fragment, callback) {
 API.prototype.getFullScenario = function (id, populate, callback) {
     if (typeof callback === 'undefined') {
         callback = populate;
-        populate = '0';
+        populate = false;
     }
-    $.getJSON(this.createURL("scenario/" + id + "?populate=" + populate), callback);
+    if (populate) {
+        populate = "?populate=1";
+    } else {
+        populate = "";
+    }
+    $.getJSON(this.createURL("scenario/" + id + populate), callback);
 };
 
-API.prototype.getAllScenarios = function (callback) {
-    $.getJSON(this.createURL("scenario"), callback);
+API.prototype.createFragment = function (name, callback) {
+    var newfrag = {
+        name: name
+    };
+    $.post(this.createURL("fragment"), newfrag, callback);
+};
+
+API.prototype.associateFragment = function (scen_id, frag_id, callback) {
+    var url = "scenario/associatefragment?";
+    url += "scenario_id=" + scen_id;
+    url += "&fragment_id=" + frag_id;
+    $.post(this.createURL(url), '', callback);
+};
+
+API.prototype.getAllScenarios = function (populate, callback) {
+    if (typeof callback === 'undefined') {
+        callback = populate;
+        populate = true;
+    }
+    if (populate) {
+        populate = "?populate=1";
+    } else {
+        populate = "";
+    }
+    $.getJSON(this.createURL("scenario" + populate), callback);
     //this.client.methods.getAllScenarios(callback);
 };
 
@@ -97050,10 +97078,10 @@ $(function () {
     ), document.getElementById('app-container'));
 
     var links = $('.sidebar-links > div');
-    links.on('click', function () {
-        links.removeClass('selected');
-        $(this).addClass('selected');
-    });
+    //links.on('click', function () {
+    //    links.removeClass('selected');
+    //    $(this).addClass('selected');
+    //});
 });
 
 },{"./api":620,"./react/fragmenteditor":624,"./react/scenarioeditor":625,"./react/sidebar":626,"bootstrap":1,"jquery":290,"lodash":315,"react":619,"react-dom":437,"react-router":457}],624:[function(require,module,exports){
@@ -97280,8 +97308,24 @@ var ScenarioStatsForm = React.createClass({
 var ScenarioFragmentList = React.createClass({
     displayName: 'ScenarioFragmentList',
 
+    getInitialState: function () {
+        return {
+            newname: ''
+        };
+    },
+    handleNameChange: function (e) {
+        this.setState({ newname: e.target.value });
+    },
+    handleFragmentClick: function (e) {
+        API.createFragment(this.state.newname, (function (data, res) {
+            API.associateFragment(this.props.scenario._id, data._id, (function (data, res) {
+                this.setState({ newname: '' });
+                location.reload();
+            }).bind(this));
+        }).bind(this));
+    },
     render: function () {
-        var fragments = this.props.fragments.map(function (fragment) {
+        var fragments = this.props.scenario.fragments.map(function (fragment) {
             return React.createElement(
                 'li',
                 { className: 'list-group-item' },
@@ -97313,6 +97357,29 @@ var ScenarioFragmentList = React.createClass({
                 'ul',
                 { className: 'list-group' },
                 fragments
+            ),
+            React.createElement(
+                'div',
+                { className: 'panel-footer form-inline' },
+                React.createElement(
+                    'form',
+                    { className: 'form-inline' },
+                    React.createElement(
+                        'div',
+                        { className: 'form-group' },
+                        React.createElement('input', { type: 'text', className: 'form-control', name: 'newfragmentname', onChange: this.handleNameChange, placeholder: 'New fragment' })
+                    ),
+                    React.createElement(
+                        'div',
+                        { className: 'form-group' },
+                        React.createElement(
+                            'button',
+                            { className: 'btn btn-success', type: 'button', onClick: this.handleFragmentClick },
+                            React.createElement('i', { className: 'fa fa-plus' }),
+                            ' Add fragment'
+                        )
+                    )
+                )
             )
         );
     }
@@ -97374,7 +97441,7 @@ var ScenarioEditorComponent = React.createClass({
     },
     loadScenario: function () {
         var scen_id = this.props.params.id;
-        API.getFullScenario(scen_id, '1', (function (data) {
+        API.getFullScenario(scen_id, true, (function (data) {
             this.setState({ scenario: data });
         }).bind(this));
     },
@@ -97410,7 +97477,7 @@ var ScenarioEditorComponent = React.createClass({
                 React.createElement(
                     'div',
                     { className: 'col-md-6' },
-                    React.createElement(ScenarioFragmentList, { fragments: this.state.scenario.fragments })
+                    React.createElement(ScenarioFragmentList, { scenario: this.state.scenario })
                 ),
                 React.createElement(
                     'div',
@@ -97429,67 +97496,21 @@ var React = require('react');
 var API = require('./../api');
 var Link = require('react-router').Link;
 
-var SideBarScenarios = React.createClass({
-    displayName: 'SideBarScenarios',
+var SideBarSingleScenario = React.createClass({
+    displayName: 'SideBarSingleScenario',
 
     getInitialState: function () {
         return {
-            list: []
+            selected: ""
         };
     },
-    loadScenarioList: function () {
-        API.getAllScenarios((function (data) {
-            console.log(data);
-            if (data.scenarios) {
-                this.setState({ list: data.scenarios });
-            }
-        }).bind(this));
-    },
-    componentDidMount: function () {
-        this.loadScenarioList();
-        setInterval(this.saveDiagram, 1000 * 60);
+    handleScenarioClick: function (e) {
+        var new_state = this.state.selected == 'selected' ? '' : 'selected';
+        this.setState({ 'selected': new_state });
     },
     render: function () {
-
-        var list = this.state.list.map(function (scenario) {
-            return React.createElement(
-                'li',
-                null,
-                React.createElement(
-                    'button',
-                    { type: 'button', className: 'btn btn-danger btn-xs pull-right' },
-                    React.createElement('i', { className: 'fa fa-trash' })
-                ),
-                React.createElement(
-                    Link,
-                    { to: "scenario/" + scenario._id },
-                    scenario.name
-                )
-            );
-        });
-        return React.createElement(
-            'div',
-            { className: 'link-blue selected' },
-            React.createElement(
-                'a',
-                { href: '#' },
-                React.createElement('i', { className: 'fa fa-newspaper-o' }),
-                ' Scenarios'
-            ),
-            React.createElement(
-                'ul',
-                { className: 'sub-links' },
-                list
-            )
-        );
-    }
-});
-
-var SideBarFragments = React.createClass({
-    displayName: 'SideBarFragments',
-
-    render: function () {
-        var list = this.props.list.map(function (fragment) {
+        var scenario = this.props.scenario;
+        var fragmentlist = scenario.fragments.map(function (fragment) {
             return React.createElement(
                 'li',
                 null,
@@ -97512,36 +97533,69 @@ var SideBarFragments = React.createClass({
         });
         return React.createElement(
             'div',
-            { className: 'link-red' },
+            { className: "link-blue " + this.state.selected },
             React.createElement(
-                'a',
-                { href: '#' },
-                React.createElement('i', { className: 'fa fa-object-group' }),
-                ' Fragments'
+                Link,
+                { to: "scenario/" + scenario._id, onClick: this.handleScenarioClick },
+                React.createElement('i', { className: 'fa fa-newspaper-o' }),
+                scenario.name
             ),
             React.createElement(
                 'ul',
                 { className: 'sub-links' },
-                list
+                fragmentlist,
+                React.createElement(
+                    'li',
+                    null,
+                    React.createElement(
+                        Link,
+                        { to: "domainmodel/" + scenario.domainmodel._id },
+                        'Domain Model'
+                    )
+                )
             )
         );
     }
 });
 
-var SideBarDomainModel = React.createClass({
-    displayName: 'SideBarDomainModel',
+var SideBarScenarios = React.createClass({
+    displayName: 'SideBarScenarios',
 
+    getInitialState: function () {
+        return {
+            list: []
+        };
+    },
+    loadScenarioList: function () {
+        API.getAllScenarios(true, (function (data) {
+            console.log(data);
+            if (data.scenarios) {
+                this.setState({ list: data.scenarios });
+            }
+        }).bind(this));
+    },
+    componentDidMount: function () {
+        this.loadScenarioList();
+        setInterval(this.saveDiagram, 1000 * 60);
+    },
     render: function () {
+        var list = this.state.list.map(function (scenario) {
+            return React.createElement(SideBarSingleScenario, { scenario: scenario });
+        });
         return React.createElement(
             'div',
-            { className: 'link-green' },
-            React.createElement(
-                Link,
-                { to: "domainmodel/" + this.props.dmid },
-                React.createElement('i', { className: 'fa fa-table' }),
-                ' Domain Model'
-            )
+            { className: 'sidebar-links' },
+            list
         );
+    }
+});
+
+var SideBarFragments = React.createClass({
+    displayName: 'SideBarFragments',
+
+    render: function () {
+
+        return list;
     }
 });
 
@@ -97549,9 +97603,6 @@ var SideBarComponent = React.createClass({
     displayName: 'SideBarComponent',
 
     render: function () {
-        var scenarioList = [{ "name": "S1", "_id": 1 }, { "name": "S2", "_id": 2 }, { "name": "S3", "_id": 3 }];
-        var fragmentList = [{ "name": "Fragment 1", "_id": 1 }, { "name": "Fragment 2", "_id": 2 }];
-        var domainModelList = [{ "name": "Domain Model 1" }, { "name": "Domain Model 1" }, { "name": "Domain Model 1" }];
         return React.createElement(
             'aside',
             { className: 'sidebar-left-collapse' },
@@ -97560,13 +97611,7 @@ var SideBarComponent = React.createClass({
                 { href: '#', className: 'company-logo' },
                 'HPI'
             ),
-            React.createElement(
-                'div',
-                { className: 'sidebar-links' },
-                React.createElement(SideBarScenarios, { list: scenarioList }),
-                React.createElement(SideBarFragments, { list: fragmentList }),
-                React.createElement(SideBarDomainModel, { list: domainModelList })
-            )
+            React.createElement(SideBarScenarios, null)
         );
     }
 });

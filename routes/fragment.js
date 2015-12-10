@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+var Config = require('./../config');
 var Fragment = require('./../models/fragment').model;
 var JSONHelper = require('./../helpers/json');
 
@@ -92,10 +92,10 @@ router.get('/', function(req, res, next) {
 
 router.post('/', function(req, res, next) {
     var fragment = req.body;
-
+    console.log(fragment);
     var db_fragment = new Fragment({
         name: fragment.name,
-        content: fragment.content,
+        content: (fragment.content ? fragment.content : Config.DEFAULT_FRAGMENT_XML),
         revision: 1
     });
 

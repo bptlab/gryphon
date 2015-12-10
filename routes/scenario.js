@@ -8,15 +8,25 @@ var Config = require('./../config');
 
 router.get('/', function(req, res, next) {
     var name = req.query.query;
-
-    Scenario.find({name: new RegExp(name, "i")},function(err, result){
+    var populate = req.query.populate;
+    var query = Scenario.find({name: new RegExp(name, "i")});
+    if (populate) {
+        query = query.populate('fragments').populate('domainmodel');
+    }
+    query.exec(function(err, result){
         if (err) {
             console.error(err);
             res.status(500).end();
             return;
         }
         if (result !== null) {
-
+            if (populate) {
+                result.forEach(function(scenario){
+                    scenario.fragments.forEach(function(fragment){
+                        fragment.content = "";
+                    })
+                })
+            }
             var res_object = {
                 content_length: result.length,
                 scenarios: result
@@ -93,25 +103,27 @@ router.post('/associatefragment', function(req, res, next) {
     var fragment_id = req.query.fragment_id;
     var scenario_id = req.query.scenario_id;
 
-    var frag_count = Fragment.find({_id:fragment_id}).count();
-
-    Scenario.findOne({_id:scenario_id}, function(err, result){
-        if (err) {
-            console.error(err);
-            res.status(500).end();
-            return;
-        }
-        if ((result !== null) && (frag_count === 1)) {
-            if (result.fragments.indexOf(fragment_id) === -1) {
-                result.fragments.append(fragment_id);
-                result.revision++;
-                result.save()
+    Fragment.where({_id:fragment_id}).count(function(err2, frag_count){
+        Scenario.findOne({_id:scenario_id}, function(err, result){
+            if (err || err2) {
+                console.error(err);
+                console.error(err2);
+                res.status(500).end();
+                return;
             }
-            res.json(result)
-        } else {
-            res.status(404).end();
-        }
-    })
+            if ((result !== null) && (frag_count === 1)) {
+                if (result.fragments.indexOf(fragment_id) === -1) {
+                    result.fragments.push(fragment_id);
+                    result.revision++;
+                    result.save()
+                }
+                res.json(result)
+            } else {
+                res.status(404).end();
+            }
+        });
+    });
+
 });
 
 router.post('/associatedomainmodel', function(req, res, next) {

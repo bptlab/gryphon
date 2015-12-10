@@ -1,4 +1,4 @@
-var Config = require('./config')
+var Config = require('./config');
 
 var API = function(host) {
     this.host = host;
@@ -31,13 +31,41 @@ API.prototype.postFragment = function(fragment, callback) {
 API.prototype.getFullScenario = function(id, populate, callback) {
     if (typeof callback === 'undefined') {
         callback = populate;
-        populate = '0';
+        populate = false;
     }
-    $.getJSON(this.createURL("scenario/" + id + "?populate=" + populate), callback);
+    if (populate) {
+        populate = "?populate=1";
+    } else {
+        populate = "";
+    }
+    $.getJSON(this.createURL("scenario/" + id + populate), callback);
 };
 
-API.prototype.getAllScenarios = function(callback) {
-    $.getJSON(this.createURL("scenario"), callback);
+API.prototype.createFragment = function(name, callback) {
+    var newfrag = {
+        name: name
+    };
+    $.post(this.createURL("fragment"),newfrag,callback);
+};
+
+API.prototype.associateFragment = function(scen_id, frag_id, callback) {
+    var url = "scenario/associatefragment?";
+    url += "scenario_id=" + scen_id;
+    url += "&fragment_id=" + frag_id;
+    $.post(this.createURL(url),'',callback);
+};
+
+API.prototype.getAllScenarios = function(populate, callback) {
+    if (typeof callback === 'undefined') {
+        callback = populate;
+        populate = true;
+    }
+    if (populate) {
+        populate = "?populate=1";
+    } else {
+        populate = "";
+    }
+    $.getJSON(this.createURL("scenario" + populate), callback);
     //this.client.methods.getAllScenarios(callback);
 };
 

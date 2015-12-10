@@ -114,8 +114,24 @@ var ScenarioStatsForm = React.createClass({
 });
 
 var ScenarioFragmentList = React.createClass({
+    getInitialState: function() {
+        return {
+            newname: ''
+        };
+    },
+    handleNameChange: function(e) {
+        this.setState({newname: e.target.value})
+    },
+    handleFragmentClick: function(e) {
+        API.createFragment(this.state.newname,function(data, res){
+            API.associateFragment(this.props.scenario._id,data._id,function(data, res){
+                this.setState({newname: ''});
+                location.reload();
+            }.bind(this));
+        }.bind(this));
+    },
     render: function() {
-        var fragments = this.props.fragments.map(function(fragment) {
+        var fragments = this.props.scenario.fragments.map(function(fragment) {
             return (
                 <li className="list-group-item"><Link to={"fragment/" + fragment._id}>{fragment.name}</Link></li>
             );
@@ -129,6 +145,18 @@ var ScenarioFragmentList = React.createClass({
                 <ul className="list-group">
                     {fragments}
                 </ul>
+                <div className="panel-footer form-inline">
+                    <form className="form-inline">
+                        <div className="form-group">
+                            <input type="text" className="form-control" name="newfragmentname" onChange={this.handleNameChange} placeholder="New fragment" />
+                        </div>
+                        <div className="form-group">
+                            <button className="btn btn-success" type="button" onClick={this.handleFragmentClick}>
+                                <i className="fa fa-plus"></i> Add fragment
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         )
     }
@@ -172,7 +200,7 @@ var ScenarioEditorComponent = React.createClass({
     },
     loadScenario: function() {
         var scen_id = this.props.params.id;
-        API.getFullScenario(scen_id,'1',function(data){
+        API.getFullScenario(scen_id,true,function(data){
             this.setState({scenario: data});
         }.bind(this));
     },
@@ -197,7 +225,7 @@ var ScenarioEditorComponent = React.createClass({
                 </div>
                 <div className="row">
                     <div className="col-md-6">
-                        <ScenarioFragmentList fragments={this.state.scenario.fragments} />
+                        <ScenarioFragmentList scenario={this.state.scenario} />
                     </div>
                     <div className="col-md-6">
                         <ScenarioDomainModelList classes={this.state.scenario.domainmodel.dataclasses}/>
