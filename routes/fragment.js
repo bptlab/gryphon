@@ -40,12 +40,12 @@ router.post('/:fragID', function(req, res, next) {
 
             var changed = false;
 
-            if (result.name !== new_frag.name) {
+            if (new_frag.name != null && result.name !== new_frag.name) {
                 changed = true;
                 result.name = new_frag.name;
             }
 
-            if (result.content !== new_frag.content) {
+            if (new_frag.content != null && result.content !== new_frag.content) {
                 changed = true;
                 result.content = new_frag.content;
             }
@@ -138,6 +138,22 @@ router.get('/:fragID/xml', function(req, res, next){
         if (result !== null) {
             res.set('Content-Type','text/xml');
             res.send(result.content);
+        } else {
+            res.status(404).end();
+        }
+    });
+});
+
+router.delete('/:fragID', function(req, res, next) {
+    var id = req.params.fragID;
+    Fragment.findOne({_id:id},function(err, result){
+        if (err) {
+            console.error(err);
+            res.status(500).end();
+            return;
+        }
+        if (result !== null) {
+            result.remove();
         } else {
             res.status(404).end();
         }

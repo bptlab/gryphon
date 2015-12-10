@@ -44,7 +44,7 @@ router.post('/', function(req, res, next) {
 
     var db_scenario = new Scenario({
         name: scenario.name,
-        terminationcondition: scenario.terminationcondition,
+        terminationcondition: (scenario.terminationcondition ? scenario.terminationcondition : ''),
         revision: 1,
         domainmodel: -1,
         fragments: []

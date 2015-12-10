@@ -17,8 +17,25 @@ var SideBarSingleScenario = React.createClass({
         var fragmentlist = scenario.fragments.map(function (fragment){
             return (
                 <li>
-                    <button type="button" className="btn btn-danger btn-xs pull-right"><i className="fa fa-trash"></i></button>
-                    <button type="button" className="btn btn-success btn-xs pull-right"><i className="fa fa-wrench"></i></button>
+                    <button
+                        type="button"
+                        className="btn btn-danger btn-xs pull-right"
+                        data-toggle="modal"
+                        data-target="#deleteFragmentModal"
+                        data-fragid={fragment._id}
+                    >
+                        <i className="fa fa-trash"></i>
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-success btn-xs pull-right"
+                        data-toggle="modal"
+                        data-target="#changeFragmentModal"
+                        data-fragid={fragment._id}
+                        data-fragname={fragment.name}
+                    >
+                        <i className="fa fa-wrench"></i>
+                    </button>
                     <Link to={"fragment/" + fragment._id} >{fragment.name}</Link>
                 </li>
             );
@@ -65,16 +82,18 @@ var SideBarScenarios = React.createClass({
         });
         return (
             <div className="sidebar-links">
+                <div class="link-red">
+                    <a
+                        href="#"
+                        data-toggle="modal"
+                        data-target="#createScenarioModal"
+                        >
+                        <i class="fa fa-plus"></i>Create a scenario
+                    </a>
+                </div>
                 {list}
             </div>
         );
-    }
-});
-
-var SideBarFragments = React.createClass({
-    render: function() {
-
-        return list;
     }
 });
 
