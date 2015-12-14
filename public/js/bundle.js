@@ -96877,8 +96877,6 @@ API.prototype.getFullScenario = function (id, populate, callback) {
         populate = "";
     }
     $.getJSON(this.createURL("scenario/" + id + populate), function (data, resp) {
-        console.log("Response");
-        console.log(data);
         callback(data, resp);
     });
 };
@@ -96908,11 +96906,9 @@ API.prototype.getAllScenarios = function (populate, callback) {
         populate = "";
     }
     $.getJSON(this.createURL("scenario" + populate), callback);
-    //this.client.methods.getAllScenarios(callback);
 };
 
 API.prototype.exportFragment = function (fragment, callback) {
-    console.log(fragment);
     $.post(this.createURL("fragment/" + fragment._id), fragment, callback);
 };
 
@@ -96927,7 +96923,6 @@ API.prototype.exportScenario = function (scenario, depopulate, callback) {
         });
         scenario.domainmodel = scenario.domainmodel._id;
     }
-    console.log(scenario);
     $.post(this.createURL("scenario/" + scenario._id), scenario, callback);
 };
 
@@ -96935,7 +96930,6 @@ API.prototype.createScenario = function (name, callback) {
     var scenario = {
         name: name
     };
-    console.log(scenario);
     $.post(this.createURL("scenario"), scenario, callback);
 };
 
@@ -96945,6 +96939,10 @@ API.prototype.deleteFragment = function (id, callback) {
         type: 'DELETE',
         callback
     });
+};
+
+API.prototype.exportScenarioToChimera = function (scenid, targeturl, callback) {
+    $.post(this.createURL("scenario/" + scenid + "/export"), { targeturl: targeturl }, callback);
 };
 
 module.exports = new API(Config.API_HOST);
@@ -97200,12 +97198,6 @@ var DeleteFragmentModal = React.createClass({
 var ModifyFragmentModal = React.createClass({
     displayName: 'ModifyFragmentModal',
 
-    getInitialState: function () {
-        return {
-            name: '',
-            id: ''
-        };
-    },
     getFinalState: function () {
         var hidden = $('#fragmentIDModal').val();
         var name = $('#fragmentNameModal').val();
@@ -97323,7 +97315,6 @@ var CreateScenarioModal = React.createClass({
         }
     },
     handleNameChange: function (e) {
-        console.log('Triggered name change.');
         this.setState({ name: e.target.value });
     },
     render: function () {
@@ -97399,6 +97390,103 @@ var CreateScenarioModal = React.createClass({
     }
 });
 
+var ExportScenarioModal = React.createClass({
+    displayName: 'ExportScenarioModal',
+
+    handleSubmit: function () {
+        var hidden = $('#scenarioExportIDModal').val();
+        var targeturl = $('#scenarioExportURLModal').val();
+        if (targeturl != "") {
+            API.exportScenarioToChimera(hidden, targeturl);
+            //location.reload();
+        }
+    },
+    render: function () {
+        return React.createElement(
+            'div',
+            { className: 'modal fade bs-example-modal-sm', tabIndex: '-1', role: 'dialog', 'aria-labelledby': 'exportScenarioModalTitle', id: 'exportScenarioModal' },
+            React.createElement(
+                'div',
+                { className: 'modal-dialog' },
+                React.createElement(
+                    'div',
+                    { className: 'modal-content' },
+                    React.createElement(
+                        'form',
+                        null,
+                        React.createElement(
+                            'div',
+                            { className: 'modal-header' },
+                            React.createElement(
+                                'button',
+                                { type: 'button', className: 'close', 'data-dismiss': 'modal', 'aria-label': 'Close' },
+                                React.createElement(
+                                    'span',
+                                    { 'aria-hidden': 'true' },
+                                    '×'
+                                )
+                            ),
+                            React.createElement(
+                                'h4',
+                                { className: 'modal-title', id: 'exportScenarioModalTitle' },
+                                'Export this scenario'
+                            )
+                        ),
+                        React.createElement(
+                            'div',
+                            { className: 'modal-body' },
+                            React.createElement(
+                                'fieldset',
+                                { className: 'form-group' },
+                                React.createElement(
+                                    'label',
+                                    { htmlFor: 'scenarioName' },
+                                    'Target URL'
+                                ),
+                                React.createElement('input', {
+                                    type: 'text',
+                                    className: 'form-control',
+                                    id: 'scenarioExportURLModal',
+                                    placeholder: 'Target URL'
+                                }),
+                                React.createElement('input', {
+                                    type: 'hidden',
+                                    name: 'scenarioExportIDModal',
+                                    id: 'scenarioExportIDModal',
+                                    value: ''
+                                })
+                            )
+                        ),
+                        React.createElement(
+                            'div',
+                            { className: 'modal-footer' },
+                            React.createElement(
+                                'button',
+                                { type: 'button', className: 'btn btn-default', 'data-dismiss': 'modal' },
+                                'Close'
+                            ),
+                            React.createElement(
+                                'button',
+                                { type: 'button', className: 'btn btn-primary', onClick: this.handleSubmit },
+                                'Export'
+                            )
+                        )
+                    )
+                )
+            )
+        );
+    },
+    componentDidMount: function () {
+        $('#exportScenarioModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var scenid = button.data('scenid');
+            var hidden = $('#scenarioExportIDModal');
+            hidden.val(scenid);
+            hidden.change();
+        });
+    }
+});
+
 var ModalComponent = React.createClass({
     displayName: 'ModalComponent',
 
@@ -97408,7 +97496,8 @@ var ModalComponent = React.createClass({
             null,
             React.createElement(DeleteFragmentModal, null),
             React.createElement(ModifyFragmentModal, null),
-            React.createElement(CreateScenarioModal, null)
+            React.createElement(CreateScenarioModal, null),
+            React.createElement(ExportScenarioModal, null)
         );
     }
 });
@@ -97436,7 +97525,6 @@ var ScenarioEditForm = React.createClass({
             terminationconditions: this.props.scenario.terminationconditions,
             _id: this.props.scenario._id
         });
-        console.log(this.props.scenario);
     },
     handleNameChange: function (e) {
         this.setState({ name: e.target.value });
@@ -97456,7 +97544,6 @@ var ScenarioEditForm = React.createClass({
                 terminationconditions: this.props.scenario.terminationconditions,
                 _id: this.props.scenario._id
             });
-            console.log(this.props.scenario);
         }
     },
     handleSubmit: function (e) {
@@ -97749,6 +97836,41 @@ var ScenarioDomainModelList = React.createClass({
     }
 });
 
+var ScenarioOperations = React.createClass({
+    displayName: 'ScenarioOperations',
+
+    render: function () {
+        return React.createElement(
+            'div',
+            { className: 'panel panel-default' },
+            React.createElement(
+                'div',
+                { className: 'panel-heading' },
+                'Operations'
+            ),
+            React.createElement(
+                'ul',
+                { className: 'list-group' },
+                React.createElement(
+                    'li',
+                    { className: 'list-group-item' },
+                    React.createElement(
+                        'button',
+                        {
+                            type: 'button',
+                            className: 'btn btn-block',
+                            'data-toggle': 'modal',
+                            'data-target': '#exportScenarioModal',
+                            'data-scenid': this.props.scenario._id
+                        },
+                        'Export scenario to chimera'
+                    )
+                )
+            )
+        );
+    }
+});
+
 var ScenarioEditorComponent = React.createClass({
     displayName: 'ScenarioEditorComponent',
 
@@ -97791,25 +97913,14 @@ var ScenarioEditorComponent = React.createClass({
                 React.createElement(
                     'div',
                     { className: 'col-md-6' },
-                    React.createElement(ScenarioEditForm, { scenario: this.state.scenario })
+                    React.createElement(ScenarioEditForm, { scenario: this.state.scenario }),
+                    React.createElement(ScenarioOperations, { scenario: this.state.scenario })
                 ),
                 React.createElement(
                     'div',
                     { className: 'col-md-6' },
-                    React.createElement(ScenarioStatsForm, { scenario: this.state.scenario })
-                )
-            ),
-            React.createElement(
-                'div',
-                { className: 'row' },
-                React.createElement(
-                    'div',
-                    { className: 'col-md-6' },
-                    React.createElement(ScenarioFragmentList, { scenario: this.state.scenario })
-                ),
-                React.createElement(
-                    'div',
-                    { className: 'col-md-6' },
+                    React.createElement(ScenarioStatsForm, { scenario: this.state.scenario }),
+                    React.createElement(ScenarioFragmentList, { scenario: this.state.scenario }),
                     React.createElement(ScenarioDomainModelList, { classes: this.state.scenario.domainmodel.dataclasses })
                 )
             )

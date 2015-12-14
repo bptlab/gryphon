@@ -5,6 +5,7 @@ var Fragment = require('./../models/fragment').model;
 var DomainModel = require('./../models/domainmodel').model;
 var _ = require('lodash');
 var Config = require('./../config');
+var RestClient = require('node-rest-client').Client;
 
 router.get('/', function(req, res, next) {
     var name = req.query.query;
@@ -187,6 +188,36 @@ var validateFragmentList = function(list) {
     return found;
 };
 
+router.post('/:scenID/export', function(req, res, next) {
+    var targeturl = req.body.targeturl;
+    var scenID = req.params.scenID;
+
+    var query = Scenario.findOne({_id:scenID}).populate('domainmodel').populate('fragments');
+
+    query.exec(function(err, result){
+        if (err) {
+            console.error(err);
+            res.status(500).end();
+            return;
+        }
+        if (result !== null) {
+            var client = new RestClient();
+            var args = {
+                data: result,
+                headers: {"Content-Type": "application/json"}
+            };
+            client.post(targeturl, args, function(data, response){
+                res.json(data);
+            }).on('error',function(err){
+                console.log(err);
+                res.status(400).end();
+            });
+        } else {
+            res.status(404).end();
+        }
+    });
+});
+
 /* Post new fragment to a given scenario. If fragment name already exists post new revision */
 router.post('/:scenID', function(req, res, next) {
     var scenID = req.params.scenID;
@@ -237,35 +268,6 @@ router.post('/:scenID', function(req, res, next) {
             res.status(404).end();
         }
     })
-});
-
-router.post('/:scenID/export', function(req, res, next) {
-    var targeturl = req.body.targeturl;
-    var scenID = req.params.scenID;
-
-    Scenario.populate('domainmodel').populate('fragments')
-        .findOne({_id:scenID}, function(err, result){
-            if (err) {
-                console.error(err);
-                res.status(500).end();
-                return;
-            }
-            if (result !== null) {
-                var Client = require('node-rest-client').Client;
-                var args = {
-                    data: result,
-                    headers: {"Content-Type": "application/json"}
-                };
-                Client.post(targeturl, args, function(data, response){
-                    res.json(data);
-                }).on('error',function(err){
-                    console.log(err);
-                    res.status(400).end();
-                });
-            } else {
-                res.status(404).end();
-            }
-        });
 });
 
 module.exports = router;

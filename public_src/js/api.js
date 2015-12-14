@@ -39,8 +39,6 @@ API.prototype.getFullScenario = function(id, populate, callback) {
         populate = "";
     }
     $.getJSON(this.createURL("scenario/" + id + populate), function(data, resp) {
-        console.log("Response");
-        console.log(data);
         callback(data, resp)
     });
 };
@@ -70,11 +68,9 @@ API.prototype.getAllScenarios = function(populate, callback) {
         populate = "";
     }
     $.getJSON(this.createURL("scenario" + populate), callback);
-    //this.client.methods.getAllScenarios(callback);
 };
 
 API.prototype.exportFragment = function(fragment, callback) {
-    console.log(fragment);
     $.post(this.createURL("fragment/" + fragment._id),fragment,callback);
 };
 
@@ -89,7 +85,6 @@ API.prototype.exportScenario = function(scenario, depopulate, callback) {
         });
         scenario.domainmodel = scenario.domainmodel._id;
     }
-    console.log(scenario);
     $.post(this.createURL("scenario/" + scenario._id),scenario,callback);
 };
 
@@ -97,7 +92,6 @@ API.prototype.createScenario = function(name, callback) {
     var scenario = {
         name: name
     };
-    console.log(scenario);
     $.post(this.createURL("scenario"),scenario,callback);
 };
 
@@ -107,6 +101,10 @@ API.prototype.deleteFragment = function(id, callback) {
         type: 'DELETE',
         callback
     });
+};
+
+API.prototype.exportScenarioToChimera = function(scenid, targeturl, callback) {
+    $.post(this.createURL("scenario/" + scenid + "/export"),{targeturl: targeturl},callback);
 };
 
 module.exports = new API(Config.API_HOST);

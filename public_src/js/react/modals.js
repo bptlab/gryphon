@@ -49,12 +49,6 @@ var DeleteFragmentModal = React.createClass({
 });
 
 var ModifyFragmentModal = React.createClass({
-    getInitialState: function() {
-        return {
-            name: '',
-            id: ''
-        }
-    },
     getFinalState: function() {
         var hidden = $('#fragmentIDModal').val();
         var name = $('#fragmentNameModal').val();
@@ -134,7 +128,6 @@ var CreateScenarioModal = React.createClass({
         }
     },
     handleNameChange: function(e) {
-        console.log('Triggered name change.');
         this.setState({name: e.target.value});
     },
     render: function() {
@@ -174,6 +167,65 @@ var CreateScenarioModal = React.createClass({
     }
 });
 
+var ExportScenarioModal = React.createClass({
+    handleSubmit: function() {
+        var hidden = $('#scenarioExportIDModal').val();
+        var targeturl = $('#scenarioExportURLModal').val();
+        if (targeturl != "") {
+            API.exportScenarioToChimera(hidden, targeturl);
+            //location.reload();
+        }
+    },
+    render: function() {
+        return (
+            <div className="modal fade bs-example-modal-sm" tabIndex="-1" role="dialog" aria-labelledby="exportScenarioModalTitle" id="exportScenarioModal">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <form>
+                            <div className="modal-header">
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 className="modal-title" id="exportScenarioModalTitle">Export this scenario</h4>
+                            </div>
+                            <div className="modal-body">
+                                <fieldset className="form-group">
+                                    <label htmlFor="scenarioName">Target URL</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="scenarioExportURLModal"
+                                        placeholder="Target URL"
+                                    />
+                                    <input
+                                        type="hidden"
+                                        name="scenarioExportIDModal"
+                                        id="scenarioExportIDModal"
+                                        value=""
+                                    />
+                                </fieldset>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="button" className="btn btn-primary" onClick={this.handleSubmit}>Export</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        )
+    },
+    componentDidMount: function() {
+        $('#exportScenarioModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var scenid = button.data('scenid');
+            var hidden = $('#scenarioExportIDModal');
+            hidden.val(scenid);
+            hidden.change();
+        })
+    }
+});
+
 var ModalComponent = React.createClass({
     render: function() {
         return (
@@ -181,6 +233,7 @@ var ModalComponent = React.createClass({
                 <DeleteFragmentModal />
                 <ModifyFragmentModal />
                 <CreateScenarioModal />
+                <ExportScenarioModal />
             </div>
         )
     }

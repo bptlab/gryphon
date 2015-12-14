@@ -16,7 +16,6 @@ var ScenarioEditForm = React.createClass({
             terminationconditions: this.props.scenario.terminationconditions,
             _id: this.props.scenario._id
         });
-        console.log(this.props.scenario);
     },
     handleNameChange: function(e) {
         this.setState({name: e.target.value});
@@ -36,7 +35,6 @@ var ScenarioEditForm = React.createClass({
                 terminationconditions: this.props.scenario.terminationconditions,
                 _id: this.props.scenario._id
             });
-            console.log(this.props.scenario);
         }
     },
     handleSubmit: function(e) {
@@ -216,6 +214,29 @@ var ScenarioDomainModelList = React.createClass({
     }
 });
 
+var ScenarioOperations = React.createClass({
+    render: function() {
+        return (
+            <div className="panel panel-default">
+                <div className="panel-heading">Operations</div>
+                <ul className="list-group">
+                    <li className="list-group-item">
+                        <button
+                            type="button"
+                            className="btn btn-block"
+                            data-toggle="modal"
+                            data-target="#exportScenarioModal"
+                            data-scenid={this.props.scenario._id}
+                        >
+                            Export scenario to chimera
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        )
+    }
+});
+
 var ScenarioEditorComponent = React.createClass({
     getInitialState: function() {
         return {
@@ -252,16 +273,11 @@ var ScenarioEditorComponent = React.createClass({
                 <div className="row">
                     <div className="col-md-6">
                         <ScenarioEditForm scenario={this.state.scenario}/>
+                        <ScenarioOperations scenario={this.state.scenario}/>
                     </div>
                     <div className="col-md-6">
                         <ScenarioStatsForm scenario={this.state.scenario} />
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-6">
                         <ScenarioFragmentList scenario={this.state.scenario} />
-                    </div>
-                    <div className="col-md-6">
                         <ScenarioDomainModelList classes={this.state.scenario.domainmodel.dataclasses}/>
                     </div>
                 </div>
