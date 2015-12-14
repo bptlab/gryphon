@@ -34,6 +34,9 @@ app.use('/api/fragment', fragment);
 app.use('/api/scenario', scenario);
 app.use('/api/domainmodel', domainmodel);
 
+app.post('/reqtest', function(req, res){
+    console.log(req.body);
+});
 // error handlers
 
 // development error handler

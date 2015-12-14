@@ -273,11 +273,11 @@ var ScenarioEditorComponent = React.createClass({
                 <div className="row">
                     <div className="col-md-6">
                         <ScenarioEditForm scenario={this.state.scenario}/>
-                        <ScenarioOperations scenario={this.state.scenario}/>
+                        <ScenarioFragmentList scenario={this.state.scenario} />
                     </div>
                     <div className="col-md-6">
                         <ScenarioStatsForm scenario={this.state.scenario} />
-                        <ScenarioFragmentList scenario={this.state.scenario} />
+                        <ScenarioOperations scenario={this.state.scenario}/>
                         <ScenarioDomainModelList classes={this.state.scenario.domainmodel.dataclasses}/>
                     </div>
                 </div>
