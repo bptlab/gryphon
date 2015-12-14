@@ -484,9 +484,11 @@ definitions:
         type: number
         format: integer
         description: 'Unique identifier of any scenario.'
-      terminationcondition:
-        type: string
-        description: 'The termination condition that is used.'
+      terminationconditions:
+        type: array
+          items:
+            type: string
+        description: 'The associated termination conditions.'
       domain_model:
         type: number
         format: integer
