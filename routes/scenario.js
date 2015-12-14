@@ -44,7 +44,7 @@ router.post('/', function(req, res, next) {
 
     var db_scenario = new Scenario({
         name: scenario.name,
-        terminationcondition: (scenario.terminationcondition ? scenario.terminationcondition : ''),
+        terminationconditions: (scenario.terminationconditions ? scenario.terminationconditions : ['Terminationconditionstub']),
         revision: 1,
         domainmodel: -1,
         fragments: []
@@ -191,7 +191,8 @@ var validateFragmentList = function(list) {
 router.post('/:scenID', function(req, res, next) {
     var scenID = req.params.scenID;
     var new_scen = req.body;
-
+    //I honestly have no clue who the fuck generates thoose brackets. I remove them here. I'm sorry.
+    new_scen.terminationconditions = new_scen['terminationconditions[]'];
     Scenario.findOne({_id:scenID}, function(err, result){
         if (err) {
             console.error(err);
@@ -207,12 +208,12 @@ router.post('/:scenID', function(req, res, next) {
                 changed = true;
             }
 
-            if (new_scen.terminationcondition != null && result.terminationcondition !== new_scen.terminationcondition) {
-                result.terminationcondition = new_scen.terminationcondition;
+            if (new_scen.terminationconditions != null && !(_.isEqual(result.terminationconditions, new_scen.terminationconditions))) {
+                result.terminationconditions = new_scen.terminationconditions;
                 changed = true;
             }
 
-            if (new_scen.fragments != null && _.isEqual(result.fragments, new_scen.fragments) && validateFragmentList(new_scen.fragments)) {
+            if (new_scen.fragments != null && !_.isEqual(result.fragments, new_scen.fragments) && validateFragmentList(new_scen.fragments)) {
                 result.fragments = new_scen.fragments;
                 changed = true;
             }

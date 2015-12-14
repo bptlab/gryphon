@@ -96876,7 +96876,11 @@ API.prototype.getFullScenario = function (id, populate, callback) {
     } else {
         populate = "";
     }
-    $.getJSON(this.createURL("scenario/" + id + populate), callback);
+    $.getJSON(this.createURL("scenario/" + id + populate), function (data, resp) {
+        console.log("Response");
+        console.log(data);
+        callback(data, resp);
+    });
 };
 
 API.prototype.createFragment = function (name, callback) {
@@ -96923,6 +96927,7 @@ API.prototype.exportScenario = function (scenario, depopulate, callback) {
         });
         scenario.domainmodel = scenario.domainmodel._id;
     }
+    console.log(scenario);
     $.post(this.createURL("scenario/" + scenario._id), scenario, callback);
 };
 
@@ -97133,7 +97138,7 @@ var DeleteFragmentModal = React.createClass({
                 { className: 'modal-dialog modal-sm' },
                 React.createElement(
                     'div',
-                    { className: 'modal-content' },
+                    { className: 'modal-body' },
                     React.createElement(
                         'div',
                         { className: 'modal-header' },
@@ -97246,7 +97251,7 @@ var ModifyFragmentModal = React.createClass({
                         ),
                         React.createElement(
                             'div',
-                            { className: 'modal-content' },
+                            { className: 'modal-body' },
                             React.createElement(
                                 'fieldset',
                                 { className: 'form-group' },
@@ -97354,7 +97359,7 @@ var CreateScenarioModal = React.createClass({
                         ),
                         React.createElement(
                             'div',
-                            { className: 'modal-content' },
+                            { className: 'modal-body' },
                             React.createElement(
                                 'fieldset',
                                 { className: 'form-group' },
@@ -97421,54 +97426,114 @@ var ScenarioEditForm = React.createClass({
     getInitialState: function () {
         return {
             'name': '',
-            'terminationcondition': '',
+            'terminationconditions': [],
             '_id': ''
         };
     },
     componentDidMount: function () {
         this.setState({
             name: this.props.scenario.name,
-            terminationcondition: this.props.scenario.terminationcondition,
+            terminationconditions: this.props.scenario.terminationconditions,
             _id: this.props.scenario._id
         });
+        console.log(this.props.scenario);
     },
     handleNameChange: function (e) {
         this.setState({ name: e.target.value });
     },
-    handleTerminationConditionChange: function (e) {
-        this.setState({ terminationcondition: e.target.value });
+    handleTerminationConditionChange: function (index) {
+        var handler = (function (e) {
+            var terminationconditions = this.state.terminationconditions;
+            terminationconditions[index] = e.target.value;
+            this.setState({ terminationconditions: terminationconditions });
+        }).bind(this);
+        return handler;
     },
     componentDidUpdate: function () {
         if (this.props.scenario._id != this.state._id) {
             this.setState({
                 name: this.props.scenario.name,
-                terminationcondition: this.props.scenario.terminationcondition,
+                terminationconditions: this.props.scenario.terminationconditions,
                 _id: this.props.scenario._id
             });
+            console.log(this.props.scenario);
         }
     },
     handleSubmit: function (e) {
         API.exportScenario(this.state, false, function (res) {});
     },
+    handleAddTerminationCondition: function (e) {
+        var terminationconditions = this.state.terminationconditions;
+        terminationconditions.push("New termination condition");
+        this.setState({ terminationconditions: terminationconditions });
+    },
+    handleTerminationConditionDelete: function (index) {
+        var handler = (function (e) {
+            var terminationconditions = this.state.terminationconditions;
+            terminationconditions.splice(index, 1);
+            this.setState({ terminationconditions: terminationconditions });
+        }).bind(this);
+        return handler;
+    },
     render: function () {
+        var terminationConditions = this.state.terminationconditions.map((function (terminationcondition, index) {
+            return React.createElement(
+                'div',
+                { className: 'form-group' },
+                React.createElement(
+                    'label',
+                    { htmlFor: "terminationcondition" + index, className: 'col-sm-2 control-label' },
+                    'Termination Condition ',
+                    index + 1
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'col-sm-10' },
+                    React.createElement(
+                        'div',
+                        { className: 'input-group' },
+                        React.createElement('input', {
+                            type: 'text',
+                            className: 'form-control',
+                            id: "terminationcondition" + index,
+                            placeholder: 'Termination Condition',
+                            value: terminationcondition,
+                            onChange: this.handleTerminationConditionChange(index)
+                        }),
+                        React.createElement(
+                            'span',
+                            { className: 'input-group-btn' },
+                            React.createElement(
+                                'button',
+                                {
+                                    className: 'btn btn-danger',
+                                    type: 'button',
+                                    onClick: this.handleTerminationConditionDelete(index) },
+                                React.createElement('i', { className: 'fa fa-times' })
+                            )
+                        )
+                    )
+                )
+            );
+        }).bind(this));
         return React.createElement(
             'div',
             { className: 'panel panel-default' },
             React.createElement(
-                'div',
-                { className: 'panel-heading' },
+                'form',
+                { className: 'form-horizontal', onSubmit: this.handleSubmit },
                 React.createElement(
-                    'h3',
-                    { className: 'panel-title' },
-                    'Scenario Stats'
-                )
-            ),
-            React.createElement(
-                'div',
-                { className: 'panel-body' },
+                    'div',
+                    { className: 'panel-heading' },
+                    React.createElement(
+                        'h3',
+                        { className: 'panel-title' },
+                        'Scenario Stats'
+                    )
+                ),
                 React.createElement(
-                    'form',
-                    { className: 'form-horizontal', onSubmit: this.handleSubmit },
+                    'div',
+                    { className: 'panel-body' },
                     React.createElement(
                         'div',
                         { className: 'form-group' },
@@ -97490,38 +97555,23 @@ var ScenarioEditForm = React.createClass({
                             })
                         )
                     ),
+                    terminationConditions
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'panel-footer clearfix' },
                     React.createElement(
                         'div',
-                        { className: 'form-group' },
+                        { className: 'btn-group pull-right' },
                         React.createElement(
-                            'label',
-                            { htmlFor: 'terminationcondition', className: 'col-sm-2 control-label' },
-                            'Termination Condition'
+                            'button',
+                            { type: 'submit', className: 'btn btn-primary' },
+                            'Submit'
                         ),
                         React.createElement(
-                            'div',
-                            { className: 'col-sm-10' },
-                            React.createElement('input', {
-                                type: 'text',
-                                className: 'form-control',
-                                id: 'terminationcondition',
-                                placeholder: 'Termination Condition',
-                                value: this.state.terminationcondition,
-                                onChange: this.handleTerminationConditionChange
-                            })
-                        )
-                    ),
-                    React.createElement(
-                        'div',
-                        { className: 'form-group' },
-                        React.createElement(
-                            'div',
-                            { className: 'col-sm-offset-2 col-sm-10' },
-                            React.createElement(
-                                'button',
-                                { type: 'submit', className: 'btn btn-default' },
-                                'Submit'
-                            )
+                            'button',
+                            { type: 'button', className: 'btn btn-default', onClick: this.handleAddTerminationCondition },
+                            'Add termination condition'
                         )
                     )
                 )
@@ -97641,18 +97691,14 @@ var ScenarioFragmentList = React.createClass({
             ),
             React.createElement(
                 'div',
-                { className: 'panel-footer form-inline' },
+                { className: 'panel-footer clearfix' },
                 React.createElement(
-                    'form',
-                    { className: 'form-inline' },
+                    'div',
+                    { className: 'input-group pull-right' },
+                    React.createElement('input', { type: 'text', className: 'form-control', name: 'newfragmentname', onChange: this.handleNameChange, placeholder: 'New fragment' }),
                     React.createElement(
-                        'div',
-                        { className: 'form-group' },
-                        React.createElement('input', { type: 'text', className: 'form-control', name: 'newfragmentname', onChange: this.handleNameChange, placeholder: 'New fragment' })
-                    ),
-                    React.createElement(
-                        'div',
-                        { className: 'form-group' },
+                        'span',
+                        { className: 'input-group-btn' },
                         React.createElement(
                             'button',
                             { className: 'btn btn-success', type: 'button', onClick: this.handleFragmentClick },
@@ -97716,7 +97762,8 @@ var ScenarioEditorComponent = React.createClass({
                     name: "",
                     revision: 0,
                     dataclasses: []
-                }
+                },
+                terminationconditions: []
             }
         };
     },
@@ -97881,7 +97928,7 @@ var SideBarScenarios = React.createClass({
             { className: 'sidebar-links' },
             React.createElement(
                 'div',
-                { 'class': 'link-red' },
+                { className: 'link-red' },
                 React.createElement(
                     'a',
                     {
@@ -97889,7 +97936,7 @@ var SideBarScenarios = React.createClass({
                         'data-toggle': 'modal',
                         'data-target': '#createScenarioModal'
                     },
-                    React.createElement('i', { 'class': 'fa fa-plus' }),
+                    React.createElement('i', { className: 'fa fa-plus' }),
                     'Create a scenario'
                 )
             ),

@@ -12,7 +12,7 @@ var DeleteFragmentModal = React.createClass({
         return (
             <div className="modal fade bs-example-modal-sm" tabIndex="-1" role="dialog" aria-labelledby="deleteFragmentModalLabel" id="deleteFragmentModal">
                 <div className="modal-dialog modal-sm">
-                    <div className="modal-content">
+                    <div className="modal-body">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
@@ -79,7 +79,7 @@ var ModifyFragmentModal = React.createClass({
                                 </button>
                                 <h4 className="modal-title" id="changeFragmentModalLabel">Change fragment details</h4>
                             </div>
-                            <div className="modal-content">
+                            <div className="modal-body">
                                 <fieldset className="form-group">
                                     <label htmlFor="fragmentNameModal">Fragment Name</label>
                                     <input
@@ -149,7 +149,7 @@ var CreateScenarioModal = React.createClass({
                                 </button>
                                 <h4 className="modal-title" id="createScenarioModalTitle">Create a new scenario</h4>
                             </div>
-                            <div className="modal-content">
+                            <div className="modal-body">
                                 <fieldset className="form-group">
                                     <label htmlFor="scenarioName">Scenario Name</label>
                                     <input

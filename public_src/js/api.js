@@ -38,7 +38,11 @@ API.prototype.getFullScenario = function(id, populate, callback) {
     } else {
         populate = "";
     }
-    $.getJSON(this.createURL("scenario/" + id + populate), callback);
+    $.getJSON(this.createURL("scenario/" + id + populate), function(data, resp) {
+        console.log("Response");
+        console.log(data);
+        callback(data, resp)
+    });
 };
 
 API.prototype.createFragment = function(name, callback) {
@@ -85,6 +89,7 @@ API.prototype.exportScenario = function(scenario, depopulate, callback) {
         });
         scenario.domainmodel = scenario.domainmodel._id;
     }
+    console.log(scenario);
     $.post(this.createURL("scenario/" + scenario._id),scenario,callback);
 };
 

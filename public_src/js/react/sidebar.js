@@ -82,13 +82,13 @@ var SideBarScenarios = React.createClass({
         });
         return (
             <div className="sidebar-links">
-                <div class="link-red">
+                <div className="link-red">
                     <a
                         href="#"
                         data-toggle="modal"
                         data-target="#createScenarioModal"
                         >
-                        <i class="fa fa-plus"></i>Create a scenario
+                        <i className="fa fa-plus"></i>Create a scenario
                     </a>
                 </div>
                 {list}
