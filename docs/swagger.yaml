@@ -472,7 +472,34 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-        
+  /scenario/{id}/export:
+    get:
+      summary: Exports a scenario.
+      description: |
+        This endpoint exports a scenario to the url given in the body object. Further additions to the body object might be possible.
+        This endpoint exports the whole scenario (including fragments and domain model) in JSON format.
+        The target server should respond with a 200 if everything went fine. The content of the response doesn't matter.
+        The target server should expect a POST-call according to RESTful APIs.
+      parameters:
+        - name: domainmodel
+          in: body
+          description: The model object.
+          required: true
+          schema:
+            $ref: '#/definitions/ExportRequest'
+      tags:
+        - Scenario
+      responses:
+        '200':
+          description: The data that was returned by the target-server.
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Scenario doesn't exist
+        '400':
+          description: Target server is unreachable or doesn't respond as expected.
 definitions:
   Scenario:
     type: object
@@ -484,7 +511,7 @@ definitions:
         type: number
         format: integer
         description: 'Unique identifier of any scenario.'
-      termination_conditions:
+      terminationconditions:
         type: array
         items:
           $ref: '#/definitions/TerminationCondition'
@@ -681,3 +708,9 @@ definitions:
         type: string
       fields:
         type: string
+  ExportRequest:
+    type: object
+    properties:
+      targeturl:
+        type: string
+        description: The url the post-call should use.

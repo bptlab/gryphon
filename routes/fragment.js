@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+var Config = require('./../config');
 var Fragment = require('./../models/fragment').model;
 var JSONHelper = require('./../helpers/json');
 
@@ -40,12 +40,12 @@ router.post('/:fragID', function(req, res, next) {
 
             var changed = false;
 
-            if (result.name !== new_frag.name) {
+            if (new_frag.name != null && result.name !== new_frag.name) {
                 changed = true;
                 result.name = new_frag.name;
             }
 
-            if (result.content !== new_frag.content) {
+            if (new_frag.content != null && result.content !== new_frag.content) {
                 changed = true;
                 result.content = new_frag.content;
             }
@@ -92,10 +92,10 @@ router.get('/', function(req, res, next) {
 
 router.post('/', function(req, res, next) {
     var fragment = req.body;
-
+    console.log(fragment);
     var db_fragment = new Fragment({
         name: fragment.name,
-        content: fragment.content,
+        content: (fragment.content ? fragment.content : Config.DEFAULT_FRAGMENT_XML),
         revision: 1
     });
 
@@ -138,6 +138,22 @@ router.get('/:fragID/xml', function(req, res, next){
         if (result !== null) {
             res.set('Content-Type','text/xml');
             res.send(result.content);
+        } else {
+            res.status(404).end();
+        }
+    });
+});
+
+router.delete('/:fragID', function(req, res, next) {
+    var id = req.params.fragID;
+    Fragment.findOne({_id:id},function(err, result){
+        if (err) {
+            console.error(err);
+            res.status(500).end();
+            return;
+        }
+        if (result !== null) {
+            result.remove();
         } else {
             res.status(404).end();
         }

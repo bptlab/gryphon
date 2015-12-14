@@ -1,4 +1,4 @@
-var Config = require('./config')
+var Config = require('./config');
 
 var API = function(host) {
     this.host = host;
@@ -31,18 +31,80 @@ API.prototype.postFragment = function(fragment, callback) {
 API.prototype.getFullScenario = function(id, populate, callback) {
     if (typeof callback === 'undefined') {
         callback = populate;
-        populate = '0';
+        populate = false;
     }
-    $.getJSON(this.createURL("scenario/" + id + "?populate=" + populate), callback);
+    if (populate) {
+        populate = "?populate=1";
+    } else {
+        populate = "";
+    }
+    $.getJSON(this.createURL("scenario/" + id + populate), function(data, resp) {
+        callback(data, resp)
+    });
 };
 
-API.prototype.getAllScenarios = function(callback, populate) {
-    $.getJSON(this.createURL("scenario"), callback);
-    //this.client.methods.getAllScenarios(callback);
+API.prototype.createFragment = function(name, callback) {
+    var newfrag = {
+        name: name
+    };
+    $.post(this.createURL("fragment"),newfrag,callback);
+};
+
+API.prototype.associateFragment = function(scen_id, frag_id, callback) {
+    var url = "scenario/associatefragment?";
+    url += "scenario_id=" + scen_id;
+    url += "&fragment_id=" + frag_id;
+    $.post(this.createURL(url),'',callback);
+};
+
+API.prototype.getAllScenarios = function(populate, callback) {
+    if (typeof callback === 'undefined') {
+        callback = populate;
+        populate = true;
+    }
+    if (populate) {
+        populate = "?populate=1";
+    } else {
+        populate = "";
+    }
+    $.getJSON(this.createURL("scenario" + populate), callback);
 };
 
 API.prototype.exportFragment = function(fragment, callback) {
     $.post(this.createURL("fragment/" + fragment._id),fragment,callback);
+};
+
+API.prototype.exportScenario = function(scenario, depopulate, callback) {
+    if (typeof callback === 'undefined') {
+        callback = depopulate;
+        depopulate = false;
+    }
+    if (depopulate) {
+        scenario.fragments = scenario.fragments.map(function(fragment) {
+            return fragment._id;
+        });
+        scenario.domainmodel = scenario.domainmodel._id;
+    }
+    $.post(this.createURL("scenario/" + scenario._id),scenario,callback);
+};
+
+API.prototype.createScenario = function(name, callback) {
+    var scenario = {
+        name: name
+    };
+    $.post(this.createURL("scenario"),scenario,callback);
+};
+
+API.prototype.deleteFragment = function(id, callback) {
+    $.ajax({
+        url: this.createURL("fragment/" + id),
+        type: 'DELETE',
+        callback
+    });
+};
+
+API.prototype.exportScenarioToChimera = function(scenid, targeturl, callback) {
+    $.post(this.createURL("scenario/" + scenid + "/export"),{targeturl: targeturl},callback);
 };
 
 module.exports = new API(Config.API_HOST);
