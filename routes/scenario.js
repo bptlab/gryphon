@@ -239,4 +239,33 @@ router.post('/:scenID', function(req, res, next) {
     })
 });
 
+router.post('/:scenID/export', function(req, res, next) {
+    var targeturl = req.body.targeturl;
+    var scenID = req.params.scenID;
+
+    Scenario.populate('domainmodel').populate('fragments')
+        .findOne({_id:scenID}, function(err, result){
+            if (err) {
+                console.error(err);
+                res.status(500).end();
+                return;
+            }
+            if (result !== null) {
+                var Client = require('node-rest-client').Client;
+                var args = {
+                    data: result,
+                    headers: {"Content-Type": "application/json"}
+                };
+                Client.post(targeturl, args, function(data, response){
+                    res.json(data);
+                }).on('error',function(err){
+                    console.log(err);
+                    res.status(400).end();
+                });
+            } else {
+                res.status(404).end();
+            }
+        });
+});
+
 module.exports = router;
