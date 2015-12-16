@@ -12,14 +12,14 @@ var DeleteFragmentModal = React.createClass({
         return (
             <div className="modal fade bs-example-modal-sm" tabIndex="-1" role="dialog" aria-labelledby="deleteFragmentModalLabel" id="deleteFragmentModal">
                 <div className="modal-dialog modal-sm">
-                    <div className="modal-body">
+                    <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                             <h4 className="modal-title" id="deleteFragmentModalLabel">DELETE A FRAGMENT</h4>
                         </div>
-                        <div className="modal-content">
+                        <div className="modal-body">
                             Are you sure? Do really want to delete exactly this fragment? Here be dragons.
                         </div>
                         <div className="modal-footer">

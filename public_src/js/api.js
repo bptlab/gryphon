@@ -38,9 +38,7 @@ API.prototype.getFullScenario = function(id, populate, callback) {
     } else {
         populate = "";
     }
-    $.getJSON(this.createURL("scenario/" + id + populate), function(data, resp) {
-        callback(data, resp)
-    });
+    $.getJSON(this.createURL("scenario/" + id + populate), callback);
 };
 
 API.prototype.createFragment = function(name, callback) {
@@ -48,6 +46,19 @@ API.prototype.createFragment = function(name, callback) {
         name: name
     };
     $.post(this.createURL("fragment"),newfrag,callback);
+};
+
+API.prototype.loadDomainModel = function(dmid, callback) {
+    $.getJSON(this.createURL("domainmodel/" + dmid), callback);
+};
+
+API.prototype.exportDomainModel = function(dm, callback) {
+    $.ajax({
+        url: this.createURL("domainmodel/" + dm._id),
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(dm)
+    });
 };
 
 API.prototype.associateFragment = function(scen_id, frag_id, callback) {
@@ -74,18 +85,21 @@ API.prototype.exportFragment = function(fragment, callback) {
     $.post(this.createURL("fragment/" + fragment._id),fragment,callback);
 };
 
-API.prototype.exportScenario = function(scenario, depopulate, callback) {
-    if (typeof callback === 'undefined') {
-        callback = depopulate;
-        depopulate = false;
-    }
-    if (depopulate) {
+API.prototype.exportScenario = function(scenario) {
+    if(scenario.fragments) {
         scenario.fragments = scenario.fragments.map(function(fragment) {
             return fragment._id;
         });
+    }
+    if(scenario.domainmodel) {
         scenario.domainmodel = scenario.domainmodel._id;
     }
-    $.post(this.createURL("scenario/" + scenario._id),scenario,callback);
+    $.ajax({
+        url: this.createURL("scenario/" + scenario._id),
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(scenario)
+    });
 };
 
 API.prototype.createScenario = function(name, callback) {

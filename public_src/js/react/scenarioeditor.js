@@ -37,8 +37,8 @@ var ScenarioEditForm = React.createClass({
             });
         }
     },
-    handleSubmit: function(e) {
-        API.exportScenario(this.state, false, function(res){});
+    handleSubmit: function() {
+        API.exportScenario(this.state);
     },
     handleAddTerminationCondition: function(e) {
         var terminationconditions = this.state.terminationconditions;
@@ -56,7 +56,7 @@ var ScenarioEditForm = React.createClass({
     render: function() {
         var terminationConditions = this.state.terminationconditions.map(function(terminationcondition, index) {
             return (
-                <div className="form-group">
+                <div className="form-group" key={index}>
                     <label htmlFor={"terminationcondition" + index} className="col-sm-2 control-label">Termination Condition {index + 1}</label>
                     <div className="col-sm-10">
                         <div className="input-group">
@@ -166,7 +166,7 @@ var ScenarioFragmentList = React.createClass({
     render: function() {
         var fragments = this.props.scenario.fragments.map(function(fragment) {
             return (
-                <li className="list-group-item"><Link to={"fragment/" + fragment._id}>{fragment.name}</Link></li>
+                <li key={fragment._id} className="list-group-item"><Link to={"fragment/" + fragment._id}>{fragment.name}</Link></li>
             );
         });
         return (
@@ -195,14 +195,14 @@ var ScenarioFragmentList = React.createClass({
 
 var ScenarioDomainModelList = React.createClass({
     render: function() {
-        var classes = this.props.classes.map(function(dataclass) {
+        var classes = this.props.classes.map(function(dataclass, index) {
             return (
-                <li className="list-group-item">{dataclass.name}</li>
+                <li key={index} className="list-group-item">{dataclass.name}</li>
             );
         });
         return (
             <div className="panel panel-default">
-                <div className="panel-heading">Domain Model classNamees</div>
+                <div className="panel-heading">Domain Model Classnames</div>
                 <div className="panel-body">
                     <p>All domain model classes.</p>
                 </div>

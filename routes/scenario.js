@@ -222,8 +222,6 @@ router.post('/:scenID/export', function(req, res, next) {
 router.post('/:scenID', function(req, res, next) {
     var scenID = req.params.scenID;
     var new_scen = req.body;
-    //I honestly have no clue who the fuck generates thoose brackets. I remove them here. I'm sorry.
-    new_scen.terminationconditions = new_scen['terminationconditions[]'];
     Scenario.findOne({_id:scenID}, function(err, result){
         if (err) {
             console.error(err);

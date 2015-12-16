@@ -16,8 +16,7 @@ var FragmentEditorComponent = React.createClass({
                 <div className="upperRightButtons" id="upperRightButtons">
                     <button type="button" className="btn btn-success" onClick={this.saveDiagram} >Save</button>
                 </div>
-                <div className="canvas" id="fragment-canvas">
-                </div>
+                <div className="canvas" id="fragment-canvas" />
             </div>
         )
     },
@@ -29,8 +28,6 @@ var FragmentEditorComponent = React.createClass({
     },
     loadDiagram: function() {
         API.getFragment(this.props.params.id,function(data) {
-            console.log(data.toString());
-            console.log(typeof data);
             this.setState({fragment: data});
             this.state.editor.openDiagram(data.content, function(err){
                 console.log(err);
@@ -44,7 +41,6 @@ var FragmentEditorComponent = React.createClass({
         }
     },
     saveDiagram: function() {
-        console.log('Saved Diagram!');
         if (this.state.editor !== null && this.state.fragment !== null) {
             this.state.editor.exportFragment(this.state.fragment, function(data){
                 API.exportFragment(data, function(data, res){

@@ -16,7 +16,7 @@ var SideBarSingleScenario = React.createClass({
         var scenario = this.props.scenario;
         var fragmentlist = scenario.fragments.map(function (fragment){
             return (
-                <li>
+                <li key={fragment._id}>
                     <button
                         type="button"
                         className="btn btn-danger btn-xs pull-right"
@@ -41,7 +41,7 @@ var SideBarSingleScenario = React.createClass({
             );
         });
         return (
-            <div className={"link-blue " + this.state.selected}>
+            <div className={"link-blue " + this.state.selected} key={scenario._id}>
                 <Link to={"scenario/" + scenario._id} onClick={this.handleScenarioClick}>
                     <i className="fa fa-newspaper-o"></i>{scenario.name}
                 </Link>
@@ -66,7 +66,6 @@ var SideBarScenarios = React.createClass({
     },
     loadScenarioList: function() {
         API.getAllScenarios(true, function(data) {
-            console.log(data);
             if (data.scenarios) {
                 this.setState({list: data.scenarios});
             }
@@ -78,7 +77,7 @@ var SideBarScenarios = React.createClass({
     },
     render: function() {
         var list = this.state.list.map(function (scenario){
-            return <SideBarSingleScenario scenario={scenario} />
+            return <SideBarSingleScenario scenario={scenario} key={scenario._id} />
         });
         return (
             <div className="sidebar-links">

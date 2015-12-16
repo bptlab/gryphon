@@ -8,6 +8,7 @@ var API = require('./api');
 var SideBarComponent = require('./react/sidebar');
 var FragmentEditorComponent = require('./react/fragmenteditor');
 var ScenarioEditorComponent = require('./react/scenarioeditor');
+var DomainModelEditorComponent = require('./react/domainmodeleditor');
 var ModalComponent = require('./react/modals');
 var Router = require('react-router').Router;
 var Route = require('react-router').Route;
@@ -34,6 +35,7 @@ $(function () {
             <Route path="/" component={App}>
                 <Route path="scenario/:id" component={ScenarioEditorComponent} />
                 <Route path="fragment/:id" component={FragmentEditorComponent} />
+                <Route path="domainmodel/:id" component={DomainModelEditorComponent} />
             </Route>
         </Router>,
         document.getElementById('app-container')

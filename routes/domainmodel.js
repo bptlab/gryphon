@@ -1,19 +1,19 @@
 var express = require('express');
 var router = express.Router();
 
-var DomainModel = require('./../models/scenario').model;
+var DomainModel = require('./../models/domainmodel').model;
 var _ = require('lodash');
 
 router.get('/:dmID', function(req, res, next) {
-    var id = req.params.dmID;
-    DomainModel.findOne({_id:id},function(err, result){
+    var dm_id = req.params.dmID;
+    DomainModel.findOne({_id:dm_id},function(err, result){
         if (err) {
             console.error(err);
             res.status(500).end();
             return;
         }
         if (result !== null) {
-            res.json(result)
+            res.json(result);
         } else {
             res.status(404).end();
         }
@@ -24,7 +24,7 @@ router.post('/:dmID', function(req, res, next) {
     var dm_id = req.params.dmID;
     var new_dm = req.body;
 
-    DomainModel.findOne({_id:id},function(err, result){
+    DomainModel.findOne({_id:dm_id},function(err, result){
         if (err) {
             console.error(err);
             res.status(500).end();
@@ -34,12 +34,12 @@ router.post('/:dmID', function(req, res, next) {
 
             var changed = false;
 
-            if (result.name !== new_dm.name) {
+            if (new_dm.name != null && result.name !== new_dm.name) {
                 result.name = new_dm.name;
                 changed = true;
             }
 
-            if (!_.isEqual(new_dm.dataclasses, result.dataclasses)) {
+            if (new_dm.dataclasses != null && !_.isEqual(new_dm.dataclasses, result.dataclasses)) {
                 result.dataclasses = new_dm.dataclasses;
                 changed = true;
             }
@@ -75,7 +75,7 @@ router.get('/', function(req, res, next) {
             var res_object = {
                 content_length: result.length,
                 domainmodels: result
-            }
+            };
 
             res.json(res_object)
         } else {
