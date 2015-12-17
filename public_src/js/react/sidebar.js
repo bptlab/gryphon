@@ -17,25 +17,27 @@ var SideBarSingleScenario = React.createClass({
         var fragmentlist = scenario.fragments.map(function (fragment){
             return (
                 <li key={fragment._id}>
-                    <button
-                        type="button"
-                        className="btn btn-danger btn-xs pull-right"
-                        data-toggle="modal"
-                        data-target="#deleteFragmentModal"
-                        data-fragid={fragment._id}
-                    >
-                        <i className="fa fa-trash"></i>
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-success btn-xs pull-right"
-                        data-toggle="modal"
-                        data-target="#changeFragmentModal"
-                        data-fragid={fragment._id}
-                        data-fragname={fragment.name}
-                    >
-                        <i className="fa fa-wrench"></i>
-                    </button>
+                    <div className="btn-group pull-right">
+                        <button
+                            type="button"
+                            className="btn btn-danger btn-xs"
+                            data-toggle="modal"
+                            data-target="#deleteFragmentModal"
+                            data-fragid={fragment._id}
+                            >
+                            <i className="fa fa-trash"></i>
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-success btn-xs"
+                            data-toggle="modal"
+                            data-target="#changeFragmentModal"
+                            data-fragid={fragment._id}
+                            data-fragname={fragment.name}
+                            >
+                            <i className="fa fa-wrench"></i>
+                        </button>
+                    </div>
                     <Link to={"fragment/" + fragment._id} >{fragment.name}</Link>
                 </li>
             );
@@ -100,7 +102,9 @@ var SideBarComponent = React.createClass({
     render: function() {
         return (
             <aside className="sidebar-left-collapse">
-                <a href="#" className="company-logo">HPI</a>
+                <a href="#">
+                    <img src="./img/hpi.png" alt="HPI" style={{width:'100px',height:'100px'}} />
+                </a>
                 <SideBarScenarios />
             </aside>
         )

@@ -45,7 +45,7 @@ router.post('/', function(req, res, next) {
 
     var db_scenario = new Scenario({
         name: scenario.name,
-        terminationconditions: (scenario.terminationconditions ? scenario.terminationconditions : ['Terminationconditionstub']),
+        terminationconditions: (scenario.terminationconditions ? scenario.terminationconditions : [Config.DEFAULT_TERMINATION_CONDITION]),
         revision: 1,
         domainmodel: -1,
         fragments: []
@@ -266,6 +266,22 @@ router.post('/:scenID', function(req, res, next) {
             res.status(404).end();
         }
     })
+});
+
+router.delete('/:scenID', function(req, res, next) {
+    var id = req.params.scenID;
+    Scenario.findOne({_id:id},function(err, result){
+        if (err) {
+            console.error(err);
+            res.status(500).end();
+            return;
+        }
+        if (result !== null) {
+            result.remove();
+        } else {
+            res.status(404).end();
+        }
+    });
 });
 
 module.exports = router;

@@ -71,7 +71,7 @@ API.prototype.associateFragment = function(scen_id, frag_id, callback) {
 API.prototype.getAllScenarios = function(populate, callback) {
     if (typeof callback === 'undefined') {
         callback = populate;
-        populate = true;
+        populate = false;
     }
     if (populate) {
         populate = "?populate=1";
@@ -119,6 +119,14 @@ API.prototype.deleteFragment = function(id, callback) {
 
 API.prototype.exportScenarioToChimera = function(scenid, targeturl, callback) {
     $.post(this.createURL("scenario/" + scenid + "/export"),{targeturl: targeturl},callback);
+};
+
+API.prototype.deleteScenario = function(id, callback) {
+    $.ajax({
+        url: this.createURL("scenario/" + id),
+        type: 'DELETE',
+        callback
+    });
 };
 
 module.exports = new API(Config.API_HOST);

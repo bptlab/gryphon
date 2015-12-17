@@ -22,6 +22,10 @@
     display: block;
 }
 
+.canvas {
+    width: 100%;
+    height: 100%;
+}
 
 .fragmentEditor {
     width: 100%;

@@ -9,10 +9,12 @@ var SideBarComponent = require('./react/sidebar');
 var FragmentEditorComponent = require('./react/fragmenteditor');
 var ScenarioEditorComponent = require('./react/scenarioeditor');
 var DomainModelEditorComponent = require('./react/domainmodeleditor');
+var IndexComponent = require('./react/index');
 var ModalComponent = require('./react/modals');
 var Router = require('react-router').Router;
 var Route = require('react-router').Route;
 var Link = require('react-router').Link;
+var IndexRoute = require('react-router').IndexRoute;
 
 
 var App = React.createClass({
@@ -33,6 +35,7 @@ $(function () {
     ReactDOM.render(
         <Router>
             <Route path="/" component={App}>
+                <IndexRoute component={IndexComponent}/>
                 <Route path="scenario/:id" component={ScenarioEditorComponent} />
                 <Route path="fragment/:id" component={FragmentEditorComponent} />
                 <Route path="domainmodel/:id" component={DomainModelEditorComponent} />

@@ -215,6 +215,11 @@ var ScenarioDomainModelList = React.createClass({
 });
 
 var ScenarioOperations = React.createClass({
+    handleDelete: function() {
+        API.deleteScenario(this.props.scenario._id, function(data, res){
+            
+        });
+    },
     render: function() {
         return (
             <div className="panel panel-default">
@@ -223,12 +228,19 @@ var ScenarioOperations = React.createClass({
                     <li className="list-group-item">
                         <button
                             type="button"
-                            className="btn btn-block"
+                            className="btn btn-default btn-block"
                             data-toggle="modal"
                             data-target="#exportScenarioModal"
                             data-scenid={this.props.scenario._id}
                         >
                             Export scenario to chimera
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-danger btn-block"
+                            onClick={this.handleDelete}
+                        >
+                            Delete scenario
                         </button>
                     </li>
                 </ul>

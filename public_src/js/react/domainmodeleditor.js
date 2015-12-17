@@ -58,9 +58,14 @@ var DataClassComponent = React.createClass({
             <div className="panel panel-default">
                 <div className="panel-heading clearfix">
                         {this.props.name}
-                    <button type="button" className="btn btn-success btn-xs pull-right" onClick={this.exportClass}>
-                        <i className="fa fa-floppy-o" ></i>
-                    </button>
+                    <div className="btn-group pull-right">
+                        <button type="button" className="btn btn-danger btn-xs" onClick={this.props.handleDelete}>
+                            <i className="fa fa-times" ></i>
+                        </button>
+                        <button type="button" className="btn btn-success btn-xs" onClick={this.exportClass}>
+                            <i className="fa fa-floppy-o" ></i>
+                        </button>
+                    </div>
                 </div>
                 <ul className="list-group">
                     {items}
@@ -128,13 +133,31 @@ var CreateNewClassComponent = React.createClass({
     }
 });
 
+var OperationsComponent = React.createClass({
+    render: function() {
+        return (
+            <div className="panel panel-default">
+                <div className="panel-heading">
+                    Operations
+                </div>
+                <div className="panel-body">
+                    <div className="btn-group btn-block">
+                        <button className="btn btn-success" onClick={this.props.onSave}>Save</button>
+                        <button className="btn btn-default">Export events</button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+});
+
 var DomainModelEditorComponent = React.createClass({
     getInitialState: function() {
         return {
             dm: {
                 name: "",
-                dataclasses: [],
-            },
+                dataclasses: []
+            }
         }
     },
     handleExport: function() {
@@ -144,6 +167,14 @@ var DomainModelEditorComponent = React.createClass({
         var handler = function(dataclass) {
             var dm = this.state.dm;
             dm.dataclasses[index] = dataclass;
+            this.setState({'dm':dm});
+        }.bind(this);
+        return handler;
+    },
+    handleDelete: function(index) {
+        var handler = function() {
+            var dm = this.state.dm;
+            dm.dataclasses.splice(index,1);
             this.setState({'dm':dm});
         }.bind(this);
         return handler;
@@ -159,15 +190,16 @@ var DomainModelEditorComponent = React.createClass({
     },
     render: function() {
         var cols = [[],[],[]];
-        var cols_index = [[],[],[]]
         this.state.dm.dataclasses.forEach(function(dataclass, index) {
             cols[index % 3].push(dataclass);
         });
         var cols = cols.map(function(col, colindex){
             var content = col.map(function(dataclass, classindex) {
+                var realIndex = (classindex * 3) + colindex;
                 return (
                     <DataClassComponent
-                        handleUpdate={this.handleUpdate((classindex * 3) + colindex)}
+                        handleUpdate={this.handleUpdate(realIndex)}
+                        handleDelete={this.handleDelete(realIndex)}
                         handleExport={this.handleExport}
                         initialItems={dataclass.attributes}
                         name={dataclass.name}
@@ -183,7 +215,10 @@ var DomainModelEditorComponent = React.createClass({
         return (
             <div className="col-md-12">
                 <div className="row">
-                    <div className="col-md-offset-4 col-md-4">
+                    <div className="col-md-6">
+                        <OperationsComponent onSave={this.handleExport} />
+                    </div>
+                    <div className="col-md-6">
                         <CreateNewClassComponent onSubmit={this.handleCreateNew} />
                     </div>
                 </div>

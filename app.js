@@ -20,7 +20,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hjs');
 
 // mongoose init
-mongoose.connect(config.mongodb_url);
+mongoose.connect(config.MONGODB_HOST);
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
