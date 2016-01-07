@@ -17,7 +17,7 @@
     "datatables": "^1.10.9",
     "debug": "~2.2.0",
     "express": "~4.13.1",
-    "history": "^1.14.0",
+    "history": "1.13.x",
     "hjs": "~0.0.6",
     "jquery": "^2.1.4",
     "mongoose ": "*",
@@ -27,7 +27,7 @@
     "react-dom": "^0.14.3",
     "react-router": "^1.0.1",
     "serve-favicon": "~2.3.0",
-    "xml2json": "^0.9.0"
+    "xml2json": "^0.9.0",
 	"lodash": "~3.10.1"
   }
 }
