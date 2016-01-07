@@ -1,15 +1,22 @@
 'use strict';
 
 var $ = require('jquery'),
-    BpmnModeler = require('bpmn-js/lib/Modeler'),
-    //API = require('./api'),
-    Config = require('./config');
+    BPMNModeller= require('bpmn-js/lib/Modeler'),
+    Config = require('./config'),
+    BPMNPropertyPanel = require('bpmn-js-properties-panel'),
+    BPMNPropertyPanelProvider = require('bpmn-js-properties-panel/lib/provider/bpmn');
 
-var Editor = function(canvas) {
-    this.renderer = new BpmnModeler({
-        container: canvas
+var Editor = function(canvas, propertypanel) {
+    this.renderer = new BPMNModeller({
+        container: canvas,
+        propertiesPanel: {
+            parent: propertypanel
+        },
+        additionalModules: [
+            BPMNPropertyPanel,
+            BPMNPropertyPanelProvider
+        ]
     });
-    //this.createNewDiagram();
 };
 
 Editor.prototype.loadDiagramStub = function() {
@@ -23,10 +30,6 @@ Editor.prototype.exportFragment = function(fragment,callback) {
             callback(fragment);
         }
     });
-};
-
-Editor.prototype.createNewDiagram = function() {
-    this.openDiagram(this.loadDiagramStub());
 };
 
 Editor.prototype.openDiagram = function(xml, callback) {

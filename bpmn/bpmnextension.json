@@ -1,0 +1,20 @@
+{
+  "name": "HPI Griffin",
+  "prefix": "griffin",
+  "associations": [],
+  "types": [
+    {
+      "name": "EventMessage",
+      "isAbstract": true,
+      "extends": [ "bpmn2:Message" ],
+      "properties": [
+        {
+          "name": "eventQuery",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    }
+  ],
+  "enumerations": []
+}

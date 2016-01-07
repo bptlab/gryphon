@@ -8,14 +8,6 @@ API.prototype.createURL = function(endpoint) {
     return this.host.concat(endpoint);
 };
 
-API.prototype.getFragmentXML = function(id, callback) {
-    $.ajax({
-        url: this.createURL("fragment/" + id + "/xml"),
-        success: callback,
-        dataType: "text"
-    });
-};
-
 API.prototype.getFragment = function(id, callback) {
     $.getJSON(this.createURL("fragment/" + id), callback);
 };
@@ -130,4 +122,3 @@ API.prototype.deleteScenario = function(id, callback) {
 };
 
 module.exports = new API(Config.API_HOST);
-//module.exports = new API(Config.API_HOST);

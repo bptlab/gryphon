@@ -3,9 +3,21 @@ var ReactDOM = require('react-dom');
 var Editor = require('./../editor');
 var API = require('./../api');
 
+/**
+ * All modals used in the project
+ * They are up here because bootstrap modals should be placed below the root node of the page.
+ * Calling them becomes quite complex because of this (It would be necessary to provide a callback down through every module)
+ * Instead of this I used the basic bootstrap logic (attributes of buttons or links)
+ * This made the transport of data to the modal quite complex.
+ * The data is stored as attribute in the calling button or link and is read here again when the modal is created.
+ * This is a quite ugly way (totally not the react-way of life, but it's the way
+ * preferred by bootstrap) but it seemed as the best solution when I wrote that.
+ * I'm sorry.
+ */
+
 var DeleteFragmentModal = React.createClass({
     handleClick: function() {
-        API.deleteFragment($('#fragmentDeleteModalID').val());
+        API.deleteFragment($('#deleteFragmentModalID').val());
         location.reload();
     },
     render: function() {
@@ -25,8 +37,8 @@ var DeleteFragmentModal = React.createClass({
                         <div className="modal-footer">
                             <input
                                 type="hidden"
-                                name="fragmentDeleteModalID"
-                                id="fragmentDeleteModalID"
+                                name="deleteFragmentModalID"
+                                id="deleteFragmentModalID"
                                 value=""
                                 />
                             <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
@@ -50,8 +62,8 @@ var DeleteFragmentModal = React.createClass({
 
 var ModifyFragmentModal = React.createClass({
     getFinalState: function() {
-        var hidden = $('#fragmentIDModal').val();
-        var name = $('#fragmentNameModal').val();
+        var hidden = $('#modifyFragmentModalID').val();
+        var name = $('#modifyFragmentModalName').val();
         return {
             name: name,
             _id: hidden
@@ -63,7 +75,7 @@ var ModifyFragmentModal = React.createClass({
     },
     render: function() {
         return (
-            <div className="modal fade bs-example-modal-sm" tabIndex="-1" role="dialog" aria-labelledby="changeFragmentModalLabel" id="changeFragmentModal">
+            <div className="modal fade bs-example-modal-sm" tabIndex="-1" role="dialog" aria-labelledby="modifyFragmentModalLabel" id="modifyFragmentModal">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <form>
@@ -71,7 +83,7 @@ var ModifyFragmentModal = React.createClass({
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
-                                <h4 className="modal-title" id="changeFragmentModalLabel">Change fragment details</h4>
+                                <h4 className="modal-title" id="modifyFragmentModalLabel">Change fragment details</h4>
                             </div>
                             <div className="modal-body">
                                 <fieldset className="form-group">
@@ -79,14 +91,14 @@ var ModifyFragmentModal = React.createClass({
                                     <input
                                         type="text"
                                         className="form-control"
-                                        id="fragmentNameModal"
+                                        id="modifyFragmentModalName"
                                         placeholder="Fragment name"
                                         />
                                 </fieldset>
                                 <input
                                     type="hidden"
-                                    name="fragmentIDModal"
-                                    id="fragmentIDModal"
+                                    name="modifyFragmentModalID"
+                                    id="modifyFragmentModalID"
                                     value=""
                                     />
                             </div>
@@ -148,7 +160,7 @@ var CreateScenarioModal = React.createClass({
                                     <input
                                         type="text"
                                         className="form-control"
-                                        id="scenarioCreateName"
+                                        id="createScenarioModalName"
                                         placeholder="Scenario name"
                                         value={this.state.name}
                                         onChange={this.handleNameChange}
@@ -157,7 +169,7 @@ var CreateScenarioModal = React.createClass({
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="button" className="btn btn-primary" onClick={this.handleSubmit}>Save changes</button>
+                                <button type="button" className="btn btn-primary" onClick={this.handleSubmit}>Create scenario</button>
                             </div>
                         </form>
                     </div>
@@ -169,8 +181,8 @@ var CreateScenarioModal = React.createClass({
 
 var ExportScenarioModal = React.createClass({
     handleSubmit: function() {
-        var hidden = $('#scenarioExportIDModal').val();
-        var targeturl = $('#scenarioExportURLModal').val();
+        var hidden = $('#exportScenarioModalID').val();
+        var targeturl = $('#exportScenarioModalURL').val();
         if (targeturl != "") {
             API.exportScenarioToChimera(hidden, targeturl);
             //location.reload();
@@ -194,13 +206,13 @@ var ExportScenarioModal = React.createClass({
                                     <input
                                         type="text"
                                         className="form-control"
-                                        id="scenarioExportURLModal"
+                                        id="exportScenarioModalURL"
                                         placeholder="Target URL"
                                     />
                                     <input
                                         type="hidden"
-                                        name="scenarioExportIDModal"
-                                        id="scenarioExportIDModal"
+                                        name="exportScenarioModalID"
+                                        id="exportScenarioModalID"
                                         value=""
                                     />
                                 </fieldset>

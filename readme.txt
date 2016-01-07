@@ -5,6 +5,11 @@ Steps to get everything up and running:
 1. run: npm install
 2. to run the express server: node bin/www
 
+If it fails running npm install:
+Check wether you have installed all build-essential
+Run: sudo npm install -g node-gyp
+Try again.
+
 About the UI:
 The raw UI files are stored in ./public_src. The files provided by the server are store in ./public.
 As the JS-Files are the only ones that need to compile atm, there is just the ./public_src/js directory.

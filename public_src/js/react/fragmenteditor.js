@@ -13,15 +13,16 @@ var FragmentEditorComponent = React.createClass({
     render: function() {
         return (
             <div className="fragmentEditor">
-                <div className="upperRightButtons" id="upperRightButtons">
-                    <button type="button" className="btn btn-success" onClick={this.saveDiagram} >Save</button>
+                <div className="lowerRightButtons" id="upperRightButtons">
+                    <button type="button" className="btn btn-success" onClick={this.saveDiagram} >Save Fragment</button>
                 </div>
                 <div className="canvas" id="fragment-canvas" />
+                <div className="properties-panel" id="fragment-properties" />
             </div>
         )
     },
     componentDidMount: function() {
-        var editor = new Editor($('#fragment-canvas'));
+        var editor = new Editor($('#fragment-canvas'),$('#fragment-properties'));
         this.setState({editor: editor});
         this.loadDiagram();
         setInterval(this.saveDiagram,1000*60);
@@ -35,7 +36,7 @@ var FragmentEditorComponent = React.createClass({
         }.bind(this));
     },
     componentDidUpdate: function() {
-        if (this.state.fragment._id != null && this.props.params.id != this.state.fragment._id) {
+        if (this.state.fragment != null && this.state.fragment._id != null && this.props.params.id != this.state.fragment._id) {
             this.saveDiagram();
             this.loadDiagram();
         }
