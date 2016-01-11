@@ -100661,14 +100661,6 @@ API.prototype.createURL = function (endpoint) {
     return this.host.concat(endpoint);
 };
 
-API.prototype.getFragmentXML = function (id, callback) {
-    $.ajax({
-        url: this.createURL("fragment/" + id + "/xml"),
-        success: callback,
-        dataType: "text"
-    });
-};
-
 API.prototype.getFragment = function (id, callback) {
     $.getJSON(this.createURL("fragment/" + id), callback);
 };
@@ -100783,11 +100775,10 @@ API.prototype.deleteScenario = function (id, callback) {
 };
 
 module.exports = new API(Config.API_HOST);
-//module.exports = new API(Config.API_HOST);
 
 },{"./config":674}],674:[function(require,module,exports){
 module.exports = {
-    API_HOST: 'http://localhost:3000/api/',
+    API_HOST: window.location.origin + '/api/',
     DEFAULT_FRAGMENT_XML: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn2:definitions xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:bpmn2=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xsi:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\" id=\"sample-diagram\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn2:process id=\"Process_1\" isExecutable=\"false\">\n    <bpmn2:startEvent id=\"StartEvent_1\"/>\n  </bpmn2:process>\n  <bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">\n    <bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"Process_1\">\n      <bpmndi:BPMNShape id=\"_BPMNShape_StartEvent_2\" bpmnElement=\"StartEvent_1\">\n        <dc:Bounds height=\"36.0\" width=\"36.0\" x=\"412.0\" y=\"240.0\"/>\n      </bpmndi:BPMNShape>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn2:definitions>",
     DEFAULT_TERMINATION_CONDITION: "Test[init]"
 };
@@ -100796,20 +100787,19 @@ module.exports = {
 'use strict';
 
 var $ = require('jquery'),
-    BpmnModeler = require('bpmn-js/lib/Modeler'),
+    BPMNModeller = require('bpmn-js/lib/Modeler'),
     Config = require('./config'),
     BPMNPropertyPanel = require('bpmn-js-properties-panel'),
     BPMNPropertyPanelProvider = require('bpmn-js-properties-panel/lib/provider/bpmn');
 
 var Editor = function (canvas, propertypanel) {
-    this.renderer = new BpmnModeler({
+    this.renderer = new BPMNModeller({
         container: canvas,
         propertiesPanel: {
             parent: propertypanel
         },
         additionalModules: [BPMNPropertyPanel, BPMNPropertyPanelProvider]
     });
-    //this.createNewDiagram();
 };
 
 Editor.prototype.loadDiagramStub = function () {
@@ -100823,10 +100813,6 @@ Editor.prototype.exportFragment = function (fragment, callback) {
             callback(fragment);
         }
     });
-};
-
-Editor.prototype.createNewDiagram = function () {
-    this.openDiagram(this.loadDiagramStub());
 };
 
 Editor.prototype.openDiagram = function (xml, callback) {
@@ -101225,7 +101211,6 @@ var FragmentEditorComponent = React.createClass({
             React.createElement(
                 'div',
                 { className: 'lowerRightButtons', id: 'upperRightButtons' },
-                'Saved! ',
                 React.createElement(
                     'button',
                     { type: 'button', className: 'btn btn-success', onClick: this.saveDiagram },
@@ -101347,11 +101332,23 @@ var ReactDOM = require('react-dom');
 var Editor = require('./../editor');
 var API = require('./../api');
 
+/**
+ * All modals used in the project
+ * They are up here because bootstrap modals should be placed below the root node of the page.
+ * Calling them becomes quite complex because of this (It would be necessary to provide a callback down through every module)
+ * Instead of this I used the basic bootstrap logic (attributes of buttons or links)
+ * This made the transport of data to the modal quite complex.
+ * The data is stored as attribute in the calling button or link and is read here again when the modal is created.
+ * This is a quite ugly way (totally not the react-way of life, but it's the way
+ * preferred by bootstrap) but it seemed as the best solution when I wrote that.
+ * I'm sorry.
+ */
+
 var DeleteFragmentModal = React.createClass({
     displayName: 'DeleteFragmentModal',
 
     handleClick: function () {
-        API.deleteFragment($('#fragmentDeleteModalID').val());
+        API.deleteFragment($('#deleteFragmentModalID').val());
         location.reload();
     },
     render: function () {
@@ -101392,8 +101389,8 @@ var DeleteFragmentModal = React.createClass({
                         { className: 'modal-footer' },
                         React.createElement('input', {
                             type: 'hidden',
-                            name: 'fragmentDeleteModalID',
-                            id: 'fragmentDeleteModalID',
+                            name: 'deleteFragmentModalID',
+                            id: 'deleteFragmentModalID',
                             value: ''
                         }),
                         React.createElement(
@@ -101426,8 +101423,8 @@ var ModifyFragmentModal = React.createClass({
     displayName: 'ModifyFragmentModal',
 
     getFinalState: function () {
-        var hidden = $('#fragmentIDModal').val();
-        var name = $('#fragmentNameModal').val();
+        var hidden = $('#modifyFragmentModalID').val();
+        var name = $('#modifyFragmentModalName').val();
         return {
             name: name,
             _id: hidden
@@ -101440,7 +101437,7 @@ var ModifyFragmentModal = React.createClass({
     render: function () {
         return React.createElement(
             'div',
-            { className: 'modal fade bs-example-modal-sm', tabIndex: '-1', role: 'dialog', 'aria-labelledby': 'changeFragmentModalLabel', id: 'changeFragmentModal' },
+            { className: 'modal fade bs-example-modal-sm', tabIndex: '-1', role: 'dialog', 'aria-labelledby': 'modifyFragmentModalLabel', id: 'modifyFragmentModal' },
             React.createElement(
                 'div',
                 { className: 'modal-dialog' },
@@ -101464,7 +101461,7 @@ var ModifyFragmentModal = React.createClass({
                             ),
                             React.createElement(
                                 'h4',
-                                { className: 'modal-title', id: 'changeFragmentModalLabel' },
+                                { className: 'modal-title', id: 'modifyFragmentModalLabel' },
                                 'Change fragment details'
                             )
                         ),
@@ -101482,14 +101479,14 @@ var ModifyFragmentModal = React.createClass({
                                 React.createElement('input', {
                                     type: 'text',
                                     className: 'form-control',
-                                    id: 'fragmentNameModal',
+                                    id: 'modifyFragmentModalName',
                                     placeholder: 'Fragment name'
                                 })
                             ),
                             React.createElement('input', {
                                 type: 'hidden',
-                                name: 'fragmentIDModal',
-                                id: 'fragmentIDModal',
+                                name: 'modifyFragmentModalID',
+                                id: 'modifyFragmentModalID',
                                 value: ''
                             })
                         ),
@@ -101589,7 +101586,7 @@ var CreateScenarioModal = React.createClass({
                                 React.createElement('input', {
                                     type: 'text',
                                     className: 'form-control',
-                                    id: 'scenarioCreateName',
+                                    id: 'createScenarioModalName',
                                     placeholder: 'Scenario name',
                                     value: this.state.name,
                                     onChange: this.handleNameChange
@@ -101621,8 +101618,8 @@ var ExportScenarioModal = React.createClass({
     displayName: 'ExportScenarioModal',
 
     handleSubmit: function () {
-        var hidden = $('#scenarioExportIDModal').val();
-        var targeturl = $('#scenarioExportURLModal').val();
+        var hidden = $('#exportScenarioModalID').val();
+        var targeturl = $('#exportScenarioModalURL').val();
         if (targeturl != "") {
             API.exportScenarioToChimera(hidden, targeturl);
             //location.reload();
@@ -101673,13 +101670,13 @@ var ExportScenarioModal = React.createClass({
                                 React.createElement('input', {
                                     type: 'text',
                                     className: 'form-control',
-                                    id: 'scenarioExportURLModal',
+                                    id: 'exportScenarioModalURL',
                                     placeholder: 'Target URL'
                                 }),
                                 React.createElement('input', {
                                     type: 'hidden',
-                                    name: 'scenarioExportIDModal',
-                                    id: 'scenarioExportIDModal',
+                                    name: 'exportScenarioModalID',
+                                    id: 'exportScenarioModalID',
                                     value: ''
                                 })
                             )
