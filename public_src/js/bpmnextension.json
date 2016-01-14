@@ -4,12 +4,12 @@
   "associations": [],
   "types": [
     {
-      "name": "EventMessage",
+      "name": "DataState",
       "isAbstract": true,
-      "extends": [ "bpmn2:Message" ],
+      "extends": [ "bpmn2:dataObject" ],
       "properties": [
         {
-          "name": "eventQuery",
+          "name": "state",
           "isAttr": true,
           "type": "String"
         }
