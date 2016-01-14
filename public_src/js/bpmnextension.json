@@ -1,0 +1,20 @@
+{
+  "name": "HPI Griffin",
+  "prefix": "griffin",
+  "associations": [],
+  "types": [
+    {
+      "name": "DataState",
+      "isAbstract": true,
+      "extends": [ "bpmn2:dataObject" ],
+      "properties": [
+        {
+          "name": "state",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    }
+  ],
+  "enumerations": []
+}
