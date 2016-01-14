@@ -1,6 +1,29 @@
 var React = require('react');
 var API = require('./../api');
 
+var TypeSelect = React.createClass({
+    getInitialState: function() {
+        var type;
+        if (this.props.is_event) {type = "event"} else {type = "data"};
+        return {value: type};
+    },
+    handleChange: function(event) {
+        var newState = event.target.value;
+        this.setState({value: newState});
+        this.props.handleType(newState);
+    },
+
+    render: function() {
+        var value = this.state.value;
+        return (
+            <select value={value} onChange={this.handleChange}>
+                <option value="data">Data</option>
+                <option value="event">Event</option>
+            </select>
+        );
+    }
+});
+
 var DataClassAttributeComponent = React.createClass({
     getDefaultProps: function() {
         return {
@@ -32,6 +55,7 @@ var DataClassComponent = React.createClass({
             var newItems = this.state.items.concat([{name: newItem}]);
             this.props.handleUpdate({
                 name: this.props.name,
+                is_event: this.props.is_event,
                 attributes: this.state.items
             });
             this.setState({items: newItems,newname:""});
@@ -42,9 +66,19 @@ var DataClassComponent = React.createClass({
         newItems.splice(i, 1);
         this.setState({items: newItems});
     },
+    handleType: function(type) {
+        var is_event = false;
+        if (type == "event") {is_event = true;};
+        this.props.handleUpdate({
+            name: this.props.name,
+            is_event: is_event,
+            attributes: this.state.items
+        });
+    },
     exportClass: function() {
         this.props.handleUpdate({
             name: this.props.name,
+            is_event: this.props.is_event,
             attributes: this.state.items
         });
         this.props.handleExport();
@@ -57,7 +91,11 @@ var DataClassComponent = React.createClass({
         return (
             <div className="panel panel-default">
                 <div className="panel-heading clearfix">
-                        {this.props.name}
+                    {this.props.name}
+                    <TypeSelect
+                        is_event={this.props.is_event}
+                        handleType={this.handleType}
+                    />
                     <div className="btn-group pull-right">
                         <button type="button" className="btn btn-danger btn-xs" onClick={this.props.handleDelete}>
                             <i className="fa fa-times" ></i>
@@ -103,9 +141,23 @@ var CreateNewClassComponent = React.createClass({
     handleChange: function(e) {
         this.setState({newname: e.target.value});
     },
-    handleSubmit: function() {
-        this.props.onSubmit(this.state.newname);
-        this.setState({newname: ""});
+    handleSubmit: function(type) {
+        var is_event = false;
+        if (type == "event") {is_event = true;};
+        var newItem = this.state.newname;
+        if (!newItem || /^\s*$/.test(newItem)) {
+            console.log("empty class names are not allowed!");
+        } else {
+            //console.log("[DBG] creating a new " + type + " class, so is_event = " + is_event);
+            this.props.onSubmit(newItem, is_event);
+            this.setState({newname: ''});
+        }
+    },
+    submitData: function() {
+        this.handleSubmit("data");
+    },
+    submitEvent: function() {
+        this.handleSubmit("event");
     },
     render: function() {
         return (
@@ -124,7 +176,8 @@ var CreateNewClassComponent = React.createClass({
                             onChange = {this.handleChange}
                             />
                         <div className="input-group-btn">
-                            <button className="btn btn-primary" onClick={this.handleSubmit}>Create dataclass</button>
+                            <button className="btn btn-primary" onClick={this.submitData}>Create dataclass</button>
+                            <button className="btn btn-primary" onClick={this.submitEvent}>Create eventclass</button>
                         </div>
                     </div>
                 </div>
@@ -179,9 +232,10 @@ var DomainModelEditorComponent = React.createClass({
         }.bind(this);
         return handler;
     },
-    handleCreateNew: function(name) {
+    handleCreateNew: function(name, is_event) {
         var dataclass = {
             "name": name,
+            "is_event": is_event,
             "attributes": []
         };
         var dm = this.state.dm;
@@ -203,6 +257,7 @@ var DomainModelEditorComponent = React.createClass({
                         handleExport={this.handleExport}
                         initialItems={dataclass.attributes}
                         name={dataclass.name}
+                        is_event={dataclass.is_event}
                         />
                 )
             }.bind(this));
