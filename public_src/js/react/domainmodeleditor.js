@@ -49,9 +49,7 @@ var DataClassComponent = React.createClass({
     },
     handleAdd: function() {
         var newItem = this.state.newname;
-        if (!newItem || /^\s*$/.test(newItem)) {
-            console.log("empty attributes are not allowed!");
-        } else {
+        if (newItem && /^[a-zA-Z0-9_]+$/.test(newItem)) {
             var newItems = this.state.items.concat([{name: newItem}]);
             this.props.handleUpdate({
                 name: this.props.name,
@@ -59,7 +57,9 @@ var DataClassComponent = React.createClass({
                 attributes: this.state.items
             });
             this.setState({items: newItems,newname:""});
-        }
+        } else {
+            console.log("only alphanumeric (+\"_\") names are allowed!");
+        };
     },
     handleRemove: function(i) {
         var newItems = this.state.items;
@@ -145,12 +145,12 @@ var CreateNewClassComponent = React.createClass({
         var is_event = false;
         if (type == "event") {is_event = true;};
         var newItem = this.state.newname;
-        if (!newItem || /^\s*$/.test(newItem)) {
-            console.log("empty class names are not allowed!");
-        } else {
+        if (newItem && /^[a-zA-Z0-9_]+$/.test(newItem)) {
             //console.log("[DBG] creating a new " + type + " class, so is_event = " + is_event);
             this.props.onSubmit(newItem, is_event);
             this.setState({newname: ''});
+        } else {
+            console.log("only alphanumeric (+\"_\") names are allowed!");
         }
     },
     submitData: function() {
@@ -163,7 +163,7 @@ var CreateNewClassComponent = React.createClass({
         return (
             <div className="panel panel-default">
                 <div className="panel-heading">
-                    Create a new dataclass
+                    Create a new class
                 </div>
                 <div className="panel-body">
                     <div className="input-group">
@@ -171,7 +171,7 @@ var CreateNewClassComponent = React.createClass({
                             type="text"
                             className="form-control"
                             id="domainmodelDataClassName"
-                            placeholder="New dataclass"
+                            placeholder="New class"
                             value = {this.state.newname}
                             onChange = {this.handleChange}
                             />

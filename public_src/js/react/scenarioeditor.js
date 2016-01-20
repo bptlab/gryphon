@@ -156,12 +156,17 @@ var ScenarioFragmentList = React.createClass({
         this.setState({newname: e.target.value})
     },
     handleFragmentClick: function(e) {
-        API.createFragment(this.state.newname,function(data, res){
-            API.associateFragment(this.props.scenario._id,data._id,function(data, res){
-                this.setState({newname: ''});
-                location.reload();
+        var newItem = this.state.newname;
+        if (newItem && /^[a-zA-Z0-9_]+$/.test(newItem)) {
+            API.createFragment(newItem,function(data, res){
+                API.associateFragment(this.props.scenario._id,data._id,function(data, res){
+                    this.setState({newname: ''});
+                    location.reload();
+                }.bind(this));
             }.bind(this));
-        }.bind(this));
+        } else {
+            console.log("only alphanumeric (+\"_\") names are allowed!");
+        }
     },
     render: function() {
         var fragments = this.props.scenario.fragments.map(function(fragment) {
