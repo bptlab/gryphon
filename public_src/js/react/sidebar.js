@@ -31,7 +31,7 @@ var SideBarSingleScenario = React.createClass({
                             type="button"
                             className="btn btn-success btn-xs"
                             data-toggle="modal"
-                            data-target="#changeFragmentModal"
+                            data-target="#modifyFragmentModal"
                             data-fragid={fragment._id}
                             data-fragname={fragment.name}
                             >

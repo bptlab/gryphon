@@ -53,7 +53,7 @@ var DeleteFragmentModal = React.createClass({
         $('#deleteFragmentModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var fragid = button.data('fragid');
-            var hidden = $('#fragmentDeleteModalID');
+            var hidden = $('#deleteFragmentModalID');
             hidden.val(fragid);
             hidden.change();
         })
@@ -113,14 +113,14 @@ var ModifyFragmentModal = React.createClass({
         )
     },
     componentDidMount: function() {
-        $('#changeFragmentModal').on('show.bs.modal', function (event) {
+        $('#modifyFragmentModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var fragid = button.data('fragid');
             var fragname = button.data('fragname');
-            var hidden = $('#fragmentIDModal');
+            var hidden = $('#modifyFragmentModalID');
             hidden.val(fragid);
             hidden.change();
-            var text = $('#fragmentNameModal');
+            var text = $('#modifyFragmentModalName');
             text.val(fragname);
             text.change();
         })
@@ -231,7 +231,7 @@ var ExportScenarioModal = React.createClass({
         $('#exportScenarioModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var scenid = button.data('scenid');
-            var hidden = $('#scenarioExportIDModal');
+            var hidden = $('#exportScenarioModalID');
             hidden.val(scenid);
             hidden.change();
         })

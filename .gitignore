@@ -13,6 +13,7 @@ results
 build
 
 node_modules
+public/js/bundle.js
 
 .idea
 *.iml
