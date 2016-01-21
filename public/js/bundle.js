@@ -106753,7 +106753,9 @@ var DataClassComponent = React.createClass({
     },
     handleAdd: function () {
         var newItem = this.state.newname;
-        if (newItem && /^[a-zA-Z0-9_]+$/.test(newItem)) {
+        if (newItem && /^[a-zA-Z0-9_]+$/.test(newItem) && this.state.items.every(function (element, index, array) {
+            return element.name != newItem;
+        })) {
             var newItems = this.state.items.concat([{ name: newItem }]);
             this.props.handleUpdate({
                 name: this.props.name,
@@ -106762,7 +106764,7 @@ var DataClassComponent = React.createClass({
             });
             this.setState({ items: newItems, newname: "" });
         } else {
-            console.log("only alphanumeric (+\"_\") names are allowed!");
+            console.log("only unique alphanumeric (+\"_\") names are allowed!");
         };
     },
     handleRemove: function (i) {
@@ -106876,8 +106878,11 @@ var CreateNewClassComponent = React.createClass({
         var newItem = this.state.newname;
         if (newItem && /^[a-zA-Z0-9_]+$/.test(newItem)) {
             //console.log("[DBG] creating a new " + type + " class, so is_event = " + is_event);
-            this.props.onSubmit(newItem, is_event);
-            this.setState({ newname: '' });
+            if (this.props.onSubmit(newItem, is_event)) {
+                this.setState({ newname: '' });
+            } else {
+                console.log("only unique names are allowed!");
+            }
         } else {
             console.log("only alphanumeric (+\"_\") names are allowed!");
         }
@@ -107002,8 +107007,13 @@ var DomainModelEditorComponent = React.createClass({
             "attributes": []
         };
         var dm = this.state.dm;
-        dm.dataclasses.push(dataclass);
-        this.setState({ 'dm': dm });
+        if (dm.dataclasses.every(function (element, index, array) {
+            return element.name != dataclass.name;
+        })) {
+            dm.dataclasses.push(dataclass);
+            this.setState({ 'dm': dm });
+            return true; //signal successful creation (evaluated by invoking component)
+        }
     },
     render: function () {
         var cols = [[], [], []];
@@ -107839,16 +107849,19 @@ var ScenarioFragmentList = React.createClass({
     },
     handleFragmentClick: function (e) {
         var newItem = this.state.newname;
-        if (newItem && /^[a-zA-Z0-9_]+$/.test(newItem)) {
+        if (newItem && /^[a-zA-Z0-9_]+$/.test(newItem) && this.props.scenario.fragments.every(function (element, index, array) {
+            return element.name != newItem;
+        })) {
             API.createFragment(newItem, function (data, res) {
                 API.associateFragment(this.props.scenario._id, data._id, function (data, res) {
                     this.setState({ newname: '' });
                     location.reload();
                 }.bind(this));
             }.bind(this));
+            //TODO: Add new fragment (w/ name) to local prop list
         } else {
-            console.log("only alphanumeric (+\"_\") names are allowed!");
-        }
+                console.log("only unique alphanumeric (+\"_\") names are allowed!");
+            }
     },
     render: function () {
         var fragments = this.props.scenario.fragments.map(function (fragment) {

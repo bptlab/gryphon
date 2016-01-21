@@ -157,7 +157,11 @@ var ScenarioFragmentList = React.createClass({
     },
     handleFragmentClick: function(e) {
         var newItem = this.state.newname;
-        if (newItem && /^[a-zA-Z0-9_]+$/.test(newItem)) {
+        if (newItem && /^[a-zA-Z0-9_]+$/.test(newItem)
+            && this.props.scenario.fragments.every(
+                function (element, index, array) {
+                    return element.name != newItem;
+                })) {
             API.createFragment(newItem,function(data, res){
                 API.associateFragment(this.props.scenario._id,data._id,function(data, res){
                     this.setState({newname: ''});
@@ -165,7 +169,7 @@ var ScenarioFragmentList = React.createClass({
                 }.bind(this));
             }.bind(this));
         } else {
-            console.log("only alphanumeric (+\"_\") names are allowed!");
+            console.log("only unique alphanumeric (+\"_\") names are allowed!");
         }
     },
     render: function() {
