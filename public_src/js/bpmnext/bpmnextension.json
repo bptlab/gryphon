@@ -1,0 +1,40 @@
+{
+  "name": "HPI Griffin",
+  "prefix": "griffin",
+  "uri": "http://wat",
+  "xml":{
+    "tagAlias":"lowerCase"
+  },
+  "associations": [],
+  "types": [
+    {
+      "name": "DataState",
+      "isAbstract": false,
+      "extends": [ "bpmn:DataObjectReference" ],
+      "properties": [
+        {
+          "name": "state",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "EventQuery",
+      "isAbstract": false,
+      "extends": [
+        "bpmn:StartEvent",
+        "bpmn:IntermediateThrowEvent",
+        "bpmn:BoundaryEvent"
+      ],
+      "properties": [
+        {
+          "name": "eventquery",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    }
+  ],
+  "enumerations": []
+}

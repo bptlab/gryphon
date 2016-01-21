@@ -4,7 +4,10 @@ var $ = require('jquery'),
     BPMNModeller= require('bpmn-js/lib/Modeler'),
     Config = require('./config'),
     BPMNPropertyPanel = require('bpmn-js-properties-panel'),
-    BPMNPropertyPanelProvider = require('bpmn-js-properties-panel/lib/provider/bpmn');
+    //BPMNPropertyPanelProvider = require('bpmn-js-properties-panel/lib/provider/bpmn');
+    BPMNPropertyPanelProvider = require('./bpmnext');
+
+var ModdleDescriptor = require('./bpmnext/bpmnextension');
 
 var Editor = function(canvas, propertypanel) {
     this.renderer = new BPMNModeller({
@@ -15,7 +18,10 @@ var Editor = function(canvas, propertypanel) {
         additionalModules: [
             BPMNPropertyPanel,
             BPMNPropertyPanelProvider
-        ]
+        ],
+        moddleExtensions: {
+            griffin: ModdleDescriptor
+        }
     });
 };
 
@@ -38,6 +44,6 @@ Editor.prototype.openDiagram = function(xml, callback) {
 
 Editor.prototype.importFragment = function(fragment, callback) {
     this.renderer.importXML(fragment.content, callback);
-};
+};  
 
 module.exports = Editor;
