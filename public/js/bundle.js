@@ -101766,9 +101766,10 @@ function createDataObjectProperties(group, element, elementRegistry) {
 
 function createMessageEventProperties(group, element, elementRegistry) {
     console.log(element);
-    var types = ['bpmn:StartEvent', 'bpmn:IntermediateThrowEvent', 'bpmn:BoundaryEvent'];
+    var types = ['bpmn:StartEvent', 'bpmn:IntermediateCatchEvent', 'bpmn:BoundaryEvent'];
+    var bo = getBusinessObject(element);
     forEach(types, function (type) {
-        if (is(element, type)) {
+        if (is(element, type) && 'eventDefinitions' in bo && is(bo.eventDefinitions[0], 'bpmn:MessageEventDefinition')) {
             var stateEntry = entryFactory.textField({
                 id: 'EventQuery',
                 description: '',
