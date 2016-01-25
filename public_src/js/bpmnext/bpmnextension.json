@@ -16,6 +16,11 @@
           "name": "state",
           "isAttr": true,
           "type": "String"
+        },
+        {
+          "name": "dataclass",
+          "isAttr": true,
+          "type": "String"
         }
       ]
     },

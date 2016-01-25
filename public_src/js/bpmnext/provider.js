@@ -1,9 +1,13 @@
 // bpmn properties
 var inherits = require('inherits');
 
+var API = require('./../api');
+
 var PropertiesActivator = require('bpmn-js-properties-panel/lib/PropertiesActivator');
+
 var entryFactory = require('bpmn-js-properties-panel/lib/factory/EntryFactory'),
     getBusinessObject = require('bpmn-js/lib/util/ModelUtil').getBusinessObject;
+
 var processProps = require('bpmn-js-properties-panel/lib/provider/bpmn/parts/ProcessProps'),
     eventProps = require('bpmn-js-properties-panel/lib/provider/bpmn/parts/EventProps'),
     linkProps = require('bpmn-js-properties-panel/lib/provider/bpmn/parts/LinkProps'),
@@ -13,7 +17,8 @@ var processProps = require('bpmn-js-properties-panel/lib/provider/bpmn/parts/Pro
 var is = require('bpmn-js/lib/util/ModelUtil').is;
 
 var forEach = require('lodash/collection/forEach');
-function createDataObjectProperties(group, element, elementRegistry) {
+function createDataObjectProperties(group, element,
+                                    elementRegistry) {
     console.log(element);
     if (is(element, 'bpmn:DataObjectReference')) {
         var stateEntry = entryFactory.textField({
@@ -23,6 +28,24 @@ function createDataObjectProperties(group, element, elementRegistry) {
             modelProperty: 'state'
         });
         group.entries.push(stateEntry);
+        var doEntry = entryFactory.textField({
+            id: 'DataObjectState',
+            description: '',
+            label: 'Dataclass',
+            modelProperty: 'dataclass'
+        });
+        doEntry.set = function(element, values) {
+            var res = {};
+            var prop = 'dataclass';
+            if (values[prop] !== '') {
+                res[prop] = values[prop];
+            } else {
+                res[prop] = undefined;
+            }
+
+            return res;
+        };
+        group.entries.push(doEntry)
     }
 }
 

@@ -15,6 +15,7 @@ var Router = require('react-router').Router;
 var Route = require('react-router').Route;
 var Link = require('react-router').Link;
 var IndexRoute = require('react-router').IndexRoute;
+var MessageBar = require('./react/messagebar');
 
 
 var App = React.createClass({
@@ -24,6 +25,7 @@ var App = React.createClass({
                 <ModalComponent />
                 <SideBarComponent />
                 <div className="main-content">
+                    <
                     {this.props.children}
                 </div>
             </div>
