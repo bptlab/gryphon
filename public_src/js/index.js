@@ -25,7 +25,7 @@ var App = React.createClass({
                 <ModalComponent />
                 <SideBarComponent />
                 <div className="main-content">
-                    <
+                    <MessageBar />
                     {this.props.children}
                 </div>
             </div>

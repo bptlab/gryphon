@@ -1,13 +1,16 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Editor = require('./../editor');
+var MessageHandler = require('./../messagehandler');
 var API = require('./../api');
+var Config = require('./../config');
 
 var FragmentEditorComponent = React.createClass({
     getInitialState: function() {
         return {
             editor: null,
-            fragment: null
+            fragment: null,
+            interval: -1
         }
     },
     render: function() {
@@ -25,13 +28,17 @@ var FragmentEditorComponent = React.createClass({
         var editor = new Editor($('#fragment-canvas'),$('#fragment-properties'));
         this.setState({editor: editor});
         this.loadDiagram();
-        setInterval(this.saveDiagram,1000*60);
+        var interval = setInterval(this.autoSave,Config.FRAGMENT_SAVE_INTERVAL);
+        this.setState({interval: interval});
     },
     loadDiagram: function() {
         API.getFragment(this.props.params.id,function(data) {
             this.setState({fragment: data});
             this.state.editor.openDiagram(data.content, function(err){
-                console.log(err);
+                if (err) {
+                    MessageHandler.handleMessage("danger", "Failed to load diagram.");
+                    console.log(err);
+                }
             });
         }.bind(this));
     },
@@ -42,16 +49,24 @@ var FragmentEditorComponent = React.createClass({
         }
     },
     saveDiagram: function() {
+        this.autoSave(false);
+    },
+    autoSave: function(show_success) {
+        var res_handler = function(data) {
+            console.log(data);
+            if (show_success) {
+                MessageHandler.handleMessage('success', 'Saved fragment!');
+            }
+        };
         if (this.state.editor !== null && this.state.fragment !== null) {
-            this.state.editor.exportFragment(this.state.fragment, function(data){
-                API.exportFragment(data, function(data, res){
-                    console.log(data);
-                });
+            this.state.editor.exportFragment(this.state.fragment, function(data) {
+                API.exportFragment(data, res_handler);
             });
         }
     },
     componentWillUnmount: function() {
-        this.saveDiagram();
+        this.autoSave(false);
+        clearInterval(this.state.interval);
     }
 });
 

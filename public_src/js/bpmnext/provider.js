@@ -19,7 +19,6 @@ var is = require('bpmn-js/lib/util/ModelUtil').is;
 var forEach = require('lodash/collection/forEach');
 function createDataObjectProperties(group, element,
                                     elementRegistry) {
-    console.log(element);
     if (is(element, 'bpmn:DataObjectReference')) {
         var stateEntry = entryFactory.textField({
             id: 'DataObjectState',
@@ -32,25 +31,24 @@ function createDataObjectProperties(group, element,
             id: 'DataObjectState',
             description: '',
             label: 'Dataclass',
-            modelProperty: 'dataclass'
-        });
-        doEntry.set = function(element, values) {
-            var res = {};
-            var prop = 'dataclass';
-            if (values[prop] !== '') {
-                res[prop] = values[prop];
-            } else {
-                res[prop] = undefined;
-            }
+            modelProperty: 'dataclass',
+            set: function(element, values) {
+                var res = {};
+                var prop = 'dataclass';
+                if (values[prop] !== '') {
+                    res[prop] = values[prop];
+                } else {
+                    res[prop] = undefined;
+                }
 
-            return res;
-        };
+                return res;
+            }
+        });
         group.entries.push(doEntry)
     }
 }
 
 function createMessageEventProperties(group, element, elementRegistry) {
-    console.log(element);
     var types = [
         'bpmn:StartEvent',
         'bpmn:IntermediateCatchEvent',

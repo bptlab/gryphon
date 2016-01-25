@@ -2,6 +2,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Editor = require('./../editor');
 var API = require('./../api');
+var MessageHandler = require('./../messagehandler');
 
 /**
  * All modals used in the project
@@ -185,6 +186,8 @@ var ExportScenarioModal = React.createClass({
         var targeturl = $('#exportScenarioModalURL').val();
         if (targeturl != "") {
             API.exportScenarioToChimera(hidden, targeturl);
+            MessageHandler.handleMessage('success','Export succesfull!');
+            $('exportScenarioModal').modal('hide');
             //location.reload();
         }
     },

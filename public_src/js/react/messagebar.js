@@ -12,8 +12,8 @@ var MessageComponent = React.createClass({
     render: function() {
         return (
             <div className={"alert alert-" + this.props.type + " alert-dismissible"} role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close" onClick={this.handleDismiss} ><span aria-hidden="true">&times;</span></button>
-                {this.props.message}
+                <button type="button" className="close" data-dismiss="alert" aria-label="Close" onClick={this.handleDismiss} ><span aria-hidden="true">&times;</span></button>
+                {this.props.text}
             </div>
         )
     },
@@ -29,15 +29,21 @@ var MessageBarComponent = React.createClass({
         }
     },
     handleDelete: function(message) {
-        var index = array.indexOf(message);
+        var index = this.state.messages.indexOf(message);
+        var newarr = this.state.messages;
         if (index > -1) {
-            array.splice(index, 1);
+            newarr.splice(index, 1);
         }
+        this.setState({
+            messages: newarr
+        })
     },
     handleMessage: function(type, text) {
-        this.messages.push(
+        var newmessages = this.state.messages;
+        newmessages.push(
             <MessageComponent handleDelete={this.handleDelete} type={type} text={text} />
         )
+        this.setState({ messages: newmessages })
     },
     render: function() {
         return (
@@ -49,7 +55,7 @@ var MessageBarComponent = React.createClass({
     componentDidMount: function() {
         MessageHandler.setRoot(this)
     },
-    componentDidUnmount: function() {
+    componentWillUnmount: function() {
         MessageHandler.setRoot(null)
     }
 });

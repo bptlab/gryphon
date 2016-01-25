@@ -1,6 +1,7 @@
 var React = require('react');
 var Link = require('react-router').Link;
 var API = require('./../api');
+var MessageHandler = require('./../messagehandler');
 
 var ScenarioEditForm = React.createClass({
     getInitialState: function() {
@@ -39,6 +40,7 @@ var ScenarioEditForm = React.createClass({
     },
     handleSubmit: function() {
         API.exportScenario(this.state);
+        MessageHandler.handleMessage("success","Saved scenario-details!");
     },
     handleAddTerminationCondition: function(e) {
         var terminationconditions = this.state.terminationconditions;
@@ -82,7 +84,7 @@ var ScenarioEditForm = React.createClass({
         }.bind(this));
         return (
             <div className="panel panel-default">
-                <form className="form-horizontal" onSubmit={this.handleSubmit} >
+                <form className="form-horizontal">
                 <div className="panel-heading">
                     <h3 className="panel-title">Scenario Stats</h3>
                 </div>
@@ -104,7 +106,7 @@ var ScenarioEditForm = React.createClass({
                 </div>
                 <div className="panel-footer clearfix">
                     <div className="btn-group pull-right">
-                        <button type="submit" className="btn btn-primary">Submit</button>
+                        <button type="button" className="btn btn-primary" onClick={this.handleSubmit} >Submit</button>
                         <button type="button" className="btn btn-default" onClick={this.handleAddTerminationCondition}>Add termination condition</button>
                     </div>
                 </div>
@@ -165,11 +167,12 @@ var ScenarioFragmentList = React.createClass({
             API.createFragment(newItem,function(data, res){
                 API.associateFragment(this.props.scenario._id,data._id,function(data, res){
                     this.setState({newname: ''});
-                    location.reload();
+                    MessageHandler.handleMessage('success', 'Added new fragment!');
+                    this.props.forceRerender();
                 }.bind(this));
             }.bind(this));
         } else {
-            console.log("only unique alphanumeric (+\"_\") names are allowed!");
+            MessageHandler.handleMessage("warning", "Only unique alphanumeric (+\"_\") names are allowed!");
         }
     },
     render: function() {
@@ -288,13 +291,16 @@ var ScenarioEditorComponent = React.createClass({
             this.loadScenario();
         }
     },
+    forceRerender: function() {
+        this.loadScenario();
+    },
     render: function() {
         return (
             <div className="col-md-12">
                 <div className="row">
                     <div className="col-md-6">
                         <ScenarioEditForm scenario={this.state.scenario}/>
-                        <ScenarioFragmentList scenario={this.state.scenario} />
+                        <ScenarioFragmentList scenario={this.state.scenario} forceRerender={this.forceRerender} />
                     </div>
                     <div className="col-md-6">
                         <ScenarioStatsForm scenario={this.state.scenario} />

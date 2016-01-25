@@ -1,4 +1,5 @@
 var React = require('react');
+var MessageHandler = require('./../messagehandler');
 var API = require('./../api');
 
 var TypeSelect = React.createClass({
@@ -62,7 +63,7 @@ var DataClassComponent = React.createClass({
             });
             this.setState({items: newItems,newname:""});
         } else {
-            console.log("only unique alphanumeric (+\"_\") names are allowed!");
+            MessageHandler.handleMessage("warning","Only unique alphanumeric (+\"_\") names are allowed!");
         };
     },
     handleRemove: function(i) {
@@ -154,10 +155,10 @@ var CreateNewClassComponent = React.createClass({
             if (this.props.onSubmit(newItem, is_event)) {
                 this.setState({newname: ''});
             } else {
-                console.log("only unique names are allowed!");
+                MessageHandler.handleMessage("warning","only unique names are allowed!");
             }
         } else {
-            console.log("only alphanumeric (+\"_\") names are allowed!");
+            MessageHandler.handleMessage("warning", "only alphanumeric (+\"_\") names are allowed!");
         }
     },
     submitData: function() {
