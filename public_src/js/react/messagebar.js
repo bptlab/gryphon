@@ -42,7 +42,7 @@ var MessageBarComponent = React.createClass({
         var newmessages = this.state.messages;
         newmessages.push(
             <MessageComponent handleDelete={this.handleDelete} type={type} text={text} />
-        )
+        );
         this.setState({ messages: newmessages })
     },
     render: function() {

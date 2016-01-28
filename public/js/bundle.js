@@ -101678,6 +101678,10 @@ API.prototype.exportScenarioToChimera = function (scenid, targeturl, callback) {
     $.post(this.createURL("scenario/" + scenid + "/export"), { targeturl: targeturl }, callback);
 };
 
+API.prototype.validateFragment = function (fragid, callback) {
+    $.get(this.createURL("fragment/" + fragid + "/validate"), callback);
+};
+
 API.prototype.deleteScenario = function (id, callback) {
     $.ajax({
         url: this.createURL("scenario/" + id),
@@ -102192,10 +102196,10 @@ var CreateNewClassComponent = React.createClass({
             if (this.props.onSubmit(newItem, is_event)) {
                 this.setState({ newname: '' });
             } else {
-                MessageHandler.handleMessage("warning", "only unique names are allowed!");
+                MessageHandler.handleMessage("warning", "Only unique names are allowed!");
             }
         } else {
-            MessageHandler.handleMessage("warning", "only alphanumeric (+\"_\") names are allowed!");
+            MessageHandler.handleMessage("warning", "Only alphanumeric (+\"_\") names are allowed!");
         }
     },
     submitData: function () {
@@ -102294,6 +102298,7 @@ var DomainModelEditorComponent = React.createClass({
     },
     handleExport: function () {
         API.exportDomainModel(this.state.dm);
+        MessageHandler.handleMessage('success', 'Saved domain model.');
     },
     handleUpdate: function (index) {
         var handler = function (dataclass) {
@@ -102457,7 +102462,12 @@ var FragmentEditorComponent = React.createClass({
             if (show_success) {
                 MessageHandler.handleMessage('success', 'Saved fragment!');
             }
-        };
+            API.validateFragment(this.state.fragment._id, function (result) {
+                result.messages.forEach(function (message) {
+                    MessageHandler.handleMessage(message.type, message.text);
+                });
+            }.bind(this));
+        }.bind(this);
         if (this.state.editor !== null && this.state.fragment !== null) {
             this.state.editor.exportFragment(this.state.fragment, function (data) {
                 API.exportFragment(data, res_handler);

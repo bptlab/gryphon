@@ -6,13 +6,13 @@ var xml2json = require('xml2json')
  */
 var parseToBPMNObject = function (xml) {
 
-    xml = xml.replace(/<bpmn2:/g,'<');
+    xml = xml.replace(/<bpmn:/g,'<');
     xml = xml.replace(/<bpmndi:/g,'<');
     xml = xml.replace(/<di:/g, '<');
     xml = xml.replace(/<dc:/g, '<');
 
 
-    xml = xml.replace(/<\/bpmn2:/g,'</');
+    xml = xml.replace(/<\/bpmn:/g,'</');
     xml = xml.replace(/<\/bpmndi:/g,'</');
     xml = xml.replace(/<\/di:/g, '</');
     xml = xml.replace(/<\/dc:/g, '</');

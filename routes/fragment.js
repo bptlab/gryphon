@@ -3,6 +3,7 @@ var router = express.Router();
 var Config = require('./../config');
 var Fragment = require('./../models/fragment').model;
 var JSONHelper = require('./../helpers/json');
+var validateFragment = require('./../helpers/validator').validateFragment;
 
 /* GET fragment belonging to scenario and fragment. */
 router.get('/:fragID', function(req, res, next) {
@@ -112,7 +113,7 @@ router.post('/', function(req, res, next) {
 
 router.get('/:fragID/structure', function(req, res, next) {
     var id = req.params.fragID;
-    Fragment.model.findOne({_id:id},function(err, result){
+    Fragment.findOne({_id:id},function(err, result){
         if (err) {
             console.error(err);
             res.status(500).end();
@@ -158,6 +159,24 @@ router.delete('/:fragID', function(req, res, next) {
             res.status(404).end();
         }
     });
+});
+
+router.get('/:fragID/validate', function(req, res, next) {
+   var id = req.params.fragID;
+    Fragment.findOne({_id:id},function(err, result){
+        if (err) {
+            console.error(err);
+            res.status(500).end();
+            return;
+        }
+        if (result !== null) {
+            res.json({
+                messages: validateFragment(result)
+            });
+        } else {
+            res.status(404).end();
+        }
+    })
 });
 
 module.exports = router;

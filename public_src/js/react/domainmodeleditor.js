@@ -155,10 +155,10 @@ var CreateNewClassComponent = React.createClass({
             if (this.props.onSubmit(newItem, is_event)) {
                 this.setState({newname: ''});
             } else {
-                MessageHandler.handleMessage("warning","only unique names are allowed!");
+                MessageHandler.handleMessage("warning","Only unique names are allowed!");
             }
         } else {
-            MessageHandler.handleMessage("warning", "only alphanumeric (+\"_\") names are allowed!");
+            MessageHandler.handleMessage("warning", "Only alphanumeric (+\"_\") names are allowed!");
         }
     },
     submitData: function() {
@@ -223,6 +223,7 @@ var DomainModelEditorComponent = React.createClass({
     },
     handleExport: function() {
         API.exportDomainModel(this.state.dm);
+        MessageHandler.handleMessage('success','Saved domain model.');
     },
     handleUpdate: function(index) {
         var handler = function(dataclass) {

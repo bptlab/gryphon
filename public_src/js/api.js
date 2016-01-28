@@ -113,6 +113,10 @@ API.prototype.exportScenarioToChimera = function(scenid, targeturl, callback) {
     $.post(this.createURL("scenario/" + scenid + "/export"),{targeturl: targeturl},callback);
 };
 
+API.prototype.validateFragment = function(fragid,callback) {
+    $.get(this.createURL("fragment/" + fragid + "/validate"),callback);
+};
+
 API.prototype.deleteScenario = function(id, callback) {
     $.ajax({
         url: this.createURL("scenario/" + id),
