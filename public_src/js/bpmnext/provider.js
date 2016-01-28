@@ -28,11 +28,11 @@ function createDataObjectProperties(group, element,
         });
         group.entries.push(stateEntry);
         var doEntry = entryFactory.textField({
-            id: 'DataObjectState',
+            id: 'DataObjectDataClass',
             description: '',
             label: 'Dataclass',
             modelProperty: 'dataclass',
-            set: function(element, values) {
+            /** set: function(element, values) {
                 var res = {};
                 var prop = 'dataclass';
                 if (values[prop] !== '') {
@@ -42,7 +42,7 @@ function createDataObjectProperties(group, element,
                 }
 
                 return res;
-            }
+            } */
         });
         group.entries.push(doEntry)
     }

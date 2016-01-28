@@ -44,14 +44,14 @@ var FragmentEditorComponent = React.createClass({
     },
     componentDidUpdate: function() {
         if (this.state.fragment != null && this.state.fragment._id != null && this.props.params.id != this.state.fragment._id) {
-            this.saveDiagram();
+            this.saveDiagram(false);
             this.loadDiagram();
         }
     },
-    saveDiagram: function() {
-        this.autoSave(false);
-    },
-    autoSave: function(show_success) {
+    saveDiagram: function(show_success) {
+        if (show_success == undefined) {
+            show_success = true;
+        }
         var res_handler = function(data) {
             console.log(data);
             if (show_success) {
@@ -70,7 +70,7 @@ var FragmentEditorComponent = React.createClass({
         }
     },
     componentWillUnmount: function() {
-        this.autoSave(false);
+        this.saveDiagram(false);
         clearInterval(this.state.interval);
     }
 });

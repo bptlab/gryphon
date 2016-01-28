@@ -77,26 +77,6 @@ var validateEndEvents = function(endEvents) {
 };
 
 var validateSoundness = function(graph) {
-    /** var isValid = function(node,visited) {
-        if (visited.indexOf(node) >= 0) {
-            return false;
-        }
-        if (graph.endEvents.indexOf(node) >= 0) {
-            return true;
-        }
-        if (!(node in graph.adjacencyList)) {
-            result.push(false);
-            return false;
-        }
-        var valid = false;
-        visited.push(node);
-        console.log(visited);
-        graph.adjacencyList[node].forEach(function(node) {
-            valid = valid || isValid(node,visited);
-        });
-        result.push(valid);
-        return valid;
-    }; */
 
     var search = function(node, visited, adjacencyList) {
         if (visited.indexOf(node) >= 0) {

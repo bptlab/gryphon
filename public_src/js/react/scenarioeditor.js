@@ -21,10 +21,31 @@ var ScenarioEditForm = React.createClass({
     handleNameChange: function(e) {
         this.setState({name: e.target.value});
     },
+    validateTerminationCondition: function(terminationcondition) {
+        var split = terminationcondition.split(" ");
+        split.forEach(function(dataobject){
+            var end = dataobject.indexOf("[");
+            var realend = dataobject.indexOf("]")
+            if (end == dataobject.length - 1 || end == -1 || realend < dataobject.length - 1) {
+                MessageHandler.handleMessage("danger","You must specify a state for your termination condition in: " + dataobject);
+            } else {
+                var substr = dataobject.substring(0,end);
+                console.log(substr);
+                var found = false;
+                this.props.scenario.domainmodel.dataclasses.forEach(function(dataclass){
+                    found = found || (dataclass.name == substr)
+                }.bind(this));
+                if (!found) {
+                    MessageHandler.handleMessage("danger","You referenced an invalid dataclass: " + dataobject);
+                }
+            }
+        }.bind(this));
+    },
     handleTerminationConditionChange: function(index) {
         var handler = function(e) {
             var terminationconditions = this.state.terminationconditions;
             terminationconditions[index] = e.target.value;
+            this.validateTerminationCondition(e.target.value);
             this.setState({terminationconditions: terminationconditions});
         }.bind(this);
         return handler;

@@ -101774,22 +101774,21 @@ function createDataObjectProperties(group, element, elementRegistry) {
         });
         group.entries.push(stateEntry);
         var doEntry = entryFactory.textField({
-            id: 'DataObjectState',
+            id: 'DataObjectDataClass',
             description: '',
             label: 'Dataclass',
-            modelProperty: 'dataclass',
-            set: function (element, values) {
-                var res = {};
-                var prop = 'dataclass';
-                if (values[prop] !== '') {
-                    res[prop] = values[prop];
-                } else {
-                    res[prop] = undefined;
-                }
-
-                return res;
-            }
+            modelProperty: 'dataclass'
         });
+        /** set: function(element, values) {
+            var res = {};
+            var prop = 'dataclass';
+            if (values[prop] !== '') {
+                res[prop] = values[prop];
+            } else {
+                res[prop] = undefined;
+            }
+             return res;
+        } */
         group.entries.push(doEntry);
     }
 }
@@ -101865,7 +101864,7 @@ module.exports = {
     API_HOST: window.location.origin + '/api/',
     DEFAULT_FRAGMENT_XML: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn2:definitions xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:bpmn2=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xsi:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\" id=\"sample-diagram\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn2:process id=\"Process_1\" isExecutable=\"false\">\n    <bpmn2:startEvent id=\"StartEvent_1\"/>\n  </bpmn2:process>\n  <bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">\n    <bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"Process_1\">\n      <bpmndi:BPMNShape id=\"_BPMNShape_StartEvent_2\" bpmnElement=\"StartEvent_1\">\n        <dc:Bounds height=\"36.0\" width=\"36.0\" x=\"412.0\" y=\"240.0\"/>\n      </bpmndi:BPMNShape>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn2:definitions>",
     DEFAULT_TERMINATION_CONDITION: "Test[init]",
-    MESSAGE_DISMISS_TIME: 30 * 1000,
+    MESSAGE_DISMISS_TIME: 5 * 1000,
     FRAGMENT_SAVE_INTERVAL: 30 * 1000
 };
 
@@ -102449,14 +102448,14 @@ var FragmentEditorComponent = React.createClass({
     },
     componentDidUpdate: function () {
         if (this.state.fragment != null && this.state.fragment._id != null && this.props.params.id != this.state.fragment._id) {
-            this.saveDiagram();
+            this.saveDiagram(false);
             this.loadDiagram();
         }
     },
-    saveDiagram: function () {
-        this.autoSave(false);
-    },
-    autoSave: function (show_success) {
+    saveDiagram: function (show_success) {
+        if (show_success == undefined) {
+            show_success = true;
+        }
         var res_handler = function (data) {
             console.log(data);
             if (show_success) {
@@ -102475,7 +102474,7 @@ var FragmentEditorComponent = React.createClass({
         }
     },
     componentWillUnmount: function () {
-        this.autoSave(false);
+        this.saveDiagram(false);
         clearInterval(this.state.interval);
     }
 });
@@ -102563,7 +102562,7 @@ var MessageComponent = React.createClass({
     displayName: 'MessageComponent',
 
     handleDismiss: function () {
-        this.props.handleDelete(this);
+        this.props.handleDelete(this.props.text);
     },
     render: function () {
         return React.createElement(
@@ -102571,7 +102570,7 @@ var MessageComponent = React.createClass({
             { className: "alert alert-" + this.props.type + " alert-dismissible", role: 'alert' },
             React.createElement(
                 'button',
-                { type: 'button', className: 'close', 'data-dismiss': 'alert', 'aria-label': 'Close', onClick: this.handleDismiss },
+                { type: 'button', className: 'close', 'aria-label': 'Close', onClick: this.handleDismiss },
                 React.createElement(
                     'span',
                     { 'aria-hidden': 'true' },
@@ -102594,26 +102593,34 @@ var MessageBarComponent = React.createClass({
             messages: []
         };
     },
-    handleDelete: function (message) {
-        var index = this.state.messages.indexOf(message);
-        var newarr = this.state.messages;
-        if (index > -1) {
-            newarr.splice(index, 1);
-        }
+    handleDelete: function (message_text) {
+        var newmessages = this.state.messages.filter(function (message) {
+            return message.text != message_text;
+        });
         this.setState({
-            messages: newarr
+            messages: newmessages
         });
     },
     handleMessage: function (type, text) {
-        var newmessages = this.state.messages;
-        newmessages.push(React.createElement(MessageComponent, { handleDelete: this.handleDelete, type: type, text: text }));
+        var newmessages = this.state.messages.filter(function (message) {
+            return message.text != text && message.type != type;
+        });
+        newmessages.push({
+            'text': text,
+            'type': type,
+            'key': newmessages.length
+        });
         this.setState({ messages: newmessages });
     },
     render: function () {
+        var handleDelete = this.handleDelete;
+        var messages = this.state.messages.map(function (message, index) {
+            return React.createElement(MessageComponent, { handleDelete: handleDelete, type: message.type, text: message.text, key: index });
+        });
         return React.createElement(
             'div',
             { className: 'messagebar' },
-            this.state.messages
+            messages
         );
     },
     componentDidMount: function () {
@@ -103057,10 +103064,31 @@ var ScenarioEditForm = React.createClass({
     handleNameChange: function (e) {
         this.setState({ name: e.target.value });
     },
+    validateTerminationCondition: function (terminationcondition) {
+        var split = terminationcondition.split(" ");
+        split.forEach(function (dataobject) {
+            var end = dataobject.indexOf("[");
+            var realend = dataobject.indexOf("]");
+            if (end == dataobject.length - 1 || end == -1 || realend < dataobject.length - 1) {
+                MessageHandler.handleMessage("danger", "You must specify a state for your termination condition in: " + dataobject);
+            } else {
+                var substr = dataobject.substring(0, end);
+                console.log(substr);
+                var found = false;
+                this.props.scenario.domainmodel.dataclasses.forEach(function (dataclass) {
+                    found = found || dataclass.name == substr;
+                }.bind(this));
+                if (!found) {
+                    MessageHandler.handleMessage("danger", "You referenced an invalid dataclass: " + dataobject);
+                }
+            }
+        }.bind(this));
+    },
     handleTerminationConditionChange: function (index) {
         var handler = function (e) {
             var terminationconditions = this.state.terminationconditions;
             terminationconditions[index] = e.target.value;
+            this.validateTerminationCondition(e.target.value);
             this.setState({ terminationconditions: terminationconditions });
         }.bind(this);
         return handler;

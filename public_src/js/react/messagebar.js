@@ -7,12 +7,12 @@ var Config = require('./../config');
 
 var MessageComponent = React.createClass({
     handleDismiss: function() {
-        this.props.handleDelete(this)
+        this.props.handleDelete(this.props.text)
     },
     render: function() {
         return (
             <div className={"alert alert-" + this.props.type + " alert-dismissible"} role="alert">
-                <button type="button" className="close" data-dismiss="alert" aria-label="Close" onClick={this.handleDismiss} ><span aria-hidden="true">&times;</span></button>
+                <button type="button" className="close" aria-label="Close" onClick={this.handleDismiss} ><span aria-hidden="true">&times;</span></button>
                 {this.props.text}
             </div>
         )
@@ -28,27 +28,33 @@ var MessageBarComponent = React.createClass({
             messages: []
         }
     },
-    handleDelete: function(message) {
-        var index = this.state.messages.indexOf(message);
-        var newarr = this.state.messages;
-        if (index > -1) {
-            newarr.splice(index, 1);
-        }
+    handleDelete: function(message_text) {
+        var newmessages = this.state.messages.filter(function(message){
+            return (message.text != message_text)
+        });
         this.setState({
-            messages: newarr
+            messages: newmessages
         })
     },
     handleMessage: function(type, text) {
-        var newmessages = this.state.messages;
-        newmessages.push(
-            <MessageComponent handleDelete={this.handleDelete} type={type} text={text} />
-        );
+        var newmessages = this.state.messages.filter(function(message){
+            return (message.text != text) && (message.type != type);
+        });
+        newmessages.push({
+            'text':text,
+            'type':type,
+            'key':newmessages.length
+        });
         this.setState({ messages: newmessages })
     },
     render: function() {
+        var handleDelete = this.handleDelete
+        var messages = this.state.messages.map(function(message,index){
+            return <MessageComponent handleDelete={handleDelete} type={message.type} text={message.text} key={index}/>
+        });
         return (
             <div className="messagebar">
-                {this.state.messages}
+                {messages}
             </div>
         )
     },
