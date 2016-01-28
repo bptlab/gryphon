@@ -23,11 +23,13 @@ var ScenarioEditForm = React.createClass({
     },
     validateTerminationCondition: function(terminationcondition) {
         var split = terminationcondition.split(" ");
+        var ret = true;
         split.forEach(function(dataobject){
             var end = dataobject.indexOf("[");
             var realend = dataobject.indexOf("]")
             if (end == dataobject.length - 1 || end == -1 || realend < dataobject.length - 1) {
                 MessageHandler.handleMessage("danger","You must specify a state for your termination condition in: " + dataobject);
+                ret = false;
             } else {
                 var substr = dataobject.substring(0,end);
                 console.log(substr);
@@ -37,15 +39,22 @@ var ScenarioEditForm = React.createClass({
                 }.bind(this));
                 if (!found) {
                     MessageHandler.handleMessage("danger","You referenced an invalid dataclass: " + dataobject);
+                    ret = false;
                 }
             }
         }.bind(this));
+        return ret;
     },
     handleTerminationConditionChange: function(index) {
         var handler = function(e) {
             var terminationconditions = this.state.terminationconditions;
             terminationconditions[index] = e.target.value;
-            this.validateTerminationCondition(e.target.value);
+            var state = this.validateTerminationCondition(e.target.value);
+            if (state == false) {
+                $(e.target).parent().parent().parent().addClass('has-error');
+            } else {
+                $(e.target).parent().parent().parent().removeClass('has-error');
+            }
             this.setState({terminationconditions: terminationconditions});
         }.bind(this);
         return handler;
