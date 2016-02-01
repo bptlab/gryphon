@@ -190,7 +190,7 @@ var ScenarioFragmentList = React.createClass({
     },
     handleFragmentClick: function(e) {
         var newItem = this.state.newname;
-        if (newItem && /^[a-zA-Z0-9_]+$/.test(newItem)
+        if (newItem && /^([a-zA-Z\d]|[a-zA-Z\d](?!.*[ _]{2})[a-zA-Z\d _]*?[a-zA-Z\d])$/.test(newItem)
             && this.props.scenario.fragments.every(
                 function (element, index, array) {
                     return element.name != newItem;
@@ -203,7 +203,8 @@ var ScenarioFragmentList = React.createClass({
                 }.bind(this));
             }.bind(this));
         } else {
-            MessageHandler.handleMessage("warning", "Only unique alphanumeric (+\"_\") names are allowed!");
+            MessageHandler.handleMessage("warning",
+                "Only unique alphanumeric (+\"_\" + \" \" (space)) names are allowed!");
         }
     },
     render: function() {

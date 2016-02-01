@@ -50,7 +50,7 @@ var DataClassComponent = React.createClass({
     },
     handleAdd: function() {
         var newItem = this.state.newname;
-        if (newItem && /^[a-zA-Z0-9_]+$/.test(newItem)
+        if (newItem && /^([a-zA-Z\d]|[a-zA-Z\d](?!.*[ _]{2})[a-zA-Z\d _]*?[a-zA-Z\d])$/.test(newItem)
             && this.state.items.every(
                 function (element, index, array) {
                 return element.name != newItem;
@@ -63,7 +63,8 @@ var DataClassComponent = React.createClass({
             });
             this.setState({items: newItems,newname:""});
         } else {
-            MessageHandler.handleMessage("warning","Only unique alphanumeric (+\"_\") names are allowed!");
+            MessageHandler.handleMessage("warning",
+                "Only unique alphanumeric (+\"_\" + \" \" (space)) names are allowed!");
         };
     },
     handleRemove: function(i) {
@@ -150,15 +151,15 @@ var CreateNewClassComponent = React.createClass({
         var is_event = false;
         if (type == "event") {is_event = true;};
         var newItem = this.state.newname;
-        if (newItem && /^[a-zA-Z0-9_]+$/.test(newItem)) {
-            //console.log("[DBG] creating a new " + type + " class, so is_event = " + is_event);
+        if (newItem && /^([a-zA-Z\d]|[a-zA-Z\d](?!.*[ _]{2})[a-zA-Z\d _]*?[a-zA-Z\d])$/.test(newItem)) {
             if (this.props.onSubmit(newItem, is_event)) {
                 this.setState({newname: ''});
             } else {
                 MessageHandler.handleMessage("warning","Only unique names are allowed!");
             }
         } else {
-            MessageHandler.handleMessage("warning", "Only alphanumeric (+\"_\") names are allowed!");
+            MessageHandler.handleMessage("warning",
+                "Only unique alphanumeric (+\"_\" + \" \" (space)) names are allowed!");
         }
     },
     submitData: function() {
