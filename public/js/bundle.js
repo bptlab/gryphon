@@ -101765,26 +101765,41 @@ function generateProvider(validator) {
                 id: 'DataObjectState',
                 description: '',
                 label: 'State',
-                modelProperty: 'state'
+                modelProperty: 'state',
+                set: function (element, values) {
+                    var res = {};
+                    var prop = 'state';
+                    var bo = getBusinessObject(element);
+                    if (values[prop] !== '') {
+                        //validator.validateDataClassName(values[prop]);
+                        res[prop] = values[prop];
+                        res['name'] = bo['dataclass'] + "[" + values['state'] + "]";
+                    } else {
+                        res[prop] = undefined;
+                    }
+                    return res;
+                }
             });
             group.entries.push(stateEntry);
             var doEntry = entryFactory.textField({
                 id: 'DataObjectDataClass',
                 description: '',
                 label: 'Dataclass',
-                modelProperty: 'dataclass'
-            });
-            /* set: function(element, values) {
-                var res = {};
-                var prop = 'dataclass';
-                if (values[prop] !== '') {
-                    //validator.validateDataClassName(values[prop]);
-                    res[prop] = values[prop];
-                } else {
-                    res[prop] = undefined;
+                modelProperty: 'dataclass',
+                set: function (element, values) {
+                    var bo = getBusinessObject(element);
+                    var res = {};
+                    var prop = 'dataclass';
+                    if (values[prop] !== '') {
+                        //validator.validateDataClassName(values[prop]);
+                        res[prop] = values[prop];
+                        res['name'] = values[prop] + "[" + bo['state'] + "]";
+                    } else {
+                        res[prop] = undefined;
+                    }
+                    return res;
                 }
-                return res;
-            } */
+            });
             group.entries.push(doEntry);
         }
     }
