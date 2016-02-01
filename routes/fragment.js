@@ -170,9 +170,11 @@ router.get('/:fragID/validate', function(req, res, next) {
             return;
         }
         if (result !== null) {
-            res.json({
-                messages: validateFragment(result)
-            });
+            validateFragment(result,function(messages){
+                res.json({
+                    messages: messages
+                });
+            })
         } else {
             res.status(404).end();
         }

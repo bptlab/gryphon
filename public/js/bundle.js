@@ -101739,12 +101739,6 @@ module.exports={
   "enumerations": []
 }
 },{}],675:[function(require,module,exports){
-module.exports = {
-    __init__: ['propertiesProvider'],
-    propertiesProvider: ['type', require('./provider')]
-};
-
-},{"./provider":676}],676:[function(require,module,exports){
 // bpmn properties
 var inherits = require('inherits');
 
@@ -101764,102 +101758,121 @@ var processProps = require('bpmn-js-properties-panel/lib/provider/bpmn/parts/Pro
 var is = require('bpmn-js/lib/util/ModelUtil').is;
 
 var forEach = require('lodash/collection/forEach');
-function createDataObjectProperties(group, element, elementRegistry) {
-    if (is(element, 'bpmn:DataObjectReference')) {
-        var stateEntry = entryFactory.textField({
-            id: 'DataObjectState',
-            description: '',
-            label: 'State',
-            modelProperty: 'state'
-        });
-        group.entries.push(stateEntry);
-        var doEntry = entryFactory.textField({
-            id: 'DataObjectDataClass',
-            description: '',
-            label: 'Dataclass',
-            modelProperty: 'dataclass'
-        });
-        /** set: function(element, values) {
-            var res = {};
-            var prop = 'dataclass';
-            if (values[prop] !== '') {
-                res[prop] = values[prop];
-            } else {
-                res[prop] = undefined;
-            }
-             return res;
-        } */
-        group.entries.push(doEntry);
-    }
-}
-
-function createMessageEventProperties(group, element, elementRegistry) {
-    var types = ['bpmn:StartEvent', 'bpmn:IntermediateCatchEvent', 'bpmn:BoundaryEvent'];
-    var bo = getBusinessObject(element);
-    forEach(types, function (type) {
-        if (is(element, type) && 'eventDefinitions' in bo && is(bo.eventDefinitions[0], 'bpmn:MessageEventDefinition')) {
+function generateProvider(validator) {
+    function createDataObjectProperties(group, element, elementRegistry) {
+        if (is(element, 'bpmn:DataObjectReference')) {
             var stateEntry = entryFactory.textField({
-                id: 'EventQuery',
+                id: 'DataObjectState',
                 description: '',
-                label: 'Event-Query for UNICORN',
-                modelProperty: 'eventquery'
+                label: 'State',
+                modelProperty: 'state'
             });
             group.entries.push(stateEntry);
+            var doEntry = entryFactory.textField({
+                id: 'DataObjectDataClass',
+                description: '',
+                label: 'Dataclass',
+                modelProperty: 'dataclass'
+            });
+            /* set: function(element, values) {
+                var res = {};
+                var prop = 'dataclass';
+                if (values[prop] !== '') {
+                    //validator.validateDataClassName(values[prop]);
+                    res[prop] = values[prop];
+                } else {
+                    res[prop] = undefined;
+                }
+                return res;
+            } */
+            group.entries.push(doEntry);
         }
-    });
-}
+    }
 
-function createGeneralTabGroups(element, bpmnFactory, elementRegistry) {
+    function createMessageEventProperties(group, element, elementRegistry) {
+        var types = ['bpmn:StartEvent', 'bpmn:IntermediateCatchEvent', 'bpmn:BoundaryEvent'];
+        var bo = getBusinessObject(element);
+        forEach(types, function (type) {
+            if (is(element, type) && 'eventDefinitions' in bo && is(bo.eventDefinitions[0], 'bpmn:MessageEventDefinition')) {
+                var stateEntry = entryFactory.textField({
+                    id: 'EventQuery',
+                    description: '',
+                    label: 'Event-Query for UNICORN',
+                    modelProperty: 'eventquery'
+                });
+                group.entries.push(stateEntry);
+            }
+        });
+    }
 
-    var generalGroup = {
-        id: 'general',
-        label: 'General',
-        entries: []
-    };
-    idProps(generalGroup, element, elementRegistry);
-    processProps(generalGroup, element);
+    function createGeneralTabGroups(element, bpmnFactory, elementRegistry) {
 
-    var detailsGroup = {
-        id: 'details',
-        label: 'Details',
-        entries: []
-    };
-    linkProps(detailsGroup, element);
-    eventProps(detailsGroup, element, bpmnFactory);
-    createDataObjectProperties(detailsGroup, element, bpmnFactory);
-    createMessageEventProperties(detailsGroup, element, bpmnFactory);
-    var documentationGroup = {
-        id: 'documentation',
-        label: 'Documentation',
-        entries: []
-    };
-
-    documentationProps(documentationGroup, element, bpmnFactory);
-
-    return [generalGroup, detailsGroup, documentationGroup];
-}
-
-function Provider(eventBus, bpmnFactory, elementRegistry) {
-
-    PropertiesActivator.call(this, eventBus);
-
-    this.getTabs = function (element) {
-
-        var generalTab = {
+        var generalGroup = {
             id: 'general',
             label: 'General',
-            groups: createGeneralTabGroups(element, bpmnFactory, elementRegistry)
+            entries: []
+        };
+        idProps(generalGroup, element, elementRegistry);
+        processProps(generalGroup, element);
+
+        var detailsGroup = {
+            id: 'details',
+            label: 'Details',
+            entries: []
+        };
+        linkProps(detailsGroup, element);
+        eventProps(detailsGroup, element, bpmnFactory);
+        createDataObjectProperties(detailsGroup, element, bpmnFactory);
+        createMessageEventProperties(detailsGroup, element, bpmnFactory);
+        var documentationGroup = {
+            id: 'documentation',
+            label: 'Documentation',
+            entries: []
         };
 
-        return [generalTab];
+        documentationProps(documentationGroup, element, bpmnFactory);
+
+        return [generalGroup, detailsGroup, documentationGroup];
+    }
+
+    function Provider(eventBus, bpmnFactory, elementRegistry) {
+
+        PropertiesActivator.call(this, eventBus);
+
+        this.getTabs = function (element) {
+
+            var generalTab = {
+                id: 'general',
+                label: 'General',
+                groups: createGeneralTabGroups(element, bpmnFactory, elementRegistry)
+            };
+
+            return [generalTab];
+        };
+    }
+
+    inherits(Provider, PropertiesActivator);
+
+    return {
+        __init__: ['propertiesProvider'],
+        propertiesProvider: ['type', Provider]
     };
 }
+module.exports = generateProvider();
 
-inherits(Provider, PropertiesActivator);
+},{"./../api":673,"bpmn-js-properties-panel/lib/PropertiesActivator":15,"bpmn-js-properties-panel/lib/factory/EntryFactory":23,"bpmn-js-properties-panel/lib/provider/bpmn/parts/DocumentationProps":32,"bpmn-js-properties-panel/lib/provider/bpmn/parts/EventProps":33,"bpmn-js-properties-panel/lib/provider/bpmn/parts/IdProps":34,"bpmn-js-properties-panel/lib/provider/bpmn/parts/LinkProps":35,"bpmn-js-properties-panel/lib/provider/bpmn/parts/ProcessProps":36,"bpmn-js/lib/util/ModelUtil":115,"inherits":715,"lodash/collection/forEach":351}],676:[function(require,module,exports){
+var API = require('./../api');
+var MessageHandler = require('./../messagehandler');
 
-module.exports = Provider;
+var Validator = function (fragment) {
+    this.fragment = fragment;
+};
 
-},{"./../api":673,"bpmn-js-properties-panel/lib/PropertiesActivator":15,"bpmn-js-properties-panel/lib/factory/EntryFactory":23,"bpmn-js-properties-panel/lib/provider/bpmn/parts/DocumentationProps":32,"bpmn-js-properties-panel/lib/provider/bpmn/parts/EventProps":33,"bpmn-js-properties-panel/lib/provider/bpmn/parts/IdProps":34,"bpmn-js-properties-panel/lib/provider/bpmn/parts/LinkProps":35,"bpmn-js-properties-panel/lib/provider/bpmn/parts/ProcessProps":36,"bpmn-js/lib/util/ModelUtil":115,"inherits":715,"lodash/collection/forEach":351}],677:[function(require,module,exports){
+Validator.prototype.validateClassName = function (name) {};
+
+module.exports = Validator;
+
+},{"./../api":673,"./../messagehandler":680}],677:[function(require,module,exports){
 module.exports = {
     API_HOST: window.location.origin + '/api/',
     DEFAULT_FRAGMENT_XML: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn2:definitions xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:bpmn2=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xsi:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\" id=\"sample-diagram\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn2:process id=\"Process_1\" isExecutable=\"false\">\n    <bpmn2:startEvent id=\"StartEvent_1\"/>\n  </bpmn2:process>\n  <bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">\n    <bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"Process_1\">\n      <bpmndi:BPMNShape id=\"_BPMNShape_StartEvent_2\" bpmnElement=\"StartEvent_1\">\n        <dc:Bounds height=\"36.0\" width=\"36.0\" x=\"412.0\" y=\"240.0\"/>\n      </bpmndi:BPMNShape>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn2:definitions>",
@@ -101877,7 +101890,7 @@ var $ = require('jquery'),
     BPMNPropertyPanel = require('bpmn-js-properties-panel'),
 
 //BPMNPropertyPanelProvider = require('bpmn-js-properties-panel/lib/provider/bpmn');
-BPMNPropertyPanelProvider = require('./bpmnext');
+BPMNPropertyPanelProvider = require('./bpmnext/provider');
 
 var ModdleDescriptor = require('./bpmnext/bpmnextension');
 
@@ -101917,7 +101930,7 @@ Editor.prototype.importFragment = function (fragment, callback) {
 
 module.exports = Editor;
 
-},{"./bpmnext":675,"./bpmnext/bpmnextension":674,"./config":677,"bpmn-js-properties-panel":14,"bpmn-js/lib/Modeler":50,"jquery":337}],679:[function(require,module,exports){
+},{"./bpmnext/bpmnextension":674,"./bpmnext/provider":675,"./config":677,"bpmn-js-properties-panel":14,"bpmn-js/lib/Modeler":50,"jquery":337}],679:[function(require,module,exports){
 var $ = jQuery = require('jquery');
 window.$ = $;
 var _ = require('lodash');
@@ -102400,6 +102413,7 @@ var Editor = require('./../editor');
 var MessageHandler = require('./../messagehandler');
 var API = require('./../api');
 var Config = require('./../config');
+var Validator = require('./../bpmnext/validator');
 
 var FragmentEditorComponent = React.createClass({
     displayName: 'FragmentEditorComponent',
@@ -102481,7 +102495,7 @@ var FragmentEditorComponent = React.createClass({
 
 module.exports = FragmentEditorComponent;
 
-},{"./../api":673,"./../config":677,"./../editor":678,"./../messagehandler":680,"react":672,"react-dom":490}],683:[function(require,module,exports){
+},{"./../api":673,"./../bpmnext/validator":676,"./../config":677,"./../editor":678,"./../messagehandler":680,"react":672,"react-dom":490}],683:[function(require,module,exports){
 var React = require('react');
 var Link = require('react-router').Link;
 var API = require('./../api');
@@ -102603,7 +102617,7 @@ var MessageBarComponent = React.createClass({
     },
     handleMessage: function (type, text) {
         var newmessages = this.state.messages.filter(function (message) {
-            return message.text != text && message.type != type;
+            return message.text != text || message.type != type;
         });
         newmessages.push({
             'text': text,
@@ -103093,6 +103107,7 @@ var ScenarioEditForm = React.createClass({
             var terminationconditions = this.state.terminationconditions;
             terminationconditions[index] = e.target.value;
             var state = this.validateTerminationCondition(e.target.value);
+            // Dibbilydubbely find my grandgrandparent!
             if (state == false) {
                 $(e.target).parent().parent().parent().addClass('has-error');
             } else {

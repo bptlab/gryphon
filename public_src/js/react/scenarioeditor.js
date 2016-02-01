@@ -50,6 +50,7 @@ var ScenarioEditForm = React.createClass({
             var terminationconditions = this.state.terminationconditions;
             terminationconditions[index] = e.target.value;
             var state = this.validateTerminationCondition(e.target.value);
+            // Dibbilydubbely find my grandgrandparent!
             if (state == false) {
                 $(e.target).parent().parent().parent().addClass('has-error');
             } else {

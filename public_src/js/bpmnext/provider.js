@@ -17,110 +17,116 @@ var processProps = require('bpmn-js-properties-panel/lib/provider/bpmn/parts/Pro
 var is = require('bpmn-js/lib/util/ModelUtil').is;
 
 var forEach = require('lodash/collection/forEach');
-function createDataObjectProperties(group, element,
-                                    elementRegistry) {
-    if (is(element, 'bpmn:DataObjectReference')) {
-        var stateEntry = entryFactory.textField({
-            id: 'DataObjectState',
-            description: '',
-            label: 'State',
-            modelProperty: 'state'
-        });
-        group.entries.push(stateEntry);
-        var doEntry = entryFactory.textField({
-            id: 'DataObjectDataClass',
-            description: '',
-            label: 'Dataclass',
-            modelProperty: 'dataclass',
-            /** set: function(element, values) {
-                var res = {};
-                var prop = 'dataclass';
-                if (values[prop] !== '') {
-                    res[prop] = values[prop];
-                } else {
-                    res[prop] = undefined;
-                }
-
-                return res;
-            } */
-        });
-        group.entries.push(doEntry)
-    }
-}
-
-function createMessageEventProperties(group, element, elementRegistry) {
-    var types = [
-        'bpmn:StartEvent',
-        'bpmn:IntermediateCatchEvent',
-        'bpmn:BoundaryEvent'
-    ];
-    var bo = getBusinessObject(element);
-    forEach(types, function(type) {
-        if (is(element, type) && 'eventDefinitions' in bo && is(bo.eventDefinitions[0],'bpmn:MessageEventDefinition')) {
+function generateProvider(validator) {
+    function createDataObjectProperties(group, element,
+                                        elementRegistry) {
+        if (is(element, 'bpmn:DataObjectReference')) {
             var stateEntry = entryFactory.textField({
-                id: 'EventQuery',
+                id: 'DataObjectState',
                 description: '',
-                label: 'Event-Query for UNICORN',
-                modelProperty: 'eventquery'
+                label: 'State',
+                modelProperty: 'state'
             });
             group.entries.push(stateEntry);
+            var doEntry = entryFactory.textField({
+                id: 'DataObjectDataClass',
+                description: '',
+                label: 'Dataclass',
+                modelProperty: 'dataclass',
+                /* set: function(element, values) {
+                    var res = {};
+                    var prop = 'dataclass';
+                    if (values[prop] !== '') {
+                        //validator.validateDataClassName(values[prop]);
+                        res[prop] = values[prop];
+                    } else {
+                        res[prop] = undefined;
+                    }
+                    return res;
+                } */
+            });
+            group.entries.push(doEntry)
         }
-    })
-}
+    }
 
-function createGeneralTabGroups(element, bpmnFactory, elementRegistry) {
+    function createMessageEventProperties(group, element, elementRegistry) {
+        var types = [
+            'bpmn:StartEvent',
+            'bpmn:IntermediateCatchEvent',
+            'bpmn:BoundaryEvent'
+        ];
+        var bo = getBusinessObject(element);
+        forEach(types, function(type) {
+            if (is(element, type) && 'eventDefinitions' in bo && is(bo.eventDefinitions[0],'bpmn:MessageEventDefinition')) {
+                var stateEntry = entryFactory.textField({
+                    id: 'EventQuery',
+                    description: '',
+                    label: 'Event-Query for UNICORN',
+                    modelProperty: 'eventquery'
+                });
+                group.entries.push(stateEntry);
+            }
+        })
+    }
 
-    var generalGroup = {
-        id: 'general',
-        label: 'General',
-        entries: []
-    };
-    idProps(generalGroup, element, elementRegistry);
-    processProps(generalGroup, element);
+    function createGeneralTabGroups(element, bpmnFactory, elementRegistry) {
 
-    var detailsGroup = {
-        id: 'details',
-        label: 'Details',
-        entries: []
-    };
-    linkProps(detailsGroup, element);
-    eventProps(detailsGroup, element, bpmnFactory);
-    createDataObjectProperties(detailsGroup, element, bpmnFactory);
-    createMessageEventProperties(detailsGroup, element, bpmnFactory);
-    var documentationGroup = {
-        id: 'documentation',
-        label: 'Documentation',
-        entries: []
-    };
-
-    documentationProps(documentationGroup, element, bpmnFactory);
-
-    return[
-        generalGroup,
-        detailsGroup,
-        documentationGroup
-    ];
-
-}
-
-function Provider(eventBus, bpmnFactory, elementRegistry) {
-
-    PropertiesActivator.call(this, eventBus);
-
-    this.getTabs = function(element) {
-
-        var generalTab = {
+        var generalGroup = {
             id: 'general',
             label: 'General',
-            groups: createGeneralTabGroups(element, bpmnFactory, elementRegistry)
+            entries: []
+        };
+        idProps(generalGroup, element, elementRegistry);
+        processProps(generalGroup, element);
+
+        var detailsGroup = {
+            id: 'details',
+            label: 'Details',
+            entries: []
+        };
+        linkProps(detailsGroup, element);
+        eventProps(detailsGroup, element, bpmnFactory);
+        createDataObjectProperties(detailsGroup, element, bpmnFactory);
+        createMessageEventProperties(detailsGroup, element, bpmnFactory);
+        var documentationGroup = {
+            id: 'documentation',
+            label: 'Documentation',
+            entries: []
         };
 
-        return [
-            generalTab
+        documentationProps(documentationGroup, element, bpmnFactory);
+
+        return[
+            generalGroup,
+            detailsGroup,
+            documentationGroup
         ];
-    };
+
+    }
+
+    function Provider(eventBus, bpmnFactory, elementRegistry) {
+
+        PropertiesActivator.call(this, eventBus);
+
+        this.getTabs = function(element) {
+
+            var generalTab = {
+                id: 'general',
+                label: 'General',
+                groups: createGeneralTabGroups(element, bpmnFactory, elementRegistry)
+            };
+
+            return [
+                generalTab
+            ];
+        };
+    }
+
+    inherits(Provider, PropertiesActivator);
+
+    return {
+        __init__: [ 'propertiesProvider' ],
+        propertiesProvider: [ 'type', Provider ]
+    }
 }
-
-inherits(Provider, PropertiesActivator);
-
-module.exports = Provider;
+module.exports = generateProvider();

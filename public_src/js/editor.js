@@ -5,7 +5,7 @@ var $ = require('jquery'),
     Config = require('./config'),
     BPMNPropertyPanel = require('bpmn-js-properties-panel'),
     //BPMNPropertyPanelProvider = require('bpmn-js-properties-panel/lib/provider/bpmn');
-    BPMNPropertyPanelProvider = require('./bpmnext');
+    BPMNPropertyPanelProvider = require('./bpmnext/provider');
 
 var ModdleDescriptor = require('./bpmnext/bpmnextension');
 

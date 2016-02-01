@@ -38,7 +38,7 @@ var MessageBarComponent = React.createClass({
     },
     handleMessage: function(type, text) {
         var newmessages = this.state.messages.filter(function(message){
-            return (message.text != text) && (message.type != type);
+            return (message.text != text) || (message.type != type);
         });
         newmessages.push({
             'text':text,

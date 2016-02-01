@@ -4,6 +4,7 @@ var Editor = require('./../editor');
 var MessageHandler = require('./../messagehandler');
 var API = require('./../api');
 var Config = require('./../config');
+var Validator = require('./../bpmnext/validator');
 
 var FragmentEditorComponent = React.createClass({
     getInitialState: function() {

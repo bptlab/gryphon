@@ -1,4 +1,5 @@
 
+var Scenario = require('./../models/scenario').model;
 var parseToBPMNObject = require('./json').parseToBPMNObject;
 
 var parseSequenceFlow = function(sequenceFlow) {
@@ -128,24 +129,61 @@ var validateSoundness = function(graph) {
     }
 };
 
-var validateFragment = function(fragment) {
+var validateDataObjectFlow = function(fragment, bpmnObject, callback) {
+    var messages = [];
+    if(bpmnObject.dataObjectReference != undefined) {
+        Scenario.findOne({fragments:fragment._id}).populate('domainmodel').exec(function(err, result) {
+            if (err) {
+                callback(messages);
+                console.error(err);
+            }
+            if (result !== null) {
+                bpmnObject.dataObjectReference.forEach(function(dataobject){
+                    var found = !result.domainmodel.dataclasses.some(function(dataclass){
+                        return (dataobject['griffin:dataclass'] == dataclass.name)
+                    });
+                    if (found) {
+                        messages.push({
+                            type: "warning",
+                            text: "You referenced invalid dataclasses! " + dataobject['griffin:dataclass'] + " is not a valid class"
+                        });
+                    }
+                });
+                callback(messages);
+            } else {
+                callback(messages);
+            }
+        })
+    } else {
+        callback(messages);
+    }
+};
+
+var validateFragment = function(fragment,callback) {
     var bpmnObject = parseToBPMNObject(fragment.content);
     var graph = parseIntoGraph(bpmnObject);
 
     var messages = [];
 
-    messages = messages.concat(validateStartEvents(graph.startEvents),validateEndEvents(graph.endEvents));
+    validateDataObjectFlow(fragment,bpmnObject,function(messages2){
 
-    if (messages.length > 0) {
-        messages.push({
-            'text':'Soundness validation is not possible. Start and/or end events are invalid.',
-            'type':'danger'
-        });
-        return messages;
-    }
+        messages = messages.concat(validateStartEvents(graph.startEvents),validateEndEvents(graph.endEvents));
 
-    messages = messages.concat(validateSoundness(graph));
-    return messages;
+        if (messages.length > 0) {
+            messages.push({
+                'text':'Soundness validation is not possible. Start and/or end events are invalid.',
+                'type':'danger'
+            });
+            messages = messages.concat(messages2);
+            return messages;
+        }
+
+        messages = messages.concat(messages2);
+
+        messages = messages.concat(validateSoundness(graph));
+
+        callback(messages);
+    });
 };
 
 module.exports = {
