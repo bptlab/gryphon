@@ -71,8 +71,14 @@ var ModifyFragmentModal = React.createClass({
         }
     },
     handleSubmit: function() {
-        API.exportFragment(this.getFinalState());
-        location.reload();
+        var newFragment = this.getFinalState();
+        if (newFragment.name && /^([a-zA-Z\d]|[a-zA-Z\d](?!.*[ _]{2})[a-zA-Z\d _]*?[a-zA-Z\d])$/.test(newFragment.name)) {
+            API.exportFragment(newFragment);
+            location.reload();
+        } else {
+            MessageHandler.handleMessage("warning",
+                "Only unique alphanumeric (+\"_\" + \" \" (space)) names are allowed!");
+        }
     },
     render: function() {
         return (
@@ -135,9 +141,13 @@ var CreateScenarioModal = React.createClass({
         }
     },
     handleSubmit: function() {
-        if (this.state.name != '') {
-            API.createScenario(this.state.name);
+        var newItem = this.state.name;
+        if (newItem && /^([a-zA-Z\d]|[a-zA-Z\d](?!.*[ _]{2})[a-zA-Z\d _]*?[a-zA-Z\d])$/.test(newItem)) {
+            API.createScenario(newItem);
             location.reload();
+        } else {
+            MessageHandler.handleMessage("warning",
+                "Only unique alphanumeric (+\"_\" + \" \" (space)) names are allowed!");
         }
     },
     handleNameChange: function(e) {

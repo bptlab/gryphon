@@ -70,8 +70,14 @@ var ScenarioEditForm = React.createClass({
         }
     },
     handleSubmit: function() {
-        API.exportScenario(this.state);
-        MessageHandler.handleMessage("success","Saved scenario-details!");
+        var newName = this.state.name;
+        if (newName && /^([a-zA-Z\d]|[a-zA-Z\d](?!.*[ _]{2})[a-zA-Z\d _]*?[a-zA-Z\d])$/.test(newName)) {
+            API.exportScenario(this.state);
+            MessageHandler.handleMessage("success","Saved scenario-details!");
+        } else {
+            MessageHandler.handleMessage("warning",
+                "Only unique alphanumeric (+\"_\" + \" \" (space)) names are allowed!");
+        }
     },
     handleAddTerminationCondition: function(e) {
         var terminationconditions = this.state.terminationconditions;
