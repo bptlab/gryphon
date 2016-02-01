@@ -102047,7 +102047,7 @@ var TypeSelect = React.createClass({
         var value = this.state.value;
         return React.createElement(
             'select',
-            { value: value, onChange: this.handleChange },
+            { value: value, onChange: this.handleChange, className: 'form-control' },
             React.createElement(
                 'option',
                 { value: 'data' },
@@ -102070,15 +102070,144 @@ var DataClassAttributeComponent = React.createClass({
             onClick: function () {}
         };
     },
+    handleNameChange: function (e) {
+        this.props.handleNameChange(e);
+    },
+    handleDataTypeChange: function (e) {
+        this.props.handleDataTypeChange(e);
+    },
     render: function () {
         return React.createElement(
             'li',
             { className: 'list-group-item clearfix' },
-            this.props.name,
             React.createElement(
-                'button',
-                { type: 'button', className: 'btn btn-danger btn-xs pull-right', onClick: this.props.onClick },
-                React.createElement('i', { className: 'fa fa-times' })
+                'div',
+                { className: 'row' },
+                React.createElement(
+                    'div',
+                    { className: 'col-sm-5' },
+                    React.createElement('input', {
+                        type: 'text',
+                        className: 'form-control',
+                        value: this.props.name,
+                        onChange: this.handleNameChange })
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'col-sm-5' },
+                    React.createElement('input', { type: 'text',
+                        className: 'form-control',
+                        value: this.props.datatype,
+                        onChange: this.handleDataTypeChange })
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'col-sm-1' },
+                    React.createElement(
+                        'button',
+                        { type: 'button', className: 'btn btn-danger', onClick: this.props.onDelete },
+                        React.createElement('i', { className: 'fa fa-times' })
+                    )
+                )
+            )
+        );
+    }
+});
+
+var DataClassHeaderComponent = React.createClass({
+    displayName: 'DataClassHeaderComponent',
+
+    render: function () {
+        return React.createElement(
+            'div',
+            { className: 'panel-heading clearfix' },
+            React.createElement(
+                'div',
+                { className: 'row' },
+                React.createElement(
+                    'div',
+                    { className: 'col-sm-5' },
+                    React.createElement(
+                        'h3',
+                        { className: 'panel-title' },
+                        this.props.name
+                    )
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'col-sm-4' },
+                    React.createElement(TypeSelect, {
+                        is_event: this.props.is_event,
+                        handleType: this.props.handleType
+                    })
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'col-sm-3' },
+                    React.createElement(
+                        'div',
+                        { className: 'btn-group' },
+                        React.createElement(
+                            'button',
+                            { type: 'button', className: 'btn btn-danger', onClick: this.props.handleDelete },
+                            React.createElement('i', { className: 'fa fa-times' })
+                        ),
+                        React.createElement(
+                            'button',
+                            { type: 'button', className: 'btn btn-success', onClick: this.props.exportClass },
+                            React.createElement('i', { className: 'fa fa-floppy-o' })
+                        )
+                    )
+                )
+            )
+        );
+    }
+});
+
+var DataClassFooterComponent = React.createClass({
+    displayName: 'DataClassFooterComponent',
+
+    getInitialState: function () {
+        return { newname: '' };
+    },
+    handleChange: function (e) {
+        this.setState({ newname: e.target.value });
+    },
+    handleAdd: function () {
+        this.props.handleAdd(this.state.newname);
+        this.setState({ newname: '' });
+    },
+    render: function () {
+        return React.createElement(
+            'div',
+            { className: 'panel-footer' },
+            React.createElement(
+                'div',
+                { className: 'row' },
+                React.createElement(
+                    'div',
+                    { className: 'col-sm-12' },
+                    React.createElement(
+                        'div',
+                        { className: 'input-group' },
+                        React.createElement('input', {
+                            type: 'text',
+                            className: 'form-control',
+                            placeholder: 'New attribute',
+                            value: this.state.newname,
+                            onChange: this.handleChange
+                        }),
+                        React.createElement(
+                            'div',
+                            { className: 'input-group-btn' },
+                            React.createElement(
+                                'button',
+                                { className: 'btn btn-primary', onClick: this.handleAdd },
+                                'New attribute'
+                            )
+                        )
+                    )
+                )
             )
         );
     }
@@ -102090,15 +102219,11 @@ var DataClassComponent = React.createClass({
     getInitialState: function () {
         return { items: [], newname: "" };
     },
-    handleChange: function (e) {
-        this.setState({ newname: e.target.value });
-    },
-    handleAdd: function () {
-        var newItem = this.state.newname;
-        if (newItem && /^[a-zA-Z0-9_]+$/.test(newItem) && this.state.items.every(function (element, index, array) {
+    handleAttrAdd: function (newItem) {
+        if (newItem && /^[a-zA-Z0-9_]+$/.test(newItem) && this.state.items.every(function (element) {
             return element.name != newItem;
         })) {
-            var newItems = this.state.items.concat([{ name: newItem }]);
+            var newItems = this.state.items.concat([{ name: newItem, datatype: 'String' }]);
             this.props.handleUpdate({
                 name: this.props.name,
                 is_event: this.props.is_event,
@@ -102110,9 +102235,11 @@ var DataClassComponent = React.createClass({
         };
     },
     handleRemove: function (i) {
-        var newItems = this.state.items;
-        newItems.splice(i, 1);
-        this.setState({ items: newItems });
+        return function () {
+            var newItems = this.state.items;
+            newItems.splice(i, 1);
+            this.setState({ items: newItems });
+        }.bind(this);
     },
     handleType: function (type) {
         var is_event = false;
@@ -102133,65 +102260,59 @@ var DataClassComponent = React.createClass({
         });
         this.props.handleExport();
     },
+    handleAttrNameChange: function (i) {
+        return function (e) {
+            var value = e.target.value;
+            var items = this.state.items;
+            items[i].name = value;
+            this.setState({ items: items });
+            this.props.handleUpdate({
+                name: this.props.name,
+                is_event: this.props.is_event,
+                attributes: this.state.items
+            });
+        }.bind(this);
+    },
+    handleAttrTypeChange: function (i) {
+        return function (e) {
+            var value = e.target.value;
+            if (!this.props.validateAttrType(value)) {
+                MessageHandler.handleMessage("warning", "You've entered an invalid DataType.");
+                $(e.target).parent().addClass('has-error');
+            } else {
+                $(e.target).parent().removeClass('has-error');
+            }
+            var items = this.state.items;
+            items[i].datatype = value;
+            this.setState({ items: items });
+            this.props.handleUpdate({
+                name: this.props.name,
+                is_event: this.props.is_event,
+                attributes: this.state.items
+            });
+        }.bind(this);
+    },
     render: function () {
         var items = this.state.items.map(function (item, i) {
-            return React.createElement(DataClassAttributeComponent, { name: item.name, key: item.name, onClick: this.handleRemove.bind(null, i) });
+            return React.createElement(DataClassAttributeComponent, {
+                name: item.name,
+                key: "dataclass" + i,
+                datatype: item.datatype,
+                onDelete: this.handleRemove(i),
+                handleDataTypeChange: this.handleAttrTypeChange(i),
+                handleNameChange: this.handleAttrNameChange(i)
+            });
         }.bind(this));
         return React.createElement(
             'div',
             { className: 'panel panel-default' },
-            React.createElement(
-                'div',
-                { className: 'panel-heading clearfix' },
-                this.props.name,
-                React.createElement(TypeSelect, {
-                    is_event: this.props.is_event,
-                    handleType: this.handleType
-                }),
-                React.createElement(
-                    'div',
-                    { className: 'btn-group pull-right' },
-                    React.createElement(
-                        'button',
-                        { type: 'button', className: 'btn btn-danger btn-xs', onClick: this.props.handleDelete },
-                        React.createElement('i', { className: 'fa fa-times' })
-                    ),
-                    React.createElement(
-                        'button',
-                        { type: 'button', className: 'btn btn-success btn-xs', onClick: this.exportClass },
-                        React.createElement('i', { className: 'fa fa-floppy-o' })
-                    )
-                )
-            ),
+            React.createElement(DataClassHeaderComponent, { name: this.props.name, handleType: this.handleType, handleDelete: this.props.handleDelete, exportClass: this.exportClass, is_event: this.props.is_event }),
             React.createElement(
                 'ul',
                 { className: 'list-group' },
                 items
             ),
-            React.createElement(
-                'div',
-                { className: 'panel-footer' },
-                React.createElement(
-                    'div',
-                    { className: 'input-group' },
-                    React.createElement('input', {
-                        type: 'text',
-                        className: 'form-control',
-                        placeholder: 'New attribute',
-                        value: this.state.newname,
-                        onChange: this.handleChange
-                    }),
-                    React.createElement(
-                        'div',
-                        { className: 'input-group-btn' },
-                        React.createElement(
-                            'button',
-                            { className: 'btn btn-primary', onClick: this.handleAdd },
-                            'New attribute'
-                        )
-                    )
-                )
-            )
+            React.createElement(DataClassFooterComponent, { handleAdd: this.handleAttrAdd })
         );
     },
     componentDidMount: function () {
@@ -102358,6 +102479,15 @@ var DomainModelEditorComponent = React.createClass({
             return true; //signal successful creation (evaluated by invoking component)
         }
     },
+    validateAttrType: function (type) {
+        var types = ["String", "Integer", "Double", "Boolean", "Enum"];
+        if (types.indexOf(type) >= 0) {
+            return true;
+        }
+        return this.state.dm.dataclasses.some(function (dataclass) {
+            return dataclass.name == type;
+        });
+    },
     render: function () {
         var cols = [[], [], []];
         this.state.dm.dataclasses.forEach(function (dataclass, index) {
@@ -102370,6 +102500,7 @@ var DomainModelEditorComponent = React.createClass({
                     handleUpdate: this.handleUpdate(realIndex),
                     handleDelete: this.handleDelete(realIndex),
                     handleExport: this.handleExport,
+                    validateAttrType: this.validateAttrType,
                     initialItems: dataclass.attributes,
                     name: dataclass.name,
                     is_event: dataclass.is_event

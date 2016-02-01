@@ -17,7 +17,7 @@ var TypeSelect = React.createClass({
     render: function() {
         var value = this.state.value;
         return (
-            <select value={value} onChange={this.handleChange}>
+            <select value={value} onChange={this.handleChange} className="form-control">
                 <option value="data">Data</option>
                 <option value="event">Event</option>
             </select>
@@ -31,13 +31,101 @@ var DataClassAttributeComponent = React.createClass({
             onClick: function() {}
         }
     },
+    handleNameChange: function(e) {
+        this.props.handleNameChange(e);
+    },
+    handleDataTypeChange: function(e) {
+        this.props.handleDataTypeChange(e);
+    },
     render: function() {
         return (
             <li className="list-group-item clearfix">
-                {this.props.name}
-                <button type="button" className="btn btn-danger btn-xs pull-right" onClick={this.props.onClick}><i className="fa fa-times"></i></button>
+                <div className="row">
+                    <div className="col-sm-5">
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={this.props.name}
+                            onChange={this.handleNameChange} />
+                    </div>
+                    <div className="col-sm-5">
+                        <input type="text"
+                               className="form-control"
+                               value={this.props.datatype}
+                               onChange={this.handleDataTypeChange} />
+                    </div>
+                    <div className="col-sm-1">
+                        <button type="button" className="btn btn-danger" onClick={this.props.onDelete}><i className="fa fa-times"></i></button>
+                    </div>
+                </div>
             </li>
         );
+    }
+});
+
+var DataClassHeaderComponent = React.createClass({
+    render: function() {
+        return (
+            <div className="panel-heading clearfix">
+                <div className="row">
+                    <div className="col-sm-5">
+                        <h3 className="panel-title">
+                            {this.props.name}</h3>
+                    </div>
+                    <div className="col-sm-4">
+                        <TypeSelect
+                            is_event={this.props.is_event}
+                            handleType={this.props.handleType}
+                            />
+                    </div>
+                    <div className="col-sm-3">
+                        <div className="btn-group">
+                            <button type="button" className="btn btn-danger" onClick={this.props.handleDelete}>
+                                <i className="fa fa-times" ></i>
+                            </button>
+                            <button type="button" className="btn btn-success" onClick={this.props.exportClass}>
+                                <i className="fa fa-floppy-o" ></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+});
+
+var DataClassFooterComponent = React.createClass({
+    getInitialState: function() {
+        return {newname: ''}
+    },
+    handleChange: function(e) {
+        this.setState({newname: e.target.value});
+    },
+    handleAdd: function() {
+        this.props.handleAdd(this.state.newname);
+        this.setState({newname: ''});
+    },
+    render: function() {
+        return (
+            <div className="panel-footer">
+                <div className="row">
+                    <div className="col-sm-12">
+                        <div className="input-group">
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="New attribute"
+                                value = {this.state.newname}
+                                onChange = {this.handleChange}
+                                />
+                            <div className="input-group-btn">
+                                <button className="btn btn-primary" onClick={this.handleAdd}>New attribute</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
     }
 });
 
@@ -45,17 +133,13 @@ var DataClassComponent = React.createClass({
     getInitialState: function() {
         return {items: [],newname:""};
     },
-    handleChange: function(e) {
-        this.setState({newname: e.target.value});
-    },
-    handleAdd: function() {
-        var newItem = this.state.newname;
+    handleAttrAdd: function(newItem) {
         if (newItem && /^[a-zA-Z0-9_]+$/.test(newItem)
             && this.state.items.every(
-                function (element, index, array) {
+                function (element) {
                 return element.name != newItem;
             })) {
-            var newItems = this.state.items.concat([{name: newItem}]);
+            var newItems = this.state.items.concat([{name: newItem, datatype: 'String'}]);
             this.props.handleUpdate({
                 name: this.props.name,
                 is_event: this.props.is_event,
@@ -67,9 +151,11 @@ var DataClassComponent = React.createClass({
         };
     },
     handleRemove: function(i) {
-        var newItems = this.state.items;
-        newItems.splice(i, 1);
-        this.setState({items: newItems});
+        return (function() {
+            var newItems = this.state.items;
+            newItems.splice(i, 1);
+            this.setState({items: newItems});
+        }).bind(this);
     },
     handleType: function(type) {
         var is_event = false;
@@ -88,45 +174,57 @@ var DataClassComponent = React.createClass({
         });
         this.props.handleExport();
     },
+    handleAttrNameChange: function(i) {
+        return (function(e) {
+            var value = e.target.value;
+            var items = this.state.items;
+            items[i].name = value;
+            this.setState({items: items});
+            this.props.handleUpdate({
+                name: this.props.name,
+                is_event: this.props.is_event,
+                attributes: this.state.items
+            });
+        }).bind(this);
+    },
+    handleAttrTypeChange: function(i) {
+        return (function(e) {
+            var value = e.target.value;
+            if (!this.props.validateAttrType(value)) {
+                MessageHandler.handleMessage("warning", "You've entered an invalid DataType.");
+                $(e.target).parent().addClass('has-error');
+            } else {
+                $(e.target).parent().removeClass('has-error');
+            }
+            var items = this.state.items;
+            items[i].datatype = value;
+            this.setState({items: items});
+            this.props.handleUpdate({
+                name: this.props.name,
+                is_event: this.props.is_event,
+                attributes: this.state.items
+            });
+        }).bind(this);
+    },
     render: function() {
         var items = this.state.items.map(function(item, i) {
             return (
-                <DataClassAttributeComponent name={item.name} key={item.name} onClick={this.handleRemove.bind(null, i)}/>);
+                <DataClassAttributeComponent
+                    name={item.name}
+                    key={"dataclass"+i}
+                    datatype={item.datatype}
+                    onDelete={this.handleRemove(i)}
+                    handleDataTypeChange={this.handleAttrTypeChange(i)}
+                    handleNameChange={this.handleAttrNameChange(i)}
+                />);
         }.bind(this));
         return (
             <div className="panel panel-default">
-                <div className="panel-heading clearfix">
-                    {this.props.name}
-                    <TypeSelect
-                        is_event={this.props.is_event}
-                        handleType={this.handleType}
-                    />
-                    <div className="btn-group pull-right">
-                        <button type="button" className="btn btn-danger btn-xs" onClick={this.props.handleDelete}>
-                            <i className="fa fa-times" ></i>
-                        </button>
-                        <button type="button" className="btn btn-success btn-xs" onClick={this.exportClass}>
-                            <i className="fa fa-floppy-o" ></i>
-                        </button>
-                    </div>
-                </div>
+                <DataClassHeaderComponent name={this.props.name} handleType={this.handleType} handleDelete={this.props.handleDelete} exportClass={this.exportClass} is_event={this.props.is_event} />
                 <ul className="list-group">
                     {items}
                 </ul>
-                <div className="panel-footer">
-                    <div className="input-group">
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="New attribute"
-                            value = {this.state.newname}
-                            onChange = {this.handleChange}
-                        />
-                        <div className="input-group-btn">
-                            <button className="btn btn-primary" onClick={this.handleAdd}>New attribute</button>
-                        </div>
-                    </div>
-                </div>
+                <DataClassFooterComponent handleAdd={this.handleAttrAdd} />
             </div>
         );
     },
@@ -257,6 +355,15 @@ var DomainModelEditorComponent = React.createClass({
             return true; //signal successful creation (evaluated by invoking component)
         }
     },
+    validateAttrType: function(type){
+        var types = ["String","Integer","Double","Boolean","Enum"];
+        if (types.indexOf(type) >= 0) {
+            return true;
+        }
+        return this.state.dm.dataclasses.some(function(dataclass){
+            return (dataclass.name == type)
+        })
+    },
     render: function() {
         var cols = [[],[],[]];
         this.state.dm.dataclasses.forEach(function(dataclass, index) {
@@ -270,6 +377,7 @@ var DomainModelEditorComponent = React.createClass({
                         handleUpdate={this.handleUpdate(realIndex)}
                         handleDelete={this.handleDelete(realIndex)}
                         handleExport={this.handleExport}
+                        validateAttrType={this.validateAttrType}
                         initialItems={dataclass.attributes}
                         name={dataclass.name}
                         is_event={dataclass.is_event}
