@@ -15,7 +15,7 @@ var Router = require('react-router').Router;
 var Route = require('react-router').Route;
 var Link = require('react-router').Link;
 var IndexRoute = require('react-router').IndexRoute;
-var MessageBar = require('./react/messagebar');
+var MessageBar = require('./react/messagebar').MessageBarComponent;
 
 
 var App = React.createClass({

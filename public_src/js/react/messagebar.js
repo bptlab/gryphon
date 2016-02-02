@@ -6,13 +6,20 @@ var MessageHandler = require('./../messagehandler');
 var Config = require('./../config');
 
 var MessageComponent = React.createClass({
+    getDefaultProps: function() {
+        return {handleDelete: function(text) {},allow_dismiss: true}
+    },
     handleDismiss: function() {
         this.props.handleDelete(this.props.text)
     },
     render: function() {
+        var dismiss_button = "";
+        if (this.props.allow_dismiss) {
+            dismiss_button = <button type="button" className="close" aria-label="Close" onClick={this.handleDismiss} ><span aria-hidden="true">&times;</span></button>
+        }
         return (
-            <div className={"alert alert-" + this.props.type + " alert-dismissible"} role="alert">
-                <button type="button" className="close" aria-label="Close" onClick={this.handleDismiss} ><span aria-hidden="true">&times;</span></button>
+            <div className={"alert alert-" + this.props.type + (this.props.allow_dismiss ? " alert-dismissible" : "")} role="alert">
+                {dismiss_button}
                 {this.props.text}
             </div>
         )
@@ -48,7 +55,7 @@ var MessageBarComponent = React.createClass({
         this.setState({ messages: newmessages })
     },
     render: function() {
-        var handleDelete = this.handleDelete
+        var handleDelete = this.handleDelete;
         var messages = this.state.messages.map(function(message,index){
             return <MessageComponent handleDelete={handleDelete} type={message.type} text={message.text} key={index}/>
         });
@@ -66,4 +73,4 @@ var MessageBarComponent = React.createClass({
     }
 });
 
-module.exports = MessageBarComponent;
+module.exports = {MessageBarComponent:MessageBarComponent, MessageComponent:MessageComponent};

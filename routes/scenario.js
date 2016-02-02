@@ -6,6 +6,7 @@ var DomainModel = require('./../models/domainmodel').model;
 var _ = require('lodash');
 var Config = require('./../config');
 var RestClient = require('node-rest-client').Client;
+var validateFragment = require('./../helpers/validator').validateFragment;
 
 router.get('/', function(req, res, next) {
     var name = req.query.query;
@@ -152,8 +153,34 @@ router.post('/associatedomainmodel', function(req, res, next) {
     })
 });
 
-router.post('/validate', function(req, res, next){
-    //TODO Get validation done here.
+router.get('/:scenID/validate', function(req, res, next){
+    var scenID = req.params.scenID;
+    Scenario.findOne({_id:scenID}).populate('fragments').populate('domainmodel').exec(function(err, result) {
+        if (err) {
+            console.error(err);
+            res.status(500).end();
+            return;
+        }
+        if (result !== null) {
+            var messages = [];
+            var result_count = 0;
+            result.fragments.forEach(function(fragment) {
+                validateFragment(fragment, function (messages2) {
+                    messages = messages.concat(messages2);
+                    result_count++;
+                    if (result_count == result.fragments.length) {
+                        var display = ["danger","warning"];
+                        messages = messages.filter(function(message){
+                            return (display.indexOf(message.type) >= 0);
+                        });
+                        res.json(messages);
+                    }
+                });
+            });
+        } else {
+            res.status(404).end();
+        }
+    });
 });
 
 /* GET fragment belonging to scenario and fragment. */

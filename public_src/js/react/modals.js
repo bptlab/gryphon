@@ -3,6 +3,7 @@ var ReactDOM = require('react-dom');
 var Editor = require('./../editor');
 var API = require('./../api');
 var MessageHandler = require('./../messagehandler');
+var MessageComponent = require('./messagebar').MessageComponent;
 
 /**
  * All modals used in the project
@@ -181,8 +182,13 @@ var CreateScenarioModal = React.createClass({
 });
 
 var ExportScenarioModal = React.createClass({
+    getInitialState: function() {
+        return {
+            messages: []
+        }
+    },
     handleSubmit: function() {
-        var hidden = $('#exportScenarioModalID').val();
+         var hidden = $('#exportScenarioModalID').val();
         var targeturl = $('#exportScenarioModalURL').val();
         if (targeturl != "") {
             API.exportScenarioToChimera(hidden, targeturl);
@@ -192,6 +198,13 @@ var ExportScenarioModal = React.createClass({
         }
     },
     render: function() {
+        var messages = this.state.messages.map(function(message){
+            return (<MessageComponent type={message.type} text={message.text} allow_dismiss={false} />);
+        });
+        var btn_state = ((messages.length > 0) ? "danger" : "primary");
+        if (messages.length == 0) {
+            messages.push(<MessageComponent type="success" text="Scenario validated, everything okay!" allow_dismis={false} />);
+        }
         return (
             <div className="modal fade bs-example-modal-sm" tabIndex="-1" role="dialog" aria-labelledby="exportScenarioModalTitle" id="exportScenarioModal">
                 <div className="modal-dialog">
@@ -204,6 +217,7 @@ var ExportScenarioModal = React.createClass({
                                 <h4 className="modal-title" id="exportScenarioModalTitle">Export this scenario</h4>
                             </div>
                             <div className="modal-body">
+                                {messages}
                                 <fieldset className="form-group">
                                     <label htmlFor="scenarioName">Target URL</label>
                                     <input
@@ -222,7 +236,7 @@ var ExportScenarioModal = React.createClass({
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="button" className="btn btn-primary" onClick={this.handleSubmit}>Export</button>
+                                <button type="button" className={"btn btn-" + btn_state} onClick={this.handleSubmit}>Export</button>
                             </div>
                         </form>
                     </div>
@@ -237,7 +251,10 @@ var ExportScenarioModal = React.createClass({
             var hidden = $('#exportScenarioModalID');
             hidden.val(scenid);
             hidden.change();
-        })
+            API.validateScenario(scenid, function(data){
+                this.setState({messages: data});
+            }.bind(this));
+        }.bind(this))
     }
 });
 

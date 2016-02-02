@@ -101682,6 +101682,10 @@ API.prototype.validateFragment = function (fragid, callback) {
     $.get(this.createURL("fragment/" + fragid + "/validate"), callback);
 };
 
+API.prototype.validateScenario = function (scenid, callback) {
+    $.get(this.createURL("scenario/" + scenid + "/validate"), callback);
+};
+
 API.prototype.deleteScenario = function (id, callback) {
     $.ajax({
         url: this.createURL("scenario/" + id),
@@ -101963,7 +101967,7 @@ var Router = require('react-router').Router;
 var Route = require('react-router').Route;
 var Link = require('react-router').Link;
 var IndexRoute = require('react-router').IndexRoute;
-var MessageBar = require('./react/messagebar');
+var MessageBar = require('./react/messagebar').MessageBarComponent;
 
 var App = React.createClass({
     displayName: 'App',
@@ -102721,14 +102725,16 @@ var Config = require('./../config');
 var MessageComponent = React.createClass({
     displayName: 'MessageComponent',
 
+    getDefaultProps: function () {
+        return { handleDelete: function (text) {}, allow_dismiss: true };
+    },
     handleDismiss: function () {
         this.props.handleDelete(this.props.text);
     },
     render: function () {
-        return React.createElement(
-            'div',
-            { className: "alert alert-" + this.props.type + " alert-dismissible", role: 'alert' },
-            React.createElement(
+        var dismiss_button = "";
+        if (this.props.allow_dismiss) {
+            dismiss_button = React.createElement(
                 'button',
                 { type: 'button', className: 'close', 'aria-label': 'Close', onClick: this.handleDismiss },
                 React.createElement(
@@ -102736,7 +102742,12 @@ var MessageComponent = React.createClass({
                     { 'aria-hidden': 'true' },
                     '×'
                 )
-            ),
+            );
+        }
+        return React.createElement(
+            'div',
+            { className: "alert alert-" + this.props.type + (this.props.allow_dismiss ? " alert-dismissible" : ""), role: 'alert' },
+            dismiss_button,
             this.props.text
         );
     },
@@ -102791,7 +102802,7 @@ var MessageBarComponent = React.createClass({
     }
 });
 
-module.exports = MessageBarComponent;
+module.exports = { MessageBarComponent: MessageBarComponent, MessageComponent: MessageComponent };
 
 },{"./../api":673,"./../config":677,"./../editor":678,"./../messagehandler":680,"react":672,"react-dom":490}],685:[function(require,module,exports){
 var React = require('react');
@@ -102799,6 +102810,7 @@ var ReactDOM = require('react-dom');
 var Editor = require('./../editor');
 var API = require('./../api');
 var MessageHandler = require('./../messagehandler');
+var MessageComponent = require('./messagebar').MessageComponent;
 
 /**
  * All modals used in the project
@@ -103085,6 +103097,11 @@ var CreateScenarioModal = React.createClass({
 var ExportScenarioModal = React.createClass({
     displayName: 'ExportScenarioModal',
 
+    getInitialState: function () {
+        return {
+            messages: []
+        };
+    },
     handleSubmit: function () {
         var hidden = $('#exportScenarioModalID').val();
         var targeturl = $('#exportScenarioModalURL').val();
@@ -103096,6 +103113,13 @@ var ExportScenarioModal = React.createClass({
         }
     },
     render: function () {
+        var messages = this.state.messages.map(function (message) {
+            return React.createElement(MessageComponent, { type: message.type, text: message.text, allow_dismiss: false });
+        });
+        var btn_state = messages.length > 0 ? "danger" : "primary";
+        if (messages.length == 0) {
+            messages.push(React.createElement(MessageComponent, { type: 'success', text: 'Scenario validated, everything okay!', allow_dismis: false }));
+        }
         return React.createElement(
             'div',
             { className: 'modal fade bs-example-modal-sm', tabIndex: '-1', role: 'dialog', 'aria-labelledby': 'exportScenarioModalTitle', id: 'exportScenarioModal' },
@@ -103129,6 +103153,7 @@ var ExportScenarioModal = React.createClass({
                         React.createElement(
                             'div',
                             { className: 'modal-body' },
+                            messages,
                             React.createElement(
                                 'fieldset',
                                 { className: 'form-group' },
@@ -103161,7 +103186,7 @@ var ExportScenarioModal = React.createClass({
                             ),
                             React.createElement(
                                 'button',
-                                { type: 'button', className: 'btn btn-primary', onClick: this.handleSubmit },
+                                { type: 'button', className: "btn btn-" + btn_state, onClick: this.handleSubmit },
                                 'Export'
                             )
                         )
@@ -103177,7 +103202,10 @@ var ExportScenarioModal = React.createClass({
             var hidden = $('#exportScenarioModalID');
             hidden.val(scenid);
             hidden.change();
-        });
+            API.validateScenario(scenid, function (data) {
+                this.setState({ messages: data });
+            }.bind(this));
+        }.bind(this));
     }
 });
 
@@ -103198,7 +103226,7 @@ var ModalComponent = React.createClass({
 
 module.exports = ModalComponent;
 
-},{"./../api":673,"./../editor":678,"./../messagehandler":680,"react":672,"react-dom":490}],686:[function(require,module,exports){
+},{"./../api":673,"./../editor":678,"./../messagehandler":680,"./messagebar":684,"react":672,"react-dom":490}],686:[function(require,module,exports){
 var React = require('react');
 var Link = require('react-router').Link;
 var API = require('./../api');

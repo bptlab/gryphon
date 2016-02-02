@@ -182,6 +182,10 @@ var validateFragment = function(fragment,callback) {
 
         messages = messages.concat(validateSoundness(graph));
 
+        messages = messages.map(function(message){
+            message.text = fragment.name + ": " + message.text;
+            return message;
+        });
         callback(messages);
     });
 };

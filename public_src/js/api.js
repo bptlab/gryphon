@@ -117,6 +117,10 @@ API.prototype.validateFragment = function(fragid,callback) {
     $.get(this.createURL("fragment/" + fragid + "/validate"),callback);
 };
 
+API.prototype.validateScenario = function(scenid,callback) {
+    $.get(this.createURL("scenario/" + scenid + "/validate"),callback);
+};
+
 API.prototype.deleteScenario = function(id, callback) {
     $.ajax({
         url: this.createURL("scenario/" + id),
