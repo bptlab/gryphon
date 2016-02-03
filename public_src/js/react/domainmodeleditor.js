@@ -1,5 +1,6 @@
 var React = require('react');
 var MessageHandler = require('./../messagehandler');
+var NameCheck = require('./../namecheck');
 var API = require('./../api');
 
 var TypeSelect = React.createClass({
@@ -50,11 +51,7 @@ var DataClassComponent = React.createClass({
     },
     handleAdd: function() {
         var newItem = this.state.newname;
-        if (newItem && /^([a-zA-Z\d]|[a-zA-Z\d](?!.*[ _]{2})[a-zA-Z\d _]*?[a-zA-Z\d])$/.test(newItem)
-            && this.state.items.every(
-                function (element, index, array) {
-                return element.name != newItem;
-            })) {
+        if (NameCheck.check(newItem) && NameCheck.isUnique(newItem, this.state.items)) {
             var newItems = this.state.items.concat([{name: newItem}]);
             this.props.handleUpdate({
                 name: this.props.name,
@@ -62,10 +59,7 @@ var DataClassComponent = React.createClass({
                 attributes: this.state.items
             });
             this.setState({items: newItems,newname:""});
-        } else {
-            MessageHandler.handleMessage("warning",
-                "Only unique alphanumeric (+\"_\" + \" \" (space)) names are allowed!");
-        };
+        }
     },
     handleRemove: function(i) {
         var newItems = this.state.items;
@@ -151,15 +145,10 @@ var CreateNewClassComponent = React.createClass({
         var is_event = false;
         if (type == "event") {is_event = true;};
         var newItem = this.state.newname;
-        if (newItem && /^([a-zA-Z\d]|[a-zA-Z\d](?!.*[ _]{2})[a-zA-Z\d _]*?[a-zA-Z\d])$/.test(newItem)) {
+        if (NameCheck.check(newItem)) {
             if (this.props.onSubmit(newItem, is_event)) {
                 this.setState({newname: ''});
-            } else {
-                MessageHandler.handleMessage("warning","Only unique names are allowed!");
             }
-        } else {
-            MessageHandler.handleMessage("warning",
-                "Only unique alphanumeric (+\"_\" + \" \" (space)) names are allowed!");
         }
     },
     submitData: function() {
@@ -249,10 +238,7 @@ var DomainModelEditorComponent = React.createClass({
             "attributes": []
         };
         var dm = this.state.dm;
-        if (dm.dataclasses.every(
-                function (element, index, array) {
-                    return element.name != dataclass.name;
-                })) {
+        if (NameCheck.isUnique(dataclass.name, dm.dataclasses)) {
             dm.dataclasses.push(dataclass);
             this.setState({'dm':dm});
             return true; //signal successful creation (evaluated by invoking component)

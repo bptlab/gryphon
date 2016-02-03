@@ -3,6 +3,7 @@ var ReactDOM = require('react-dom');
 var Editor = require('./../editor');
 var API = require('./../api');
 var MessageHandler = require('./../messagehandler');
+var NameCheck = require('./../namecheck');
 
 /**
  * All modals used in the project
@@ -72,12 +73,9 @@ var ModifyFragmentModal = React.createClass({
     },
     handleSubmit: function() {
         var newFragment = this.getFinalState();
-        if (newFragment.name && /^([a-zA-Z\d]|[a-zA-Z\d](?!.*[ _]{2})[a-zA-Z\d _]*?[a-zA-Z\d])$/.test(newFragment.name)) {
+        if (NameCheck.check(newFragment.name)) {
             API.exportFragment(newFragment);
             location.reload();
-        } else {
-            MessageHandler.handleMessage("warning",
-                "Only unique alphanumeric (+\"_\" + \" \" (space)) names are allowed!");
         }
     },
     render: function() {
@@ -141,9 +139,8 @@ var CreateScenarioModal = React.createClass({
         }
     },
     handleSubmit: function() {
-        var newItem = this.state.name;
-        if (newItem && /^([a-zA-Z\d]|[a-zA-Z\d](?!.*[ _]{2})[a-zA-Z\d _]*?[a-zA-Z\d])$/.test(newItem)) {
-            API.createScenario(newItem);
+        if (NameCheck.check(this.state.name)) {
+            API.createScenario(this.state.name);
             location.reload();
         } else {
             MessageHandler.handleMessage("warning",

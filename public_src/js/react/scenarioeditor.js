@@ -2,6 +2,7 @@ var React = require('react');
 var Link = require('react-router').Link;
 var API = require('./../api');
 var MessageHandler = require('./../messagehandler');
+var NameCheck = require('./../namecheck');
 
 var ScenarioEditForm = React.createClass({
     getInitialState: function() {
@@ -70,13 +71,9 @@ var ScenarioEditForm = React.createClass({
         }
     },
     handleSubmit: function() {
-        var newName = this.state.name;
-        if (newName && /^([a-zA-Z\d]|[a-zA-Z\d](?!.*[ _]{2})[a-zA-Z\d _]*?[a-zA-Z\d])$/.test(newName)) {
+        if (NameCheck.check(this.state.name)) {
             API.exportScenario(this.state);
             MessageHandler.handleMessage("success","Saved scenario-details!");
-        } else {
-            MessageHandler.handleMessage("warning",
-                "Only unique alphanumeric (+\"_\" + \" \" (space)) names are allowed!");
         }
     },
     handleAddTerminationCondition: function(e) {
@@ -196,11 +193,8 @@ var ScenarioFragmentList = React.createClass({
     },
     handleFragmentClick: function(e) {
         var newItem = this.state.newname;
-        if (newItem && /^([a-zA-Z\d]|[a-zA-Z\d](?!.*[ _]{2})[a-zA-Z\d _]*?[a-zA-Z\d])$/.test(newItem)
-            && this.props.scenario.fragments.every(
-                function (element, index, array) {
-                    return element.name != newItem;
-                })) {
+        if (NameCheck.check(newItem) &&
+            NameCheck.isUnique(newItem, this.props.scenario.fragments)) {
             API.createFragment(newItem,function(data, res){
                 API.associateFragment(this.props.scenario._id,data._id,function(data, res){
                     this.setState({newname: ''});
@@ -208,9 +202,6 @@ var ScenarioFragmentList = React.createClass({
                     this.props.forceRerender();
                 }.bind(this));
             }.bind(this));
-        } else {
-            MessageHandler.handleMessage("warning",
-                "Only unique alphanumeric (+\"_\" + \" \" (space)) names are allowed!");
         }
     },
     render: function() {

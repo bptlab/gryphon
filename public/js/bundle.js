@@ -106697,7 +106697,7 @@ $(function () {
     ), document.getElementById('app-container'));
 });
 
-},{"./api":707,"./react/domainmodeleditor":715,"./react/fragmenteditor":716,"./react/index":717,"./react/messagebar":718,"./react/modals":719,"./react/scenarioeditor":720,"./react/sidebar":721,"bootstrap":26,"jquery":372,"lodash":400,"react":706,"react-dom":524,"react-router":544}],714:[function(require,module,exports){
+},{"./api":707,"./react/domainmodeleditor":716,"./react/fragmenteditor":717,"./react/index":718,"./react/messagebar":719,"./react/modals":720,"./react/scenarioeditor":721,"./react/sidebar":722,"bootstrap":26,"jquery":372,"lodash":400,"react":706,"react-dom":524,"react-router":544}],714:[function(require,module,exports){
 // A short registry to store a global reference (Wooah Antipattern)
 // to the Message Bar. This makes it far easier to show uniform messages
 // in the interface.
@@ -106719,8 +106719,40 @@ MessageHandler.prototype.handleMessage = function (type, text) {
 module.exports = new MessageHandler();
 
 },{}],715:[function(require,module,exports){
+/**
+ * Since the project should follow a unified naming convention it makes sense to implement it in
+ * one place. The current guidelines are:
+ * - only alphanumeric + "_" (underscore) + " " (space) characters are allowed
+ * - the first and last characters should be alphanumeric
+ * - there may not be more than 1 non-alphanumeric character after another
+ */
+
+var MessageHandler = require('./messagehandler');
+
+exports.check = function (name) {
+    if (name && /^([a-zA-Z\d]|[a-zA-Z\d](?!.*[ _]{2})[a-zA-Z\d _]*?[a-zA-Z\d])$/.test(name)) {
+        return true;
+    } else {
+        MessageHandler.handleMessage("warning", "Only alphanumeric names are allowed!");
+        return false;
+    }
+};
+
+exports.isUnique = function (name, listOfNames) {
+    if (listOfNames.every(function (element, index, array) {
+        return element.name != name;
+    })) {
+        return true;
+    } else {
+        MessageHandler.handleMessage("warning", "Only unique names are allowed!");
+        return false;
+    }
+};
+
+},{"./messagehandler":714}],716:[function(require,module,exports){
 var React = require('react');
 var MessageHandler = require('./../messagehandler');
+var NameCheck = require('./../namecheck');
 var API = require('./../api');
 
 var TypeSelect = React.createClass({
@@ -106793,9 +106825,7 @@ var DataClassComponent = React.createClass({
     },
     handleAdd: function () {
         var newItem = this.state.newname;
-        if (newItem && /^([a-zA-Z\d]|[a-zA-Z\d](?!.*[ _]{2})[a-zA-Z\d _]*?[a-zA-Z\d])$/.test(newItem) && this.state.items.every(function (element, index, array) {
-            return element.name != newItem;
-        })) {
+        if (NameCheck.check(newItem) && NameCheck.isUnique(newItem, this.state.items)) {
             var newItems = this.state.items.concat([{ name: newItem }]);
             this.props.handleUpdate({
                 name: this.props.name,
@@ -106803,9 +106833,7 @@ var DataClassComponent = React.createClass({
                 attributes: this.state.items
             });
             this.setState({ items: newItems, newname: "" });
-        } else {
-            MessageHandler.handleMessage("warning", "Only unique alphanumeric (+\"_\" + \" \" (space)) names are allowed!");
-        };
+        }
     },
     handleRemove: function (i) {
         var newItems = this.state.items;
@@ -106916,14 +106944,10 @@ var CreateNewClassComponent = React.createClass({
             is_event = true;
         };
         var newItem = this.state.newname;
-        if (newItem && /^([a-zA-Z\d]|[a-zA-Z\d](?!.*[ _]{2})[a-zA-Z\d _]*?[a-zA-Z\d])$/.test(newItem)) {
+        if (NameCheck.check(newItem)) {
             if (this.props.onSubmit(newItem, is_event)) {
                 this.setState({ newname: '' });
-            } else {
-                MessageHandler.handleMessage("warning", "Only unique names are allowed!");
             }
-        } else {
-            MessageHandler.handleMessage("warning", "Only unique alphanumeric (+\"_\" + \" \" (space)) names are allowed!");
         }
     },
     submitData: function () {
@@ -107047,9 +107071,7 @@ var DomainModelEditorComponent = React.createClass({
             "attributes": []
         };
         var dm = this.state.dm;
-        if (dm.dataclasses.every(function (element, index, array) {
-            return element.name != dataclass.name;
-        })) {
+        if (NameCheck.isUnique(dataclass.name, dm.dataclasses)) {
             dm.dataclasses.push(dataclass);
             this.setState({ 'dm': dm });
             return true; //signal successful creation (evaluated by invoking component)
@@ -107118,7 +107140,7 @@ var DomainModelEditorComponent = React.createClass({
 
 module.exports = DomainModelEditorComponent;
 
-},{"./../api":707,"./../messagehandler":714,"react":706}],716:[function(require,module,exports){
+},{"./../api":707,"./../messagehandler":714,"./../namecheck":715,"react":706}],717:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Editor = require('./../editor');
@@ -107207,7 +107229,7 @@ var FragmentEditorComponent = React.createClass({
 
 module.exports = FragmentEditorComponent;
 
-},{"./../api":707,"./../bpmnext/validator":710,"./../config":711,"./../editor":712,"./../messagehandler":714,"react":706,"react-dom":524}],717:[function(require,module,exports){
+},{"./../api":707,"./../bpmnext/validator":710,"./../config":711,"./../editor":712,"./../messagehandler":714,"react":706,"react-dom":524}],718:[function(require,module,exports){
 var React = require('react');
 var Link = require('react-router').Link;
 var API = require('./../api');
@@ -107276,7 +107298,7 @@ var IndexComponent = React.createClass({
 
 module.exports = IndexComponent;
 
-},{"./../api":707,"react":706,"react-router":544}],718:[function(require,module,exports){
+},{"./../api":707,"react":706,"react-router":544}],719:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Editor = require('./../editor');
@@ -107359,12 +107381,13 @@ var MessageBarComponent = React.createClass({
 
 module.exports = MessageBarComponent;
 
-},{"./../api":707,"./../config":711,"./../editor":712,"./../messagehandler":714,"react":706,"react-dom":524}],719:[function(require,module,exports){
+},{"./../api":707,"./../config":711,"./../editor":712,"./../messagehandler":714,"react":706,"react-dom":524}],720:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Editor = require('./../editor');
 var API = require('./../api');
 var MessageHandler = require('./../messagehandler');
+var NameCheck = require('./../namecheck');
 
 /**
  * All modals used in the project
@@ -107466,11 +107489,9 @@ var ModifyFragmentModal = React.createClass({
     },
     handleSubmit: function () {
         var newFragment = this.getFinalState();
-        if (newFragment.name && /^([a-zA-Z\d]|[a-zA-Z\d](?!.*[ _]{2})[a-zA-Z\d _]*?[a-zA-Z\d])$/.test(newFragment.name)) {
+        if (NameCheck.check(newFragment.name)) {
             API.exportFragment(newFragment);
             location.reload();
-        } else {
-            MessageHandler.handleMessage("warning", "Only unique alphanumeric (+\"_\" + \" \" (space)) names are allowed!");
         }
     },
     render: function () {
@@ -107572,9 +107593,8 @@ var CreateScenarioModal = React.createClass({
         };
     },
     handleSubmit: function () {
-        var newItem = this.state.name;
-        if (newItem && /^([a-zA-Z\d]|[a-zA-Z\d](?!.*[ _]{2})[a-zA-Z\d _]*?[a-zA-Z\d])$/.test(newItem)) {
-            API.createScenario(newItem);
+        if (NameCheck.check(this.state.name)) {
+            API.createScenario(this.state.name);
             location.reload();
         } else {
             MessageHandler.handleMessage("warning", "Only unique alphanumeric (+\"_\" + \" \" (space)) names are allowed!");
@@ -107772,11 +107792,12 @@ var ModalComponent = React.createClass({
 
 module.exports = ModalComponent;
 
-},{"./../api":707,"./../editor":712,"./../messagehandler":714,"react":706,"react-dom":524}],720:[function(require,module,exports){
+},{"./../api":707,"./../editor":712,"./../messagehandler":714,"./../namecheck":715,"react":706,"react-dom":524}],721:[function(require,module,exports){
 var React = require('react');
 var Link = require('react-router').Link;
 var API = require('./../api');
 var MessageHandler = require('./../messagehandler');
+var NameCheck = require('./../namecheck');
 
 var ScenarioEditForm = React.createClass({
     displayName: 'ScenarioEditForm',
@@ -107847,12 +107868,9 @@ var ScenarioEditForm = React.createClass({
         }
     },
     handleSubmit: function () {
-        var newName = this.state.name;
-        if (newName && /^([a-zA-Z\d]|[a-zA-Z\d](?!.*[ _]{2})[a-zA-Z\d _]*?[a-zA-Z\d])$/.test(newName)) {
+        if (NameCheck.check(this.state.name)) {
             API.exportScenario(this.state);
             MessageHandler.handleMessage("success", "Saved scenario-details!");
-        } else {
-            MessageHandler.handleMessage("warning", "Only unique alphanumeric (+\"_\" + \" \" (space)) names are allowed!");
         }
     },
     handleAddTerminationCondition: function (e) {
@@ -108042,9 +108060,7 @@ var ScenarioFragmentList = React.createClass({
     },
     handleFragmentClick: function (e) {
         var newItem = this.state.newname;
-        if (newItem && /^([a-zA-Z\d]|[a-zA-Z\d](?!.*[ _]{2})[a-zA-Z\d _]*?[a-zA-Z\d])$/.test(newItem) && this.props.scenario.fragments.every(function (element, index, array) {
-            return element.name != newItem;
-        })) {
+        if (NameCheck.check(newItem) && NameCheck.isUnique(newItem, this.props.scenario.fragments)) {
             API.createFragment(newItem, function (data, res) {
                 API.associateFragment(this.props.scenario._id, data._id, function (data, res) {
                     this.setState({ newname: '' });
@@ -108052,8 +108068,6 @@ var ScenarioFragmentList = React.createClass({
                     this.props.forceRerender();
                 }.bind(this));
             }.bind(this));
-        } else {
-            MessageHandler.handleMessage("warning", "Only unique alphanumeric (+\"_\" + \" \" (space)) names are allowed!");
         }
     },
     render: function () {
@@ -108259,7 +108273,7 @@ var ScenarioEditorComponent = React.createClass({
 
 module.exports = ScenarioEditorComponent;
 
-},{"./../api":707,"./../messagehandler":714,"react":706,"react-router":544}],721:[function(require,module,exports){
+},{"./../api":707,"./../messagehandler":714,"./../namecheck":715,"react":706,"react-router":544}],722:[function(require,module,exports){
 var React = require('react');
 var API = require('./../api');
 var Link = require('react-router').Link;
