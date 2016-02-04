@@ -103,12 +103,9 @@ var DataClassFooterComponent = React.createClass({
         this.setState({newname: e.target.value});
     },
     handleAdd: function() {
-        var newItem = this.state.newname;
-        if (NameCheck.check(newItem) && NameCheck.isUnique(newItem, this.state.items)) {
-            var newItems = this.state.items.concat([{name: newItem}]);
-            this.props.handleAdd(this.state.newname);
-            this.setState({newname: ''});
-        }
+            if (this.props.handleAdd(this.state.newname)) {
+                this.setState({newname: ''});
+            }
     },
     render: function() {
         return (
@@ -147,6 +144,7 @@ var DataClassComponent = React.createClass({
                 attributes: this.state.items
             });
             this.setState({items: newItems,newname:""});
+            return true;
         }
     },
     handleRemove: function(i) {
