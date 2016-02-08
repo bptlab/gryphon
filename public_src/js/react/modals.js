@@ -20,9 +20,16 @@ var NameCheck = require('./../namecheck');
  */
 
 var DeleteFragmentModal = React.createClass({
+    getInitialState: function() {
+        return {
+            fragID: ""
+        }
+    },
     handleClick: function() {
-        API.deleteFragment($('#deleteFragmentModalID').val());
-        location.reload();
+        if (this.state.fragID != "") {
+            API.deleteFragment(this.state.fragID);
+            location.reload();
+        }
     },
     render: function() {
         return (
@@ -39,12 +46,6 @@ var DeleteFragmentModal = React.createClass({
                             Are you sure? Do really want to delete exactly this fragment? Here be dragons.
                         </div>
                         <div className="modal-footer">
-                            <input
-                                type="hidden"
-                                name="deleteFragmentModalID"
-                                id="deleteFragmentModalID"
-                                value=""
-                                />
                             <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
                             <button type="button" className="btn btn-danger" onClick={this.handleClick}>Delete Fragment</button>
                         </div>
@@ -57,20 +58,22 @@ var DeleteFragmentModal = React.createClass({
         $('#deleteFragmentModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var fragid = button.data('fragid');
-            var hidden = $('#deleteFragmentModalID');
-            hidden.val(fragid);
-            hidden.change();
-        })
+            this.setState({fragID:fragid});
+        }.bind(this))
     }
 });
 
 var ModifyFragmentModal = React.createClass({
-    getFinalState: function() {
-        var hidden = $('#modifyFragmentModalID').val();
-        var name = $('#modifyFragmentModalName').val();
+    getInitialState: function() {
         return {
-            name: name,
-            _id: hidden
+            name: '',
+            fragID: ''
+        }
+    },
+    getFinalState: function() {
+        return {
+            name: this.state.name,
+            _id: this.state.fragID
         }
     },
     handleSubmit: function() {
@@ -79,6 +82,9 @@ var ModifyFragmentModal = React.createClass({
             API.exportFragment(newFragment);
             location.reload();
         }
+    },
+    handleChange: function(e) {
+        this.setState({name: e.target.value})
     },
     render: function() {
         return (
@@ -100,14 +106,10 @@ var ModifyFragmentModal = React.createClass({
                                         className="form-control"
                                         id="modifyFragmentModalName"
                                         placeholder="Fragment name"
+                                        onChange={this.handleChange}
+                                        value={this.state.name}
                                         />
                                 </fieldset>
-                                <input
-                                    type="hidden"
-                                    name="modifyFragmentModalID"
-                                    id="modifyFragmentModalID"
-                                    value=""
-                                    />
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
@@ -124,12 +126,7 @@ var ModifyFragmentModal = React.createClass({
             var button = $(event.relatedTarget);
             var fragid = button.data('fragid');
             var fragname = button.data('fragname');
-            var hidden = $('#modifyFragmentModalID');
-            hidden.val(fragid);
-            hidden.change();
-            var text = $('#modifyFragmentModalName');
-            text.val(fragname);
-            text.change();
+            this.setState({fragID:fragid,name:fragname})
         })
     }
 });
@@ -265,12 +262,6 @@ var ExportScenarioModal = React.createClass({
                                 <fieldset className="form-group">
                                     <label>Target URL</label>
                                     <input type="text" className="form-control" value={this.state.selectedTargetURL} readOnly="true"/>
-                                    <input
-                                        type="hidden"
-                                        name="exportScenarioModalID"
-                                        id="exportScenarioModalID"
-                                        value=""
-                                    />
                                 </fieldset>
                             </div>
                             <div className="modal-footer">
