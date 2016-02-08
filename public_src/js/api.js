@@ -105,12 +105,24 @@ API.prototype.deleteFragment = function(id, callback) {
     $.ajax({
         url: this.createURL("fragment/" + id),
         type: 'DELETE',
-        callback
+        success: callback
     });
 };
 
-API.prototype.exportScenarioToChimera = function(scenid, targeturl, callback) {
-    $.post(this.createURL("scenario/" + scenid + "/export"),{targeturl: targeturl},callback);
+API.prototype.exportScenarioToChimera = function(scenid, exportID, callback) {
+    $.post(this.createURL("scenario/" + scenid + "/export"),{exportID: exportID},callback);
+};
+
+API.prototype.getAvailableExports = function(callback) {
+    $.get(this.createURL("export"),callback);
+};
+
+API.prototype.validateExport = function(url, callback) {
+    $.get(this.createURL("export/validate?url=" + encodeURIComponent(url)),callback);
+};
+
+API.prototype.addExport = function(name, url, callback) {
+    $.post(this.createURL("export"),{name: name,url: url},callback);
 };
 
 API.prototype.validateFragment = function(fragid,callback) {
@@ -125,7 +137,21 @@ API.prototype.deleteScenario = function(id, callback) {
     $.ajax({
         url: this.createURL("scenario/" + id),
         type: 'DELETE',
-        callback
+        success: callback
+    });
+};
+
+API.prototype.updateExport = function(id, name, url, callback) {
+    $.post(this.createURL("export/" + id),{name:name,url:url},callback);
+};
+
+API.prototype.deleteExport = function(url, callback) {
+    $.ajax({
+        url: this.createURL("export"),
+        data: JSON.stringify({url: url}),
+        type: 'DELETE',
+        contentType: "application/json",
+        success: callback
     });
 };
 

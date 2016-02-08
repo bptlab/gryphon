@@ -16,4 +16,10 @@ MessageHandler.prototype.handleMessage = function(type, text) {
     }
 };
 
+MessageHandler.prototype.resetMessages = function() {
+    if (this.rootElement) {
+        this.rootElement.resetMessages();
+    }
+}
+
 module.exports = new MessageHandler();

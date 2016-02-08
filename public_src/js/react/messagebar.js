@@ -43,6 +43,9 @@ var MessageBarComponent = React.createClass({
             messages: newmessages
         })
     },
+    resetMessages: function() {
+        this.setState({messages: []});
+    },
     handleMessage: function(type, text) {
         var newmessages = this.state.messages.filter(function(message){
             return (message.text != text) || (message.type != type);
@@ -52,7 +55,7 @@ var MessageBarComponent = React.createClass({
             'type':type,
             'key':newmessages.length
         });
-        this.setState({ messages: newmessages })
+        this.setState({ messages: newmessages });
     },
     render: function() {
         var handleDelete = this.handleDelete;

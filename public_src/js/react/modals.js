@@ -4,6 +4,7 @@ var Editor = require('./../editor');
 var API = require('./../api');
 var MessageHandler = require('./../messagehandler');
 var MessageComponent = require('./messagebar').MessageComponent;
+var Link = require('react-router').Link;
 
 /**
  * All modals used in the project
@@ -184,17 +185,30 @@ var CreateScenarioModal = React.createClass({
 var ExportScenarioModal = React.createClass({
     getInitialState: function() {
         return {
-            messages: []
+            messages: [],
+            targets: [],
+            selectedTargetURL: "No valid Chimera instance selected.",
+            selectedTarget: "",
+            scenID: ""
+        }
+    },
+    handleTargetChange: function(e) {
+        this.setState({selectedTarget: e.target.value});
+        this.state.targets.forEach(function(target){
+            if (target._id == e.target.value) {
+                this.setState({selectedTargetURL: target.url});
+            }
+        }.bind(this));
+        if (e.target.value == "") {
+            this.setState({selectedTargetURL: "No valid Chimera instance selected."})
         }
     },
     handleSubmit: function() {
-         var hidden = $('#exportScenarioModalID').val();
-        var targeturl = $('#exportScenarioModalURL').val();
-        if (targeturl != "") {
-            API.exportScenarioToChimera(hidden, targeturl);
-            MessageHandler.handleMessage('success','Export succesfull!');
-            $('exportScenarioModal').modal('hide');
-            //location.reload();
+        if (this.state.selectedTarget != "") {
+            API.exportScenarioToChimera(this.state.scenID, this.state.selectedTarget, function(response){
+                MessageHandler.handleMessage('success','Export succesfull!');
+            });
+            $('#exportScenarioModal').modal('hide');
         }
     },
     render: function() {
@@ -203,8 +217,11 @@ var ExportScenarioModal = React.createClass({
         });
         var btn_state = ((messages.length > 0) ? "danger" : "primary");
         if (messages.length == 0) {
-            messages.push(<MessageComponent type="success" text="Scenario validated, everything okay!" allow_dismis={false} />);
+            messages.push(<MessageComponent type="success" text="Scenario validated, everything okay!" allow_dismiss={false} />);
         }
+        var targets = this.state.targets.map(function(target){
+            return <option value={target._id}>{target.name}</option>
+        });
         return (
             <div className="modal fade bs-example-modal-sm" tabIndex="-1" role="dialog" aria-labelledby="exportScenarioModalTitle" id="exportScenarioModal">
                 <div className="modal-dialog">
@@ -219,13 +236,28 @@ var ExportScenarioModal = React.createClass({
                             <div className="modal-body">
                                 {messages}
                                 <fieldset className="form-group">
-                                    <label htmlFor="scenarioName">Target URL</label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="exportScenarioModalURL"
-                                        placeholder="Target URL"
-                                    />
+                                    <label htmlFor="exportScenarioModalTargetSelect">Target</label>
+                                    <div className="row">
+                                        <div className="col-md-9">
+                                            <select name="exportScenarioModalTargetSelect"
+                                                    id="exportScenarioModalTargetSelect"
+                                                    value={this.state.selectedTarget}
+                                                    onChange={this.handleTargetChange}
+                                                    className="form-control">
+                                                <option value="">Select or add Chimera Instance</option>
+                                                {targets}
+                                            </select>
+                                        </div>
+                                        <div className="col-md-3">
+                                            <Link to="exportconfig" className="btn btn-success btn-block">
+                                                Add target
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset className="form-group">
+                                    <label>Target URL</label>
+                                    <input type="text" className="form-control" value={this.state.selectedTargetURL} readOnly="true"/>
                                     <input
                                         type="hidden"
                                         name="exportScenarioModalID"
@@ -248,12 +280,13 @@ var ExportScenarioModal = React.createClass({
         $('#exportScenarioModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var scenid = button.data('scenid');
-            var hidden = $('#exportScenarioModalID');
-            hidden.val(scenid);
-            hidden.change();
+            this.setState({scenID: scenid});
             API.validateScenario(scenid, function(data){
                 this.setState({messages: data});
             }.bind(this));
+            API.getAvailableExports(function(exports){
+                this.setState({targets: exports});
+            }.bind(this))
         }.bind(this))
     }
 });

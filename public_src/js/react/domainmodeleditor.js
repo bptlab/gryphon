@@ -72,19 +72,16 @@ var DataClassHeaderComponent = React.createClass({
                         <h3 className="panel-title">
                             {this.props.name}</h3>
                     </div>
-                    <div className="col-sm-4">
+                    <div className="col-sm-5">
                         <TypeSelect
                             is_event={this.props.is_event}
                             handleType={this.props.handleType}
                             />
                     </div>
-                    <div className="col-sm-3">
+                    <div className="col-sm-1">
                         <div className="btn-group">
                             <button type="button" className="btn btn-danger" onClick={this.props.handleDelete}>
                                 <i className="fa fa-times" ></i>
-                            </button>
-                            <button type="button" className="btn btn-success" onClick={this.props.exportClass}>
-                                <i className="fa fa-floppy-o" ></i>
                             </button>
                         </div>
                     </div>
@@ -409,12 +406,14 @@ var DomainModelEditorComponent = React.createClass({
     componentDidMount: function() {
         API.loadDomainModel(this.props.params.id, function(data,resp) {
             this.setState({'dm': data});
+            MessageHandler.resetMessages();
         }.bind(this));
     },
     componentDidUpdate: function() {
         if (this.props.params.id != this.state.dm._id) {
             API.loadDomainModel(this.props.params.id, function(data,resp) {
                 this.setState({'dm': data});
+                MessageHandler.resetMessages();
             }.bind(this));
         }
     }

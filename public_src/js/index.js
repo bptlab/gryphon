@@ -16,7 +16,7 @@ var Route = require('react-router').Route;
 var Link = require('react-router').Link;
 var IndexRoute = require('react-router').IndexRoute;
 var MessageBar = require('./react/messagebar').MessageBarComponent;
-
+var ExportConfigComponent = require('./react/exportconfig');
 
 var App = React.createClass({
     render: function() {
@@ -41,6 +41,7 @@ $(function () {
                 <Route path="scenario/:id" component={ScenarioEditorComponent} />
                 <Route path="fragment/:id" component={FragmentEditorComponent} />
                 <Route path="domainmodel/:id" component={DomainModelEditorComponent} />
+                <Route path="exportconfig" component={ExportConfigComponent} />
             </Route>
         </Router>,
         document.getElementById('app-container')

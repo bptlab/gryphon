@@ -10,6 +10,7 @@ var config = require('./config');
 var fragment = require('./routes/fragment');
 var scenario = require('./routes/scenario');
 var domainmodel = require('./routes/domainmodel');
+var export_r = require('./routes/export');
 
 var mongoose = require('mongoose');
 
@@ -33,6 +34,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/fragment', fragment);
 app.use('/api/scenario', scenario);
 app.use('/api/domainmodel', domainmodel);
+app.use('/api/export', export_r)
 
 app.post('/reqtest', function(req, res){
     console.log(req.body);

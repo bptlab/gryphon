@@ -316,10 +316,12 @@ var ScenarioEditorComponent = React.createClass({
     },
     componentDidMount: function() {
         this.loadScenario();
+        MessageHandler.resetMessages();
     },
     componentDidUpdate: function() {
         if (this.state.scenario._id !== this.props.params.id) {
             this.loadScenario();
+            MessageHandler.resetMessages();
         }
     },
     forceRerender: function() {

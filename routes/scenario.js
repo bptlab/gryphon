@@ -7,6 +7,7 @@ var _ = require('lodash');
 var Config = require('./../config');
 var RestClient = require('node-rest-client').Client;
 var validateFragment = require('./../helpers/validator').validateFragment;
+var Export =  require('./../models/export').model;
 
 router.get('/', function(req, res, next) {
     var name = req.query.query;
@@ -216,7 +217,7 @@ var validateFragmentList = function(list) {
 };
 
 router.post('/:scenID/export', function(req, res, next) {
-    var targeturl = req.body.targeturl;
+    var target = req.body.exportID;
     var scenID = req.params.scenID;
 
     var query = Scenario.findOne({_id:scenID}).populate('domainmodel').populate('fragments');
@@ -228,16 +229,27 @@ router.post('/:scenID/export', function(req, res, next) {
             return;
         }
         if (result !== null) {
-            var client = new RestClient();
-            var args = {
-                data: result,
-                headers: {"Content-Type": "application/json"}
-            };
-            client.post(targeturl, args, function(data, response){
-                res.json(data);
-            }).on('error',function(err){
-                console.log(err);
-                res.status(400).end();
+            Export.findOne({_id:target},function(err, result){
+                if (err) {
+                    console.error(err);
+                    res.status(500).end();
+                    return;
+                }
+                if (result !== null) {
+                    var client = new RestClient();
+                    var args = {
+                        data: result,
+                        headers: {"Content-Type": "application/json"}
+                    };
+                    client.post(result.url, args, function(data, response){
+                        res.json(data);
+                    }).on('error',function(err){
+                        console.log(err);
+                        res.status(500).end();
+                    });
+                } else {
+                    res.status(404).end();
+                }
             });
         } else {
             res.status(404).end();

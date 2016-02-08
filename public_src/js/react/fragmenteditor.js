@@ -29,6 +29,7 @@ var FragmentEditorComponent = React.createClass({
         var editor = new Editor($('#fragment-canvas'),$('#fragment-properties'));
         this.setState({editor: editor});
         this.loadDiagram();
+        MessageHandler.resetMessages();
         var interval = setInterval(this.autoSave,Config.FRAGMENT_SAVE_INTERVAL);
         this.setState({interval: interval});
     },
@@ -46,6 +47,7 @@ var FragmentEditorComponent = React.createClass({
     componentDidUpdate: function() {
         if (this.state.fragment != null && this.state.fragment._id != null && this.props.params.id != this.state.fragment._id) {
             this.saveDiagram(false);
+            MessageHandler.resetMessages();
             this.loadDiagram();
         }
     },
