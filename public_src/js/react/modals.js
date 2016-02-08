@@ -5,6 +5,7 @@ var API = require('./../api');
 var MessageHandler = require('./../messagehandler');
 var MessageComponent = require('./messagebar').MessageComponent;
 var Link = require('react-router').Link;
+var NameCheck = require('./../namecheck');
 
 /**
  * All modals used in the project
@@ -73,8 +74,11 @@ var ModifyFragmentModal = React.createClass({
         }
     },
     handleSubmit: function() {
-        API.exportFragment(this.getFinalState());
-        location.reload();
+        var newFragment = this.getFinalState();
+        if (NameCheck.check(newFragment.name)) {
+            API.exportFragment(newFragment);
+            location.reload();
+        }
     },
     render: function() {
         return (
@@ -137,9 +141,12 @@ var CreateScenarioModal = React.createClass({
         }
     },
     handleSubmit: function() {
-        if (this.state.name != '') {
+        if (NameCheck.check(this.state.name)) {
             API.createScenario(this.state.name);
             location.reload();
+        } else {
+            MessageHandler.handleMessage("warning",
+                "Only unique alphanumeric (+\"_\" + \" \" (space)) names are allowed!");
         }
     },
     handleNameChange: function(e) {
