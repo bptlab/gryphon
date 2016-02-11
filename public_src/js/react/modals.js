@@ -43,7 +43,7 @@ var DeleteFragmentModal = React.createClass({
                             <h4 className="modal-title" id="deleteFragmentModalLabel">DELETE A FRAGMENT</h4>
                         </div>
                         <div className="modal-body">
-                            Are you sure? Do really want to delete exactly this fragment? Here be dragons.
+                            Are you sure? Do really want to delete this fragment?
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
@@ -127,7 +127,7 @@ var ModifyFragmentModal = React.createClass({
             var fragid = button.data('fragid');
             var fragname = button.data('fragname');
             this.setState({fragID:fragid,name:fragname})
-        })
+        }.bind(this))
     }
 });
 
@@ -248,7 +248,7 @@ var ExportScenarioModal = React.createClass({
                                                     value={this.state.selectedTarget}
                                                     onChange={this.handleTargetChange}
                                                     className="form-control">
-                                                <option value="">Select or add Chimera Instance</option>
+                                                <option value="">Receive</option>
                                                 {targets}
                                             </select>
                                         </div>
