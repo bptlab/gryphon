@@ -103035,6 +103035,7 @@ var MessageBarComponent = React.createClass({
 module.exports = { MessageBarComponent: MessageBarComponent, MessageComponent: MessageComponent };
 
 },{"./../api":673,"./../config":677,"./../editor":678,"./../messagehandler":680,"react":672,"react-dom":490}],687:[function(require,module,exports){
+var Config = require('./../config');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Editor = require('./../editor');
@@ -103188,7 +103189,7 @@ var DeleteScenarioModal = React.createClass({
                         React.createElement(
                             'button',
                             { type: 'button', className: 'btn btn-danger', onClick: this.handleClick },
-                            'Delete Fragment'
+                            'Delete Scenario'
                         )
                     )
                 )
@@ -103407,7 +103408,7 @@ var ExportScenarioModal = React.createClass({
         return {
             messages: [],
             targets: [],
-            selectedTargetURL: "No valid Chimera instance selected.",
+            selectedTargetURL: "Download scenario as JSON.",
             selectedTarget: "",
             scenID: ""
         };
@@ -103420,7 +103421,7 @@ var ExportScenarioModal = React.createClass({
             }
         }.bind(this));
         if (e.target.value == "") {
-            this.setState({ selectedTargetURL: "No valid Chimera instance selected." });
+            this.setState({ selectedTargetURL: "Download scenario as JSON." });
         }
     },
     handleSubmit: function () {
@@ -103429,6 +103430,8 @@ var ExportScenarioModal = React.createClass({
                 MessageHandler.handleMessage('success', 'Export succesfull!');
             });
             $('#exportScenarioModal').modal('hide');
+        } else {
+            window.location.replace(Config.API_HOST + 'scenario/' + this.state.scenID + '?populate=true&download=true');
         }
     },
     render: function () {
@@ -103504,7 +103507,7 @@ var ExportScenarioModal = React.createClass({
                                             React.createElement(
                                                 'option',
                                                 { value: '' },
-                                                'Receive'
+                                                'Download scenario'
                                             ),
                                             targets
                                         )
@@ -103583,7 +103586,7 @@ var ModalComponent = React.createClass({
 
 module.exports = ModalComponent;
 
-},{"./../api":673,"./../editor":678,"./../messagehandler":680,"./../namecheck":681,"./messagebar":686,"react":672,"react-dom":490,"react-router":510}],688:[function(require,module,exports){
+},{"./../api":673,"./../config":677,"./../editor":678,"./../messagehandler":680,"./../namecheck":681,"./messagebar":686,"react":672,"react-dom":490,"react-router":510}],688:[function(require,module,exports){
 var React = require('react');
 var Link = require('react-router').Link;
 var API = require('./../api');

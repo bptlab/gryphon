@@ -192,6 +192,7 @@ router.get('/:scenID', function(req, res, next) {
     if (populate) {
         query = query.populate('fragments').populate('domainmodel');
     }
+    var dl = req.query.download;
     query.exec(function(err, result){
         if (err) {
             console.error(err);
@@ -199,6 +200,10 @@ router.get('/:scenID', function(req, res, next) {
             return;
         }
         if (result !== null) {
+            if (dl) {
+                res.append('Content-disposition','attachment');
+                res.append('filename', result.name + '.json');
+            }
             res.json(result)
         } else {
             res.status(404).end();

@@ -1,3 +1,4 @@
+var Config = require('./../config');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Editor = require('./../editor');
@@ -232,7 +233,7 @@ var ExportScenarioModal = React.createClass({
         return {
             messages: [],
             targets: [],
-            selectedTargetURL: "No valid Chimera instance selected.",
+            selectedTargetURL: "Download scenario as JSON.",
             selectedTarget: "",
             scenID: ""
         }
@@ -245,7 +246,7 @@ var ExportScenarioModal = React.createClass({
             }
         }.bind(this));
         if (e.target.value == "") {
-            this.setState({selectedTargetURL: "No valid Chimera instance selected."})
+            this.setState({selectedTargetURL: "Download scenario as JSON."})
         }
     },
     handleSubmit: function() {
@@ -254,6 +255,8 @@ var ExportScenarioModal = React.createClass({
                 MessageHandler.handleMessage('success','Export succesfull!');
             });
             $('#exportScenarioModal').modal('hide');
+        } else {
+            window.location.replace(Config.API_HOST + 'scenario/' + this.state.scenID + '?populate=true&download=true');
         }
     },
     render: function() {
@@ -289,7 +292,7 @@ var ExportScenarioModal = React.createClass({
                                                     value={this.state.selectedTarget}
                                                     onChange={this.handleTargetChange}
                                                     className="form-control">
-                                                <option value="">Receive</option>
+                                                <option value="">Download scenario</option>
                                                 {targets}
                                             </select>
                                         </div>
