@@ -102287,12 +102287,12 @@ var DataClassComponent = React.createClass({
     handleAttrAdd: function (newItem) {
         if (NameCheck.check(newItem) && NameCheck.isUnique(newItem, this.state.items)) {
             var newItems = this.state.items.concat([{ name: newItem, datatype: 'String' }]);
+            this.setState({ items: newItems, newname: "" });
             this.props.handleUpdate({
                 name: this.props.name,
                 is_event: this.props.is_event,
-                attributes: this.state.items
+                attributes: newItems
             });
-            this.setState({ items: newItems, newname: "" });
             return true;
         }
     },
