@@ -256,11 +256,6 @@ var ScenarioDomainModelList = React.createClass({
 });
 
 var ScenarioOperations = React.createClass({
-    handleDelete: function() {
-        API.deleteScenario(this.props.scenario._id, function(data, res){
-            
-        });
-    },
     render: function() {
         return (
             <div className="panel panel-default">
@@ -279,7 +274,9 @@ var ScenarioOperations = React.createClass({
                         <button
                             type="button"
                             className="btn btn-danger btn-block"
-                            onClick={this.handleDelete}
+                            data-toggle="modal"
+                            data-target="#deleteScenarioModal"
+                            data-scenid={this.props.scenario._id}
                         >
                             Delete scenario
                         </button>
