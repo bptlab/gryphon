@@ -13,11 +13,6 @@ var ExportTargetComponent = React.createClass({
             url: ""
         }
     },
-    getDefaultProps: function() {
-        return {
-            onUpdate: function(){}
-        }
-    },
     handleUpdate: function() {
         API.validateExport(this.state.url,function(response){
             console.log(response);
@@ -39,8 +34,9 @@ var ExportTargetComponent = React.createClass({
         this.setState({name: this.props.name, url: this.props.url})
     },
     deleteExport: function() {
-        API.deleteExport(this.props.url,function(response){
+        API.deleteExport(this.props.id,function(response){
             MessageHandler.handleMessage("success","Removed export!");
+            console.log('Start update!');
             this.props.onUpdate();
         }.bind(this));
     },
@@ -81,7 +77,10 @@ var ExportConfigComponent = React.createClass({
         }
     },
     updateData: function() {
+        console.log('Starting update!');
         API.getAvailableExports(function(data){
+            console.log('Update done!');
+            console.log(data);
             this.setState({exports: data})
         }.bind(this))
     },
@@ -90,8 +89,9 @@ var ExportConfigComponent = React.createClass({
         this.updateData()
     },
     render: function() {
+        var updateHandler = this.updateData;
         var rows = this.state.exports.map(function(ex){
-            return <ExportTargetComponent name={ex.name} url={ex.url} id={ex._id} onUpdate={this.updateData} deletable={true}/>
+            return <ExportTargetComponent name={ex.name} url={ex.url} id={ex._id} onUpdate={updateHandler} deletable={true}/>
         });
         return (
             <div className="col-md-12">

@@ -145,13 +145,12 @@ API.prototype.updateExport = function(id, name, url, callback) {
     $.post(this.createURL("export/" + id),{name:name,url:url},callback);
 };
 
-API.prototype.deleteExport = function(url, callback) {
+API.prototype.deleteExport = function(id, callback) {
     $.ajax({
-        url: this.createURL("export"),
-        data: JSON.stringify({url: url}),
+        url: this.createURL("export/" + id),
         type: 'DELETE',
         contentType: "application/json",
-        success: callback
+        complete: callback
     });
 };
 
