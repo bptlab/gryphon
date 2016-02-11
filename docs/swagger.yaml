@@ -481,6 +481,12 @@ paths:
         The target server should respond with a 200 if everything went fine. The content of the response doesn't matter.
         The target server should expect a POST-call according to RESTful APIs.
       parameters:
+        - name: id
+          in: path
+          description: The scenarios id.
+          required: true
+          type: number
+          format: integer
         - name: domainmodel
           in: body
           description: The model object.

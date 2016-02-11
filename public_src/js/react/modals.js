@@ -141,9 +141,6 @@ var CreateScenarioModal = React.createClass({
         if (NameCheck.check(this.state.name)) {
             API.createScenario(this.state.name);
             location.reload();
-        } else {
-            MessageHandler.handleMessage("warning",
-                "Only unique alphanumeric (+\"_\" + \" \" (space)) names are allowed!");
         }
     },
     handleNameChange: function(e) {
