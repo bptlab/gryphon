@@ -39,6 +39,16 @@ var DataClassAttributeComponent = React.createClass({
         this.props.handleDataTypeChange(e);
     },
     render: function() {
+        var availableFixedTypes = ["String","Integer","Double","Boolean","Enum"].map(function(dt){
+            return (
+                <option value={dt}>{dt}</option>
+            )
+        });
+        var availableTypes = this.props.availableDataTypes.map(function(dt){
+            return (
+                <option value={dt}>{dt}</option>
+            )
+        });
         return (
             <li className="list-group-item clearfix">
                 <div className="row">
@@ -50,10 +60,14 @@ var DataClassAttributeComponent = React.createClass({
                             onChange={this.handleNameChange} />
                     </div>
                     <div className="col-sm-5">
-                        <input type="text"
-                               className="form-control"
-                               value={this.props.datatype}
-                               onChange={this.handleDataTypeChange} />
+                        <select className="selectpicker" onChange={this.handleDataTypeChange} value={this.props.datatype} data-live-search="true" id={this.props.name + "-dtselect"}>
+                            <optgroup label="Scalar Type">
+                                {availableFixedTypes}
+                            </optgroup>
+                            <optgroup label="Class-Reference">
+                                {availableTypes}
+                            </optgroup>
+                        </select>
                     </div>
                     <div className="col-sm-1">
                         <button type="button" className="btn btn-danger" onClick={this.props.onDelete}><i className="fa fa-times"></i></button>
@@ -61,6 +75,12 @@ var DataClassAttributeComponent = React.createClass({
                 </div>
             </li>
         );
+    },
+    componentDidMount: function() {
+        $('#' + this.props.name + '-dtselect').selectpicker();
+    },
+    componentDidUpdate: function() {
+        $('#' + this.props.name + '-dtselect').selectpicker();
     }
 });
 
@@ -153,7 +173,7 @@ var DataClassComponent = React.createClass({
     },
     handleType: function(type) {
         var is_event = false;
-        if (type == "event") {is_event = true;};
+        if (type == "event") {is_event = true;}
         this.props.handleUpdate({
             name: this.props.name,
             is_event: is_event,
@@ -210,6 +230,7 @@ var DataClassComponent = React.createClass({
                     onDelete={this.handleRemove(i)}
                     handleDataTypeChange={this.handleAttrTypeChange(i)}
                     handleNameChange={this.handleAttrNameChange(i)}
+                    availableDataTypes={this.props.availableDataTypes}
                 />);
         }.bind(this));
         return (
@@ -350,12 +371,30 @@ var DomainModelEditorComponent = React.createClass({
             return (dataclass.name == type)
         })
     },
+    getAvailableDataTypes: function() {
+        var types = [];
+        types = types.concat(this.state.dm.dataclasses.map(function(dataclass){
+            return dataclass.name;
+        }));
+        return types;
+    },
     render: function() {
         var cols = [[],[],[]];
+        var cols_length = [0,0,0];
+        var smallest = 0;
         this.state.dm.dataclasses.forEach(function(dataclass, index) {
-            cols[index % 3].push(dataclass);
+            cols_length[smallest] += (2 + dataclass.attributes.length);
+            cols[smallest].push(dataclass);
+            smallest = 0;
+            var smallest_length = Number.MAX_VALUE;
+            cols_length.forEach(function(col_length, index) {
+                if (col_length < smallest_length) {
+                    smallest_length = col_length;
+                    smallest = index;
+                }
+            });
         });
-        var cols = cols.map(function(col, colindex){
+        cols = cols.map(function(col, colindex){
             var content = col.map(function(dataclass, classindex) {
                 var realIndex = (classindex * 3) + colindex;
                 return (
@@ -367,6 +406,7 @@ var DomainModelEditorComponent = React.createClass({
                         initialItems={dataclass.attributes}
                         name={dataclass.name}
                         is_event={dataclass.is_event}
+                        availableDataTypes={this.getAvailableDataTypes()}
                         />
                 )
             }.bind(this));

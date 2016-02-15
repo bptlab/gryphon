@@ -102146,6 +102146,20 @@ var DataClassAttributeComponent = React.createClass({
         this.props.handleDataTypeChange(e);
     },
     render: function () {
+        var availableFixedTypes = ["String", "Integer", "Double", "Boolean", "Enum"].map(function (dt) {
+            return React.createElement(
+                'option',
+                { value: dt },
+                dt
+            );
+        });
+        var availableTypes = this.props.availableDataTypes.map(function (dt) {
+            return React.createElement(
+                'option',
+                { value: dt },
+                dt
+            );
+        });
         return React.createElement(
             'li',
             { className: 'list-group-item clearfix' },
@@ -102164,10 +102178,20 @@ var DataClassAttributeComponent = React.createClass({
                 React.createElement(
                     'div',
                     { className: 'col-sm-5' },
-                    React.createElement('input', { type: 'text',
-                        className: 'form-control',
-                        value: this.props.datatype,
-                        onChange: this.handleDataTypeChange })
+                    React.createElement(
+                        'select',
+                        { className: 'selectpicker', onChange: this.handleDataTypeChange, value: this.props.datatype, 'data-live-search': 'true', id: this.props.name + "-dtselect" },
+                        React.createElement(
+                            'optgroup',
+                            { label: 'Scalar Type' },
+                            availableFixedTypes
+                        ),
+                        React.createElement(
+                            'optgroup',
+                            { label: 'Class-Reference' },
+                            availableTypes
+                        )
+                    )
                 ),
                 React.createElement(
                     'div',
@@ -102180,6 +102204,12 @@ var DataClassAttributeComponent = React.createClass({
                 )
             )
         );
+    },
+    componentDidMount: function () {
+        $('#' + this.props.name + '-dtselect').selectpicker();
+    },
+    componentDidUpdate: function () {
+        $('#' + this.props.name + '-dtselect').selectpicker();
     }
 });
 
@@ -102307,7 +102337,7 @@ var DataClassComponent = React.createClass({
         var is_event = false;
         if (type == "event") {
             is_event = true;
-        };
+        }
         this.props.handleUpdate({
             name: this.props.name,
             is_event: is_event,
@@ -102362,7 +102392,8 @@ var DataClassComponent = React.createClass({
                 datatype: item.datatype,
                 onDelete: this.handleRemove(i),
                 handleDataTypeChange: this.handleAttrTypeChange(i),
-                handleNameChange: this.handleAttrNameChange(i)
+                handleNameChange: this.handleAttrNameChange(i),
+                availableDataTypes: this.props.availableDataTypes
             });
         }.bind(this));
         return React.createElement(
@@ -102543,12 +102574,30 @@ var DomainModelEditorComponent = React.createClass({
             return dataclass.name == type;
         });
     },
+    getAvailableDataTypes: function () {
+        var types = [];
+        types = types.concat(this.state.dm.dataclasses.map(function (dataclass) {
+            return dataclass.name;
+        }));
+        return types;
+    },
     render: function () {
         var cols = [[], [], []];
+        var cols_length = [0, 0, 0];
+        var smallest = 0;
         this.state.dm.dataclasses.forEach(function (dataclass, index) {
-            cols[index % 3].push(dataclass);
+            cols_length[smallest] += 2 + dataclass.attributes.length;
+            cols[smallest].push(dataclass);
+            smallest = 0;
+            var smallest_length = Number.MAX_VALUE;
+            cols_length.forEach(function (col_length, index) {
+                if (col_length < smallest_length) {
+                    smallest_length = col_length;
+                    smallest = index;
+                }
+            });
         });
-        var cols = cols.map(function (col, colindex) {
+        cols = cols.map(function (col, colindex) {
             var content = col.map(function (dataclass, classindex) {
                 var realIndex = classindex * 3 + colindex;
                 return React.createElement(DataClassComponent, {
@@ -102558,7 +102607,8 @@ var DomainModelEditorComponent = React.createClass({
                     validateAttrType: this.validateAttrType,
                     initialItems: dataclass.attributes,
                     name: dataclass.name,
-                    is_event: dataclass.is_event
+                    is_event: dataclass.is_event,
+                    availableDataTypes: this.getAvailableDataTypes()
                 });
             }.bind(this));
             return React.createElement(
