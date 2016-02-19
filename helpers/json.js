@@ -6,6 +6,7 @@ var xml2json = require('xml2json')
  */
 var parseToBPMNObject = function (xml) {
 
+    // What am I doing here? I remove all namespaces to make parsing easier. All but the griffin notations.
     xml = xml.replace(/<bpmn:/g,'<');
     xml = xml.replace(/<bpmndi:/g,'<');
     xml = xml.replace(/<di:/g, '<');

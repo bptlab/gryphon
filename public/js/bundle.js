@@ -104125,14 +104125,8 @@ var Link = require('react-router').Link;
 var SideBarSingleScenario = React.createClass({
     displayName: 'SideBarSingleScenario',
 
-    getInitialState: function () {
-        return {
-            selected: ""
-        };
-    },
     handleScenarioClick: function (e) {
-        var new_state = this.state.selected == 'selected' ? '' : 'selected';
-        this.setState({ 'selected': new_state });
+        this.props.setSelectedScenario(this.props.scenario._id);
     },
     render: function () {
         var scenario = this.props.scenario;
@@ -104176,7 +104170,7 @@ var SideBarSingleScenario = React.createClass({
         });
         return React.createElement(
             'div',
-            { className: "link-blue " + this.state.selected, key: scenario._id },
+            { className: "link-blue " + this.props.selected, key: scenario._id },
             React.createElement(
                 Link,
                 { to: "scenario/" + scenario._id, onClick: this.handleScenarioClick },
@@ -104206,7 +104200,8 @@ var SideBarScenarios = React.createClass({
 
     getInitialState: function () {
         return {
-            list: []
+            list: [],
+            selected: ""
         };
     },
     loadScenarioList: function () {
@@ -104220,10 +104215,15 @@ var SideBarScenarios = React.createClass({
         this.loadScenarioList();
         setInterval(this.saveDiagram, 1000 * 60);
     },
+    setSelectedScenario: function (scenid) {
+        this.setState({ selected: scenid });
+    },
     render: function () {
+        var setSelectedScenario = this.setSelectedScenario;
         var list = this.state.list.map(function (scenario) {
-            return React.createElement(SideBarSingleScenario, { scenario: scenario, key: scenario._id });
-        });
+            var selected = scenario._id == this.state.selected ? 'selected' : '';
+            return React.createElement(SideBarSingleScenario, { scenario: scenario, key: scenario._id, selected: selected, setSelectedScenario: setSelectedScenario });
+        }.bind(this));
         return React.createElement(
             'div',
             { className: 'sidebar-links' },

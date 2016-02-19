@@ -3,14 +3,8 @@ var API = require('./../api');
 var Link = require('react-router').Link;
 
 var SideBarSingleScenario = React.createClass({
-    getInitialState: function(){
-        return {
-            selected: ""
-        };
-    },
     handleScenarioClick: function(e) {
-        var new_state = this.state.selected == 'selected' ? '' : 'selected';
-        this.setState({'selected': new_state});
+        this.props.setSelectedScenario(this.props.scenario._id);
     },
     render: function() {
         var scenario = this.props.scenario;
@@ -43,7 +37,7 @@ var SideBarSingleScenario = React.createClass({
             );
         });
         return (
-            <div className={"link-blue " + this.state.selected} key={scenario._id}>
+            <div className={"link-blue " + this.props.selected} key={scenario._id}>
                 <Link to={"scenario/" + scenario._id} onClick={this.handleScenarioClick}>
                     <i className="fa fa-newspaper-o"></i>{scenario.name}
                 </Link>
@@ -63,7 +57,8 @@ var SideBarSingleScenario = React.createClass({
 var SideBarScenarios = React.createClass({
     getInitialState: function() {
         return {
-            list: []
+            list: [],
+            selected: ""
         }
     },
     loadScenarioList: function() {
@@ -77,10 +72,15 @@ var SideBarScenarios = React.createClass({
         this.loadScenarioList();
         setInterval(this.saveDiagram,1000*60);
     },
+    setSelectedScenario: function(scenid) {
+        this.setState({selected: scenid});
+    },
     render: function() {
+        var setSelectedScenario = this.setSelectedScenario;
         var list = this.state.list.map(function (scenario){
-            return <SideBarSingleScenario scenario={scenario} key={scenario._id} />
-        });
+            var selected = (scenario._id == this.state.selected) ? 'selected' : '';
+            return <SideBarSingleScenario scenario={scenario} key={scenario._id} selected={selected} setSelectedScenario={setSelectedScenario}/>
+        }.bind(this));
         return (
             <div className="sidebar-links">
                 <div className="link-red">

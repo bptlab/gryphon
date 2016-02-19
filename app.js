@@ -36,11 +36,7 @@ app.use('/api/scenario', scenario);
 app.use('/api/domainmodel', domainmodel);
 app.use('/api/export', export_r);
 
-app.post('/import', function(req, res){
-    console.log(req.body);
-});
-
-app.get('/version',function(req, res){
+app.get('/api/version',function(req, res){
     res.json({
       'version': 1
     })
