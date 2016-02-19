@@ -33,6 +33,7 @@ var parseNodes = function(node_list) {
 
 var parseIntoGraph = function(bpmnObject) {
     var nodes = {};
+    var nodes_reverse = {};
 
     var startEvents = [];
     if (bpmnObject.startEvent != undefined) {
@@ -43,10 +44,23 @@ var parseIntoGraph = function(bpmnObject) {
     if (bpmnObject.endEvent != undefined) {
         bpmnObject.endEvent.forEach(parseNodes(endEvents));
     }
-    var nodes_reverse = {};
+
     if (bpmnObject.sequenceFlow != undefined) {
         nodes = parseSequenceFlow(bpmnObject.sequenceFlow);
         nodes_reverse = parseSequenceFlowReverse(bpmnObject.sequenceFlow)
+    }
+    if (bpmnObject.boundaryEvent != undefined) {
+        bpmnObject.boundaryEvent.forEach(function(boundaryEvent){
+            if (nodes[boundaryEvent.attachedToRef] == undefined) {
+                nodes[boundaryEvent.attachedToRef] = []
+            }
+            nodes[boundaryEvent.attachedToRef].push(boundaryEvent.id);
+
+            if (nodes_reverse[boundaryEvent.id] == undefined) {
+                nodes_reverse[boundaryEvent.id] = []
+            }
+            nodes_reverse[boundaryEvent.id].push(boundaryEvent.attachedToRef)
+        })
     }
 
     return {
