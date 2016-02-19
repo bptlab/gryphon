@@ -234,19 +234,19 @@ router.post('/:scenID/export', function(req, res, next) {
             return;
         }
         if (result !== null) {
-            Export.findOne({_id:target},function(err, result){
+            Export.findOne({_id:target},function(err, result2){
                 if (err) {
                     console.error(err);
                     res.status(500).end();
                     return;
                 }
-                if (result !== null) {
+                if (result2 !== null) {
                     var client = new RestClient();
                     var args = {
                         data: result,
                         headers: {"Content-Type": "application/json"}
                     };
-                    client.post(result.url, args, function(data, response){
+                    client.post(result2.url + '/scenario', args, function(data, response){
                         res.json(data);
                     }).on('error',function(err){
                         console.log(err);

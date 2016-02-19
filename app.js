@@ -34,11 +34,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/fragment', fragment);
 app.use('/api/scenario', scenario);
 app.use('/api/domainmodel', domainmodel);
-app.use('/api/export', export_r)
+app.use('/api/export', export_r);
 
-app.post('/reqtest', function(req, res){
+app.post('/import', function(req, res){
     console.log(req.body);
 });
+
+app.get('/version',function(req, res){
+    res.json({
+      'version': 1
+    })
+});
+
 // error handlers
 
 // development error handler
