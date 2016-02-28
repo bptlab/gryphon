@@ -101754,6 +101754,7 @@ module.exports={
       "extends": [
         "bpmn:StartEvent",
         "bpmn:IntermediateThrowEvent",
+        "bpmn:IntermediateCatchEvent",
         "bpmn:BoundaryEvent"
       ],
       "properties": [
