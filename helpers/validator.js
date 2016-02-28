@@ -132,7 +132,7 @@ var validateSoundness = function(graph) {
     });
     if (isReallyValid) {
         return [{
-            'text': 'Your graph is sound!',
+            'text': 'Your graph is structural sound!',
             'type': 'success'
         }]
     } else {
