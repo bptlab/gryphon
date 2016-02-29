@@ -1,6 +1,7 @@
 var React = require('react');
 var API = require('./../api');
 var Link = require('react-router').Link;
+var SideBarManager = require('./../sidebarmanager');
 
 var SideBarSingleScenario = React.createClass({
     handleScenarioClick: function(e) {
@@ -68,9 +69,12 @@ var SideBarScenarios = React.createClass({
             }
         }.bind(this))
     },
-    componentDidMount: function() {
+    reloadAll: function() {
         this.loadScenarioList();
-        setInterval(this.saveDiagram,1000*60);
+    },
+    componentDidMount: function() {
+        SideBarManager.setRoot(this);
+        this.loadScenarioList();
     },
     setSelectedScenario: function(scenid) {
         this.setState({selected: scenid});

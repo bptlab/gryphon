@@ -7,6 +7,7 @@ var MessageHandler = require('./../messagehandler');
 var MessageComponent = require('./messagebar').MessageComponent;
 var Link = require('react-router').Link;
 var NameCheck = require('./../namecheck');
+var SideBarManager = require('./../sidebarmanager');
 
 /**
  * All modals used in the project
@@ -29,7 +30,8 @@ var DeleteFragmentModal = React.createClass({
     handleClick: function() {
         if (this.state.fragID != "") {
             API.deleteFragment(this.state.fragID);
-            location.reload();
+            SideBarManager.reload();
+            $('#deleteFragmentModal').modal('hide');
         }
     },
     render: function() {
@@ -73,7 +75,8 @@ var DeleteScenarioModal = React.createClass({
     handleClick: function() {
         if (this.state.scenID != "") {
             API.deleteScenario(this.state.scenID);
-            location.reload();
+            SideBarManager.reload();
+            $('#deleteScenarioModal').modal('hide');
         }
     },
     render: function() {
@@ -125,7 +128,8 @@ var ModifyFragmentModal = React.createClass({
         var newFragment = this.getFinalState();
         if (NameCheck.check(newFragment.name)) {
             API.exportFragment(newFragment);
-            location.reload();
+            SideBarManager.reload();
+            $('#modifyFragmentModal').modal('hide');
         }
     },
     handleChange: function(e) {
@@ -185,7 +189,8 @@ var CreateScenarioModal = React.createClass({
     handleSubmit: function() {
         if (NameCheck.check(this.state.name)) {
             API.createScenario(this.state.name);
-            location.reload();
+            SideBarManager.reload();
+            $('#createScenarioModal').modal('hide');
         }
     },
     handleNameChange: function(e) {
