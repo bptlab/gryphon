@@ -137,7 +137,7 @@ var validateSoundness = function(graph) {
         }]
     } else {
         return [{
-            'text': 'Your graph is not sound!',
+            'text': 'Your graph is not structural sound!',
             'type': 'danger'
         }]
     }
