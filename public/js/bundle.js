@@ -103670,7 +103670,7 @@ var ScenarioEditForm = React.createClass({
         this.setState({ name: e.target.value });
     },
     validateTerminationCondition: function (terminationcondition) {
-        var split = terminationcondition.split(" ");
+        var split = terminationcondition.split(", ");
         var ret = true;
         split.forEach(function (dataobject) {
             var end = dataobject.indexOf("[");

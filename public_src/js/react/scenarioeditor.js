@@ -24,11 +24,11 @@ var ScenarioEditForm = React.createClass({
         this.setState({name: e.target.value});
     },
     validateTerminationCondition: function(terminationcondition) {
-        var split = terminationcondition.split(" ");
+        var split = terminationcondition.split(", ");
         var ret = true;
         split.forEach(function(dataobject){
             var end = dataobject.indexOf("[");
-            var realend = dataobject.indexOf("]")
+            var realend = dataobject.indexOf("]");
             if (end == dataobject.length - 1 || end == -1 || realend < dataobject.length - 1) {
                 MessageHandler.handleMessage("danger","You must specify a state for your termination condition in: " + dataobject);
                 ret = false;
