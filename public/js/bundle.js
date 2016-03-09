@@ -103697,6 +103697,14 @@ var ScenarioEditForm = React.createClass({
         var handler = function (e) {
             var terminationconditions = this.state.terminationconditions;
             terminationconditions[index] = e.target.value;
+            this.setState({ terminationconditions: terminationconditions });
+        }.bind(this);
+        return handler;
+    },
+    validateTerminationConditionChange: function (index) {
+        var handler = function (e) {
+            var terminationconditions = this.state.terminationconditions;
+            terminationconditions[index] = e.target.value;
             var state = this.validateTerminationCondition(e.target.value);
             // Dibbilydubbely find my grandgrandparent!
             if (state == false) {
@@ -103704,7 +103712,6 @@ var ScenarioEditForm = React.createClass({
             } else {
                 $(e.target).parent().parent().parent().removeClass('has-error');
             }
-            this.setState({ terminationconditions: terminationconditions });
         }.bind(this);
         return handler;
     },
@@ -103759,7 +103766,8 @@ var ScenarioEditForm = React.createClass({
                             id: "terminationcondition" + index,
                             placeholder: 'Termination Condition',
                             value: terminationcondition,
-                            onChange: this.handleTerminationConditionChange(index)
+                            onChange: this.handleTerminationConditionChange(index),
+                            onBlur: this.validateTerminationConditionChange(index)
                         }),
                         React.createElement(
                             'span',

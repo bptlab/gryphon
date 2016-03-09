@@ -51,6 +51,14 @@ var ScenarioEditForm = React.createClass({
         var handler = function(e) {
             var terminationconditions = this.state.terminationconditions;
             terminationconditions[index] = e.target.value;
+            this.setState({terminationconditions: terminationconditions});
+        }.bind(this);
+        return handler;
+    },
+    validateTerminationConditionChange: function(index) {
+        var handler = function(e) {
+            var terminationconditions = this.state.terminationconditions;
+            terminationconditions[index] = e.target.value;
             var state = this.validateTerminationCondition(e.target.value);
             // Dibbilydubbely find my grandgrandparent!
             if (state == false) {
@@ -58,9 +66,9 @@ var ScenarioEditForm = React.createClass({
             } else {
                 $(e.target).parent().parent().parent().removeClass('has-error');
             }
-            this.setState({terminationconditions: terminationconditions});
         }.bind(this);
         return handler;
+
     },
     componentDidUpdate: function() {
         if (this.props.scenario._id != this.state._id) {
@@ -104,6 +112,7 @@ var ScenarioEditForm = React.createClass({
                                 placeholder="Termination Condition"
                                 value = {terminationcondition}
                                 onChange = {this.handleTerminationConditionChange(index)}
+                                onBlur = {this.validateTerminationConditionChange(index)}
                                 />
                             <span className="input-group-btn">
                                 <button
