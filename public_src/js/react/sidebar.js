@@ -69,11 +69,8 @@ var SideBarScenarios = React.createClass({
             }
         }.bind(this))
     },
-    reloadAll: function() {
-        this.loadScenarioList();
-    },
     componentDidMount: function() {
-        SideBarManager.setRoot(this);
+        SideBarManager.setHandler(this.loadScenarioList);
         this.loadScenarioList();
     },
     setSelectedScenario: function(scenid) {

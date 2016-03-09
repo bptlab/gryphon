@@ -3,6 +3,7 @@ var Link = require('react-router').Link;
 var API = require('./../api');
 var MessageHandler = require('./../messagehandler');
 var NameCheck = require('./../namecheck');
+var SideBarManager = require('./../sidebarmanager');
 
 var ScenarioEditForm = React.createClass({
     getInitialState: function() {
@@ -221,7 +222,7 @@ var ScenarioFragmentList = React.createClass({
                 </ul>
                 <div className="panel-footer clearfix">
                     <div className="input-group pull-right">
-                        <input type="text" className="form-control" name="newfragmentname" onChange={this.handleNameChange} placeholder="New fragment" />
+                        <input type="text" className="form-control" name="newfragmentname" onChange={this.handleNameChange} placeholder="New fragment" value={this.state.newname} />
                         <span className="input-group-btn">
                             <button className="btn btn-success" type="button" onClick={this.handleFragmentClick}>
                                 <i className="fa fa-plus"></i> Add fragment
@@ -321,6 +322,7 @@ var ScenarioEditorComponent = React.createClass({
     },
     forceRerender: function() {
         this.loadScenario();
+        SideBarManager.reload();
     },
     render: function() {
         return (

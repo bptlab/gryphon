@@ -1,16 +1,18 @@
 
 var SideBarManager = function() {
-    this.rootElement = null;
+    this.func = null;
 };
 
 //Sets root element where all messages get applied.
-SideBarManager.prototype.setRoot = function(element) {
-    this.rootElement = element;
+SideBarManager.prototype.setHandler = function(func) {
+    this.func = func;
 };
 
 SideBarManager.prototype.reload = function() {
-    if (this.rootElement) {
-        this.rootElement.reloadAll();
+    console.log("Reloading. 0");
+    if (this.func) {
+        console.log("Reloading. 1");
+        this.func();
     }
 };
 

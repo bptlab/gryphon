@@ -9,6 +9,7 @@
 	width: 180px;
 	height: 100%;
 	padding: 20px 0;
+	overflow: scroll;
 }
 
 .sidebar-left-collapse > a {
