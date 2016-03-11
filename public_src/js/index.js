@@ -9,6 +9,7 @@ var SideBarComponent = require('./react/sidebar');
 var FragmentEditorComponent = require('./react/fragmenteditor');
 var ScenarioEditorComponent = require('./react/scenarioeditor');
 var DomainModelEditorComponent = require('./react/domainmodeleditor');
+var OLCEditorComponent = require('./react/olceditor');
 var IndexComponent = require('./react/index');
 var ModalComponent = require('./react/modals');
 var Router = require('react-router').Router;
@@ -42,6 +43,7 @@ $(function () {
                 <Route path="fragment/:id" component={FragmentEditorComponent} />
                 <Route path="domainmodel/:id" component={DomainModelEditorComponent} />
                 <Route path="exportconfig" component={ExportConfigComponent} />
+                <Route path="olc" component={OLCEditorComponent} />
             </Route>
         </Router>,
         document.getElementById('app-container')

@@ -95,7 +95,7 @@ var ScenarioEditForm = React.createClass({
             var terminationconditions = this.state.terminationconditions;
             terminationconditions.splice(index, 1);
             this.setState({terminationconditions: terminationconditions});
-        }.bind(this)
+        }.bind(this);
         return handler;
     },
     render: function() {
