@@ -165,14 +165,5 @@ function isEventType(eventBo, type, definition) {
 }
 
 module.exports = {
-    __depends__: [
-        require('diagram-js-direct-editing'),
-        require('diagram-js/lib/features/context-pad'),
-        require('diagram-js/lib/features/selection'),
-        require('diagram-js/lib/features/connect'),
-        require('diagram-js/lib/features/create'),
-        require('bpmn-js/lib/features/replace')
-    ],
-    __init__: [ 'contextPadProvider' ],
     contextPadProvider: [ 'type', ContextPadProvider ]
 };
