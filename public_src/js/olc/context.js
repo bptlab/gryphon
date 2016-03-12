@@ -8,8 +8,6 @@ var assign = require('lodash/object/assign'),
     getChildLanes = require('bpmn-js/lib/features/modeling/util/LaneUtil').getChildLanes,
     isEventSubProcess = require('bpmn-js/lib/util/DiUtil').isEventSubProcess;
 
-
-
 /**
  * A provider for BPMN 2.0 elements context pad
  */
@@ -88,6 +86,18 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
                 dragstart: appendListener,
                 click: appendListener
             }
+        };
+    }
+
+    function splitLaneHandler(count) {
+
+        return function(event, element) {
+            // actual split
+            modeling.splitLane(element, count);
+
+            // refresh context pad after split to
+            // get rid of split icons
+            contextPad.open(element, true);
         };
     }
 

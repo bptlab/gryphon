@@ -1,10 +1,16 @@
 var $ = require('jquery'),
-    OLCModeler = require('./modeler'),
-    Config = require('./../config');
+    Modeler = require('bpmn-js/lib/Modeler'),
+    Config = require('./../config'),
+    CustomPalette = require('./palette'),
+    CustomContext = require('./context');
 
 var Editor = function(canvas) {
-    this.renderer = new OLCModeler({
-        container: canvas
+    this.renderer = new Modeler({
+        container: canvas,
+        additionalModules: [
+            CustomPalette,
+            CustomContext
+        ]
     });
     this.renderer.createDiagram(function(){});
 };
