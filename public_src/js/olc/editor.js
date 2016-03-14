@@ -15,15 +15,16 @@ var Editor = function(canvas) {
     this.renderer.createDiagram(function(){});
 };
 
-Editor.prototype.loadDiagramStub = function() {
-    return ""; //Config.DEFAULT_OLC_XML;
-};
-
-Editor.prototype.exportOLC = function(dataclass,callback) {
+Editor.prototype.exportOLC = function(dm,dclassid,callback) {
     this.renderer.saveXML({format: true},function(err, xml){
         if (!err) {
-            dataclass.olc = xml;
-            callback(dataclass);
+            dm.dataclasses = dm.dataclasses.map(function(dclass){
+                if (dclass._id == dclassid) {
+                    dclass.olc = xml;
+                }
+                return dclass;
+            });
+            callback(dm);
         }
     });
 };

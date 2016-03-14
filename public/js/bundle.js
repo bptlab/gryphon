@@ -101614,7 +101614,8 @@ API.prototype.exportDomainModel = function (dm, callback) {
         url: this.createURL("domainmodel/" + dm._id),
         type: "POST",
         contentType: "application/json",
-        data: JSON.stringify(dm)
+        data: JSON.stringify(dm),
+        success: callback
     });
 };
 
@@ -101921,6 +101922,7 @@ module.exports = Validator;
 module.exports = {
     API_HOST: window.location.origin + '/api/',
     DEFAULT_FRAGMENT_XML: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"Process_1\" isExecutable=\"false\">\n    <bpmn:startEvent id=\"StartEvent_1\">\n      <bpmn:outgoing>SequenceFlow_0vy2x8y</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:task id=\"Task_0wyhfye\">\n      <bpmn:incoming>SequenceFlow_0vy2x8y</bpmn:incoming>\n      <bpmn:outgoing>SequenceFlow_1uw5t49</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"SequenceFlow_0vy2x8y\" sourceRef=\"StartEvent_1\" targetRef=\"Task_0wyhfye\" />\n    <bpmn:endEvent id=\"EndEvent_0cah2hq\">\n      <bpmn:incoming>SequenceFlow_1uw5t49</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"SequenceFlow_1uw5t49\" sourceRef=\"Task_0wyhfye\" targetRef=\"EndEvent_0cah2hq\" />\n  </bpmn:process>\n  <bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">\n    <bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"Process_1\">\n      <bpmndi:BPMNShape id=\"_BPMNShape_StartEvent_2\" bpmnElement=\"StartEvent_1\">\n        <dc:Bounds x=\"183\" y=\"173\" width=\"36\" height=\"36\" />\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"156\" y=\"209\" width=\"90\" height=\"20\" />\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_0wyhfye_di\" bpmnElement=\"Task_0wyhfye\">\n        <dc:Bounds x=\"319\" y=\"151\" width=\"100\" height=\"80\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge id=\"SequenceFlow_0vy2x8y_di\" bpmnElement=\"SequenceFlow_0vy2x8y\">\n        <di:waypoint xsi:type=\"dc:Point\" x=\"219\" y=\"191\" />\n        <di:waypoint xsi:type=\"dc:Point\" x=\"251\" y=\"191\" />\n        <di:waypoint xsi:type=\"dc:Point\" x=\"251\" y=\"191\" />\n        <di:waypoint xsi:type=\"dc:Point\" x=\"319\" y=\"191\" />\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"201\" y=\"110\" width=\"90\" height=\"20\" />\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNShape id=\"EndEvent_0cah2hq_di\" bpmnElement=\"EndEvent_0cah2hq\">\n        <dc:Bounds x=\"535\" y=\"173\" width=\"36\" height=\"36\" />\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"508\" y=\"209\" width=\"90\" height=\"20\" />\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge id=\"SequenceFlow_1uw5t49_di\" bpmnElement=\"SequenceFlow_1uw5t49\">\n        <di:waypoint xsi:type=\"dc:Point\" x=\"419\" y=\"191\" />\n        <di:waypoint xsi:type=\"dc:Point\" x=\"535\" y=\"191\" />\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"431.5\" y=\"181\" width=\"90\" height=\"20\" />\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNEdge>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn:definitions>\n",
+    DEFAULT_OLC_XML: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"Process_1\" isExecutable=\"false\">\n    <bpmn:task id=\"Task_0ihw5ky\" name=\"State1\" />\n  </bpmn:process>\n  <bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">\n    <bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"Process_1\">\n      <bpmndi:BPMNShape id=\"Task_0ihw5ky_di\" bpmnElement=\"Task_0ihw5ky\">\n        <dc:Bounds x=\"156\" y=\"63\" width=\"100\" height=\"80\" />\n      </bpmndi:BPMNShape>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn:definitions>\n",
     DEFAULT_TERMINATION_CONDITION: "Test[init]",
     MESSAGE_DISMISS_TIME: 5 * 1000,
     FRAGMENT_SAVE_INTERVAL: 30 * 1000
@@ -102028,7 +102030,7 @@ $(function () {
             React.createElement(Route, { path: 'fragment/:id', component: FragmentEditorComponent }),
             React.createElement(Route, { path: 'domainmodel/:id', component: DomainModelEditorComponent }),
             React.createElement(Route, { path: 'exportconfig', component: ExportConfigComponent }),
-            React.createElement(Route, { path: 'olc', component: OLCEditorComponent })
+            React.createElement(Route, { path: 'olc/:dmid/:dclassid', component: OLCEditorComponent })
         )
     ), document.getElementById('app-container'));
 });
@@ -102260,15 +102262,16 @@ var Editor = function (canvas) {
     this.renderer.createDiagram(function () {});
 };
 
-Editor.prototype.loadDiagramStub = function () {
-    return ""; //Config.DEFAULT_OLC_XML;
-};
-
-Editor.prototype.exportOLC = function (dataclass, callback) {
+Editor.prototype.exportOLC = function (dm, dclassid, callback) {
     this.renderer.saveXML({ format: true }, function (err, xml) {
         if (!err) {
-            dataclass.olc = xml;
-            callback(dataclass);
+            dm.dataclasses = dm.dataclasses.map(function (dclass) {
+                if (dclass._id == dclassid) {
+                    dclass.olc = xml;
+                }
+                return dclass;
+            });
+            callback(dm);
         }
     });
 };
@@ -102380,6 +102383,8 @@ var React = require('react');
 var MessageHandler = require('./../messagehandler');
 var NameCheck = require('./../namecheck');
 var API = require('./../api');
+var Config = require('./../config');
+var Link = require('react-router').Link;
 
 var TypeSelect = React.createClass({
     displayName: 'TypeSelect',
@@ -102504,6 +102509,14 @@ var DataClassHeaderComponent = React.createClass({
     displayName: 'DataClassHeaderComponent',
 
     render: function () {
+        var olcStatus = '';
+        if (this.props.changed == false) {
+            olcStatus = React.createElement(
+                Link,
+                { to: "olc/" + this.props.dmid + "/" + this.props.id, className: 'btn btn-primary' },
+                'Edit OLC'
+            );
+        }
         return React.createElement(
             'div',
             { className: 'panel-heading clearfix' },
@@ -102512,7 +102525,7 @@ var DataClassHeaderComponent = React.createClass({
                 { className: 'row' },
                 React.createElement(
                     'div',
-                    { className: 'col-sm-5' },
+                    { className: 'col-sm-4' },
                     React.createElement(
                         'h3',
                         { className: 'panel-title' },
@@ -102521,7 +102534,7 @@ var DataClassHeaderComponent = React.createClass({
                 ),
                 React.createElement(
                     'div',
-                    { className: 'col-sm-5' },
+                    { className: 'col-sm-3' },
                     React.createElement(TypeSelect, {
                         is_event: this.props.is_event,
                         handleType: this.props.handleType
@@ -102529,7 +102542,7 @@ var DataClassHeaderComponent = React.createClass({
                 ),
                 React.createElement(
                     'div',
-                    { className: 'col-sm-1' },
+                    { className: 'col-sm-4' },
                     React.createElement(
                         'div',
                         { className: 'btn-group' },
@@ -102537,7 +102550,8 @@ var DataClassHeaderComponent = React.createClass({
                             'button',
                             { type: 'button', className: 'btn btn-danger', onClick: this.props.handleDelete },
                             React.createElement('i', { className: 'fa fa-times' })
-                        )
+                        ),
+                        olcStatus
                     )
                 )
             )
@@ -102686,7 +102700,16 @@ var DataClassComponent = React.createClass({
         return React.createElement(
             'div',
             { className: 'panel panel-default' },
-            React.createElement(DataClassHeaderComponent, { name: this.props.name, handleType: this.handleType, handleDelete: this.props.handleDelete, exportClass: this.exportClass, is_event: this.props.is_event }),
+            React.createElement(DataClassHeaderComponent, {
+                name: this.props.name,
+                id: this.props.id,
+                dmid: this.props.dmid,
+                handleType: this.handleType,
+                handleDelete: this.props.handleDelete,
+                exportClass: this.exportClass,
+                is_event: this.props.is_event,
+                changed: this.props.modelChanged
+            }),
             React.createElement(
                 'ul',
                 { className: 'list-group' },
@@ -102816,18 +102839,21 @@ var DomainModelEditorComponent = React.createClass({
             dm: {
                 name: "",
                 dataclasses: []
-            }
+            },
+            changed: false
         };
     },
     handleExport: function () {
-        API.exportDomainModel(this.state.dm);
+        API.exportDomainModel(this.state.dm, function (data) {
+            this.setState({ 'changed': false, 'dm': data });
+        }.bind(this));
         MessageHandler.handleMessage('success', 'Saved domain model.');
     },
     handleUpdate: function (index) {
         var handler = function (dataclass) {
             var dm = this.state.dm;
             dm.dataclasses[index] = dataclass;
-            this.setState({ 'dm': dm });
+            this.setState({ 'dm': dm, 'changed': true });
         }.bind(this);
         return handler;
     },
@@ -102835,7 +102861,7 @@ var DomainModelEditorComponent = React.createClass({
         var handler = function () {
             var dm = this.state.dm;
             dm.dataclasses.splice(index, 1);
-            this.setState({ 'dm': dm });
+            this.setState({ 'dm': dm, 'changed': true });
         }.bind(this);
         return handler;
     },
@@ -102843,12 +102869,13 @@ var DomainModelEditorComponent = React.createClass({
         var dataclass = {
             "name": name,
             "is_event": is_event,
-            "attributes": []
+            "attributes": [],
+            "olc": Config.DEFAULT_OLC_XML
         };
         var dm = this.state.dm;
         if (NameCheck.isUnique(dataclass.name, dm.dataclasses)) {
             dm.dataclasses.push(dataclass);
-            this.setState({ 'dm': dm });
+            this.setState({ 'dm': dm, 'changed': true });
             return true; //signal successful creation (evaluated by invoking component)
         }
     },
@@ -102895,7 +102922,10 @@ var DomainModelEditorComponent = React.createClass({
                     initialItems: dataclass.attributes,
                     name: dataclass.name,
                     is_event: dataclass.is_event,
-                    availableDataTypes: this.getAvailableDataTypes()
+                    availableDataTypes: this.getAvailableDataTypes(),
+                    modelChanged: this.state.changed,
+                    id: dataclass._id,
+                    dmid: this.state.dm._id
                 });
             }.bind(this));
             return React.createElement(
@@ -102946,7 +102976,7 @@ var DomainModelEditorComponent = React.createClass({
 
 module.exports = DomainModelEditorComponent;
 
-},{"./../api":673,"./../messagehandler":680,"./../namecheck":681,"react":672}],686:[function(require,module,exports){
+},{"./../api":673,"./../config":677,"./../messagehandler":680,"./../namecheck":681,"react":672,"react-router":510}],686:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Editor = require('./../editor');
@@ -103935,13 +103965,16 @@ var MessageHandler = require('./../messagehandler');
 var API = require('./../api');
 var Config = require('./../config');
 var Validator = require('./../bpmnext/validator');
+var Link = require('react-router').Link;
 
 var OLCEditorComponent = React.createClass({
     displayName: 'OLCEditorComponent',
 
     getInitialState: function () {
         return {
-            editor: null
+            editor: null,
+            dm: null,
+            dclassid: -1
         };
     },
     render: function () {
@@ -103953,7 +103986,7 @@ var OLCEditorComponent = React.createClass({
                 { className: 'lowerRightButtons', id: 'upperRightButtons' },
                 React.createElement(
                     'button',
-                    { type: 'button', className: 'btn btn-success' },
+                    { type: 'button', className: 'btn btn-success', onClick: this.saveDiagram },
                     'Save OLC'
                 )
             ),
@@ -103963,12 +103996,62 @@ var OLCEditorComponent = React.createClass({
     componentDidMount: function () {
         var editor = new Editor($('#fragment-canvas'));
         this.setState({ editor: editor });
+        this.loadDiagram();
+        MessageHandler.resetMessages();
+        var interval = setInterval(this.autoSave, Config.FRAGMENT_SAVE_INTERVAL);
+        this.setState({ interval: interval });
+    },
+    loadDiagram: function () {
+        API.loadDomainModel(this.props.params.dmid, function (data) {
+            this.setState({ dm: data, dclassid: this.props.params.dclassid });
+            console.log(data);
+            var dclass = data.dataclasses.filter(function (dclass) {
+                return dclass._id == this.props.params.dclassid;
+            }.bind(this));
+            if (dclass.length !== 1) {
+                console.log("Did something wrong.");
+            }
+            dclass = dclass[0];
+            this.state.editor.openDiagram(dclass.olc, function (err) {
+                if (err) {
+                    MessageHandler.handleMessage("danger", "Failed to load diagram.");
+                    console.log(err);
+                }
+            });
+        }.bind(this));
+    },
+    componentDidUpdate: function () {
+        if (this.state.dm != null && this.state.dm._id != null && (this.props.params.dmid != this.state.dm._id || this.props.params.dclassid != this.state.dclassid)) {
+            this.saveDiagram(false);
+            MessageHandler.resetMessages();
+            this.loadDiagram();
+        }
+    },
+    saveDiagram: function (show_success) {
+        if (show_success == undefined) {
+            show_success = true;
+        }
+        var res_handler = function (data) {
+            console.log(data);
+            if (show_success) {
+                MessageHandler.handleMessage('success', 'Saved OLC-diagram!');
+            }
+        }.bind(this);
+        if (this.state.editor !== null && this.state.fragment !== null) {
+            this.state.editor.exportOLC(this.state.dm, this.state.dclassid, function (data) {
+                API.exportDomainModel(data, res_handler);
+            });
+        }
+    },
+    componentWillUnmount: function () {
+        this.saveDiagram(false);
+        clearInterval(this.state.interval);
     }
 });
 
 module.exports = OLCEditorComponent;
 
-},{"./../api":673,"./../bpmnext/validator":676,"./../config":677,"./../messagehandler":680,"./../olc/editor":683,"react":672,"react-dom":490}],692:[function(require,module,exports){
+},{"./../api":673,"./../bpmnext/validator":676,"./../config":677,"./../messagehandler":680,"./../olc/editor":683,"react":672,"react-dom":490,"react-router":510}],692:[function(require,module,exports){
 var React = require('react');
 var Link = require('react-router').Link;
 var API = require('./../api');

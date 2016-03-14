@@ -11,7 +11,8 @@ var DomainModelSchema = new Schema({
         attributes: [{
             name: String,
             datatype: String
-        }]
+        }],
+        olc: String
     }]
 });
 

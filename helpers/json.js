@@ -29,9 +29,35 @@ var parseToBPMNObject = function (xml) {
         arrayNotation: true
     };
 
-    var parsed = xml2json.toJson(xml, options)
+    var parsed = xml2json.toJson(xml, options);
 
     return parsed.definitions[0].process[0];
 };
 
-module.exports = {parseToBPMNObject: parseToBPMNObject}
+var parseToOLC = function(xml) {
+    var parsed = parseToBPMNObject(xml);
+    console.log(parsed);
+    delete parsed["id"];
+    delete parsed["isExecutable"];
+    if ("task" in parsed) {
+        parsed["state"] = parsed["task"].map(function(task){
+            task.id = task.id.replace("Task","State");
+            return task;
+        });
+        delete parsed["task"];
+    }
+    if ("sequenceFlow" in parsed) {
+        parsed["sequenceFlow"] = parsed["sequenceFlow"].map(function(sequenceFlow){
+            if ("sourceRef" in sequenceFlow) {
+                sequenceFlow['sourceRef'] = sequenceFlow['sourceRef'].replace("Task","State");
+            }
+            if ("targetRef" in sequenceFlow) {  
+                sequenceFlow['targetRef'] = sequenceFlow['targetRef'].replace("Task","State");
+            }
+            return sequenceFlow;
+        })
+    }
+    return parsed;
+};
+
+module.exports = {parseToBPMNObject: parseToBPMNObject,parseToOLC: parseToOLC};

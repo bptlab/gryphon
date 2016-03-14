@@ -49,7 +49,8 @@ API.prototype.exportDomainModel = function(dm, callback) {
         url: this.createURL("domainmodel/" + dm._id),
         type: "POST",
         contentType: "application/json",
-        data: JSON.stringify(dm)
+        data: JSON.stringify(dm),
+        success: callback
     });
 };
 

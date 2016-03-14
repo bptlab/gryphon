@@ -8,6 +8,7 @@ var Config = require('./../config');
 var RestClient = require('node-rest-client').Client;
 var validateFragment = require('./../helpers/validator').validateFragment;
 var Export =  require('./../models/export').model;
+var parseToOLC = require('./../helpers/json').parseToOLC;
 
 router.get('/', function(req, res, next) {
     var name = req.query.query;
@@ -263,6 +264,13 @@ router.get('/:scenID', function(req, res, next) {
         }
         if (result !== null) {
             if (dl) {
+                result = result.toObject();
+                if (populate) {
+                    result.domainmodel.dataclasses = result.domainmodel.dataclasses.map(function(dclass){
+                        dclass.olc = parseToOLC(dclass.olc);
+                        return dclass;
+                    });
+                }
                 res.append('Content-disposition','attachment');
                 res.append('filename', result.name + '.json');
             }
@@ -304,6 +312,11 @@ router.post('/:scenID/export', function(req, res, next) {
                 }
                 if (result2 !== null) {
                     var client = new RestClient();
+                    result = result.toObject();
+                    result.domainmodel.dataclasses = result.domainmodel.dataclasses.map(function(dclass){
+                        dclass.olc = parseToOLC(dclass.olc);
+                        return dclass;
+                    });
                     var args = {
                         data: result,
                         headers: {"Content-Type": "application/json"}

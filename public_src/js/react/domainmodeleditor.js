@@ -2,6 +2,8 @@ var React = require('react');
 var MessageHandler = require('./../messagehandler');
 var NameCheck = require('./../namecheck');
 var API = require('./../api');
+var Config = require('./../config');
+var Link = require('react-router').Link;
 
 var TypeSelect = React.createClass({
     getInitialState: function() {
@@ -86,24 +88,33 @@ var DataClassAttributeComponent = React.createClass({
 
 var DataClassHeaderComponent = React.createClass({
     render: function() {
+        var olcStatus = '';
+        if (this.props.changed == false) {
+            olcStatus = (
+                <Link to={"olc/" + this.props.dmid + "/" + this.props.id} className="btn btn-primary">
+                    Edit OLC
+                </Link>
+            )
+        }
         return (
             <div className="panel-heading clearfix">
                 <div className="row">
-                    <div className="col-sm-5">
+                    <div className="col-sm-4">
                         <h3 className="panel-title">
                             {this.props.name}</h3>
                     </div>
-                    <div className="col-sm-5">
+                    <div className="col-sm-3">
                         <TypeSelect
                             is_event={this.props.is_event}
                             handleType={this.props.handleType}
                             />
                     </div>
-                    <div className="col-sm-1">
+                    <div className="col-sm-4">
                         <div className="btn-group">
                             <button type="button" className="btn btn-danger" onClick={this.props.handleDelete}>
                                 <i className="fa fa-times" ></i>
                             </button>
+                            {olcStatus}
                         </div>
                     </div>
                 </div>
@@ -235,7 +246,16 @@ var DataClassComponent = React.createClass({
         }.bind(this));
         return (
             <div className="panel panel-default">
-                <DataClassHeaderComponent name={this.props.name} handleType={this.handleType} handleDelete={this.props.handleDelete} exportClass={this.exportClass} is_event={this.props.is_event} />
+                <DataClassHeaderComponent
+                    name={this.props.name}
+                    id={this.props.id}
+                    dmid={this.props.dmid}
+                    handleType={this.handleType}
+                    handleDelete={this.props.handleDelete}
+                    exportClass={this.exportClass}
+                    is_event={this.props.is_event}
+                    changed={this.props.modelChanged}
+                />
                 <ul className="list-group">
                     {items}
                 </ul>
@@ -261,7 +281,7 @@ var CreateNewClassComponent = React.createClass({
     },
     handleSubmit: function(type) {
         var is_event = false;
-        if (type == "event") {is_event = true;};
+        if (type == "event") {is_event = true;}
         var newItem = this.state.newname;
         if (NameCheck.check(newItem)) {
             if (this.props.onSubmit(newItem, is_event)) {
@@ -326,18 +346,21 @@ var DomainModelEditorComponent = React.createClass({
             dm: {
                 name: "",
                 dataclasses: []
-            }
+            },
+            changed: false
         }
     },
     handleExport: function() {
-        API.exportDomainModel(this.state.dm);
+        API.exportDomainModel(this.state.dm,function(data){
+            this.setState({'changed':false,'dm':data});
+        }.bind(this));
         MessageHandler.handleMessage('success','Saved domain model.');
     },
     handleUpdate: function(index) {
         var handler = function(dataclass) {
             var dm = this.state.dm;
             dm.dataclasses[index] = dataclass;
-            this.setState({'dm':dm});
+            this.setState({'dm':dm, 'changed':true});
         }.bind(this);
         return handler;
     },
@@ -345,7 +368,7 @@ var DomainModelEditorComponent = React.createClass({
         var handler = function() {
             var dm = this.state.dm;
             dm.dataclasses.splice(index,1);
-            this.setState({'dm':dm});
+            this.setState({'dm':dm, 'changed':true});
         }.bind(this);
         return handler;
     },
@@ -353,12 +376,13 @@ var DomainModelEditorComponent = React.createClass({
         var dataclass = {
             "name": name,
             "is_event": is_event,
-            "attributes": []
+            "attributes": [],
+            "olc": Config.DEFAULT_OLC_XML
         };
         var dm = this.state.dm;
         if (NameCheck.isUnique(dataclass.name, dm.dataclasses)) {
             dm.dataclasses.push(dataclass);
-            this.setState({'dm':dm});
+            this.setState({'dm':dm, 'changed':true});
             return true; //signal successful creation (evaluated by invoking component)
         }
     },
@@ -407,6 +431,9 @@ var DomainModelEditorComponent = React.createClass({
                         name={dataclass.name}
                         is_event={dataclass.is_event}
                         availableDataTypes={this.getAvailableDataTypes()}
+                        modelChanged={this.state.changed}
+                        id={dataclass._id}
+                        dmid = {this.state.dm._id}
                         />
                 )
             }.bind(this));

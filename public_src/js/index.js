@@ -43,7 +43,7 @@ $(function () {
                 <Route path="fragment/:id" component={FragmentEditorComponent} />
                 <Route path="domainmodel/:id" component={DomainModelEditorComponent} />
                 <Route path="exportconfig" component={ExportConfigComponent} />
-                <Route path="olc" component={OLCEditorComponent} />
+                <Route path="olc/:dmid/:dclassid" component={OLCEditorComponent} />
             </Route>
         </Router>,
         document.getElementById('app-container')
