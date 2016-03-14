@@ -1,5 +1,5 @@
-var mongoose = require('mongoose')
-var Schema = mongoose.Schema
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
 var ScenarioSchema = new Schema({
     name: {type: String, index: { unique: true }},

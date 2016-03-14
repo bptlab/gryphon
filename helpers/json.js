@@ -51,7 +51,7 @@ var parseToOLC = function(xml) {
             if ("sourceRef" in sequenceFlow) {
                 sequenceFlow['sourceRef'] = sequenceFlow['sourceRef'].replace("Task","State");
             }
-            if ("targetRef" in sequenceFlow) {  
+            if ("targetRef" in sequenceFlow) {
                 sequenceFlow['targetRef'] = sequenceFlow['targetRef'].replace("Task","State");
             }
             return sequenceFlow;
