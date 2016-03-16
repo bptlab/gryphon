@@ -267,7 +267,7 @@ router.get('/:scenID', function(req, res, next) {
                 result = result.toObject();
                 if (populate) {
                     result.domainmodel.dataclasses = result.domainmodel.dataclasses.map(function(dclass){
-                        dclass.olc = parseToOLC(dclass.olc);
+                        if (dclass.olc != undefined) dclass.olc = parseToOLC(dclass.olc);
                         return dclass;
                     });
                 }

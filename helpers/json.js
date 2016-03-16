@@ -4,17 +4,17 @@ var xml2json = require('xml2json')
  * object structure using the bpmn-moddle library. For further information see bpmn-moddle and bpmn-io documentation.
  * @param xml
  */
-var parseToBPMNObject = function (xml) {
+var parseToBPMNObject = function(xml) {
 
     // What am I doing here? I remove all namespaces to make parsing easier. All but the griffin notations.
-    xml = xml.replace(/<bpmn:/g,'<');
-    xml = xml.replace(/<bpmndi:/g,'<');
+    xml = xml.replace(/<bpmn:/g, '<');
+    xml = xml.replace(/<bpmndi:/g, '<');
     xml = xml.replace(/<di:/g, '<');
     xml = xml.replace(/<dc:/g, '<');
 
 
-    xml = xml.replace(/<\/bpmn:/g,'</');
-    xml = xml.replace(/<\/bpmndi:/g,'</');
+    xml = xml.replace(/<\/bpmn:/g, '</');
+    xml = xml.replace(/<\/bpmndi:/g, '</');
     xml = xml.replace(/<\/di:/g, '</');
     xml = xml.replace(/<\/dc:/g, '</');
 
