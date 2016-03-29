@@ -99,17 +99,13 @@ var DataClassHeaderComponent = React.createClass({
         return (
             <div className="panel-heading clearfix">
                 <div className="row">
-                    <div className="col-sm-4">
-                        <h3 className="panel-title">
-                            {this.props.name}</h3>
-                    </div>
-                    <div className="col-sm-3">
+                    <div className="col-sm-6">
                         <TypeSelect
                             is_event={this.props.is_event}
                             handleType={this.props.handleType}
                             />
                     </div>
-                    <div className="col-sm-4">
+                    <div className="col-sm-6">
                         <div className="btn-group">
                             <button type="button" className="btn btn-danger" onClick={this.props.handleDelete}>
                                 <i className="fa fa-times" ></i>
@@ -191,6 +187,13 @@ var DataClassComponent = React.createClass({
             attributes: this.state.items
         });
     },
+    handleClassNameChange: function(e) {
+        this.props.handleUpdate({
+            name: e.target.value,
+            is_event: this.props.is_event,
+            attributes: this.state.items
+        });
+    },
     exportClass: function() {
         this.props.handleUpdate({
             name: this.props.name,
@@ -257,6 +260,14 @@ var DataClassComponent = React.createClass({
                     changed={this.props.modelChanged}
                 />
                 <ul className="list-group">
+                    <li className="list-group-item clearfix">
+                        <input
+                                    type="text"
+                                    className="form-control"
+                                    value={this.props.name}
+                                    onChange={this.handleClassNameChange}
+                            />
+                    </li>
                     {items}
                 </ul>
                 <DataClassFooterComponent handleAdd={this.handleAttrAdd} />

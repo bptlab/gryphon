@@ -102525,16 +102525,7 @@ var DataClassHeaderComponent = React.createClass({
                 { className: 'row' },
                 React.createElement(
                     'div',
-                    { className: 'col-sm-4' },
-                    React.createElement(
-                        'h3',
-                        { className: 'panel-title' },
-                        this.props.name
-                    )
-                ),
-                React.createElement(
-                    'div',
-                    { className: 'col-sm-3' },
+                    { className: 'col-sm-6' },
                     React.createElement(TypeSelect, {
                         is_event: this.props.is_event,
                         handleType: this.props.handleType
@@ -102542,7 +102533,7 @@ var DataClassHeaderComponent = React.createClass({
                 ),
                 React.createElement(
                     'div',
-                    { className: 'col-sm-4' },
+                    { className: 'col-sm-6' },
                     React.createElement(
                         'div',
                         { className: 'btn-group' },
@@ -102645,6 +102636,13 @@ var DataClassComponent = React.createClass({
             attributes: this.state.items
         });
     },
+    handleClassNameChange: function (e) {
+        this.props.handleUpdate({
+            name: e.target.value,
+            is_event: this.props.is_event,
+            attributes: this.state.items
+        });
+    },
     exportClass: function () {
         this.props.handleUpdate({
             name: this.props.name,
@@ -102713,6 +102711,16 @@ var DataClassComponent = React.createClass({
             React.createElement(
                 'ul',
                 { className: 'list-group' },
+                React.createElement(
+                    'li',
+                    { className: 'list-group-item clearfix' },
+                    React.createElement('input', {
+                        type: 'text',
+                        className: 'form-control',
+                        value: this.props.name,
+                        onChange: this.handleClassNameChange
+                    })
+                ),
                 items
             ),
             React.createElement(DataClassFooterComponent, { handleAdd: this.handleAttrAdd })
@@ -102740,7 +102748,7 @@ var CreateNewClassComponent = React.createClass({
         var is_event = false;
         if (type == "event") {
             is_event = true;
-        };
+        }
         var newItem = this.state.newname;
         if (NameCheck.check(newItem)) {
             if (this.props.onSubmit(newItem, is_event)) {
