@@ -3,7 +3,7 @@ var router = express.Router();
 var Config = require('./../config');
 var Fragment = require('./../models/fragment').model;
 var JSONHelper = require('./../helpers/json');
-var validateFragment = require('./../helpers/validator').validateFragment;
+var Validator = require('./../helpers/validator').Validator;
 
 /* GET fragment belonging to scenario and fragment. */
 router.get('/:fragID', function(req, res, next) {
@@ -170,11 +170,12 @@ router.get('/:fragID/validate', function(req, res, next) {
             return;
         }
         if (result !== null) {
-            validateFragment(result,function(messages){
+            var validator = new Validator(result,function() {
+                validator.validateEverything();
                 res.json({
-                    messages: messages
-                });
-            })
+                    messages:validator.messages
+                })
+            });
         } else {
             res.status(404).end();
         }
