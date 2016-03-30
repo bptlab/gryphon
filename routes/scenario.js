@@ -6,7 +6,7 @@ var DomainModel = require('./../models/domainmodel').model;
 var _ = require('lodash');
 var Config = require('./../config');
 var RestClient = require('node-rest-client').Client;
-var validateFragment = require('./../helpers/validator').validateFragment;
+var Validator = require('./../helpers/validator').Validator;
 var Export =  require('./../models/export').model;
 var parseToOLC = require('./../helpers/json').parseToOLC;
 
@@ -229,8 +229,9 @@ router.get('/:scenID/validate', function(req, res, next){
             var messages = [];
             var result_count = 0;
             result.fragments.forEach(function(fragment) {
-                validateFragment(fragment, function (messages2) {
-                    messages = messages.concat(messages2);
+                var val = new Validator(fragment,function() {
+                    val.validateEverything();
+                    messages = messages.concat(val.messages);
                     result_count++;
                     if (result_count == result.fragments.length) {
                         var display = ["danger","warning"];
