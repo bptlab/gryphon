@@ -250,16 +250,13 @@ var Validator = class Validator {
                 'type': 'danger'
             })
         } else {
-            if (!(doref['griffin:state'] in this.olc[doref['griffin:dataclass']])) {
+            if (this.olc[doref['griffin:dataclass']] != null && !(doref['griffin:state'] in this.olc[doref['griffin:dataclass']])) {
                 this.messages.push({
                     'text': 'You referenced an invalid state (' + doref['griffin:state'] + ') for data object ' + doref['griffin:dataclass'],
                     'type': 'danger'
                 })
             }
         }
-    }
-    validateInitState(outputo) {
-
     }
     createMapping(iset,oset) {
        var mapping = [];
@@ -273,8 +270,6 @@ var Validator = class Validator {
                     instate: inputo['griffin:state'],
                     outstate: outputo['griffin:state']
                 });
-            } else {
-                this.validateInitState(outputo);
             }
         });
         iset.forEach(function(inputo){

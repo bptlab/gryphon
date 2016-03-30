@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var Scenario = require('./../models/scenario').model;
 
 var DomainModel = require('./../models/domainmodel').model;
 var _ = require('lodash');
@@ -20,6 +21,38 @@ router.get('/:dmID', function(req, res, next) {
     });
 });
 
+var changeFragmentDClassReferences = function(dm_id, old_classes, new_classes,done) {
+    Scenario.findOne({domainmodel:dm_id}).populate('fragments').exec(function(err, result){
+        if (err) {
+            console.error(err);
+            return;
+        }
+        if (result !== null) {
+            old_classes.forEach(function(oldclass){
+                new_classes.forEach(function(newclass){
+                    console.log("Testing " + newclass.name + "(" + newclass._id + ") vs " + oldclass.name + "(" + oldclass._id + ")");
+                    if ((newclass._id == oldclass._id.toString()) && (newclass.name != oldclass.name)) {
+                        result.fragments.forEach(function(fragment){
+                            var origin = fragment.content;
+                            fragment.content = fragment.content
+                                .split('griffin:dataclass="' + oldclass.name + '"')
+                                .join('griffin:dataclass="' + newclass.name + '"');
+                            fragment.content = fragment.content
+                                .split('name="' + oldclass.name + '[')
+                                .join('name="' + newclass.name + '[');
+                            if (origin != fragment.content) {
+                                console.log('Much lol.');
+                            }
+                            fragment.save();
+                        })
+                    }
+                });
+            });
+            done()
+        }
+    })
+};
+
 router.post('/:dmID', function(req, res, next) {
     var dm_id = req.params.dmID;
     var new_dm = req.body;
@@ -31,30 +64,37 @@ router.post('/:dmID', function(req, res, next) {
             return;
         }
         if (result !== null) {
+            var done = function() {
 
-            var changed = false;
+                var changed = false;
 
-            if (new_dm.name != null && result.name !== new_dm.name) {
-                result.name = new_dm.name;
-                changed = true;
-            }
+                if (new_dm.name != null && result.name !== new_dm.name) {
+                    result.name = new_dm.name;
+                    changed = true;
+                }
 
+                if (new_dm.dataclasses != null && !_.isEqual(new_dm.dataclasses, result.dataclasses)) {
+                    result.dataclasses = new_dm.dataclasses;
+                    changed = true;
+                }
+
+                if (changed) {
+                    result.revision++;
+                    result.save(function (err) {
+                        if (err) {
+                            console.error(err);
+                            res.status(500).end();
+                            return;
+                        }
+                    });
+                }
+                res.json(result);
+            };
             if (new_dm.dataclasses != null && !_.isEqual(new_dm.dataclasses, result.dataclasses)) {
-                result.dataclasses = new_dm.dataclasses;
-                changed = true;
+                changeFragmentDClassReferences(result._id, result.dataclasses, new_dm.dataclasses, done);
+            } else {
+                done();
             }
-
-            if (changed) {
-                result.revision++;
-                result.save(function(err){
-                    if (err) {
-                        console.error(err);
-                        res.status(500).end();
-                        return;
-                    }
-                });
-            }
-            res.json(result)
         } else {
             res.status(404).end();
         }

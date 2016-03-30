@@ -102652,7 +102652,8 @@ var DataClassComponent = React.createClass({
             this.props.handleUpdate({
                 name: this.props.name,
                 is_event: this.props.is_event,
-                attributes: newItems
+                attributes: newItems,
+                _id: this.props.id
             });
             return true;
         }
@@ -102664,6 +102665,14 @@ var DataClassComponent = React.createClass({
             this.setState({ items: newItems });
         }.bind(this);
     },
+    update: function () {
+        this.props.handleUpdate({
+            name: this.props.name,
+            is_event: this.props.is_event,
+            attributes: this.state.items,
+            _id: this.props.id
+        });
+    },
     handleType: function (type) {
         var is_event = false;
         if (type == "event") {
@@ -102672,22 +102681,20 @@ var DataClassComponent = React.createClass({
         this.props.handleUpdate({
             name: this.props.name,
             is_event: is_event,
-            attributes: this.state.items
+            attributes: this.state.items,
+            _id: this.props.id
         });
     },
     handleClassNameChange: function (e) {
         this.props.handleUpdate({
             name: e.target.value,
             is_event: this.props.is_event,
-            attributes: this.state.items
+            attributes: this.state.items,
+            _id: this.props.id
         });
     },
     exportClass: function () {
-        this.props.handleUpdate({
-            name: this.props.name,
-            is_event: this.props.is_event,
-            attributes: this.state.items
-        });
+        this.update();
         this.props.handleExport();
     },
     handleAttrNameChange: function (i) {
@@ -102696,11 +102703,7 @@ var DataClassComponent = React.createClass({
             var items = this.state.items;
             items[i].name = value;
             this.setState({ items: items });
-            this.props.handleUpdate({
-                name: this.props.name,
-                is_event: this.props.is_event,
-                attributes: this.state.items
-            });
+            this.update();
         }.bind(this);
     },
     handleAttrTypeChange: function (i) {
@@ -102718,7 +102721,8 @@ var DataClassComponent = React.createClass({
             this.props.handleUpdate({
                 name: this.props.name,
                 is_event: this.props.is_event,
-                attributes: this.state.items
+                attributes: this.state.items,
+                _id: this.props.id
             });
         }.bind(this);
     },
@@ -102899,7 +102903,11 @@ var DomainModelEditorComponent = React.createClass({
     handleUpdate: function (index) {
         var handler = function (dataclass) {
             var dm = this.state.dm;
-            dm.dataclasses[index] = dataclass;
+            for (var attr in dataclass) {
+                if (dataclass.hasOwnProperty(attr)) {
+                    dm.dataclasses[index][attr] = dataclass[attr];
+                }
+            }
             this.setState({ 'dm': dm, 'changed': true });
         }.bind(this);
         return handler;
