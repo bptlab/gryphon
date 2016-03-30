@@ -60,7 +60,14 @@ function generateProvider(validator) {
                     return res;
                 }
             });
-            group.entries.push(doEntry)
+            group.entries.push(doEntry);
+            var jsonURLEntry = entryFactory.textField({
+                id: 'JSONPath',
+                description: '',
+                label: 'JSON Path for Webservice-Tasks',
+                modelProperty: 'jsonpath'
+            });
+            group.entries.push(jsonURLEntry);
         }
     }
 
@@ -84,6 +91,18 @@ function generateProvider(validator) {
         })
     }
 
+    function createWebServiceTaskProperties(group, element, elementRegistry) {
+        if (is(element, "bpmn:Task")) {
+            var stateEntry = entryFactory.textField({
+                id: 'WebServiceURL',
+                description: '',
+                label: 'Webservice to call (URL)',
+                modelProperty: 'webserviceurl'
+            });
+            group.entries.push(stateEntry);
+        }
+    }
+
     function createGeneralTabGroups(element, bpmnFactory, elementRegistry) {
 
         var generalGroup = {
@@ -103,6 +122,7 @@ function generateProvider(validator) {
         eventProps(detailsGroup, element, bpmnFactory);
         createDataObjectProperties(detailsGroup, element, bpmnFactory);
         createMessageEventProperties(detailsGroup, element, bpmnFactory);
+        createWebServiceTaskProperties(detailsGroup, element, bpmnFactory);
         var documentationGroup = {
             id: 'documentation',
             label: 'Documentation',

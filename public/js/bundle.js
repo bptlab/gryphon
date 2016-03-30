@@ -101746,6 +101746,11 @@ module.exports={
           "name": "dataclass",
           "isAttr": true,
           "type": "String"
+        },
+        {
+          "name": "jsonpath",
+          "isAttr": true,
+          "type": "String"
         }
       ]
     },
@@ -101761,6 +101766,20 @@ module.exports={
       "properties": [
         {
           "name": "eventquery",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "WebServiceTask",
+      "isAbstract": false,
+      "extends": [
+        "bpmn:Task"
+      ],
+      "properties": [
+        {
+          "name": "webserviceurl",
           "isAttr": true,
           "type": "String"
         }
@@ -101832,6 +101851,13 @@ function generateProvider(validator) {
                 }
             });
             group.entries.push(doEntry);
+            var jsonURLEntry = entryFactory.textField({
+                id: 'JSONPath',
+                description: '',
+                label: 'JSON Path for Webservice-Tasks',
+                modelProperty: 'jsonpath'
+            });
+            group.entries.push(jsonURLEntry);
         }
     }
 
@@ -101849,6 +101875,18 @@ function generateProvider(validator) {
                 group.entries.push(stateEntry);
             }
         });
+    }
+
+    function createWebServiceTaskProperties(group, element, elementRegistry) {
+        if (is(element, "bpmn:Task")) {
+            var stateEntry = entryFactory.textField({
+                id: 'WebServiceURL',
+                description: '',
+                label: 'Webservice to call (URL)',
+                modelProperty: 'webserviceurl'
+            });
+            group.entries.push(stateEntry);
+        }
     }
 
     function createGeneralTabGroups(element, bpmnFactory, elementRegistry) {
@@ -101870,6 +101908,7 @@ function generateProvider(validator) {
         eventProps(detailsGroup, element, bpmnFactory);
         createDataObjectProperties(detailsGroup, element, bpmnFactory);
         createMessageEventProperties(detailsGroup, element, bpmnFactory);
+        createWebServiceTaskProperties(detailsGroup, element, bpmnFactory);
         var documentationGroup = {
             id: 'documentation',
             label: 'Documentation',

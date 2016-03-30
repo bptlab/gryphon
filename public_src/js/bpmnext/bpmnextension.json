@@ -21,6 +21,11 @@
           "name": "dataclass",
           "isAttr": true,
           "type": "String"
+        },
+        {
+          "name": "jsonpath",
+          "isAttr": true,
+          "type": "String"
         }
       ]
     },
@@ -36,6 +41,20 @@
       "properties": [
         {
           "name": "eventquery",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "WebServiceTask",
+      "isAbstract": false,
+      "extends": [
+        "bpmn:Task"
+      ],
+      "properties": [
+        {
+          "name": "webserviceurl",
           "isAttr": true,
           "type": "String"
         }
