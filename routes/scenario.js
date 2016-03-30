@@ -315,7 +315,9 @@ router.post('/:scenID/export', function(req, res, next) {
                     var client = new RestClient();
                     result = result.toObject();
                     result.domainmodel.dataclasses = result.domainmodel.dataclasses.map(function(dclass){
-                        dclass.olc = parseToOLC(dclass.olc);
+                        if (dclass.olc != undefined) {
+                            dclass.olc = parseToOLC(dclass.olc);
+                        }
                         return dclass;
                     });
                     var args = {

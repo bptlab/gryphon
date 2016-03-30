@@ -181,30 +181,35 @@ var Validator = class Validator {
     parseOLCPaths(domainmodel) {
         this.olc = {};
         domainmodel.dataclasses.forEach(function(dclass){
-            var olc = parseToOLC(dclass.olc);
-            var adjlist = {};
-            var namemap  = {};
-            if ('state' in olc) {
-                olc['state'].forEach(function(state){
-                    if ('name' in state) {
-                        namemap[state['id']] = state['name'];
-                    } else {
-                        namemap[state['id']] = state['id'];
-                    }
-                    adjlist[namemap[state['id']]] = [];
-                })
+            if (dclass.olc != undefined) {
+                var olc = parseToOLC(dclass.olc);
+                var adjlist = {};
+                var namemap  = {};
+                if ('state' in olc) {
+                    olc['state'].forEach(function(state){
+                        if ('name' in state) {
+                            namemap[state['id']] = state['name'];
+                        } else {
+                            namemap[state['id']] = state['id'];
+                        }
+                        adjlist[namemap[state['id']]] = [];
+                    })
+                } else {
+                    this.olc[dclass.name] = null;
+                    return;
+                }
+                if ('sequenceFlow' in olc) {
+                    olc['sequenceFlow'].forEach(function(seqFlow){
+                        if ((seqFlow['sourceRef'] in namemap) && (seqFlow['targetRef'] in namemap)) {
+                            adjlist[namemap[seqFlow['sourceRef']]].push(namemap[seqFlow['targetRef']]);
+                        }
+                    });
+                }
+                this.olc[dclass.name] = adjlist;
             } else {
                 this.olc[dclass.name] = null;
                 return;
             }
-            if ('sequenceFlow' in olc) {
-                olc['sequenceFlow'].forEach(function(seqFlow){
-                    if ((seqFlow['sourceRef'] in namemap) && (seqFlow['targetRef'] in namemap)) {
-                        adjlist[namemap[seqFlow['sourceRef']]].push(namemap[seqFlow['targetRef']]);
-                    }
-                });
-            }
-            this.olc[dclass.name] = adjlist;
         }.bind(this))
     }
     validateEverything() {

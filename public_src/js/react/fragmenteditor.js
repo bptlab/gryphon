@@ -61,9 +61,12 @@ var FragmentEditorComponent = React.createClass({
                 MessageHandler.handleMessage('success', 'Saved fragment!');
             }
             API.validateFragment(this.state.fragment._id,function(result){
-                result.messages.forEach(function(message){
-                    MessageHandler.handleMessage(message.type,message.text);
-                })
+                if (show_success) {
+                    result.messages.forEach(function(message){
+                        MessageHandler.handleMessage(message.type, message.text);
+
+                    })
+                }
             }.bind(this))
         }.bind(this);
         if (this.state.editor !== null && this.state.fragment !== null) {
