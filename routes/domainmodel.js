@@ -33,16 +33,12 @@ var changeFragmentDClassReferences = function(dm_id, old_classes, new_classes,do
                     console.log("Testing " + newclass.name + "(" + newclass._id + ") vs " + oldclass.name + "(" + oldclass._id + ")");
                     if ((newclass._id == oldclass._id.toString()) && (newclass.name != oldclass.name)) {
                         result.fragments.forEach(function(fragment){
-                            var origin = fragment.content;
                             fragment.content = fragment.content
                                 .split('griffin:dataclass="' + oldclass.name + '"')
                                 .join('griffin:dataclass="' + newclass.name + '"');
                             fragment.content = fragment.content
                                 .split('name="' + oldclass.name + '[')
                                 .join('name="' + newclass.name + '[');
-                            if (origin != fragment.content) {
-                                console.log('Much lol.');
-                            }
                             fragment.save();
                         })
                     }

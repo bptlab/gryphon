@@ -36,7 +36,7 @@ var FragmentEditorComponent = React.createClass({
     loadDiagram: function() {
         API.getFragment(this.props.params.id,function(data) {
             this.setState({fragment: data});
-            this.state.editor.openDiagram(data.content, function(err){
+            this.state.editor.importFragment(data, function(err){
                 if (err) {
                     MessageHandler.handleMessage("danger", "Failed to load diagram.");
                     console.log(err);

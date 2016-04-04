@@ -15,32 +15,18 @@ var processProps = require('bpmn-js-properties-panel/lib/provider/bpmn/parts/Pro
     idProps = require('bpmn-js-properties-panel/lib/provider/bpmn/parts/IdProps');
 
 var is = require('bpmn-js/lib/util/ModelUtil').is;
+var cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper');
 
 var forEach = require('lodash/collection/forEach');
-function generateProvider(validator) {
+function generateProvider(fragmentid) {
+    var dm = null;
+    API.loadAssociatedDomainModel(fragmentid,function(dm2){
+        dm = dm2;
+    });
+
     function createDataObjectProperties(group, element,
                                         elementRegistry) {
         if (is(element, 'bpmn:DataObjectReference')) {
-            var stateEntry = entryFactory.textField({
-                id: 'DataObjectState',
-                description: '',
-                label: 'State',
-                modelProperty: 'state',
-                set: function(element, values) {
-                    var res = {};
-                    var prop = 'state';
-                    var bo = getBusinessObject(element);
-                    if (values[prop] !== '') {
-                        //validator.validateDataClassName(values[prop]);
-                        res[prop] = values[prop];
-                        res['name'] = bo['dataclass'] + "[" + values['state'] + "]"
-                    } else {
-                        res[prop] = undefined;
-                    }
-                    return res;
-                }
-            });
-            group.entries.push(stateEntry);
             var doEntry = entryFactory.textField({
                 id: 'DataObjectDataClass',
                 description: '',
@@ -57,17 +43,82 @@ function generateProvider(validator) {
                     } else {
                         res[prop] = undefined;
                     }
-                    return res;
+                    return cmdHelper.updateProperties(element, res);
                 }
             });
             group.entries.push(doEntry);
-            var jsonURLEntry = entryFactory.textField({
-                id: 'JSONPath',
+            var stateEntry = entryFactory.textField({
+                id: 'DataObjectState',
                 description: '',
-                label: 'JSON Path for Webservice-Tasks',
-                modelProperty: 'jsonpath'
+                label: 'State',
+                modelProperty: 'state',
+                set: function(element, values) {
+                    var res = {};
+                    var prop = 'state';
+                    var bo = getBusinessObject(element);
+                    if (values[prop] !== '') {
+                        res[prop]   = values[prop];
+                        res['name'] = bo['dataclass'] + "[" + values['state'] + "]"
+                    } else {
+                        res[prop] = undefined;
+                    }
+                    return cmdHelper.updateProperties(element, res);
+                }
             });
-            group.entries.push(jsonURLEntry);
+            group.entries.push(stateEntry);
+            var el = getBusinessObject(element);
+            var dclass = el.get('dataclass');
+            if (dclass != null && dm != null) {
+                var dataclass = dm.dataclasses.filter(function(dataclass){
+                    return dataclass.name == dclass
+                });
+                if (dataclass.length == 1) {
+                    dataclass = dataclass[0];
+                    dataclass.attributes.forEach(function(attr){
+                        var jsonURLEntry = entryFactory.textField({
+                            id: 'JSONPath' + attr.name,
+                            description: '',
+                            label: 'JSON Path for ' + attr.name,
+                            modelProperty: attr.name,
+                            get: function(element) {
+                                var bo = getBusinessObject(element);
+                                var js = bo.get('jsonpath');
+                                if (js == undefined) {
+                                    js = "{}";
+                                }
+                                console.log("GET:" + js);
+                                var parsed = JSON.parse(js);
+                                var res = {};
+                                if (!(attr.name in parsed)) {
+                                    console.log("Reset LOL");
+                                    parsed[attr.name] = "";
+                                }
+                                res[attr.name] = parsed[attr.name];
+                                return res;
+                            },
+                            set: function(element, values) {
+                                if (values[this.modelProperty] !== '') {
+                                    var bo = getBusinessObject(element);
+                                    var js = bo.get('jsonpath');
+                                    if (js == undefined) {
+                                        js = "{}";
+                                    }
+                                    var parsed = JSON.parse(js);
+                                    console.log("SET:" + js);
+                                    parsed[attr.name] = values[attr.name];
+                                    var res = {};
+                                    console.log(parsed);
+                                    res['jsonpath'] = JSON.stringify(parsed);
+                                    console.log(res);
+                                    return cmdHelper.updateProperties(element, res);
+                                }
+                                return cmdHelper.updateProperties(element, {});
+                            }
+                        });
+                        group.entries.push(jsonURLEntry);
+                    })
+                }
+            }
         }
     }
 
@@ -164,4 +215,4 @@ function generateProvider(validator) {
         propertiesProvider: [ 'type', Provider ]
     }
 }
-module.exports = generateProvider();
+module.exports = generateProvider;

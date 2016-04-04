@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var Config = require('./../config');
 var Fragment = require('./../models/fragment').model;
+var DomainModel = require('./../models/domainmodel').model;
+var Scenario = require('./../models/scenario').model;
 var JSONHelper = require('./../helpers/json');
 var Validator = require('./../helpers/validator').Validator;
 
@@ -180,6 +182,21 @@ router.get('/:fragID/validate', function(req, res, next) {
             res.status(404).end();
         }
     })
+});
+
+router.get('/:fragID/assocdomainmodel', function(req, res, next){
+    Scenario.findOne({fragments:req.params.fragID}).populate('domainmodel').exec(function(err, result){
+        if (err) {
+            console.error(err);
+            res.status(500).end();
+            return;
+        }
+        if (result !== null) {
+            res.json(result.domainmodel);
+        } else {
+            res.status(404).end();
+        }
+    });
 });
 
 module.exports = router;

@@ -146,6 +146,10 @@ API.prototype.updateExport = function(id, name, url, callback) {
     $.post(this.createURL("export/" + id),{name:name,url:url},callback);
 };
 
+API.prototype.loadAssociatedDomainModel = function(id, callback) {
+    $.get(this.createURL("fragment/" + id + "/assocdomainmodel"),callback);
+};
+
 API.prototype.deleteExport = function(id, callback) {
     $.ajax({
         url: this.createURL("export/" + id),
