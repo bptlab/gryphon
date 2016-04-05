@@ -86,11 +86,9 @@ function generateProvider(fragmentid) {
                                 if (js == undefined) {
                                     js = "{}";
                                 }
-                                console.log("GET:" + js);
                                 var parsed = JSON.parse(js);
                                 var res = {};
                                 if (!(attr.name in parsed)) {
-                                    console.log("Reset LOL");
                                     parsed[attr.name] = "";
                                 }
                                 res[attr.name] = parsed[attr.name];
@@ -104,12 +102,9 @@ function generateProvider(fragmentid) {
                                         js = "{}";
                                     }
                                     var parsed = JSON.parse(js);
-                                    console.log("SET:" + js);
                                     parsed[attr.name] = values[attr.name];
                                     var res = {};
-                                    console.log(parsed);
                                     res['jsonpath'] = JSON.stringify(parsed);
-                                    console.log(res);
                                     return cmdHelper.updateProperties(element, res);
                                 }
                                 return cmdHelper.updateProperties(element, {});

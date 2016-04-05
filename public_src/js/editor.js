@@ -15,15 +15,21 @@ var Editor = function(canvas, propertypanel) {
 };
 
 Editor.prototype.exportFragment = function(fragment,callback) {
-    this.renderer.saveXML({format: true},function(err, xml){
-        if (!err) {
-            fragment.content = xml;
-            callback(fragment);
-        }
-    });
+    if (this.renderer) {
+        this.renderer.saveXML({format: true},function(err, xml){
+            if (!err) {
+                fragment.content = xml;
+                callback(fragment);
+            }
+        });
+    }
 };
 
 Editor.prototype.importFragment = function(fragment, callback) {
+    if (this.renderer) {
+        $('#fragment-properties').empty();
+        this.renderer.destroy();
+    }
     this.renderer = new BPMNModeller({
         container: this.canvas,
         propertiesPanel: {
