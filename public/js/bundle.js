@@ -103158,11 +103158,21 @@ module.exports={
       "name": "WebServiceTask",
       "isAbstract": false,
       "extends": [
-        "bpmn:Task"
+        "bpmn:ServiceTask"
       ],
       "properties": [
         {
           "name": "webserviceurl",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "webservicebody",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "webservicemethod",
           "isAttr": true,
           "type": "String"
         }
@@ -103307,12 +103317,26 @@ function generateProvider(fragmentid) {
     }
 
     function createWebServiceTaskProperties(group, element, elementRegistry) {
-        if (is(element, "bpmn:Task")) {
+        if (is(element, "bpmn:ServiceTask")) {
             var stateEntry = entryFactory.textField({
                 id: 'WebServiceURL',
                 description: '',
                 label: 'Webservice to call (URL)',
                 modelProperty: 'webserviceurl'
+            });
+            group.entries.push(stateEntry);
+            var stateEntry = entryFactory.textField({
+                id: 'WebServiceMethod',
+                description: '',
+                label: 'Webservice to call (HTTP-Method)',
+                modelProperty: 'webservicemethod'
+            });
+            group.entries.push(stateEntry);
+            var stateEntry = entryFactory.textField({
+                id: 'WebServiceBody',
+                description: '',
+                label: 'Webservice to call (Body)',
+                modelProperty: 'webservicebody'
             });
             group.entries.push(stateEntry);
         }

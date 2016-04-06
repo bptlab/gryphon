@@ -138,7 +138,7 @@ function generateProvider(fragmentid) {
     }
 
     function createWebServiceTaskProperties(group, element, elementRegistry) {
-        if (is(element, "bpmn:Task")) {
+        if (is(element, "bpmn:ServiceTask")) {
             var stateEntry = entryFactory.textField({
                 id: 'WebServiceURL',
                 description: '',

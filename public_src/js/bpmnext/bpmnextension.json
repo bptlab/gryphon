@@ -50,7 +50,7 @@
       "name": "WebServiceTask",
       "isAbstract": false,
       "extends": [
-        "bpmn:Task"
+        "bpmn:ServiceTask"
       ],
       "properties": [
         {
