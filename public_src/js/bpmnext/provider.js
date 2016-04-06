@@ -146,6 +146,20 @@ function generateProvider(fragmentid) {
                 modelProperty: 'webserviceurl'
             });
             group.entries.push(stateEntry);
+            var stateEntry = entryFactory.textField({
+                id: 'WebServiceMethod',
+                description: '',
+                label: 'Webservice to call (HTTP-Method)',
+                modelProperty: 'webservicemethod'
+            });
+            group.entries.push(stateEntry);
+            var stateEntry = entryFactory.textField({
+                id: 'WebServiceBody',
+                description: '',
+                label: 'Webservice to call (Body)',
+                modelProperty: 'webservicebody'
+            });
+            group.entries.push(stateEntry);
         }
     }
 
