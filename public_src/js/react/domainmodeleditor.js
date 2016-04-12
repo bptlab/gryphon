@@ -324,6 +324,11 @@ var CreateNewClassComponent = React.createClass({
     submitEvent: function() {
         this.handleSubmit("event");
     },
+    handleEnterSubmit: function(e) {
+        if (e.keyCode == 13) {
+            this.submitData()
+        }
+    },
     render: function() {
         return (
             <div className="panel panel-default">
@@ -339,6 +344,7 @@ var CreateNewClassComponent = React.createClass({
                             placeholder="New class"
                             value = {this.state.newname}
                             onChange = {this.handleChange}
+                            onKeyDown = {this.handleEnterSubmit}
                             />
                         <div className="input-group-btn">
                             <button className="btn btn-primary" onClick={this.submitData}>Create dataclass</button>
