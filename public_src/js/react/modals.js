@@ -135,6 +135,11 @@ var ModifyFragmentModal = React.createClass({
     handleChange: function(e) {
         this.setState({name: e.target.value})
     },
+    handleEnterSubmit: function(e) {
+        if (e.keyCode == 13) {
+            this.props.handleSubmit()
+        }
+    },
     render: function() {
         return (
             <div className="modal fade bs-example-modal-sm" tabIndex="-1" role="dialog" aria-labelledby="modifyFragmentModalLabel" id="modifyFragmentModal">
@@ -157,6 +162,7 @@ var ModifyFragmentModal = React.createClass({
                                         placeholder="Fragment name"
                                         onChange={this.handleChange}
                                         value={this.state.name}
+                                        onKeyDown={this.handleEnterSubmit}
                                         />
                                 </fieldset>
                             </div>
@@ -196,6 +202,11 @@ var CreateScenarioModal = React.createClass({
     handleNameChange: function(e) {
         this.setState({name: e.target.value});
     },
+    handleEnterSubmit: function(e) {
+        if (e.keyCode == 13) {
+            this.handleSubmit()
+        }
+    },
     render: function() {
         return (
             <div className="modal fade bs-example-modal-sm" tabIndex="-1" role="dialog" aria-labelledby="createScenarioModalTitle" id="createScenarioModal">
@@ -218,6 +229,7 @@ var CreateScenarioModal = React.createClass({
                                         placeholder="Scenario name"
                                         value={this.state.name}
                                         onChange={this.handleNameChange}
+                                        onKeyDown={this.handleEnterSubmit}
                                         />
                                 </fieldset>
                             </div>
@@ -257,7 +269,13 @@ var ExportScenarioModal = React.createClass({
     handleSubmit: function() {
         if (this.state.selectedTarget != "") {
             API.exportScenarioToChimera(this.state.scenID, this.state.selectedTarget, function(response){
-                MessageHandler.handleMessage('success','Export succesfull!');
+                MessageHandler.handleMessage('success','Exporting scenario');
+                console.log(response);
+                if (response != null && response.constructor === Array) {
+                    response.forEach(function(message){
+                        MessageHandler.handleMessage(message['type'],message['text']);
+                    });
+                }
             });
             $('#exportScenarioModal').modal('hide');
         } else {

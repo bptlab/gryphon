@@ -16,7 +16,6 @@ var TypeSelect = React.createClass({
         this.setState({value: newState});
         this.props.handleType(newState);
     },
-
     render: function() {
         var value = this.state.value;
         return (
@@ -59,7 +58,9 @@ var DataClassAttributeComponent = React.createClass({
                             type="text"
                             className="form-control"
                             value={this.props.name}
-                            onChange={this.handleNameChange} />
+                            onChange={this.handleNameChange}
+                            onKeyDown={this.props.handleEnterSubmit}
+                        />
                     </div>
                     <div className="col-sm-5">
                         <select className="selectpicker" onChange={this.handleDataTypeChange} value={this.props.datatype} data-live-search="true" id={this.props.name + "-dtselect"}>
@@ -127,9 +128,14 @@ var DataClassFooterComponent = React.createClass({
         this.setState({newname: e.target.value});
     },
     handleAdd: function() {
-            if (this.props.handleAdd(this.state.newname)) {
-                this.setState({newname: ''});
-            }
+        if (this.props.handleAdd(this.state.newname)) {
+            this.setState({newname: ''});
+        }
+    },
+    handleEnterSubmit: function(e) {
+        if (e.keyCode == 13) {
+            this.handleAdd()
+        }
     },
     render: function() {
         return (
@@ -143,6 +149,7 @@ var DataClassFooterComponent = React.createClass({
                                 placeholder="New attribute"
                                 value = {this.state.newname}
                                 onChange = {this.handleChange}
+                                onKeyDown = {this.handleEnterSubmit}
                                 />
                             <div className="input-group-btn">
                                 <button className="btn btn-primary" onClick={this.handleAdd}>New attribute</button>
@@ -238,6 +245,11 @@ var DataClassComponent = React.createClass({
             });
         }).bind(this);
     },
+    handleEnterSubmit: function(e) {
+        if (e.keyCode == 13) {
+            this.props.handleExport()
+        }
+    },
     render: function() {
         var items = this.state.items.map(function(item, i) {
             return (
@@ -249,6 +261,7 @@ var DataClassComponent = React.createClass({
                     handleDataTypeChange={this.handleAttrTypeChange(i)}
                     handleNameChange={this.handleAttrNameChange(i)}
                     availableDataTypes={this.props.availableDataTypes}
+                    handleEnterSubmit={this.handleEnterSubmit}
                 />);
         }.bind(this));
         return (
@@ -270,6 +283,7 @@ var DataClassComponent = React.createClass({
                                     className="form-control"
                                     value={this.props.name}
                                     onChange={this.handleClassNameChange}
+                                    onKeyDown={this.handleEnterSubmit}
                             />
                     </li>
                     {items}

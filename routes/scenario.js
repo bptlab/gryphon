@@ -324,11 +324,21 @@ router.post('/:scenID/export', function(req, res, next) {
                         data: result,
                         headers: {"Content-Type": "application/json"}
                     };
-                    client.post(result2.url + '/scenario', args, function(data, response){
+                    client.post(result2.url + '/scenario', args, function(data){
+                        if (data != null && data.isArray()) {
+                            data.unshift({
+                                'type': 'success',
+                                'text': 'Export succesfull!'
+                            });
+                        }
                         res.json(data);
                     }).on('error',function(err){
+                        res.status(200);
+                        res.json([{
+                            'type': 'danger',
+                            'text': 'Export not succesfull, Error occured.'
+                        }]);
                         console.log(err);
-                        res.status(500).end();
                     });
                 } else {
                     res.status(404).end();

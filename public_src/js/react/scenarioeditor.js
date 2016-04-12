@@ -98,6 +98,11 @@ var ScenarioEditForm = React.createClass({
         }.bind(this);
         return handler;
     },
+    handleEnterSubmit: function(e) {
+        if (e.keyCode == 13) {
+            this.handleSubmit()
+        }
+    },
     render: function() {
         var terminationConditions = this.state.terminationconditions.map(function(terminationcondition, index) {
             return (
@@ -113,6 +118,7 @@ var ScenarioEditForm = React.createClass({
                                 value = {terminationcondition}
                                 onChange = {this.handleTerminationConditionChange(index)}
                                 onBlur = {this.validateTerminationConditionChange(index)}
+                                onKeyDown = {this.handleEnterSubmit}
                                 />
                             <span className="input-group-btn">
                                 <button
@@ -143,6 +149,7 @@ var ScenarioEditForm = React.createClass({
                                     placeholder="Name"
                                     value={this.state.name}
                                     onChange = {this.handleNameChange}
+                                    onKeyDown = {this.handleEnterSubmit}
                                     />
                             </div>
                         </div>
@@ -214,6 +221,11 @@ var ScenarioFragmentList = React.createClass({
             }.bind(this));
         }
     },
+    handleEnterSubmit: function(e) {
+        if (e.keyCode == 13) {
+            this.handleFragmentClick(e)
+        }
+    },
     render: function() {
         var fragments = this.props.scenario.fragments.map(function(fragment) {
             return (
@@ -231,7 +243,14 @@ var ScenarioFragmentList = React.createClass({
                 </ul>
                 <div className="panel-footer clearfix">
                     <div className="input-group pull-right">
-                        <input type="text" className="form-control" name="newfragmentname" onChange={this.handleNameChange} placeholder="New fragment" value={this.state.newname} />
+                        <input type="text"
+                               className="form-control"
+                               name="newfragmentname"
+                               onChange={this.handleNameChange}
+                               placeholder="New fragment"
+                               value={this.state.newname}
+                               onKeyDown={this.handleEnterSubmit}
+                        />
                         <span className="input-group-btn">
                             <button className="btn btn-success" type="button" onClick={this.handleFragmentClick}>
                                 <i className="fa fa-plus"></i> Add fragment

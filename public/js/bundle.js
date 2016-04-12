@@ -103895,7 +103895,6 @@ var TypeSelect = React.createClass({
         this.setState({ value: newState });
         this.props.handleType(newState);
     },
-
     render: function () {
         var value = this.state.value;
         return React.createElement(
@@ -103957,7 +103956,9 @@ var DataClassAttributeComponent = React.createClass({
                         type: 'text',
                         className: 'form-control',
                         value: this.props.name,
-                        onChange: this.handleNameChange })
+                        onChange: this.handleNameChange,
+                        onKeyDown: this.props.handleEnterSubmit
+                    })
                 ),
                 React.createElement(
                     'div',
@@ -104056,6 +104057,11 @@ var DataClassFooterComponent = React.createClass({
             this.setState({ newname: '' });
         }
     },
+    handleEnterSubmit: function (e) {
+        if (e.keyCode == 13) {
+            this.handleAdd();
+        }
+    },
     render: function () {
         return React.createElement(
             'div',
@@ -104074,7 +104080,8 @@ var DataClassFooterComponent = React.createClass({
                             className: 'form-control',
                             placeholder: 'New attribute',
                             value: this.state.newname,
-                            onChange: this.handleChange
+                            onChange: this.handleChange,
+                            onKeyDown: this.handleEnterSubmit
                         }),
                         React.createElement(
                             'div',
@@ -104179,6 +104186,11 @@ var DataClassComponent = React.createClass({
             });
         }.bind(this);
     },
+    handleEnterSubmit: function (e) {
+        if (e.keyCode == 13) {
+            this.props.handleExport();
+        }
+    },
     render: function () {
         var items = this.state.items.map(function (item, i) {
             return React.createElement(DataClassAttributeComponent, {
@@ -104188,7 +104200,8 @@ var DataClassComponent = React.createClass({
                 onDelete: this.handleRemove(i),
                 handleDataTypeChange: this.handleAttrTypeChange(i),
                 handleNameChange: this.handleAttrNameChange(i),
-                availableDataTypes: this.props.availableDataTypes
+                availableDataTypes: this.props.availableDataTypes,
+                handleEnterSubmit: this.handleEnterSubmit
             });
         }.bind(this));
         return React.createElement(
@@ -104214,7 +104227,8 @@ var DataClassComponent = React.createClass({
                         type: 'text',
                         className: 'form-control',
                         value: this.props.name,
-                        onChange: this.handleClassNameChange
+                        onChange: this.handleClassNameChange,
+                        onKeyDown: this.handleEnterSubmit
                     })
                 ),
                 items
@@ -105110,6 +105124,11 @@ var ModifyFragmentModal = React.createClass({
     handleChange: function (e) {
         this.setState({ name: e.target.value });
     },
+    handleEnterSubmit: function (e) {
+        if (e.keyCode == 13) {
+            this.props.handleSubmit();
+        }
+    },
     render: function () {
         return React.createElement(
             'div',
@@ -105158,7 +105177,8 @@ var ModifyFragmentModal = React.createClass({
                                     id: 'modifyFragmentModalName',
                                     placeholder: 'Fragment name',
                                     onChange: this.handleChange,
-                                    value: this.state.name
+                                    value: this.state.name,
+                                    onKeyDown: this.handleEnterSubmit
                                 })
                             )
                         ),
@@ -105209,6 +105229,11 @@ var CreateScenarioModal = React.createClass({
     handleNameChange: function (e) {
         this.setState({ name: e.target.value });
     },
+    handleEnterSubmit: function (e) {
+        if (e.keyCode == 13) {
+            this.handleSubmit();
+        }
+    },
     render: function () {
         return React.createElement(
             'div',
@@ -105257,7 +105282,8 @@ var CreateScenarioModal = React.createClass({
                                     id: 'createScenarioModalName',
                                     placeholder: 'Scenario name',
                                     value: this.state.name,
-                                    onChange: this.handleNameChange
+                                    onChange: this.handleNameChange,
+                                    onKeyDown: this.handleEnterSubmit
                                 })
                             )
                         ),
@@ -105308,7 +105334,13 @@ var ExportScenarioModal = React.createClass({
     handleSubmit: function () {
         if (this.state.selectedTarget != "") {
             API.exportScenarioToChimera(this.state.scenID, this.state.selectedTarget, function (response) {
-                MessageHandler.handleMessage('success', 'Export succesfull!');
+                MessageHandler.handleMessage('success', 'Exporting scenario');
+                console.log(response);
+                if (response != null && response.constructor === Array) {
+                    response.forEach(function (message) {
+                        MessageHandler.handleMessage(message['type'], message['text']);
+                    });
+                }
             });
             $('#exportScenarioModal').modal('hide');
         } else {
@@ -105663,6 +105695,11 @@ var ScenarioEditForm = React.createClass({
         }.bind(this);
         return handler;
     },
+    handleEnterSubmit: function (e) {
+        if (e.keyCode == 13) {
+            this.handleSubmit();
+        }
+    },
     render: function () {
         var terminationConditions = this.state.terminationconditions.map(function (terminationcondition, index) {
             return React.createElement(
@@ -105687,7 +105724,8 @@ var ScenarioEditForm = React.createClass({
                             placeholder: 'Termination Condition',
                             value: terminationcondition,
                             onChange: this.handleTerminationConditionChange(index),
-                            onBlur: this.validateTerminationConditionChange(index)
+                            onBlur: this.validateTerminationConditionChange(index),
+                            onKeyDown: this.handleEnterSubmit
                         }),
                         React.createElement(
                             'span',
@@ -105740,7 +105778,8 @@ var ScenarioEditForm = React.createClass({
                                 id: 'scenarioname',
                                 placeholder: 'Name',
                                 value: this.state.name,
-                                onChange: this.handleNameChange
+                                onChange: this.handleNameChange,
+                                onKeyDown: this.handleEnterSubmit
                             })
                         )
                     ),
@@ -105848,6 +105887,11 @@ var ScenarioFragmentList = React.createClass({
             }.bind(this));
         }
     },
+    handleEnterSubmit: function (e) {
+        if (e.keyCode == 13) {
+            this.handleFragmentClick(e);
+        }
+    },
     render: function () {
         var fragments = this.props.scenario.fragments.map(function (fragment) {
             return React.createElement(
@@ -105888,7 +105932,14 @@ var ScenarioFragmentList = React.createClass({
                 React.createElement(
                     'div',
                     { className: 'input-group pull-right' },
-                    React.createElement('input', { type: 'text', className: 'form-control', name: 'newfragmentname', onChange: this.handleNameChange, placeholder: 'New fragment', value: this.state.newname }),
+                    React.createElement('input', { type: 'text',
+                        className: 'form-control',
+                        name: 'newfragmentname',
+                        onChange: this.handleNameChange,
+                        placeholder: 'New fragment',
+                        value: this.state.newname,
+                        onKeyDown: this.handleEnterSubmit
+                    }),
                     React.createElement(
                         'span',
                         { className: 'input-group-btn' },
