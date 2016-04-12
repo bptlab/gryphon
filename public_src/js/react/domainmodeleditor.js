@@ -40,7 +40,7 @@ var DataClassAttributeComponent = React.createClass({
         this.props.handleDataTypeChange(e);
     },
     render: function() {
-        var availableFixedTypes = ["String","Integer","Double","Boolean","Enum"].map(function(dt){
+        var availableFixedTypes = ["String","Integer","Double","Boolean","Enum","Date"].map(function(dt){
             return (
                 <option value={dt}>{dt}</option>
             )
