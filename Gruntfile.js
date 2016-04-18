@@ -53,5 +53,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.registerTask('default','Build all files.',['copy:publicfiles','browserify']);
-    grunt.registerTask('config','Copy config-samples.',['copy:config'])
+    grunt.registerTask('config','Copy config-samples.',['copy:config']);
 };

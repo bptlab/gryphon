@@ -25,7 +25,7 @@ Step Five: Run "docker run -p 3000:3000 -it --rm --name griffin griffindocker"
 7. run: "node bin/www"
 
 ### Available Commands:
-- node bin/www      # To start the server. Use -PORT to specify a port.
+- node bin/www      # To start the server. Use "PORT=8080 node bin/www" to specify another port.
 - grunt             # To build all UI files. This works only after npm install was done
 - grunt config      # To copy both config examples, and give them the correct name.
 - grunt browserify  # To build the custom UI js files again.
