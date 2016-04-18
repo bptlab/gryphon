@@ -3,7 +3,7 @@ var Scenario = require('./../models/scenario').model;
 var parseToBPMNObject = require('./json').parseToBPMNObject;
 var parseToOLC = require('./json').parseToOLC;
 
-var SoundnessValidator = class SoundnessValidator {
+var SoundnessValidator = class {
     constructor(bpmnObject) {
         this.bpmnObject = bpmnObject;
         this.messages = [];
@@ -152,7 +152,96 @@ var SoundnessValidator = class SoundnessValidator {
     }
 };
 
-var Validator = class Validator {
+var EventValidator = class {
+    constructor(bpmnObject) {
+        this.bpmnObject = bpmnObject;
+        this.messages = []
+    }
+    validateEverything() {
+        this.validateEvents();
+        this.validateEventBasedGateways();
+    }
+    validateEvents() {
+        if (this.bpmnObject.intermediateCatchEvent) {
+            this.bpmnObject.intermediateCatchEvent.forEach(function(ev){
+                var allowed_ev_types = ['messageEventDefinition', 'timerEventDefinition'];
+                var not_found = false;
+                allowed_ev_types.forEach(function(evtype){
+                    if (not_found && ev.hasOwnProperty(evtype)) {
+                        not_found = false;
+                        this.messages.push({
+                            'text': 'Currently all catch events but Timer and Event are not supported in chimera! Remove them to allow export.',
+                            'type': 'danger'
+                        })
+                    }
+                }.bind(this));
+                if (ev.hasOwnProperty('messageEventDefinition') && (!ev.hasOwnProperty('griffin:eventquery') || ev['griffin:eventquery'] == "")) {
+                    this.messages.push({
+                        'text': 'Message-Events need a query-definition.',
+                        'type': 'danger'
+                    });
+                }
+            }.bind(this));
+        }
+        if (this.bpmnObject.intermediateThrowEvent) {
+            this.messages.push({
+                'text': 'Currently all throw events are not supported in chimera! Remove them to allow export.',
+                'type': 'danger'
+            })
+        }
+    }
+    validateEventBasedGateways() {
+        if (this.bpmnObject.eventBasedGateway) {
+            this.bpmnObject.eventBasedGateway.forEach(function(gateway){
+                if (gateway.outgoing) {
+                    var queries_found = [];
+                    gateway.outgoing.forEach(function(outgoing_ref){
+                        var ev = this.getSequenceFlowTarget(outgoing_ref);
+                        if (ev && ev.hasOwnProperty('messageEventDefinition') &&
+                            ev.hasOwnProperty('griffin:eventquery') && ev['griffin:eventquery'] !== "") {
+                            if (queries_found.indexOf(ev['griffin:eventquery']) >= 0) {
+                                console.log("lolwhat2");
+                                this.messages.push({
+                                    'text': "You've used the query (" + ev['griffin:eventquery'].substring(0,30) + "...) twice after an event based gateway. This is invalid because it causes unpredictable behavior.",
+                                    'type': 'danger'
+                                })
+                            } else {
+                                console.log("query:" + ev['griffin:eventquery']);
+                                queries_found.push(ev['griffin:eventquery']);
+                            }
+                        }
+                    }.bind(this))
+                }
+            }.bind(this));
+        }
+    }
+    getSequenceFlowTarget(seqflowid) {
+        var seqs = this.bpmnObject.sequenceFlow.filter(function(seqflow){
+            return (seqflow.id == seqflowid);
+        });
+        if (seqs.length == 0) {
+            return null;
+        } else {
+            var seqflow = seqs[0];
+            if (seqflow.targetRef.substring(0,22) == 'IntermediateCatchEvent') {
+                var evs = this.bpmnObject.intermediateCatchEvent.filter(function(ev){
+                    return (ev.id == seqflow.targetRef);
+                })
+                if (evs.length == 0) {
+                    return null;
+                } else {
+                    return evs[0];
+                }
+            } else {
+                return null;
+            }
+        }
+    }
+};
+
+// This validator does the olc validation by itself (cause of db-reasons)
+// All other validation is done in specialised validators that consume the fragments structure and output messages
+var Validator = class {
     constructor(fragment,initDone) {
         if (initDone == undefined) {
             initDone = function() {
@@ -215,6 +304,7 @@ var Validator = class Validator {
     validateEverything() {
         this.validateDataObjectFlow();
         this.validateStructuralSoundness();
+        this.validateEvents();
     }
     getDataObjectReference(dorefid) {
         return this.bpmnObject.dataObjectReference.find(function(doref){
@@ -315,9 +405,14 @@ var Validator = class Validator {
         }.bind(this))
     }
     validateStructuralSoundness() {
-        var validator = new SoundnessValidator(this.bpmnObject);
+        this.validateWithSimpleValidator(new SoundnessValidator(this.bpmnObject));
+    }
+    validateWithSimpleValidator(validator) {
         validator.validateEverything();
         this.messages = this.messages.concat(validator.messages);
+    }
+    validateEvents() {
+        this.validateWithSimpleValidator(new EventValidator(this.bpmnObject));
     }
 };
 
