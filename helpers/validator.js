@@ -226,7 +226,7 @@ var EventValidator = class {
             if (seqflow.targetRef.substring(0,22) == 'IntermediateCatchEvent') {
                 var evs = this.bpmnObject.intermediateCatchEvent.filter(function(ev){
                     return (ev.id == seqflow.targetRef);
-                })
+                });
                 if (evs.length == 0) {
                     return null;
                 } else {

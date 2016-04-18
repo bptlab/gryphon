@@ -1,0 +1,43 @@
+var CONFIGURATION = {
+    /**
+     * ### UI Configuration ###
+     */
+    /**
+     * The time in milliseconds that a warning message should stay on the screen.
+     * Example Value: 1000, 5*1000
+     */
+    MESSAGE_DISMISS_TIME: 5*1000,
+
+    /**
+     *  ### Default Values ###
+     */
+    /**
+     * A BPMN.io compatible XML Code that contains the Default OLC-Diagram Code.
+     * Example Value: (Another long XML File)
+     */
+    DEFAULT_OLC_XML: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"Process_1\" isExecutable=\"false\">\n    <bpmn:task id=\"Task_0ihw5ky\" name=\"State1\" />\n  </bpmn:process>\n  <bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">\n    <bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"Process_1\">\n      <bpmndi:BPMNShape id=\"Task_0ihw5ky_di\" bpmnElement=\"Task_0ihw5ky\">\n        <dc:Bounds x=\"156\" y=\"63\" width=\"100\" height=\"80\" />\n      </bpmndi:BPMNShape>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn:definitions>\n",
+
+    /**
+     * The interval that is used in the diagram editors to auto store the process.
+     * Example Value: 0, 30*1000, 100000000
+     */
+    FRAGMENT_SAVE_INTERVAL: 30*1000,
+
+    /**
+     * ### Frontend-API-Configuration
+     */
+
+    /**
+     * If the instance is hosting in another path but the root-dir: host:port/ (For example host:port/instance) enter the sub
+     * directory here. (/instance in this case.)
+     * Example Value: '/instance', '/griffin'
+     */
+    SUB_DIR: '',
+    /**
+     * The API Host that should be used. In most cases you dont need to touch it. Configuring the sub directory should
+     * be enough, as its generated out of the servers host then.
+     * Example Value: 'localhost:3000/api', window.location.origin + this.SUB_DIR + '/api/
+     */
+    API_HOST: window.location.origin + '/api/',
+};
+module.exports = CONFIGURATION

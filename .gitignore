@@ -1,3 +1,4 @@
+# Defualt JS-Stuff
 lib-cov
 *.seed
 *.log
@@ -12,8 +13,20 @@ logs
 results
 build
 
-node_modules
-public/js/bundle.js
+# Ignore all files that are download using npm or created using grunt
+node_modules/
+config.js
+client_config.js
 
+# Ignore all CSS files that are copied using Grunt, but dont ignore the ones that are created manually
+public/css/bootstrap*
+public/css/bpmn*
+public/css/diagram*
+public/font/
+public/fonts/
+public/js/
+public/vendor/
+
+# Ignore all IDE files
 .idea
 *.iml
