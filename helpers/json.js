@@ -39,9 +39,9 @@ var parseToOLC = function(xml) {
     console.log(parsed);
     delete parsed["id"];
     delete parsed["isExecutable"];
-    if ("task" in parsed) {
-        parsed["state"] = parsed["task"].map(function(task){
-            task.id = task.id.replace("Task","State");
+    if ("intermediateThrowEvent" in parsed) {
+        parsed["state"] = parsed["intermediateThrowEvent"].map(function(task){
+            task.id = task.id.replace("IntermediateThrowEvent","State");
             return task;
         });
         delete parsed["task"];
@@ -49,10 +49,10 @@ var parseToOLC = function(xml) {
     if ("sequenceFlow" in parsed) {
         parsed["sequenceFlow"] = parsed["sequenceFlow"].map(function(sequenceFlow){
             if ("sourceRef" in sequenceFlow) {
-                sequenceFlow['sourceRef'] = sequenceFlow['sourceRef'].replace("Task","State");
+                sequenceFlow['sourceRef'] = sequenceFlow['sourceRef'].replace("IntermediateThrowEvent","State");
             }
             if ("targetRef" in sequenceFlow) {
-                sequenceFlow['targetRef'] = sequenceFlow['targetRef'].replace("Task","State");
+                sequenceFlow['targetRef'] = sequenceFlow['targetRef'].replace("IntermediateThrowEvent","State");
             }
             return sequenceFlow;
         })
