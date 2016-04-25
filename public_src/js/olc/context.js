@@ -109,7 +109,8 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
             !isEventSubProcess(businessObject)) {
 
             assign(actions, {
-                'append.append-task': appendAction('bpmn:Task', 'bpmn-icon-task')
+                'append.intermediate-event': appendAction('bpmn:IntermediateThrowEvent',
+                    'bpmn-icon-intermediate-event-none')
             });
         }
 

@@ -79,9 +79,9 @@ PaletteProvider.prototype.getPaletteEntries = function(element) {
             group: 'tools',
             separator: true
         },
-        'create.task': createAction(
-            'bpmn:Task', 'activity', 'bpmn-icon-task'
-        )
+        'create.intermediate-event': createAction(
+            'bpmn:IntermediateThrowEvent', 'event', 'bpmn-icon-intermediate-event-none'
+        ),
     });
 
     return actions;

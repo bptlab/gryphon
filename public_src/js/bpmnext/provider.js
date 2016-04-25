@@ -121,7 +121,8 @@ function generateProvider(fragmentid) {
         var types = [
             'bpmn:StartEvent',
             'bpmn:IntermediateCatchEvent',
-            'bpmn:BoundaryEvent'
+            'bpmn:BoundaryEvent',
+            'bpmn:ReceiveTask'
         ];
         var bo = getBusinessObject(element);
         forEach(types, function(type) {
@@ -134,7 +135,16 @@ function generateProvider(fragmentid) {
                 });
                 group.entries.push(stateEntry);
             }
-        })
+        });
+        if (is(element, 'bpmn:ReceiveTask')) {
+            var stateEntry = entryFactory.textField({
+                id: 'EventQuery',
+                description: '',
+                label: 'Event-Query for UNICORN',
+                modelProperty: 'eventquery'
+            });
+            group.entries.push(stateEntry);
+        }
     }
 
     function createWebServiceTaskProperties(group, element, elementRegistry) {
@@ -146,14 +156,14 @@ function generateProvider(fragmentid) {
                 modelProperty: 'webserviceurl'
             });
             group.entries.push(stateEntry);
-            var stateEntry = entryFactory.textField({
+            stateEntry = entryFactory.textField({
                 id: 'WebServiceMethod',
                 description: '',
                 label: 'Webservice to call (HTTP-Method)',
                 modelProperty: 'webservicemethod'
             });
             group.entries.push(stateEntry);
-            var stateEntry = entryFactory.textField({
+            stateEntry = entryFactory.textField({
                 id: 'WebServiceBody',
                 description: '',
                 label: 'Webservice to call (Body)',

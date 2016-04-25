@@ -36,7 +36,8 @@
         "bpmn:StartEvent",
         "bpmn:IntermediateThrowEvent",
         "bpmn:IntermediateCatchEvent",
-        "bpmn:BoundaryEvent"
+        "bpmn:BoundaryEvent",
+        "bpmn:ReceiveTask"
       ],
       "properties": [
         {
