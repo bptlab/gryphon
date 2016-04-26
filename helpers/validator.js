@@ -165,16 +165,16 @@ var EventValidator = class {
         if (this.bpmnObject.intermediateCatchEvent) {
             this.bpmnObject.intermediateCatchEvent.forEach(function(ev){
                 var allowed_ev_types = ['messageEventDefinition', 'timerEventDefinition'];
-                var not_found = false;
+                var found = false;
                 allowed_ev_types.forEach(function(evtype){
-                    if (not_found && ev.hasOwnProperty(evtype)) {
-                        not_found = false;
-                        this.messages.push({
-                            'text': 'Currently all catch events but Timer and Event are not supported in chimera! Remove them to allow export.',
-                            'type': 'danger'
-                        })
-                    }
+                    found = found || ev[evtype] != null;
                 }.bind(this));
+                if (!found) {
+                    this.messages.push({
+                        'text': 'Currently all catch events but Timer and Event are not supported in chimera! Remove them to allow export.',
+                        'type': 'danger'
+                    })
+                }
                 if (ev.hasOwnProperty('messageEventDefinition') && (!ev.hasOwnProperty('griffin:eventquery') || ev['griffin:eventquery'] == "")) {
                     this.messages.push({
                         'text': 'Message-Events need a query-definition.',
@@ -200,7 +200,6 @@ var EventValidator = class {
                         if (ev && ev.hasOwnProperty('messageEventDefinition') &&
                             ev.hasOwnProperty('griffin:eventquery') && ev['griffin:eventquery'] !== "") {
                             if (queries_found.indexOf(ev['griffin:eventquery']) >= 0) {
-                                console.log("lolwhat2");
                                 this.messages.push({
                                     'text': "You've used the query (" + ev['griffin:eventquery'].substring(0,30) + "...) twice after an event based gateway. This is invalid because it causes unpredictable behavior.",
                                     'type': 'danger'

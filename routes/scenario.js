@@ -330,6 +330,11 @@ router.post('/:scenID/export', function(req, res, next) {
                                 'type': 'success',
                                 'text': 'Export succesfull!'
                             });
+                        } else {
+                            data = [{
+                                'type': 'success',
+                                'text': 'Export succesfull! Server didnt send any response'
+                            }];
                         }
                         res.json(data);
                     }).on('error',function(err){
