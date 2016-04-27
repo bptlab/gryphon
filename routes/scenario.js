@@ -74,7 +74,12 @@ router.post('/', function(req, res, next) {
                     } else {
                         new_domainmodel = new DomainModel();
                         new_domainmodel.revision = scenario.domainmodel.revision;
-                        new_domainmodel.dataclasses = scenario.domainmodel.dataclasses;
+                        new_domainmodel.dataclasses = scenario.domainmodel.dataclasses.map(function(dclass){
+                            if (typeof dclass.olc !== 'string') {
+                                dclass.olc = "";
+                            }
+                            return dclass;
+                        });
                         new_domainmodel.name = scenario.domainmodel.name;
                         new_domainmodel.save();
                         db_scenario.domainmodel = new_domainmodel._id;
@@ -108,46 +113,38 @@ router.post('/', function(req, res, next) {
 
                 db_scenario.save(function (err) {
                     if (err) {
-                        res.json({
-                            "succes": false,
-                            "messages": [{
+                        res.status(500);
+                        res.json(
+                            [{
                                 "type": "danger",
                                 "text": "Scenario storage failed.",
                                 "err_text": err.message,
                                 "err_code": err.code
                             }]
-                        });
-                        res.status(500).end();
+                        );
                     } else {
-                        res.json({
-                            "success": true,
-                            "scenario": db_scenario,
-                            "messages": [{
+                        res.json(
+                            [{
                                 "type": "success",
-                                "text": "Import succesfull."
+                                "text": "Import into Gryphon successful."
                             }]
-                        });
+                        );
                     }
                 })
             } catch (err) {
                 var message = {
                     type: "danger",
-                    text: "",
-                    err_code: err.code,
-                    err_text: err.message
+                    text: ""
                 };
-                var status = 500
+                var status = 500;
                 if (err.name == "CastError") {
-                    message.text = "You've entered invalid ObjectIDs to reference to DomainModels or Fragments."
-                    status = 400
+                    status = 400;
+                    message.text = "You've entered invalid ObjectIDs to reference to DomainModels or Fragments.";
                 } else {
                     message.text = "An error occured. " + err.message;
                 }
                 res.status(status);
-                res.json({
-                    "success": false,
-                    "messages": [message]
-                });
+                res.json([message]);
             }
         });
     } catch(err) {
@@ -324,17 +321,20 @@ router.post('/:scenID/export', function(req, res, next) {
                         data: result,
                         headers: {"Content-Type": "application/json"}
                     };
-                    client.post(result2.url + '/scenario', args, function(data){
-                        if (data != null && data.isArray()) {
-                            data.unshift({
-                                'type': 'success',
-                                'text': 'Export succesfull!'
-                            });
+                    client.post(result2.url + '/scenario', args, function(data, response){
+                        console.log(data);
+                        var message = {};
+                        if (response.statusCode == 200 || response.statusCode == 201) {
+                            message.type = 'success';
+                            message.text = 'Export succesfull!'
                         } else {
-                            data = [{
-                                'type': 'success',
-                                'text': 'Export succesfull! Server didnt send any response'
-                            }];
+                            message.type = 'danger';
+                            message.text = 'Export not succesfull!'
+                        }
+                        if (data != null && data instanceof Array) {
+                            data.unshift(message);
+                        } else {
+                            data = [message];
                         }
                         res.json(data);
                     }).on('error',function(err){
