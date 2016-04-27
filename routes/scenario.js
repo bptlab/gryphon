@@ -324,7 +324,7 @@ router.post('/:scenID/export', function(req, res, next) {
                     client.post(result2.url + '/scenario', args, function(data, response){
                         console.log(data);
                         var message = {};
-                        if (response.statusCode == 200 || response.statusCode == 201) {
+                        if (response.statusCode >= 200 && response.statusCode < 300) {
                             message.type = 'success';
                             message.text = 'Export succesfull!'
                         } else {
