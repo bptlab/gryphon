@@ -78,7 +78,6 @@ router.get('/validate',function(req,res,next){
                 })
             }
         }.bind(this)).on('error',function(err){
-            console.log(err);
             res.json({
                 'type': 'danger',
                 'text': 'No valid response using ' + url

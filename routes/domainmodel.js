@@ -32,9 +32,7 @@ var changeFragmentDClassReferences = function(dm_id, old_classes, new_classes,do
                 new_classes.forEach(function(newclass){
                     if ((newclass._id == oldclass._id.toString()) && (newclass.name != oldclass.name)) {
                         result.terminationconditions = result.terminationconditions.map(function(termcon) {
-                            console.log('Old:' + termcon);
                             var new_con = termcon.split(oldclass.name + '[').join(newclass.name + '[');
-                            console.log('New:' + new_con);
                             return new_con;
                         });
                         result.save();
