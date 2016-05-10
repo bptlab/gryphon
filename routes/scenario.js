@@ -57,7 +57,8 @@ router.post('/', function(req, res, next) {
                     terminationconditions: (scenario.terminationconditions ? scenario.terminationconditions : [Config.DEFAULT_TERMINATION_CONDITION]),
                     revision: 1,
                     domainmodel: -1,
-                    fragments: []
+                    fragments: [],
+                    startconditions: (scenario.startconditions ? scenario.startconditions : [])
                 });
 
                 if (scenario.domainmodel == null) {
@@ -225,6 +226,30 @@ router.get('/:scenID/validate', function(req, res, next){
         if (result !== null) {
             var messages = [];
             var result_count = 0;
+            result.startconditions.forEach(function(startcondition){
+                if (startcondition.query == "") {
+                    messages.push({
+                        'type':'warning',
+                        'text':'Empty Querys in Startmessages are not allowed.'
+                    })
+                }
+                startcondition.mapping.forEach(function(mapping){
+                    if (mapping.classname == "" || mapping.attr == "" || mapping.path == "") {
+                        messages.push({
+                            'type':'warning',
+                            'text':'Every referenced DataClass in a startquery needs a specified classname, attribute and a JSON-Path'
+                        })
+                    }
+                })
+            });
+            result.terminationconditions.forEach(function(terminationcondition){
+                if (terminationcondition == "") {
+                    messages.push({
+                        'type': 'warning',
+                        'text': 'Empty terminationconditions are not allowed.'
+                    })
+                }
+            });
             result.fragments.forEach(function(fragment) {
                 var val = new Validator(fragment,function() {
                     val.validateEverything();
@@ -379,6 +404,11 @@ router.post('/:scenID', function(req, res, next) {
 
             if (new_scen.fragments != null && !_.isEqual(result.fragments, new_scen.fragments) && validateFragmentList(new_scen.fragments)) {
                 result.fragments = new_scen.fragments;
+                changed = true;
+            }
+
+            if (new_scen.startconditions != null && !(_.isEqual(result.startconditions, new_scen.startconditions))) {
+                result.startconditions = new_scen.startconditions;
                 changed = true;
             }
 

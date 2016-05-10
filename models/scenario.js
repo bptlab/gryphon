@@ -6,7 +6,15 @@ var ScenarioSchema = new Schema({
     terminationconditions: [{type: String}],
     revision: Number,
     fragments: [{type: mongoose.Schema.Types.ObjectId, ref: 'Fragment'}],
-    domainmodel: {type: mongoose.Schema.Types.ObjectId, ref: 'DomainModel'}
+    domainmodel: {type: mongoose.Schema.Types.ObjectId, ref: 'DomainModel'},
+    startconditions: [{
+        query: String,
+        mapping :[{
+            path: String,
+            classname: String,
+            attr: String
+        }]
+    }]
 });
 
 module.exports = {

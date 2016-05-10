@@ -21,7 +21,25 @@ router.get('/:dmID', function(req, res, next) {
     });
 });
 
-var changeFragmentDClassReferences = function(dm_id, old_classes, new_classes,done) {
+var changeDClassAttrReferences = function(newclass, oldclass, scenario) {
+    oldclass.attributes.forEach(function(old_attr) {
+        newclass.attributes.forEach(function(new_attr){
+            if (old_attr._id.toString() == new_attr._id && old_attr.name != new_attr.name) {
+                scenario.startconditions = scenario.startconditions.forEach(function(startcon){
+                    startcon.mapping = startcon.mapping.map(function(mapping){
+                        if (mapping.classname == newclass.name && mapping.attr == old_attr.name) {
+                            mapping.attr = new_attr.name;
+                        }
+                        return mapping;
+                    })
+                    return startcon;
+                })
+            }
+        })
+    });
+};
+
+var changeDClassReferences = function(dm_id, old_classes, new_classes, done) {
     Scenario.findOne({domainmodel:dm_id}).populate('fragments').exec(function(err, result){
         if (err) {
             console.error(err);
@@ -35,6 +53,15 @@ var changeFragmentDClassReferences = function(dm_id, old_classes, new_classes,do
                             var new_con = termcon.split(oldclass.name + '[').join(newclass.name + '[');
                             return new_con;
                         });
+                        result.startconditions = result.startconditions.map(function(startcon){
+                            startcon.mapping = startcon.mapping.map(function(mapping) {
+                                if (mapping.classname == oldclass.name) {
+                                    mapping.classname = newclass.name;
+                                }
+                                return mappping;
+                            });
+                            return startcon;
+                        });
                         result.save();
 
                         result.fragments.forEach(function(fragment){
@@ -46,6 +73,9 @@ var changeFragmentDClassReferences = function(dm_id, old_classes, new_classes,do
                                 .join('name="' + newclass.name + '[');
                             fragment.save();
                         })
+                    }
+                    if ((newclass._id == oldclass._id.toString()) && !_.isEqual(newclass.attributes, oldclass.attributes)) {
+                        changeDClassAttrReferences(oldclass, newclass, result);
                     }
                 });
             });
@@ -92,7 +122,7 @@ router.post('/:dmID', function(req, res, next) {
                 res.json(result);
             };
             if (new_dm.dataclasses != null && !_.isEqual(new_dm.dataclasses, result.dataclasses)) {
-                changeFragmentDClassReferences(result._id, result.dataclasses, new_dm.dataclasses, done);
+                changeDClassReferences(result._id, result.dataclasses, new_dm.dataclasses, done);
             } else {
                 done();
             }
