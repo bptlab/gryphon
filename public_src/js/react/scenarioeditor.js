@@ -306,6 +306,20 @@ var ScenarioSingleStartCondition = React.createClass({
             this.props.handleSubmit()
         }
     },
+    updateSelect: function() {
+        console.log('Dont care');
+        this.props.mapping.forEach(function(mapel){
+            $('#' + mapel._id + "-dtselect-class").selectpicker();
+            $('#' + mapel._id + "-dtselect-attr").selectpicker()
+        });
+    },
+    /*
+    componentDidMount: function() {
+        this.updateSelect()
+    },
+    componentDidUpdate: function() {
+        this.updateSelect()
+    }, */
     render: function() {
         var mapping = this.props.mapping.map(function(mapel, index){
             var dmclass = this.props.availableClasses.filter(function(dmclass){
@@ -329,14 +343,14 @@ var ScenarioSingleStartCondition = React.createClass({
             return (
                 <tr key={mapel._id}>
                     <td>
-                        <select className="selectpicker" onChange={this.handleDataClassChange(index)} value={mapel.classname} data-live-search="true" id={mapel._id + "-dtselect-class"}>
+                        <select className="form-control" onChange={this.handleDataClassChange(index)} value={mapel.classname} id={mapel._id + "-dtselect-class"}>
                             <optgroup label="Available Data Classes">
                                 <option value="">Nothing</option>
                                 {availableClasses}
                             </optgroup>
                         </select></td>
                     <td>
-                        <select className="selectpicker" onChange={this.handleDataClassAttrChange(index)} value={mapel.attr} data-live-search="true" id={mapel._id + "-dtselect-attr"}>
+                        <select className="form-control" onChange={this.handleDataClassAttrChange(index)} value={mapel.attr} id={mapel._id + "-dtselect-attr"}>
                             <optgroup label="Available Attributes">
                                 <option value="">Nothing</option>
                                 {availableAttributes}
@@ -380,9 +394,11 @@ var ScenarioSingleStartCondition = React.createClass({
                     </div>
                     <table className="table">
                         <thead>
-                            <td>Dataclass</td>
-                            <td>Attribute</td>
-                            <td>JSON-Path</td>
+                            <tr>
+                                <th>Dataclass</th>
+                                <th>Attribute</th>
+                                <th>JSON-Path</th>
+                            </tr>
                         </thead>
                         <tbody>
                             {mapping}
@@ -484,7 +500,7 @@ var ScenarioFragmentList = React.createClass({
                         />
                         <span className="input-group-btn">
                             <button className="btn btn-success" type="button" onClick={this.handleFragmentClick}>
-                                <i className="fa fa-plus"></i> Add fragment
+                                <i className="fa fa-plus" /> Add fragment
                             </button>
                         </span>
                     </div>

@@ -109,7 +109,7 @@ var DataClassHeaderComponent = React.createClass({
                     <div className="col-sm-6">
                         <div className="btn-group">
                             <button type="button" className="btn btn-danger" onClick={this.props.handleDelete}>
-                                <i className="fa fa-times" ></i>
+                                <i className="fa fa-times" />
                             </button>
                             {olcStatus}
                         </div>
