@@ -195,6 +195,7 @@ var ScenarioStartConditionForm = React.createClass({
     },
     handleSubmit: function() {
         API.exportScenario(this.state);
+        MessageHandler.handleMessage("success","Saved startconditions!");
     },
     handleAdd: function() {
         var conds = this.state.startconditions;
@@ -344,17 +345,13 @@ var ScenarioSingleStartCondition = React.createClass({
                 <tr key={mapel._id}>
                     <td>
                         <select className="form-control" onChange={this.handleDataClassChange(index)} value={mapel.classname} id={mapel._id + "-dtselect-class"}>
-                            <optgroup label="Available Data Classes">
-                                <option value="">Nothing</option>
-                                {availableClasses}
-                            </optgroup>
+                            <option value="">Nothing</option>
+                            {availableClasses}
                         </select></td>
                     <td>
                         <select className="form-control" onChange={this.handleDataClassAttrChange(index)} value={mapel.attr} id={mapel._id + "-dtselect-attr"}>
-                            <optgroup label="Available Attributes">
-                                <option value="">Nothing</option>
-                                {availableAttributes}
-                            </optgroup>
+                            <option value="">Nothing</option>
+                            {availableAttributes}
                         </select></td>
                     <td>
                         <input type="text"
