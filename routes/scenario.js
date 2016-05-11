@@ -347,6 +347,7 @@ router.post('/:scenID/export', function(req, res, next) {
                         headers: {"Content-Type": "application/json"}
                     };
                     client.post(result2.url + '/scenario', args, function(data, response){
+                        console.log(data);
                         var message = {};
                         if (response.statusCode >= 200 && response.statusCode < 300) {
                             message.type = 'success';
