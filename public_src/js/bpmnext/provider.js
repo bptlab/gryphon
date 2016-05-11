@@ -41,7 +41,7 @@ function generateProvider(fragmentid) {
                         res[prop] = values[prop];
                         res['name'] = values[prop] + "[" + bo['state'] + "]"
                     } else {
-                        res[prop] = undefined;
+                        res[prop] = "";
                     }
                     return cmdHelper.updateProperties(element, res);
                 }

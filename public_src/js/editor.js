@@ -43,7 +43,27 @@ Editor.prototype.importFragment = function(fragment, callback) {
             griffin: ModdleDescriptor
         }
     });
-    this.renderer.importXML(fragment.content, callback);
-};  
+    this.renderer.importXML(fragment.content, function(){
+        this.renderer.get('eventBus').on('element.changed', this.handleChange);
+        callback()
+    }.bind(this));
+};
+
+Editor.prototype.handleChange = function(event, object) {
+    if (object.element.businessObject != null) {
+        var bo = object.element.businessObject;
+        if (bo.$type == "bpmn:DataObjectReference") {
+            console.log(bo);
+            if (bo.name != null) {
+                var end = bo.name.indexOf("[");
+                var realend = bo.name.indexOf("]");
+                if (end >= 0 && realend >= 0 && realend > end) {
+                    bo.dataclass = bo.name.substring(0,end);
+                    bo.state = bo.name.substring(end+1,realend);
+                }
+            }
+        }
+    }
+};
 
 module.exports = Editor;
