@@ -274,6 +274,7 @@ var Validator = class {
                 var adjlist = {};
                 var namemap  = {};
                 if ('state' in olc) {
+
                     olc['state'].forEach(function(state){
                         if ('name' in state) {
                             namemap[state['id']] = state['name'];
@@ -281,22 +282,23 @@ var Validator = class {
                             namemap[state['id']] = state['id'];
                         }
                         adjlist[namemap[state['id']]] = [];
-                    })
+                    });
+
+                    if ('sequenceFlow' in olc) {
+                        olc['sequenceFlow'].forEach(function(seqFlow){
+                            if ((seqFlow['sourceRef'] in namemap) && (seqFlow['targetRef'] in namemap)) {
+                                adjlist[namemap[seqFlow['sourceRef']]].push(namemap[seqFlow['targetRef']]);
+                            }
+                        });
+                        this.olc[dclass.name] = adjlist;
+                    } else {
+                        this.olc[dclass.name] = null;
+                    }
                 } else {
                     this.olc[dclass.name] = null;
-                    return;
                 }
-                if ('sequenceFlow' in olc) {
-                    olc['sequenceFlow'].forEach(function(seqFlow){
-                        if ((seqFlow['sourceRef'] in namemap) && (seqFlow['targetRef'] in namemap)) {
-                            adjlist[namemap[seqFlow['sourceRef']]].push(namemap[seqFlow['targetRef']]);
-                        }
-                    });
-                }
-                this.olc[dclass.name] = adjlist;
             } else {
                 this.olc[dclass.name] = null;
-                return;
             }
         }.bind(this))
     }
@@ -379,12 +381,7 @@ var Validator = class {
         var mapping  = this.createMapping(iset,oset);
         mapping.forEach(function(iotuple){
             if (iotuple.dataclass in this.olc) {
-                if (this.olc[iotuple.dataclass] == null) {
-                    this.messages.push({
-                        'text': iotuple.dataclass + " has no valid OLC definition. Can't validate OLC",
-                        'type': 'warning'
-                    })
-                } else {
+                if (this.olc[iotuple.dataclass] != null) {
                     var olc = this.olc[iotuple.dataclass];
                     if (!(iotuple.instate in olc)) {
                         this.messages.push({
