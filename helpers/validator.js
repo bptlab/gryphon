@@ -333,6 +333,37 @@ var Validator = class {
                 this.validateIOSet(iset,oset);
             }.bind(this));
         }
+        if(this.bpmnObject.dataObjectReference != undefined && this.bpmnObject.receiveTask != undefined) {
+            this.bpmnObject.receiveTask.forEach(function(task){
+                var iset = [];
+                var oset = [];
+                if (task.dataInputAssociation != undefined) {
+                    task.dataInputAssociation.forEach(function(dia){
+                        iset.push(this.getDataObjectReference(dia['sourceRef'][0]));
+                    }.bind(this));
+                }
+                if (task.dataOutputAssociation != undefined) {
+                    task.dataOutputAssociation.forEach(function(doa){
+                        oset.push(this.getDataObjectReference(doa['targetRef'][0]));
+                    }.bind(this));
+                }
+                this.validateIOSetDuplicates(iset, oset)
+                this.validateIOSet(iset,oset);
+            }.bind(this));
+        }
+    }
+    validateIOSetDuplicates(iset, oset) {
+        var output = [];
+        oset.forEach(function(outputobject) {
+            var dclass = outputobject['griffin:dataclass'];
+            if (output.indexOf(dclass) >= 0) {
+                this.messages.push({
+                    'text': 'Invalid outputset. Only one possible Outputset is allowed. ' + dclass + ' is duplicate.',
+                    'type': 'warning'
+                })
+            }
+            output.push(dclass);
+        }.bind(this));
     }
     validateDataObjectReference(doref) {
         if (!(doref['griffin:dataclass'] in this.olc)) {
@@ -377,7 +408,7 @@ var Validator = class {
         });
         return mapping;
     }
-    validateIOSet(iset,oset) {
+    validateIOSet(iset, oset) {
         var mapping  = this.createMapping(iset,oset);
         mapping.forEach(function(iotuple){
             if (iotuple.dataclass in this.olc) {
