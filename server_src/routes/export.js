@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var Config = require('./../config');
 var RestClient = require('node-rest-client').Client;
 var ExportModel = require('./../models/export').model;
 

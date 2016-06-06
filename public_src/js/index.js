@@ -1,38 +1,22 @@
 var $ = jQuery = require('jquery');
 window.$ = $;
+
 var _ = require('lodash');
-var React = require('react');
+window._ = _;
+
 var ReactDOM = require('react-dom');
+var React = require('react');
 var Bootstrap = require('bootstrap');
-var API = require('./api');
-var SideBarComponent = require('./react/sidebar');
 var FragmentEditorComponent = require('./react/fragmenteditor');
-var ScenarioEditorComponent = require('./react/scenarioeditor');
-var DomainModelEditorComponent = require('./react/domainmodeleditor');
+var ScenarioEditorComponent = require('./react/scenarioeditor/scenarioeditor');
+var DomainModelEditorComponent = require('./react/domainmodeleditor/domainmodeleditor');
 var OLCEditorComponent = require('./react/olceditor');
-var IndexComponent = require('./react/index');
-var ModalComponent = require('./react/modals');
+var IndexComponent = require('./react/indexpage');
 var Router = require('react-router').Router;
 var Route = require('react-router').Route;
-var Link = require('react-router').Link;
 var IndexRoute = require('react-router').IndexRoute;
-var MessageBar = require('./react/messagebar').MessageBarComponent;
-var ExportConfigComponent = require('./react/exportconfig');
-
-var App = React.createClass({
-    render: function() {
-        return (
-            <div className="app-container">
-                <ModalComponent />
-                <SideBarComponent />
-                <div className="main-content">
-                    <MessageBar />
-                    {this.props.children}
-                </div>
-            </div>
-        )
-    }
-});
+var ExportConfigComponent = require('./react/exportconfig/exportconfig');
+var App = require('./react/index');
 
 $(function () {
     ReactDOM.render(

@@ -1,9 +1,9 @@
 var React = require('react');
 var Link = require('react-router').Link;
-var API = require('./../api');
-var MessageHandler = require('./../messagehandler');
-var NameCheck = require('./../namecheck');
-var SideBarManager = require('./../sidebarmanager');
+var API = require('./../../api');
+var MessageHandler = require('./../../messagehandler');
+var NameCheck = require('./../../namecheck');
+var SideBarManager = require('./../../sidebarmanager');
 
 var ScenarioEditForm = React.createClass({
     getInitialState: function() {

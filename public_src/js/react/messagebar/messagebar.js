@@ -1,9 +1,9 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-var Editor = require('./../editor');
-var API = require('./../api');
-var MessageHandler = require('./../messagehandler');
-var Config = require('./../config');
+var Editor = require('./../../bpmn/editor');
+var API = require('./../../api');
+var MessageHandler = require('./../../messagehandler');
+var Config = require('./../../config');
 
 var MessageComponent = React.createClass({
     getDefaultProps: function() {

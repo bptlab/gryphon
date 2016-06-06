@@ -1,51 +1,21 @@
 var React = require('react');
-var Link = require('react-router').Link;
-var API = require('./../api');
+var SideBarComponent = require('./sidebar/sidebar');
+var ModalComponent = require('./modals/modals');
+var MessageBar = require('./messagebar/messagebar').MessageBarComponent;
 
-var IndexComponent = React.createClass({
-    getInitialState: function() {
-        return {
-            scenarios: []
-        }
-    },
-    componentDidMount: function() {
-        this.loadScenarioList();
-    },
-    loadScenarioList: function() {
-        API.getAllScenarios(true, function(data) {
-            if (data.scenarios) {
-                this.setState({scenarios: data.scenarios});
-            }
-        }.bind(this))
-    },
+var App = React.createClass({
     render: function() {
-        var scenarios = this.state.scenarios.map(function(scenario){
-            var fragments = scenario.fragments.map(function(fragment){
-                return (
-                    <li className="list-group-item" key={fragment._id}><Link to={"fragment/" + fragment._id}>{fragment.name}</Link></li>
-                )
-            });
-            return (
-                <div className="panel panel-default" key={scenario._id}>
-                    <div className="panel-heading">
-                        <h3 className="panel-title">
-                            <Link to={"scenario/" + scenario._id}>
-                                {scenario.name}
-                            </Link>
-                        </h3>
-                    </div>
-                    <ul className="list-group">
-                        {fragments}
-                    </ul>
-                </div>
-            )
-        });
         return (
-            <div className="col-md-12">
-                {scenarios}
+            <div className="app-container">
+                <ModalComponent />
+                <SideBarComponent />
+                <div className="main-content">
+                    <MessageBar />
+                    {this.props.children}
+                </div>
             </div>
         )
     }
 });
 
-module.exports = IndexComponent;
+module.exports = App;

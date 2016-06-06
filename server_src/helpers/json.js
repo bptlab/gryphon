@@ -1,9 +1,5 @@
-var xml2json = require('xml2json')
-/**
- * This function takes xml conform to the bpmn.io xml standard and parses it to an serialisable and analyzable
- * object structure using the bpmn-moddle library. For further information see bpmn-moddle and bpmn-io documentation.
- * @param xml
- */
+var xml2json = require('xml2json');
+
 var parseToBPMNObject = function(xml) {
 
     // What am I doing here? I remove all namespaces to make parsing easier. All but the griffin notations.

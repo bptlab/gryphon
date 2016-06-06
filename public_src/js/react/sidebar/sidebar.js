@@ -1,7 +1,7 @@
 var React = require('react');
-var API = require('./../api');
+var API = require('./../../api');
 var Link = require('react-router').Link;
-var SideBarManager = require('./../sidebarmanager');
+var SideBarManager = require('./../../sidebarmanager');
 
 var SideBarSingleScenario = React.createClass({
     handleScenarioClick: function(e) {

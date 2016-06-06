@@ -1,14 +1,14 @@
 var React = require('react');
-var MessageHandler = require('./../messagehandler');
-var NameCheck = require('./../namecheck');
-var API = require('./../api');
-var Config = require('./../config');
+var MessageHandler = require('./../../messagehandler');
+var NameCheck = require('./../../namecheck');
+var API = require('./../../api');
+var Config = require('./../../config');
 var Link = require('react-router').Link;
 
 var TypeSelect = React.createClass({
     getInitialState: function() {
         var type;
-        if (this.props.is_event) {type = "event"} else {type = "data"};
+        if (this.props.is_event) {type = "event"} else {type = "data"}
         return {value: type};
     },
     handleChange: function(event) {

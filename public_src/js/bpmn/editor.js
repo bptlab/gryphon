@@ -3,9 +3,9 @@
 var $ = require('jquery'),
     BPMNModeller= require('bpmn-js/lib/Modeler'),
     BPMNPropertyPanel = require('bpmn-js-properties-panel'),
-    generateProvider = require('./bpmnext/provider');
+    generateProvider = require('./provider');
 
-var ModdleDescriptor = require('./bpmnext/bpmnextension');
+var ModdleDescriptor = require('./bpmnextension');
 
 var Editor = function(canvas, propertypanel) {
     this.canvas = canvas;

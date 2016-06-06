@@ -148,7 +148,7 @@ router.get('/', function(req, res, next) {
                 domainmodels: result
             };
 
-            res.json(res_object)
+            res.json(res_object);
         } else {
             res.status(404).end();
         }

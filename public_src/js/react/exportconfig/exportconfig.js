@@ -1,9 +1,9 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-var Editor = require('./../editor');
-var API = require('./../api');
-var MessageHandler = require('./../messagehandler');
-var MessageComponent = require('./messagebar').MessageComponent;
+var Editor = require('./../../bpmn/editor');
+var API = require('./../../api');
+var MessageHandler = require('./../../messagehandler');
+var MessageComponent = require('./../messagebar/messagebar').MessageComponent;
 var Link = require('react-router').Link;
 
 var ExportTargetComponent = React.createClass({

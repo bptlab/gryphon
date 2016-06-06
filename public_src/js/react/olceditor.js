@@ -1,11 +1,8 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
 var Editor = require('./../olc/editor');
 var MessageHandler = require('./../messagehandler');
 var API = require('./../api');
 var Config = require('./../config');
-var Validator = require('./../bpmnext/validator');
-var Link = require('react-router').Link;
 
 var OLCEditorComponent = React.createClass({
     getInitialState: function() {

@@ -1,10 +1,8 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
-var Editor = require('./../editor');
+var Editor = require('./../bpmn/editor');
 var MessageHandler = require('./../messagehandler');
 var API = require('./../api');
 var Config = require('./../config');
-var Validator = require('./../bpmnext/validator');
 
 var FragmentEditorComponent = React.createClass({
     getInitialState: function() {

@@ -347,7 +347,7 @@ var Validator = class {
                         oset.push(this.getDataObjectReference(doa['targetRef'][0]));
                     }.bind(this));
                 }
-                this.validateIOSetDuplicates(iset, oset)
+                this.validateIOSetDuplicates(iset, oset);
                 this.validateIOSet(iset,oset);
             }.bind(this));
         }
@@ -426,7 +426,7 @@ var Validator = class {
                                 'type': 'danger'
                             })
                         }
-                    }
+                      }
                 }
             }
         }.bind(this))

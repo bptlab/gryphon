@@ -1,13 +1,13 @@
-var Config = require('./../config');
+var Config = require('./../../config');
 var React = require('react');
 var ReactDOM = require('react-dom');
-var Editor = require('./../editor');
-var API = require('./../api');
-var MessageHandler = require('./../messagehandler');
-var MessageComponent = require('./messagebar').MessageComponent;
+var Editor = require('./../../bpmn/editor');
+var API = require('./../../api');
+var MessageHandler = require('./../../messagehandler');
+var MessageComponent = require('./../messagebar/messagebar').MessageComponent;
 var Link = require('react-router').Link;
-var NameCheck = require('./../namecheck');
-var SideBarManager = require('./../sidebarmanager');
+var NameCheck = require('./../../namecheck');
+var SideBarManager = require('./../../sidebarmanager');
 
 /**
  * All modals used in the project
