@@ -4,7 +4,7 @@ var RestClient = require('node-rest-client').Client;
 var ExportModel = require('./../models/export').model;
 
 /* GET fragment belonging to scenario and fragment. */
-router.get('/', function(req, res, next) {
+router.get('/', function(req, res) {
     ExportModel.find(function(err,models){
         if (err) {
             console.error(err);
@@ -15,7 +15,7 @@ router.get('/', function(req, res, next) {
     });
 });
 
-router.post('/',function(req,res,next) {
+router.post('/',function(req,res) {
     var newexport = new ExportModel({
         name: req.body.name,
         url: req.body.url
@@ -24,7 +24,7 @@ router.post('/',function(req,res,next) {
     res.json(newexport);
 });
 
-router.post('/:id',function(req,res,next){
+router.post('/:id',function(req,res){
     ExportModel.findOne({_id: req.params.id},function(err, result){
         if (err) {
             console.error(err);
@@ -48,7 +48,7 @@ function validateURL(textval) {
     return urlregex.test(textval);
 }
 
-router.get('/validate',function(req,res,next){
+router.get('/validate',function(req,res){
     var url = req.query.url + '/version';
 
     if (!validateURL(url)) {
@@ -58,10 +58,10 @@ router.get('/validate',function(req,res,next){
         })
     } else {
         var client = new RestClient();
-        client.on('error',function(err){
+        client.on('error',function(){
             res.json({
                 'type': 'danger',
-                'text': 'No valid response using ' + url + '/version',
+                'text': 'No valid response using ' + url + '/version'
             });
         });
         client.get(url, function(data, response){
@@ -76,7 +76,7 @@ router.get('/validate',function(req,res,next){
                     'text': 'Valid response using ' + url
                 })
             }
-        }.bind(this)).on('error',function(err){
+        }.bind(this)).on('error',function(){
             res.json({
                 'type': 'danger',
                 'text': 'No valid response using ' + url
@@ -85,7 +85,7 @@ router.get('/validate',function(req,res,next){
     }
 });
 
-router.delete('/:id', function(req, res, next) {
+router.delete('/:id', function(req, res) {
     ExportModel.findOne({_id: req.params.id},function(err, result){
         if (err) {
             console.error(err);

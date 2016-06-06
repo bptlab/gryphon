@@ -81,7 +81,7 @@ PaletteProvider.prototype.getPaletteEntries = function(element) {
         },
         'create.intermediate-event': createAction(
             'bpmn:IntermediateThrowEvent', 'event', 'bpmn-icon-intermediate-event-none'
-        ),
+        )
     });
 
     return actions;

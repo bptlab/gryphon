@@ -5,7 +5,7 @@ var Scenario = require('./../models/scenario').model;
 var DomainModel = require('./../models/domainmodel').model;
 var _ = require('lodash');
 
-router.get('/:dmID', function(req, res, next) {
+router.get('/:dmID', function(req, res) {
     var dm_id = req.params.dmID;
     DomainModel.findOne({_id:dm_id},function(err, result){
         if (err) {
@@ -31,7 +31,7 @@ var changeDClassAttrReferences = function(newclass, oldclass, scenario) {
                             mapping.attr = new_attr.name;
                         }
                         return mapping;
-                    })
+                    });
                     return startcon;
                 })
             }
@@ -50,15 +50,14 @@ var changeDClassReferences = function(dm_id, old_classes, new_classes, done) {
                 new_classes.forEach(function(newclass){
                     if ((newclass._id == oldclass._id.toString()) && (newclass.name != oldclass.name)) {
                         result.terminationconditions = result.terminationconditions.map(function(termcon) {
-                            var new_con = termcon.split(oldclass.name + '[').join(newclass.name + '[');
-                            return new_con;
+                            return termcon.split(oldclass.name + '[').join(newclass.name + '[');
                         });
                         result.startconditions = result.startconditions.map(function(startcon){
                             startcon.mapping = startcon.mapping.map(function(mapping) {
                                 if (mapping.classname == oldclass.name) {
                                     mapping.classname = newclass.name;
                                 }
-                                return mappping;
+                                return mapping;
                             });
                             return startcon;
                         });
@@ -84,7 +83,7 @@ var changeDClassReferences = function(dm_id, old_classes, new_classes, done) {
     })
 };
 
-router.post('/:dmID', function(req, res, next) {
+router.post('/:dmID', function(req, res) {
     var dm_id = req.params.dmID;
     var new_dm = req.body;
 
@@ -115,7 +114,6 @@ router.post('/:dmID', function(req, res, next) {
                         if (err) {
                             console.error(err);
                             res.status(500).end();
-                            return;
                         }
                     });
                 }
@@ -132,7 +130,7 @@ router.post('/:dmID', function(req, res, next) {
     });
 });
 
-router.get('/', function(req, res, next) {
+router.get('/', function(req, res) {
     var name = req.query.query;
 
     DomainModel.find({name: new RegExp('^'+name+'$', "i")},function(err, result){
@@ -155,7 +153,7 @@ router.get('/', function(req, res, next) {
     });
 });
 
-router.post('/', function(req, res, next) {
+router.post('/', function(req, res) {
     var domainmodel = req.body;
 
     var db_domainmodel = new DomainModel({
@@ -168,7 +166,6 @@ router.post('/', function(req, res, next) {
         if (err) {
             console.error(err);
             res.status(500).end();
-            return;
         } else {
             res.json(db_domainmodel);
         }

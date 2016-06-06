@@ -10,7 +10,7 @@ var Validator = require('./../helpers/validator').Validator;
 var Export =  require('./../models/export').model;
 var parseToOLC = require('./../helpers/json').parseToOLC;
 
-router.get('/', function(req, res, next) {
+router.get('/', function(req, res) {
     var name = req.query.query;
     var populate = req.query.populate;
     var query = Scenario.find({name: new RegExp(name, "i")});
@@ -43,7 +43,7 @@ router.get('/', function(req, res, next) {
     });
 });
 
-router.post('/', function(req, res, next) {
+router.post('/', function(req, res) {
     var scenario = req.body;
     try {
         Scenario.find({name: scenario.name}).count(function (err, count) {
@@ -163,7 +163,7 @@ router.post('/', function(req, res, next) {
     }
 });
 
-router.post('/associatefragment', function(req, res, next) {
+router.post('/associatefragment', function(req, res) {
     var fragment_id = req.query.fragment_id;
     var scenario_id = req.query.scenario_id;
 
@@ -190,7 +190,7 @@ router.post('/associatefragment', function(req, res, next) {
 
 });
 
-router.post('/associatedomainmodel', function(req, res, next) {
+router.post('/associatedomainmodel', function(req, res) {
     var domainmodel_id = req.query.domainmodel_id;
     var scenario_id = req.query.scenario_id;
 
@@ -215,7 +215,7 @@ router.post('/associatedomainmodel', function(req, res, next) {
     })
 });
 
-router.get('/:scenID/validate', function(req, res, next){
+router.get('/:scenID/validate', function(req, res){
     var scenID = req.params.scenID;
     Scenario.findOne({_id:scenID}).populate('fragments').populate('domainmodel').exec(function(err, result) {
         if (err) {
@@ -271,7 +271,7 @@ router.get('/:scenID/validate', function(req, res, next){
 });
 
 /* GET fragment belonging to scenario and fragment. */
-router.get('/:scenID', function(req, res, next) {
+router.get('/:scenID', function(req, res) {
     var id = req.params.scenID;
     var populate = req.query.populate;
     var query = Scenario.findOne({_id:id});
@@ -314,7 +314,7 @@ var validateFragmentList = function(list) {
     return found;
 };
 
-router.post('/:scenID/export', function(req, res, next) {
+router.post('/:scenID/export', function(req, res) {
     var target = req.body.exportID;
     var scenID = req.params.scenID;
 
@@ -362,7 +362,7 @@ router.post('/:scenID/export', function(req, res, next) {
                             data = [message];
                         }
                         res.json(data);
-                    }).on('error',function(err){
+                    }).on('error',function(){
                         res.status(200);
                         res.json([{
                             'type': 'danger',
@@ -380,7 +380,7 @@ router.post('/:scenID/export', function(req, res, next) {
 });
 
 /* Post new fragment to a given scenario. If fragment name already exists post new revision */
-router.post('/:scenID', function(req, res, next) {
+router.post('/:scenID', function(req, res) {
     var scenID = req.params.scenID;
     var new_scen = req.body;
     Scenario.findOne({_id:scenID}, function(err, result){
@@ -434,7 +434,7 @@ router.post('/:scenID', function(req, res, next) {
     })
 });
 
-router.delete('/:scenID', function(req, res, next) {
+router.delete('/:scenID', function(req, res) {
     var id = req.params.scenID;
     Scenario.findOne({_id:id},function(err, result){
         if (err) {

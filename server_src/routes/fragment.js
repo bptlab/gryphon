@@ -7,7 +7,7 @@ var JSONHelper = require('./../helpers/json');
 var Validator = require('./../helpers/validator').Validator;
 
 /* GET fragment belonging to scenario and fragment. */
-router.get('/:fragID', function(req, res, next) {
+router.get('/:fragID', function(req, res) {
     var id = req.params.fragID;
     var deliver_xml = req.query.deliver_xml;
     Fragment.findOne({_id:id},function(err, result){
@@ -28,7 +28,7 @@ router.get('/:fragID', function(req, res, next) {
 });
 
 /* Post new fragment to a given scenario. If fragment name already exists post new revision */
-router.post('/:fragID', function(req, res, next) {
+router.post('/:fragID', function(req, res) {
     var frag_id = req.params.fragID;
     var new_frag = req.body;
 
@@ -69,7 +69,7 @@ router.post('/:fragID', function(req, res, next) {
     })
 });
 
-router.get('/', function(req, res, next) {
+router.get('/', function(req, res) {
     var name = req.query.query;
 
     Fragment.model.find({name: new RegExp('^'+name+'$', "i")},function(err, result){
@@ -83,7 +83,7 @@ router.get('/', function(req, res, next) {
             var res_object = {
                 content_length: result.length,
                 fragments: result
-            }
+            };
 
             res.json(res_object)
         } else {
@@ -92,7 +92,7 @@ router.get('/', function(req, res, next) {
     });
 });
 
-router.post('/', function(req, res, next) {
+router.post('/', function(req, res) {
     var fragment = req.body;
     var db_fragment = new Fragment({
         name: fragment.name,
@@ -104,14 +104,13 @@ router.post('/', function(req, res, next) {
         if (err) {
             console.error(err);
             res.status(500).end();
-            return;
         } else {
             res.json(db_fragment);
         }
     });
 });
 
-router.get('/:fragID/structure', function(req, res, next) {
+router.get('/:fragID/structure', function(req, res) {
     var id = req.params.fragID;
     Fragment.findOne({_id:id},function(err, result){
         if (err) {
@@ -128,7 +127,7 @@ router.get('/:fragID/structure', function(req, res, next) {
     });
 });
 
-router.get('/:fragID/xml', function(req, res, next){
+router.get('/:fragID/xml', function(req, res){
     var id = req.params.fragID;
     Fragment.findOne({_id:id},function(err, result){
         if (err) {
@@ -145,7 +144,7 @@ router.get('/:fragID/xml', function(req, res, next){
     });
 });
 
-router.delete('/:fragID', function(req, res, next) {
+router.delete('/:fragID', function(req, res) {
     var id = req.params.fragID;
     Fragment.findOne({_id:id},function(err, result){
         if (err) {
@@ -161,7 +160,7 @@ router.delete('/:fragID', function(req, res, next) {
     });
 });
 
-router.get('/:fragID/validate', function(req, res, next) {
+router.get('/:fragID/validate', function(req, res) {
    var id = req.params.fragID;
     Fragment.findOne({_id:id},function(err, result){
         if (err) {
@@ -182,7 +181,7 @@ router.get('/:fragID/validate', function(req, res, next) {
     })
 });
 
-router.get('/:fragID/assocdomainmodel', function(req, res, next){
+router.get('/:fragID/assocdomainmodel', function(req, res){
     Scenario.findOne({fragments:req.params.fragID}).populate('domainmodel').exec(function(err, result){
         if (err) {
             console.error(err);

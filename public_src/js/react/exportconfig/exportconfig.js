@@ -115,7 +115,7 @@ var ExportConfigComponent = React.createClass({
                 </div>
             </div>
         )
-    },
+    }
 });
 
 module.exports = ExportConfigComponent;

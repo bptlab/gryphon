@@ -117,7 +117,9 @@ var SoundnessValidator = class {
             search(event,visited,graph.adjacencyList);
             var err = false;
             for (var node in graph.adjacencyList) {
-                err = err || (visited.indexOf(node) < 0)
+                if (graph.adjacencyList.hasOwnProperty(node)) {
+                    err = err || (visited.indexOf(node) < 0)
+                }
             }
             res.push(!err);
         });
@@ -127,7 +129,9 @@ var SoundnessValidator = class {
             search(event,visited,graph.reverseList);
             var err = false;
             for (var node in graph.reverseList) {
-                err = err || (visited.indexOf(node) < 0)
+                if (graph.reverseList.hasOwnProperty(node)) {
+                    err = err || (visited.indexOf(node) < 0)
+                }
             }
             res.push(!err)
         });
@@ -347,12 +351,12 @@ var Validator = class {
                         oset.push(this.getDataObjectReference(doa['targetRef'][0]));
                     }.bind(this));
                 }
-                this.validateIOSetDuplicates(iset, oset);
+                this.validateOSetDuplicates(oset);
                 this.validateIOSet(iset,oset);
             }.bind(this));
         }
     }
-    validateIOSetDuplicates(iset, oset) {
+    validateOSetDuplicates(oset) {
         var output = [];
         oset.forEach(function(outputobject) {
             var dclass = outputobject['griffin:dataclass'];

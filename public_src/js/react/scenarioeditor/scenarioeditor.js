@@ -48,15 +48,14 @@ var ScenarioEditForm = React.createClass({
         return ret;
     },
     handleTerminationConditionChange: function(index) {
-        var handler = function(e) {
+        return handler = function(e) {
             var terminationconditions = this.state.terminationconditions;
             terminationconditions[index] = e.target.value;
             this.setState({terminationconditions: terminationconditions});
         }.bind(this);
-        return handler;
     },
     validateTerminationConditionChange: function(index) {
-        var handler = function(e) {
+        return function(e) {
             var terminationconditions = this.state.terminationconditions;
             terminationconditions[index] = e.target.value;
             var state = this.validateTerminationCondition(e.target.value);
@@ -67,7 +66,6 @@ var ScenarioEditForm = React.createClass({
                 $(e.target).parent().parent().parent().removeClass('has-error');
             }
         }.bind(this);
-        return handler;
 
     },
     componentDidUpdate: function() {
@@ -91,12 +89,11 @@ var ScenarioEditForm = React.createClass({
         this.setState({terminationconditions: terminationconditions});
     },
     handleTerminationConditionDelete: function(index) {
-        var handler = function(e) {
+        return function(e) {
             var terminationconditions = this.state.terminationconditions;
             terminationconditions.splice(index, 1);
             this.setState({terminationconditions: terminationconditions});
         }.bind(this);
-        return handler;
     },
     handleEnterSubmit: function(e) {
         if (e.keyCode == 13) {

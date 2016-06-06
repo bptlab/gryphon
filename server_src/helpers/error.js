@@ -10,6 +10,6 @@ var handleDBError = function(err, result, httpresult) {
     } else {
         httpresult.status(404).end();
     }
-}
+};
 
-module.exports = {handleDBError: handleDBError}
+module.exports = {handleDBError: handleDBError};

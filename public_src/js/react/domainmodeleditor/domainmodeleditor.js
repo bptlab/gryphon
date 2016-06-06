@@ -392,7 +392,7 @@ var DomainModelEditorComponent = React.createClass({
         MessageHandler.handleMessage('success','Saved domain model.');
     },
     handleUpdate: function(index) {
-        var handler = function(dataclass) {
+        return function(dataclass) {
             var dm = this.state.dm;
             for (var attr in dataclass) {
                 if (dataclass.hasOwnProperty(attr)) {
@@ -401,15 +401,13 @@ var DomainModelEditorComponent = React.createClass({
             }
             this.setState({'dm':dm, 'changed':true});
         }.bind(this);
-        return handler;
     },
     handleDelete: function(index) {
-        var handler = function() {
+        return function() {
             var dm = this.state.dm;
             dm.dataclasses.splice(index,1);
             this.setState({'dm':dm, 'changed':true});
         }.bind(this);
-        return handler;
     },
     handleCreateNew: function(name, is_event) {
         var dataclass = {

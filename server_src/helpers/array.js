@@ -7,6 +7,6 @@ var arrayEquals = function(a, b) {
         if (b.indexOf(a[i]) === -1) return false;
     }
     return true;
-}
+};
 
-module.exports = {arrayEquals: arrayEquals}
+module.exports = {arrayEquals: arrayEquals};

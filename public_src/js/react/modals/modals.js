@@ -116,7 +116,7 @@ var ModifyFragmentModal = React.createClass({
         return {
             name: '',
             fragID: ''
-        }
+        } 
     },
     getFinalState: function() {
         return {
