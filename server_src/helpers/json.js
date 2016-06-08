@@ -2,6 +2,9 @@ var xml2json = require('xml2json');
 
 var parseToBPMNObject = function(xml) {
 
+    if (xml == "") {
+        return {}   ;
+    }
     // What am I doing here? I remove all namespaces to make parsing easier. All but the griffin notations.
     xml = xml.replace(/<bpmn:/g, '<');
     xml = xml.replace(/<bpmndi:/g, '<');
@@ -32,7 +35,6 @@ var parseToBPMNObject = function(xml) {
 
 var parseToOLC = function(xml) {
     var parsed = parseToBPMNObject(xml);
-    console.log(parsed);
     delete parsed["id"];
     delete parsed["isExecutable"];
     if ("intermediateThrowEvent" in parsed) {

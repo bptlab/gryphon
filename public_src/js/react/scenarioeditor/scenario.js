@@ -161,3 +161,4 @@ var ScenarioEditForm = React.createClass({
         );
     }
 });
+module.exports = ScenarioEditForm;
