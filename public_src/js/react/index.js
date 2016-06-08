@@ -1,7 +1,7 @@
 var React = require('react');
 var SideBarComponent = require('./sidebar/sidebar');
 var ModalComponent = require('./modals/modals');
-var MessageBar = require('./messagebar/messagebar').MessageBarComponent;
+var MessageBar = require('./messagebar/messagebar');
 
 var App = React.createClass({
     render: function() {
