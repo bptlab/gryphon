@@ -73,7 +73,6 @@ var OperationsComponent = React.createClass({
                 <div className="panel-body">
                     <div className="btn-group btn-block">
                         <button className="btn btn-success" onClick={this.props.onSave}>Save</button>
-                        <button className="btn btn-default">Export events</button>
                     </div>
                 </div>
             </div>
@@ -147,11 +146,13 @@ var DomainModelEditorComponent = React.createClass({
     },
     render: function() {
         var cols = [[],[],[]];
+        var col_indexes = [[],[],[]];
         var cols_length = [0,0,0];
         var smallest = 0;
         this.state.dm.dataclasses.forEach(function(dataclass, index) {
             cols_length[smallest] += (2 + dataclass.attributes.length);
             cols[smallest].push(dataclass);
+            col_indexes[smallest].push(index);
             smallest = 0;
             var smallest_length = Number.MAX_VALUE;
             cols_length.forEach(function(col_length, index) {
@@ -163,7 +164,8 @@ var DomainModelEditorComponent = React.createClass({
         });
         cols = cols.map(function(col, colindex){
             var content = col.map(function(dataclass, classindex) {
-                var realIndex = (classindex * 3) + colindex;
+                var realIndex = col_indexes[colindex][classindex];
+                console.log('DClass: ' + colindex + '|' + classindex + '|' + realIndex);
                 return (
                     <DataClassComponent
                         handleUpdate={this.handleUpdate(realIndex)}

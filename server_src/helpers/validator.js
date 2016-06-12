@@ -355,6 +355,24 @@ var Validator = class {
                 this.validateIOSet(iset,oset);
             }.bind(this));
         }
+        if(this.bpmnObject.dataObjectReference != undefined && this.bpmnObject.serviceTask != undefined) {
+            this.bpmnObject.serviceTask.forEach(function(task){
+                var iset = [];
+                var oset = [];
+                if (task.dataInputAssociation != undefined) {
+                    task.dataInputAssociation.forEach(function(dia){
+                        iset.push(this.getDataObjectReference(dia['sourceRef'][0]));
+                    }.bind(this));
+                }
+                if (task.dataOutputAssociation != undefined) {
+                    task.dataOutputAssociation.forEach(function(doa){
+                        oset.push(this.getDataObjectReference(doa['targetRef'][0]));
+                    }.bind(this));
+                }
+                this.validateOSetDuplicates(oset);
+                this.validateIOSet(iset,oset);
+            }.bind(this));
+        }
     }
     validateOSetDuplicates(oset) {
         var output = [];
