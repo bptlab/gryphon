@@ -2,52 +2,98 @@ var React = require('react');
 var API = require('./../../api');
 var MessageHandler = require('./../../messagehandler');
 
-var ScenarioSingleStartCondition = React.createClass({
+var StartConditionRowComponent = React.createClass({
+    render: function() {
+        var dclass = (
+            <input
+                type="text"
+                disabled="disabled"
+                value={this.props.classname}
+                className="form-control" />
+        );
+        if (this.props.enableClassSelect) {
+            dclass = (
+                <select className="form-control"
+                        onChange={this.props.handleDataClassChange}
+                        value={this.props.classname}
+                        id={this.props._id + "-dtselect-class"}>
+                    <option value="">Nothing</option>
+                    {this.props.availableClasses}
+                </select>
+            );
+        }
+        var state = (
+            <input
+                type="text"
+                disabled="disabled"
+                value={this.props.state}
+                className="form-control" />
+        );
+        if (this.props.enableClassSelect) {
+            state = (
+                <input type="text"
+                       className="form-control"
+                       value={this.props.state}
+                       onChange={this.props.handleStateChange} />
+            )
+        }
+        var btn = "";
+        if (this.props.enableClassSelect) {
+            btn = (
+                <button type="button"
+                        className="btn btn-success"
+                        onClick={this.props.handleAdd}>
+                    <i className="fa fa-plus" />
+                </button>
+            )
+        } else {
+            btn = (
+                <button type="button"
+                        className="btn btn-danger"
+                        onClick={this.props.handleDelete}>
+                    <i className="fa fa-times" />
+                </button>
+            )
+        }
+        return (
+            <tr key={this.props._id} className="info">
+                <td>
+                    {dclass}
+                </td>
+                <td>
+                    {state}
+                </td>
+                <td>
+                    <select className="form-control"
+                            onChange={this.props.handleAttrChange}
+                            value={this.props.attr}>
+                        <option value="">Nothing</option>
+                        {this.props.availableAttributes}
+                    </select>
+                </td>
+                <td>
+                    <input type="text"
+                           className="form-control"
+                           value={this.props.path}
+                           onChange={this.props.handlePathChange}
+                    />
+                </td>
+                <td>
+                    {btn}
+                </td>
+            </tr>
+        )
+    }
+});
+
+var StartConditionComponent = React.createClass({
+    getDefaultProps: function() {
+
+    },
     getInitialState: function() {
         return {
             'collapsed': ''
         }
-    },
-    handleDataClassChange: function(index) {
-        return function(e) {
-            var new_mapping = this.props.mapping;
-            new_mapping[index]['classname'] = e.target.value;
-            new_mapping[index]['attr'] = '';
-            this.props.handleChange({'mapping':new_mapping,'query': this.props.query});
-        }.bind(this)
-    },
-    handleDataClassAttrChange: function(index) {
-        return function(e) {
-            var new_mapping = this.props.mapping;
-            new_mapping[index]['attr'] = e.target.value;
-            this.props.handleChange({'mapping':new_mapping,'query': this.props.query});
-        }.bind(this)
-    },
-    handleJSONPathChange: function(index) {
-        return function(e) {
-            var new_mapping = this.props.mapping;
-            new_mapping[index]['path'] = e.target.value;
-            this.props.handleChange({'mapping':new_mapping,'query': this.props.query});
-        }.bind(this)
-    },
-    handleAdd: function() {
-        var new_mapping = this.props.mapping;
-        new_mapping.push({
-            'path': '',
-            'classname': '',
-            'attr': ''
-        });
-        this.props.handleChange({'mapping':new_mapping,'query': this.props.query});
-    },
-    handleDelete: function(index) {
-        return function(e) {
-            var new_mapping = this.props.mapping;
-            new_mapping.splice(index, 1);
-            this.props.handleChange({'mapping':new_mapping,'query': this.props.query});
-        }.bind(this)
-    },
-    handleStartConditionChange: function(e) {
-        this.props.handleChange({'mapping':this.props.mapping, 'query': e.target.value})
     },
     handleCollapse: function() {
         var collapsed = this.state.collapsed == '' ? 'in' : '';
@@ -58,58 +104,101 @@ var ScenarioSingleStartCondition = React.createClass({
             this.props.handleSubmit()
         }
     },
-    updateSelect: function() {
-        console.log('Dont care');
-        this.props.mapping.forEach(function(mapel){
-            $('#' + mapel._id + "-dtselect-class").selectpicker();
-            $('#' + mapel._id + "-dtselect-attr").selectpicker()
+    handleQueryChange: function(e) {
+        var condition = this.props.condition;
+        condition['query'] = e.target.value;
+        this.props.handleUpdate(condition);
+    },
+    handleClassAttrChange: function(index, attr) {
+        return function(e) {
+            var condition = this.props.condition;
+            condition['dataclasses'][index][attr] = e.target.value;
+            this.props.handleUpdate(condition);
+        }.bind(this)
+    },
+    handleClassMappingChange: function(index, tindex, attr) {
+        return function(e) {
+            console.log('lel');
+            var condition = this.props.condition;
+            condition['dataclasses'][index]['mapping'][tindex][attr] = e.target.value;
+            this.props.handleUpdate(condition);
+        }.bind(this)
+    },
+    handleAdd: function(index) {
+        return function(e) {
+            console.log('lel');
+            var condition = this.props.condition;
+            condition['dataclasses'][index]['mapping'].push({'attr':'','path':''});
+            this.props.handleUpdate(condition);
+        }.bind(this)
+    },
+    handleDelete: function(index, tindex) {
+        return function(e) {
+            var condition = this.props.condition;
+            condition['dataclasses'][index]['mapping'].splice(tindex,1);
+            this.props.handleUpdate(condition);
+        }.bind(this)
+    },
+    handleAddClass: function() {
+        var condition = this.props.condition;
+        condition['dataclasses'].push({
+            'classname': '',
+            'state': '',
+            'mapping': [{'attr':'','path':''}]
         });
+        this.props.handleUpdate(condition);
     },
     render: function() {
-        var mapping = this.props.mapping.map(function(mapel, index){
-            var dmclass = this.props.availableClasses.filter(function(dmclass){
-                return dmclass.name == mapel.classname;
-            });
+        var availableClasses = this.props.availableClasses.map(function(dmclass){
+            return (
+                <option value={dmclass.name}>{dmclass.name}</option>
+            )
+        });
 
-            var availableClasses = this.props.availableClasses.map(function(dmclass){
-                return (
-                    <option value={dmclass.name}>{dmclass.name}</option>
-                )
-            });
-
-            var availableAttributes = [];
-            if (dmclass.length == 1) {
-                availableAttributes = dmclass[0].attributes.map(function(attr){
-                    return (
-                        <option value={attr.name}>{attr.name}</option>
-                    )
+        var rows = [];
+        this.props.condition.dataclasses.forEach(function(dclass, index) {
+            if (dclass.mapping.length == 0) {
+                dclass.mapping.push({
+                    "attr":"",
+                    "path":""
                 })
             }
-            return (
-                <tr key={mapel._id}>
-                    <td>
-                        <select className="form-control" onChange={this.handleDataClassChange(index)} value={mapel.classname} id={mapel._id + "-dtselect-class"}>
-                            <option value="">Nothing</option>
-                            {availableClasses}
-                        </select></td>
-                    <td>
-                        <select className="form-control" onChange={this.handleDataClassAttrChange(index)} value={mapel.attr} id={mapel._id + "-dtselect-attr"}>
-                            <option value="">Nothing</option>
-                            {availableAttributes}
-                        </select></td>
-                    <td>
-                        <input type="text"
-                               onKeyDown={this.handleEnterSubmit}
-                               className="form-control"
-                               onChange={this.handleJSONPathChange(index)}
-                               value={mapel.jsonpath}
-                        />
-                    </td>
-                    <td>
-                        <button type="button" className="btn btn-danger" onClick={this.handleDelete(index)}><i className="fa fa-times" /></button>
-                    </td>
-                </tr>
-            )
+            dclass.mapping.forEach(function(tuple,tindex){
+                var enableClassSelect = false;
+                if (tindex == 0) {
+                    enableClassSelect = true;
+                }
+                var dmclasses = this.props.availableClasses.filter(function(dmclass){
+                    return (dmclass.name == dclass.classname)
+                });
+                var availableAttributes = [];
+                if (dmclasses.length == 1) {
+                    availableAttributes = dmclasses[0].attributes.map(function(attr){
+                        return (
+                            <option value={attr.name}>{attr.name}</option>
+                        )
+                    })
+                }
+                console.log(tuple);
+                rows.push((
+                    <StartConditionRowComponent
+                        enableClassSelect = {enableClassSelect}
+                        handleSubmit = {this.props.handleSubmit}
+                        handleDataClassChange = {this.handleClassAttrChange(index,'classname')}
+                        handleStateChange = {this.handleClassAttrChange(index,'state')}
+                        handleAttrChange = {this.handleClassMappingChange(index, tindex, 'attr')}
+                        handlePathChange = {this.handleClassMappingChange(index, tindex, 'path')}
+                        handleAdd = {this.handleAdd(index)}
+                        handleDelete = {this.handleDelete(index,tindex)}
+                        classname = {dclass.classname}
+                        state = {dclass.state}
+                        attr = {tuple.attr}
+                        path = {tuple.path}
+                        availableClasses = {availableClasses}
+                        availableAttributes = {availableAttributes}
+                    />
+                ))
+            }.bind(this))
         }.bind(this));
         var btntext = this.state.collapsed == '' ? 'Show' : 'Hide';
         return (
@@ -126,8 +215,8 @@ var ScenarioSingleStartCondition = React.createClass({
                             <div className="col-sm-12">
                                 <input type="text"
                                        className="form-control"
-                                       onChange={this.handleStartConditionChange}
-                                       value={this.props.query}
+                                       onChange={this.handleQueryChange}
+                                       value={this.props.condition.query}
                                        onKeyDown={this.handleEnterSubmit}
                                 />
                             </div>
@@ -137,17 +226,19 @@ var ScenarioSingleStartCondition = React.createClass({
                         <thead>
                         <tr>
                             <th>Dataclass</th>
-                            <th>Attribute</th>
+                            <th>State</th>
+                            <th>Attribut</th>
                             <th>JSON-Path</th>
+                            <th>Operations</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {mapping}
+                        {rows}
                         </tbody>
                     </table>
                     <div className="panel-footer">
-                        <button type="button" className="btn btn-primary" onClick={this.handleAdd} >Add new</button>
-                    </div>
+                        <button type="button" className="btn btn-primary" onClick={this.handleAddClass} >Add new</button>
+                        </div>
                 </div>
             </div>
         );
@@ -188,7 +279,7 @@ var ScenarioStartConditionForm = React.createClass({
         var conds = this.state.startconditions;
         conds.push({
             'query':'',
-            'mapping':[{'attr':'','classname':'','path':''}]
+            'dataclasses':[]
         });
         this.setState({
             'startconditions':conds
@@ -206,11 +297,9 @@ var ScenarioStartConditionForm = React.createClass({
     render: function() {
         var conditions = this.state.startconditions.map(function(condition,index){
             return (
-                <ScenarioSingleStartCondition
-                    id={condition._id}
-                    mapping={condition.mapping}
-                    query={condition.query}
-                    handleChange={this.handleUpdate(index)}
+                <StartConditionComponent
+                    condition={condition}
+                    handleUpdate={this.handleUpdate(index)}
                     availableClasses={this.props.scenario.domainmodel.dataclasses}
                     handleSubmit={this.handleSubmit}
                     handleDelete={this.handleDelete(index)}

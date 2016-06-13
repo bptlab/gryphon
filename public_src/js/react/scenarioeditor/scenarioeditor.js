@@ -3,7 +3,6 @@ var API = require('./../../api');
 var MessageHandler = require('./../../messagehandler');
 var SideBarManager = require('./../../sidebarmanager');
 
-var ScenarioDomainModelList = require('./domainmodellist');
 var ScenarioFragmentList = require('./fragmentlist');
 var ScenarioOperations = require('./operations');
 var ScenarioEditForm = require('./scenario');
@@ -54,12 +53,15 @@ var ScenarioEditorComponent = React.createClass({
                 <div className="row">
                     <div className="col-md-6">
                         <ScenarioEditForm scenario={this.state.scenario}/>
-                        <ScenarioFragmentList scenario={this.state.scenario} forceRerender={this.forceRerender} />
+                        <ScenarioOperations scenario={this.state.scenario}/>
                     </div>
                     <div className="col-md-6">
                         <ScenarioStats scenario={this.state.scenario} />
-                        <ScenarioOperations scenario={this.state.scenario}/>
-                        <ScenarioDomainModelList classes={this.state.scenario.domainmodel.dataclasses}/>
+                        <ScenarioFragmentList scenario={this.state.scenario} forceRerender={this.forceRerender} />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-12">
                         <ScenarioStartConditionForm scenario={this.state.scenario} />
                     </div>
                 </div>

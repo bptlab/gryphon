@@ -26,9 +26,14 @@ var changeDClassAttrReferences = function(newclass, oldclass, scenario) {
         newclass.attributes.forEach(function(new_attr){
             if (old_attr._id.toString() == new_attr._id && old_attr.name != new_attr.name) {
                 scenario.startconditions = scenario.startconditions.forEach(function(startcon){
-                    startcon.mapping = startcon.mapping.map(function(mapping){
-                        if (mapping.classname == newclass.name && mapping.attr == old_attr.name) {
-                            mapping.attr = new_attr.name;
+                    startcon.dataclasses = startcon.dataclasses.map(function(mapping){
+                        if (mapping.classname == newclass.name) {
+                            mapping.mapping = mapping.mapping.map(function(attribute){
+                                if (attribute.attr == old_attr.name) {
+                                    mapping.attr = new_attr.name;
+                                }
+                                return mapping
+                            })
                         }
                         return mapping;
                     });

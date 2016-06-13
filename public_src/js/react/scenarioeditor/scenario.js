@@ -128,10 +128,10 @@ var ScenarioEditForm = React.createClass({
             );
         }.bind(this));
         return (
-            <div className="panel panel-default">
-                <form className="form-horizontal">
+            <form className="form-horizontal">
+            <div className="panel panel-primary">
                     <div className="panel-heading">
-                        <h3 className="panel-title">Scenario Stats</h3>
+                        <h3 className="panel-title">Scenario</h3>
                     </div>
                     <div className="panel-body">
                         <div className="form-group">
@@ -156,8 +156,8 @@ var ScenarioEditForm = React.createClass({
                             <button type="button" className="btn btn-default" onClick={this.handleAddTerminationCondition}>Add termination condition</button>
                         </div>
                     </div>
-                </form>
             </div>
+            </form>
         );
     }
 });

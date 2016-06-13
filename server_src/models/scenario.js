@@ -9,10 +9,13 @@ var ScenarioSchema = new Schema({
     domainmodel: {type: mongoose.Schema.Types.ObjectId, ref: 'DomainModel'},
     startconditions: [{
         query: String,
-        mapping :[{
-            path: String,
+        dataclasses: [{
             classname: String,
-            attr: String
+            state: String,
+            mapping :[{
+                path: String,
+                attr: String
+            }]
         }]
     }]
 });
