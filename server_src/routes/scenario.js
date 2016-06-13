@@ -233,8 +233,16 @@ router.get('/:scenID/validate', function(req, res){
                         'text':'Empty Querys in Startmessages are not allowed.'
                     })
                 }
-                startcondition.mapping.forEach(function(mapping){
-                    if (mapping.classname == "" || mapping.attr == "" || mapping.path == "") {
+                startcondition.dataclasses.forEach(function(mapping){
+                    mapping.mapping.forEach(function(tuple){
+                        if (tuple.attr == "" || tuple.path == "") {
+                            messages.push({
+                                'type':'warning',
+                                'text':'Every referenced DataClass in a startquery needs a specified classname, attribute and a JSON-Path'
+                            });
+                        }
+                    });
+                    if (mapping.classname == "" || mapping.state == "") {
                         messages.push({
                             'type':'warning',
                             'text':'Every referenced DataClass in a startquery needs a specified classname, attribute and a JSON-Path'
