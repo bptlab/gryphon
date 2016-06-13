@@ -227,7 +227,7 @@ var StartConditionComponent = React.createClass({
                         <tr>
                             <th>Dataclass</th>
                             <th>State</th>
-                            <th>Attribut</th>
+                            <th>Attribute</th>
                             <th>JSON-Path</th>
                             <th>Operations</th>
                         </tr>
@@ -309,7 +309,7 @@ var ScenarioStartConditionForm = React.createClass({
         return (
             <div className="panel panel-default">
                 <div className="panel-heading">
-                    <h3 className="panel-title">Start-Conditions</h3>
+                    <h3 className="panel-title">Startconditions</h3>
                 </div>
                 <div className="panel-body">
                     <div className="panel-group">

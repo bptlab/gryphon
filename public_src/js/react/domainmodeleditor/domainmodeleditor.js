@@ -145,9 +145,9 @@ var DomainModelEditorComponent = React.createClass({
         return types;
     },
     render: function() {
-        var cols = [[],[],[]];
-        var col_indexes = [[],[],[]];
-        var cols_length = [0,0,0];
+        var cols = [[],[]];
+        var col_indexes = [[],[]];
+        var cols_length = [0,0];
         var smallest = 0;
         this.state.dm.dataclasses.forEach(function(dataclass, index) {
             cols_length[smallest] += (2 + dataclass.attributes.length);
@@ -183,7 +183,7 @@ var DomainModelEditorComponent = React.createClass({
                 )
             }.bind(this));
             return (
-                <div className="col-md-4">
+                <div className="col-md-6">
                     {content}
                 </div>
             );
