@@ -4,6 +4,8 @@ var NameCheck = require('./../../namecheck');
 var API = require('./../../api');
 var Config = require('./../../config');
 var DataClassComponent = require('./dataclass');
+var SideBarComponent = require('./../sidebar/sidebar');
+var ScenarioTopBarComponent = require('./../topbar/scenariotopbar');
 
 var CreateNewClassComponent = React.createClass({
     getInitialState: function() {
@@ -145,6 +147,7 @@ var DomainModelEditorComponent = React.createClass({
         return types;
     },
     render: function() {
+        console.log(this.props);
         var cols = [[],[]];
         var col_indexes = [[],[]];
         var cols_length = [0,0];
@@ -188,7 +191,12 @@ var DomainModelEditorComponent = React.createClass({
                 </div>
             );
         }.bind(this));
+        //             <ScenarioTopBarComponent scenario={this.state.scenario} />
+        //             <SideBarComponent scenario={this.state.scenario} />
         return (
+          <div>
+
+
             <div className="col-md-12">
                 <div className="row">
                     <div className="col-md-6">
@@ -202,6 +210,7 @@ var DomainModelEditorComponent = React.createClass({
                     {cols}
                 </div>
             </div>
+          </div>
         )
     },
     componentDidMount: function() {

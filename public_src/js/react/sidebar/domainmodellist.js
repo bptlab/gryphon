@@ -7,13 +7,14 @@ var Link = require('react-router').Link;
 
 var SideBarDomainModel = React.createClass({
   render: function() {;
+    console.log(this.props.domainmodel);
     var list = this.props.domainmodel.dataclasses.map(function (dataclass){
-      return <SideBarSingleDomainModelAttribute attribute={dataclass} />
+      return <SideBarSingleDomainModelAttribute dataclass={dataclass} />
     }.bind(this));
 
     return (
       <div className="sidebar-links">
-          <div className="link-blue">
+          <div className="link-blue selected">
               <Link to={"domainmodel/" + this.props.domainmodel._id} >
                   <i className="fa fa-newspaper-o"></i>DomainModel
               </Link>
@@ -25,7 +26,7 @@ var SideBarDomainModel = React.createClass({
                         data-toggle="modal"
                         data-target="#createFragmentModal"
                     >
-                        <i className="fa fa-plus"></i> Create an attribute
+                        <i className="fa fa-plus"></i> Create a data class
                     </a>
                   </li>
               </ul>
