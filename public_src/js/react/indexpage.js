@@ -20,29 +20,54 @@ var IndexComponent = React.createClass({
     },
     render: function() {
         var scenarios = this.state.scenarios.map(function(scenario){
-            var fragments = scenario.fragments.map(function(fragment){
-                return (
-                    <li className="list-group-item" key={fragment._id}><Link to={"fragment/" + fragment._id}>{fragment.name}</Link></li>
-                )
-            });
             return (
-                <div className="panel panel-default" key={scenario._id}>
-                    <div className="panel-heading">
-                        <h3 className="panel-title">
-                            <Link to={"scenario/" + scenario._id}>
-                                {scenario.name}
-                            </Link>
-                        </h3>
-                    </div>
-                    <ul className="list-group">
-                        {fragments}
-                    </ul>
+                <div className="col-md-1">
+                <Link to={"scenario/" + scenario._id}>
+                    {scenario.name}
+                </Link>
                 </div>
             )
         });
         return (
             <div className="col-md-12">
-                {scenarios}
+              <div className="row">
+                <div className="col-md-8">
+                  <h1>Gryphon Case Modeler</h1>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-md-3">
+                  About
+                </div>
+                <div className="col-md-3">
+                  Getting Started
+                </div>
+              </div>
+
+              <br/>
+              <br/>
+
+              <div className="panel panel-default">
+
+                <div className="panel-heading">
+                  <div className="row">
+                    <div className="col-md-8">
+                      <h2 className="panel-title">
+                        Case Models
+                      </h2>
+                    </div>
+                    <div className="col-md-4 pull-right">
+                      <input type="text" defaultValue="Search Bar"/>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="row">
+                  {scenarios}
+                </div>
+
+              </div>
+
             </div>
         )
     }

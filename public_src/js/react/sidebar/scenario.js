@@ -1,5 +1,6 @@
 var React = require('react');
 var Link = require('react-router').Link;
+var SideBarSingleFragment = require('./fragment');
 
 var SideBarSingleScenario = React.createClass({
     handleScenarioClick: function(e) {
@@ -9,30 +10,7 @@ var SideBarSingleScenario = React.createClass({
         var scenario = this.props.scenario;
         var fragmentlist = scenario.fragments.map(function (fragment){
             return (
-                <li key={fragment._id}>
-                    <div className="btn-group pull-right">
-                        <button
-                            type="button"
-                            className="btn btn-danger btn-xs"
-                            data-toggle="modal"
-                            data-target="#deleteFragmentModal"
-                            data-fragid={fragment._id}
-                        >
-                            <i className="fa fa-trash"></i>
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-success btn-xs"
-                            data-toggle="modal"
-                            data-target="#modifyFragmentModal"
-                            data-fragid={fragment._id}
-                            data-fragname={fragment.name}
-                        >
-                            <i className="fa fa-wrench"></i>
-                        </button>
-                    </div>
-                    <Link to={"fragment/" + fragment._id} >{fragment.name}</Link>
-                </li>
+              <SideBarSingleFragment fragment={fragment}/>
             );
         });
         return (
