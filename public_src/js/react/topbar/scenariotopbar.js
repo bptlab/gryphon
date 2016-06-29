@@ -14,4 +14,4 @@ var ScenarioTopBarComponent = React.createClass({
     }
 });
 
-module.exports = TopBarComponent;
+module.exports = ScenarioTopBarComponent;

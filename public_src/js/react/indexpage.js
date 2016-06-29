@@ -21,7 +21,7 @@ var IndexComponent = React.createClass({
     render: function() {
         var scenarios = this.state.scenarios.map(function(scenario){
             return (
-                <div className="col-md-1">
+                <div className="col-md-2">
                 <Link to={"scenario/" + scenario._id}>
                     {scenario.name}
                 </Link>
