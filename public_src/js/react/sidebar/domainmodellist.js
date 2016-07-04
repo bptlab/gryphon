@@ -7,7 +7,6 @@ var Link = require('react-router').Link;
 
 var SideBarDomainModel = React.createClass({
   render: function() {;
-    console.log(this.props.domainmodel);
     var list = this.props.domainmodel.dataclasses.map(function (dataclass){
       return <SideBarSingleDomainModelAttribute dataclass={dataclass} />
     }.bind(this));

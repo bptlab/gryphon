@@ -4,7 +4,6 @@ var SideBarFragmentList = require('./fragmentlist');
 
 var SideBarComponent = React.createClass({
     render: function() {
-        console.log(this.props);
         return (
             <aside className="sidebar-left-collapse">
                 <a href="#">
