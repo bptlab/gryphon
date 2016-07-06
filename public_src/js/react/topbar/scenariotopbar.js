@@ -1,47 +1,33 @@
 var React = require('react');
+var TopBarInput = require('./topbarinput');
 
 var ScenarioTopBarComponent = React.createClass({
     getInitialState: function() {
       return {
-        scenarioName: this.props.scenario.name
+        nameIsEditable: false
+
       };
     },
-    handleChange: function(event) {
-      this.setState({
-        scenarioName: event.target.value
-      });
+    componentDidMount: function() {
+      this.setState({nameIsEditable: false});
     },
     handleRenameClick: function() {
-      var nameLabel = document.getElementById('topBarScenarioName');
-      var nameInputSpan = document.getElementById('topBarScenarioNameInputSpan');
+      if(this.state.nameIsEditable)
+      {
+          // update scenario name
+      }
 
-      nameLabel.className = "h1 hidden";
-      nameInputSpan.className = "";
-    },
-    handleRenameSubmit: function(newValue) {
-      var nameLabel = document.getElementById('topBarScenarioName');
-      var nameInputSpan = document.getElementById('topBarScenarioNameInputSpan');
-
-      alert(newValue);
-      nameInputSpan.className = "hidden";
-      nameLabel.className = "h1";
-
-      return false;
+      this.setState({nameIsEditable: !this.state.nameIsEditable});
     },
     render: function() {
         return (
             <div className="row">
               <div className="col-md-8">
-                <a href="#">
-                  <img src="./img/hpi.png" alt="HPI" style={{width:'100px',height:'100px'}} />
-                </a>
-                <span className="h1" id="topBarScenarioName">{this.props.scenario.name}</span>
-                <span className="hidden" id="topBarScenarioNameInputSpan">
-                    <input
-                      type="text"
-                      name="topBarScenarioNameInput"
-                      value={this.state.scenarioName}
-                      onChange={this.handleChange}
+                <span className="h1">
+                    <TopBarInput
+                      initialValue={this.props.scenario.name}
+                      editable={this.state.nameIsEditable}
+                      handleEnter={this.handleRenameClick}
                     />
                   </span>
                 <hr />
@@ -57,7 +43,7 @@ var ScenarioTopBarComponent = React.createClass({
                       //data-target="#exportScenarioModal"
                       //data-scenid={this.props.scenario._id}
                   >
-                      <i className="fa fa-pencil"></i> Edit
+                      <i className="fa fa-pencil"></i> {this.state.nameIsEditable ? "Done" : "Edit"}
                   </button>
                     <button
                         type="button"
