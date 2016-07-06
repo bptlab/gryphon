@@ -7,14 +7,14 @@ var Link = require('react-router').Link;
 
 var SideBarDomainModel = React.createClass({
   render: function() {;
-    var list = this.props.domainmodel.dataclasses.map(function (dataclass){
-      return <SideBarSingleDomainModelAttribute dataclass={dataclass} />
+    var list = this.props.scenario.domainmodel.dataclasses.map(function (dataclass){
+      return <SideBarSingleDomainModelAttribute scenario={this.props.scenario} dataclass={dataclass} />
     }.bind(this));
 
     return (
       <div className="sidebar-links">
           <div className="link-blue selected">
-              <Link to={"domainmodel/" + this.props.domainmodel._id} >
+              <Link to={"scenario/" + this.props.scenario._id + "/domainmodel/" + this.props.scenario.domainmodel._id} >
                   <i className="fa fa-newspaper-o"></i>DomainModel
               </Link>
               <ul className="sub-links">

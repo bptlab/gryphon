@@ -195,8 +195,6 @@ var DomainModelEditorComponent = React.createClass({
         //             <SideBarComponent scenario={this.state.scenario} />
         return (
           <div>
-
-
             <div className="col-md-12">
                 <div className="row">
                     <div className="col-md-6">
@@ -214,14 +212,14 @@ var DomainModelEditorComponent = React.createClass({
         )
     },
     componentDidMount: function() {
-        API.loadDomainModel(this.props.params.id, function(data,resp) {
+        API.loadDomainModel(this.props.params.domainmodelId, function(data,resp) {
             this.setState({'dm': data});
             MessageHandler.resetMessages();
         }.bind(this));
     },
     componentDidUpdate: function() {
         if (this.props.params.id != this.state.dm._id) {
-            API.loadDomainModel(this.props.params.id, function(data,resp) {
+            API.loadDomainModel(this.props.params.domainmodelId, function(data,resp) {
                 this.setState({'dm': data});
                 MessageHandler.resetMessages();
             }.bind(this));

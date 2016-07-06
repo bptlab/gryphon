@@ -32,7 +32,7 @@ var FragmentEditorComponent = React.createClass({
         this.setState({interval: interval});
     },
     loadDiagram: function() {
-        API.getFragment(this.props.params.id,function(data) {
+        API.getFragment(this.props.params.fragmentId,function(data) {
             this.setState({fragment: data});
             this.state.editor.importFragment(data, function(err){
                 if (err) {

@@ -30,7 +30,7 @@ var SideBarSingleFragment = React.createClass({
                   </button>
               </div>
               <Link
-                to={"fragment/" + this.props.fragment._id}
+                to={"scenario/" + this.props.scenario._id + "/fragment/" + this.props.fragment._id}
                 onClick={this.handleFragmentClick}
               >
                 {this.props.fragment.name}

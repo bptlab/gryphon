@@ -67,3 +67,8 @@ body {
     bottom: 10px;
     right: 10px;
 }
+
+.inputLabel {
+    border: none;
+    background: transparent;
+}

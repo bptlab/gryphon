@@ -30,7 +30,7 @@ var ScenarioEditorComponent = React.createClass({
         }
     },
     loadScenario: function() {
-        var scen_id = this.props.params.id;
+        var scen_id = this.props.params.scenarioId;
         API.getFullScenario(scen_id,true,function(data){
             this.setState({scenario: data});
         }.bind(this));
@@ -40,7 +40,7 @@ var ScenarioEditorComponent = React.createClass({
         MessageHandler.resetMessages();
     },
     componentDidUpdate: function() {
-        if (this.state.scenario._id !== this.props.params.id) {
+        if (this.state.scenario._id !== this.props.params.scenarioId) {
             this.loadScenario();
             MessageHandler.resetMessages();
         }
