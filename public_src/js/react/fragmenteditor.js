@@ -43,7 +43,7 @@ var FragmentEditorComponent = React.createClass({
         }.bind(this));
     },
     componentDidUpdate: function() {
-        if (this.state.fragment != null && this.state.fragment._id != null && this.props.params.id != this.state.fragment._id) {
+        if (this.state.fragment != null && this.state.fragment._id != null && this.props.params.fragmentId != this.state.fragment._id) {
             this.saveDiagram(false);
             MessageHandler.resetMessages();
             this.loadDiagram();
@@ -69,7 +69,7 @@ var FragmentEditorComponent = React.createClass({
         }.bind(this);
         if (this.state.editor !== null && this.state.fragment !== null) {
             this.state.editor.exportFragment(this.state.fragment, function(data) {
-                API.exportFragment(data, res_handler);
+                API.exportFragment(this.props.scenario, data, res_handler);
             });
         }
     },
