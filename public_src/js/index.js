@@ -27,10 +27,10 @@ $(function () {
                 <Route path="scenario/:scenarioId/fragment/:fragmentId" component={FragmentEditorComponent} />
                 <Route path="scenario/:scenarioId/domainmodel/:domainmodelId" component={DomainModelEditorComponent} />
 
-                <Route path="fragment/:id" component={FragmentEditorComponent} />
-                <Route path="domainmodel/:id" component={DomainModelEditorComponent} />
-                <Route path="exportconfig" component={ExportConfigComponent} />
-                <Route path="olc/:dmid/:dclassid" component={OLCEditorComponent} />
+                //<Route path="fragment/:id" component={FragmentEditorComponent} />
+                //<Route path="domainmodel/:id" component={DomainModelEditorComponent} />
+                //<Route path="exportconfig" component={ExportConfigComponent} />
+                //<Route path="olc/:dmid/:dclassid" component={OLCEditorComponent} />
             </Route>
         </Router>,
         document.getElementById('app-container')
