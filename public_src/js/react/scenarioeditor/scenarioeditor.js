@@ -54,23 +54,16 @@ var ScenarioEditorComponent = React.createClass({
             <div>
             <ScenarioTopBarComponent scenario={this.state.scenario} />
             <SideBarComponent scenario={this.state.scenario} />
-            <div className="col-md-12">
                 <div className="row">
-                    <div className="col-md-6">
-                        <ScenarioEditForm scenario={this.state.scenario}/>
-                        <ScenarioOperations scenario={this.state.scenario}/>
-                    </div>
-                    <div className="col-md-6">
-                        <ScenarioStats scenario={this.state.scenario} />
-                        <ScenarioFragmentList scenario={this.state.scenario} forceRerender={this.forceRerender} />
-                    </div>
+                  <div className="col-md-12">
+                    <ScenarioEditForm scenario={this.state.scenario}/>
+                  </div>
                 </div>
                 <div className="row">
-                    <div className="col-md-12">
-                        <ScenarioStartConditionForm scenario={this.state.scenario} />
-                    </div>
+                  <div className="col-md-12">
+                    <ScenarioStartConditionForm scenario={this.state.scenario} />
+                  </div>
                 </div>
-            </div>
             </div>
         )
     }
