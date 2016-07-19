@@ -611,6 +611,7 @@ paths:
             $ref: '#/definitions/ExportRequest'
       tags:
         - Scenario
+        - Export
       responses:
         '200':
           description: The data that was returned by the target-server.
@@ -630,9 +631,9 @@ paths:
         - Export
       responses:
         '200':
-          description: The list of domain models.
+          description: The list of targets.
           schema:
-            $ref: '#/definitions/DomainModelList'
+            $ref: '#/definitions/ExportList'
         '500':
           description: Unexpected error
           schema:
@@ -936,3 +937,8 @@ definitions:
         type: number
         format: int32
         description: The url the post-call should use.
+  ExportList:
+    type: array
+    items:
+      $ref: '#/definitions/Export'
+    description: 'A list of export-targets'
