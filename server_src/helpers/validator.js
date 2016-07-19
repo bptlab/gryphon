@@ -3,12 +3,28 @@ var Scenario = require('./../models/scenario').model;
 var parseToBPMNObject = require('./json').parseToBPMNObject;
 var parseToOLC = require('./json').parseToOLC;
 
+/**
+ * An validator that checks a fragment for structural soundness.
+ *
+ * @class SoundnessValidator
+ * @type {{new(*=): {parseSequenceFlowReverse: (function(Array): {}), validateEverything: (function(): boolean), validateStartEvents: (function(*): boolean), parseIntoGraph: (function(*): {startEvents: Array, endEvents: Array, adjacencyList: {}, reverseList: {}}), parseNodes: (function(Array): Function), validateEndEvents: (function(*): boolean), validateSoundness: (function(*): boolean), parseSequenceFlow: (function(Array): {})}}}
+ */
 var SoundnessValidator = class {
+    /**
+     * Initiates the soundness validator with the given fragment.
+     * @param bpmnObject
+     */
     constructor(bpmnObject) {
         this.bpmnObject = bpmnObject;
         this.messages = [];
         this.graph = this.parseIntoGraph(bpmnObject);
     }
+
+    /**
+     * Creates an graph out of the given fragment, including all start end end-nodes and adjecency lists in both directions.
+     * @param bpmnObject
+     * @returns {{startEvents: Array, endEvents: Array, adjacencyList: {}, reverseList: {}}}
+     */
     parseIntoGraph(bpmnObject) {
         var nodes = {};
         var nodes_reverse = {};
@@ -48,11 +64,24 @@ var SoundnessValidator = class {
             reverseList: nodes_reverse
         }
     }
+
+    /**
+     * Returns a function that appends the ID of the element given to the returned function to the array gien to this
+     * method.
+     * @param node_list {Array}
+     * @returns {Function}
+     */
     parseNodes(node_list) {
         return function(element) {
             node_list.push(element.id)
         }
     }
+
+    /**
+     * Creates an adjacency list for the given sequence-flows.
+     * @param sequenceFlow {Array} A list of sequence flows.
+     * @returns {{}}
+     */
     parseSequenceFlow(sequenceFlow) {
         var nodes = {};
         sequenceFlow.forEach(function(flow){
@@ -63,6 +92,13 @@ var SoundnessValidator = class {
         });
         return nodes;
     }
+
+    /**
+     * Creates an adjacency list for the given sequence-flows. The sequence flows are reversed before read,
+     * this method creates an reversed adjacency list.
+     * @param sequenceFlow {Array} A list of sequence flows.
+     * @returns {{}}
+     */
     parseSequenceFlowReverse(sequenceFlow) {
         var nodes = {};
         sequenceFlow.forEach(function(flow){
@@ -73,11 +109,23 @@ var SoundnessValidator = class {
         });
         return nodes;
     }
+
+    /**
+     * Validates all given features. This function does not check for soundness if the start and end-event requirements
+     * are not fulfilled.
+     * @returns {boolean}
+     */
     validateEverything() {
         if(this.validateStartEvents(this.graph.startEvents)&&this.validateEndEvents(this.graph.endEvents))
             return this.validateSoundness(this.graph);
         return false;
     }
+
+    /**
+     * Checks the amount of start events (There has to be exactly one)
+     * @param startEvents
+     * @returns {boolean}
+     */
     validateStartEvents(startEvents) {
         if (startEvents.length != 1) {
             this.messages.push({
@@ -88,6 +136,12 @@ var SoundnessValidator = class {
         }
         return true;
     };
+
+    /**
+     * Checks the amount of end events (There has to be at least one).
+     * @param endEvents
+     * @returns {boolean}
+     */
     validateEndEvents(endEvents) {
         if (endEvents.length <= 0) {
             this.messages.push({
@@ -98,6 +152,12 @@ var SoundnessValidator = class {
         }
         return true;
     }
+
+    /**
+     * Validates the given graph for structural soundness.
+     * @param graph
+     * @returns {boolean}
+     */
     validateSoundness(graph) {
         var search = function(node, visited, adjacencyList) {
             if (visited.indexOf(node) >= 0) {
@@ -156,166 +216,47 @@ var SoundnessValidator = class {
     }
 };
 
-var EventValidator = class {
-    constructor(bpmnObject) {
-        this.bpmnObject = bpmnObject;
-        this.messages = []
-    }
-    validateEverything() {
-        this.validateEvents();
-        this.validateEventBasedGateways();
-    }
-    validateEvents() {
-        if (this.bpmnObject.intermediateCatchEvent) {
-            this.bpmnObject.intermediateCatchEvent.forEach(function(ev){
-                var allowed_ev_types = ['messageEventDefinition', 'timerEventDefinition'];
-                var found = false;
-                allowed_ev_types.forEach(function(evtype){
-                    found = found || ev[evtype] != null;
-                }.bind(this));
-                if (!found) {
-                    this.messages.push({
-                        'text': 'Currently all catch events but Timer and Event are not supported in chimera! Remove them to allow export.',
-                        'type': 'danger'
-                    })
-                }
-                if (ev.hasOwnProperty('messageEventDefinition') && (!ev.hasOwnProperty('griffin:eventquery') || ev['griffin:eventquery'] == "")) {
-                    this.messages.push({
-                        'text': 'Message-Events need a query-definition.',
-                        'type': 'danger'
-                    });
-                }
-            }.bind(this));
-        }
-        if (this.bpmnObject.intermediateThrowEvent) {
-            this.messages.push({
-                'text': 'Currently all throw events are not supported in chimera! Remove them to allow export.',
-                'type': 'danger'
-            })
-        }
-    }
-    validateEventBasedGateways() {
-        if (this.bpmnObject.eventBasedGateway) {
-            this.bpmnObject.eventBasedGateway.forEach(function(gateway){
-                if (gateway.outgoing) {
-                    var queries_found = [];
-                    gateway.outgoing.forEach(function(outgoing_ref){
-                        var ev = this.getSequenceFlowTarget(outgoing_ref);
-                        if (ev && ev.hasOwnProperty('messageEventDefinition') &&
-                            ev.hasOwnProperty('griffin:eventquery') && ev['griffin:eventquery'] !== "") {
-                            if (queries_found.indexOf(ev['griffin:eventquery']) >= 0) {
-                                this.messages.push({
-                                    'text': "You've used the query (" + ev['griffin:eventquery'].substring(0,30) + "...) twice after an event based gateway. This is invalid because it causes unpredictable behavior.",
-                                    'type': 'danger'
-                                })
-                            } else {
-                                console.log("query:" + ev['griffin:eventquery']);
-                                queries_found.push(ev['griffin:eventquery']);
-                            }
-                        }
-                    }.bind(this))
-                }
-            }.bind(this));
-        }
-    }
-    getSequenceFlowTarget(seqflowid) {
-        var seqs = this.bpmnObject.sequenceFlow.filter(function(seqflow){
-            return (seqflow.id == seqflowid);
-        });
-        if (seqs.length == 0) {
-            return null;
-        } else {
-            var seqflow = seqs[0];
-            if (seqflow.targetRef.substring(0,22) == 'IntermediateCatchEvent') {
-                var evs = this.bpmnObject.intermediateCatchEvent.filter(function(ev){
-                    return (ev.id == seqflow.targetRef);
-                });
-                if (evs.length == 0) {
-                    return null;
-                } else {
-                    return evs[0];
-                }
-            } else {
-                return null;
-            }
-        }
-    }
-};
 
-// This validator does the olc validation by itself (cause of db-reasons)
-// All other validation is done in specialised validators that consume the fragments structure and output messages
-var Validator = class {
-    constructor(fragment,initDone) {
-        if (initDone == undefined) {
-            initDone = function() {
-                this.validateEverything();
-            }
-        }
+/**
+ * A validator that checks for olc-conformance.
+ *
+ * @class OLCValidator
+ * @type {{new(*, *): {validateDataObjectReference: (function(*)), createMapping: (function(Array, Array): Array), validateEverything: (function()), getDataObjectReference: (function(*): *), validateOSetDuplicates: (function(*)), validateIOSet: (function(*=, *=)), validateDataObjectFlow: (function())}}}
+ */
+var OLCValidator = class {
+    /**
+     * Initiates the OLC validator with the given fragment and  the available OLC-diagrams in this scenario.
+     * @param fragment
+     * @param olc
+     */
+    constructor(fragment,olc) {
         this.fragment = fragment;
         this.bpmnObject = parseToBPMNObject(fragment.content);
         this.messages = [];
-        Scenario.findOne({fragments:fragment._id}).populate('domainmodel').exec(function(err, result) {
-            if (result == null) {
-                throw "Can't find domainmodel for fragment";
-            }
-            this.scenario = result;
-            this.parseOLCPaths(result.domainmodel);
-            initDone();
-        }.bind(this))
+        this.olc = olc;
     }
 
     /**
-     * This one creates adjacency lists for every dataclass according to it's olc.
-     * If there is no valid olc model for the dataclass (including at least one state) it's invalid.
-     * How do we handle the "init" state. Does it have to be modelled explicit?
-     * @param domainmodel
+     * Validates every feature of the given fragment.
      */
-    parseOLCPaths(domainmodel) {
-        this.olc = {};
-        domainmodel.dataclasses.forEach(function(dclass){
-            if (dclass.olc != undefined) {
-                var olc = parseToOLC(dclass.olc);
-                var adjlist = {};
-                var namemap  = {};
-                if ('state' in olc) {
-
-                    olc['state'].forEach(function(state){
-                        if ('name' in state) {
-                            namemap[state['id']] = state['name'];
-                        } else {
-                            namemap[state['id']] = state['id'];
-                        }
-                        adjlist[namemap[state['id']]] = [];
-                    });
-
-                    if ('sequenceFlow' in olc) {
-                        olc['sequenceFlow'].forEach(function(seqFlow){
-                            if ((seqFlow['sourceRef'] in namemap) && (seqFlow['targetRef'] in namemap)) {
-                                adjlist[namemap[seqFlow['sourceRef']]].push(namemap[seqFlow['targetRef']]);
-                            }
-                        });
-                        this.olc[dclass.name] = adjlist;
-                    } else {
-                        this.olc[dclass.name] = null;
-                    }
-                } else {
-                    this.olc[dclass.name] = null;
-                }
-            } else {
-                this.olc[dclass.name] = null;
-            }
-        }.bind(this))
-    }
     validateEverything() {
         this.validateDataObjectFlow();
-        this.validateStructuralSoundness();
-        this.validateEvents();
     }
+
+    /**
+     * Returns the dataobjectreference with the given ID
+     * @param dorefid
+     * @returns {*}
+     */
     getDataObjectReference(dorefid) {
         return this.bpmnObject.dataObjectReference.find(function(doref){
             return doref.id == dorefid;
         })
     };
+
+    /**
+     * Validates all tasks, message-receive-tasks and service tasks and their in and outputsets.
+     */
     validateDataObjectFlow() {
         if(this.bpmnObject.dataObjectReference != undefined) {
             this.bpmnObject.dataObjectReference.forEach(this.validateDataObjectReference.bind(this));
@@ -374,6 +315,12 @@ var Validator = class {
             }.bind(this));
         }
     }
+
+    /**
+     * Checks an outputset by the following rules:
+     * 1. On automated activitys, there is just one outputset
+     * @param oset
+     */
     validateOSetDuplicates(oset) {
         var output = [];
         oset.forEach(function(outputobject) {
@@ -387,6 +334,13 @@ var Validator = class {
             output.push(dclass);
         }.bind(this));
     }
+
+    /**
+     * Validates all dataobjectreferences in the given fragment by the following rules:
+     * 1. No invalid (non-existing) dataclasses
+     * 2. No invalid states according to the dataclasses olc.
+     * @param doref
+     */
     validateDataObjectReference(doref) {
         if (!(doref['griffin:dataclass'] in this.olc)) {
             this.messages.push({
@@ -402,8 +356,15 @@ var Validator = class {
             }
         }
     }
+
+    /**
+     * Searches for classes that appear in the in- and the outputset and creates a list of the state transitions.
+     * @param iset {Array} The inputset
+     * @param oset {Array} The outputset
+     * @returns {Array}
+     */
     createMapping(iset,oset) {
-       var mapping = [];
+        var mapping = [];
         oset.forEach(function(outputo){
             var inputo = iset.find(function(inputo){
                 return (outputo['griffin:dataclass'] == inputo['griffin:dataclass']);
@@ -430,6 +391,13 @@ var Validator = class {
         });
         return mapping;
     }
+
+    /**
+     * Validates an in- and outputset of a given activity by the following rules:
+     * 1. Check if all transitions are allowed in the assigned olc
+     * @param iset
+     * @param oset
+     */
     validateIOSet(iset, oset) {
         var mapping  = this.createMapping(iset,oset);
         mapping.forEach(function(iotuple){
@@ -448,23 +416,224 @@ var Validator = class {
                                 'type': 'danger'
                             })
                         }
-                      }
+                    }
                 }
             }
         }.bind(this))
     }
-    validateStructuralSoundness() {
-        this.validateWithSimpleValidator(new SoundnessValidator(this.bpmnObject));
+};
+
+var EventValidator = class {
+    /**
+     * Initiates this validator with the given fragment
+     * @param bpmnObject
+     */
+    constructor(bpmnObject) {
+        this.bpmnObject = bpmnObject;
+        this.messages = []
     }
+
+    /**
+     * Validates every event feature of the given fragment
+     */
+    validateEverything() {
+        this.validateEvents();
+        this.validateEventBasedGateways();
+    }
+
+    /**
+     * Validates all events in the given fragment by the following rules:
+     * 1. All message events need to have an event query.
+     * 2. No other events but message and timer events are allowed.
+     * 3. No throw-events
+     */
+    validateEvents() {
+        if (this.bpmnObject.intermediateCatchEvent) {
+            this.bpmnObject.intermediateCatchEvent.forEach(function(ev){
+                var allowed_ev_types = ['messageEventDefinition', 'timerEventDefinition'];
+                var found = false;
+                allowed_ev_types.forEach(function(evtype){
+                    found = found || ev[evtype] != null;
+                }.bind(this));
+                if (!found) {
+                    this.messages.push({
+                        'text': 'Currently all catch events but Timer and Event are not supported in chimera! Remove them to allow export.',
+                        'type': 'danger'
+                    })
+                }
+                if (ev.hasOwnProperty('messageEventDefinition') && (!ev.hasOwnProperty('griffin:eventquery') || ev['griffin:eventquery'] == "")) {
+                    this.messages.push({
+                        'text': 'Message-Events need a query-definition.',
+                        'type': 'danger'
+                    });
+                }
+            }.bind(this));
+        }
+        if (this.bpmnObject.intermediateThrowEvent) {
+            this.messages.push({
+                'text': 'Currently all throw events are not supported in chimera! Remove them to allow export.',
+                'type': 'danger'
+            })
+        }
+    }
+
+    /**
+     * Validates all event based gateways by the following rules:
+     * 1. All events after an event based gateway need to have different event queries
+     */
+    validateEventBasedGateways() {
+        if (this.bpmnObject.eventBasedGateway) {
+            this.bpmnObject.eventBasedGateway.forEach(function(gateway){
+                if (gateway.outgoing) {
+                    var queries_found = [];
+                    gateway.outgoing.forEach(function(outgoing_ref){
+                        var ev = this.getSequenceFlowTarget(outgoing_ref);
+                        if (ev && ev.hasOwnProperty('messageEventDefinition') &&
+                            ev.hasOwnProperty('griffin:eventquery') && ev['griffin:eventquery'] !== "") {
+                            if (queries_found.indexOf(ev['griffin:eventquery']) >= 0) {
+                                this.messages.push({
+                                    'text': "You've used the query (" + ev['griffin:eventquery'].substring(0,30) + "...) twice after an event based gateway. This is invalid because it causes unpredictable behavior.",
+                                    'type': 'danger'
+                                })
+                            } else {
+                                console.log("query:" + ev['griffin:eventquery']);
+                                queries_found.push(ev['griffin:eventquery']);
+                            }
+                        }
+                    }.bind(this))
+                }
+            }.bind(this));
+        }
+    }
+
+    /**
+     * Returns the target object of an sequence flow by the ID of the sequence flow.
+     * @param seqflowid {int}
+     * @returns {*}
+     */
+    getSequenceFlowTarget(seqflowid) {
+        var seqs = this.bpmnObject.sequenceFlow.filter(function(seqflow){
+            return (seqflow.id == seqflowid);
+        });
+        if (seqs.length == 0) {
+            return null;
+        } else {
+            var seqflow = seqs[0];
+            if (seqflow.targetRef.substring(0,22) == 'IntermediateCatchEvent') {
+                var evs = this.bpmnObject.intermediateCatchEvent.filter(function(ev){
+                    return (ev.id == seqflow.targetRef);
+                });
+                if (evs.length == 0) {
+                    return null;
+                } else {
+                    return evs[0];
+                }
+            } else {
+                return null;
+            }
+        }
+    }
+};
+
+/**
+ * A validator that is able to validate using multiple other validators.
+ *
+ * @class GeneralValidator
+ * @type {{new(string, Function, array=): {validateWithSimpleValidator: (function(*)), parseOLCPaths: (function(Domainmodel)), validateEverything: (function())}}}
+ */
+var GeneralValidator = class {
+    /**
+     * Initiates a validator with the given fragment and the given validators.
+     * @param fragment {string} The fragment that should be validated
+     * @param initDone {function} A function that should get called when the DB-initiation is done.
+     * @param validators {array} A list of Classes that should be used as validator (Event Soundness and OLC on Default)
+     */
+    constructor(fragment,initDone, validators=[EventValidator, SoundnessValidator, OLCValidator]) {
+        if (initDone == undefined) {
+            initDone = function() {
+                this.validateEverything();
+            }
+        }
+        this.validators = validators;
+        this.fragment = fragment;
+        this.bpmnObject = parseToBPMNObject(fragment.content);
+        this.messages = [];
+        Scenario.findOne({fragments:fragment._id}).populate('domainmodel').exec(function(err, result) {
+            if (result == null) {
+                throw "Can't find domainmodel for fragment";
+            }
+            this.scenario = result;
+            this.parseOLCPaths(result.domainmodel);
+            initDone();
+        }.bind(this))
+    }
+
+    /**
+     * Validates every feature of the fragment that was loaded.
+     */
+    validateEverything() {
+        this.validators.forEach(function(validator){
+            if (validator == OLCValidator) {
+                validator = new validator(this.bpmnObject, this.olc)
+            } else {
+                validator = new validator(this.bpmnObject);
+            }
+            this.validateWithSimpleValidator(validator);
+        })
+    }
+
+    /**
+     * Uses a simple validator (that needs to have an validateEverything() method) to validate the loaded fragment.
+     * @param validator
+     */
     validateWithSimpleValidator(validator) {
         validator.validateEverything();
         this.messages = this.messages.concat(validator.messages);
     }
-    validateEvents() {
-        this.validateWithSimpleValidator(new EventValidator(this.bpmnObject));
+
+    /**
+     * This method creates adjacency lists for every dataclass according to it's olc.
+     * If there is no valid olc model for the dataclass (including at least one state) it's invalid.
+     * @param domainmodel {Domainmodel}
+     */
+    parseOLCPaths(domainmodel) {
+        this.olc = {};
+        domainmodel.dataclasses.forEach(function(dclass){
+            if (dclass.olc != undefined) {
+                var olc = parseToOLC(dclass.olc);
+                var adjlist = {};
+                var namemap  = {};
+                if ('state' in olc) {
+
+                    olc['state'].forEach(function(state){
+                        if ('name' in state) {
+                            namemap[state['id']] = state['name'];
+                        } else {
+                            namemap[state['id']] = state['id'];
+                        }
+                        adjlist[namemap[state['id']]] = [];
+                    });
+
+                    if ('sequenceFlow' in olc) {
+                        olc['sequenceFlow'].forEach(function(seqFlow){
+                            if ((seqFlow['sourceRef'] in namemap) && (seqFlow['targetRef'] in namemap)) {
+                                adjlist[namemap[seqFlow['sourceRef']]].push(namemap[seqFlow['targetRef']]);
+                            }
+                        });
+                        this.olc[dclass.name] = adjlist;
+                    } else {
+                        this.olc[dclass.name] = null;
+                    }
+                } else {
+                    this.olc[dclass.name] = null;
+                }
+            } else {
+                this.olc[dclass.name] = null;
+            }
+        }.bind(this))
     }
 };
 
 module.exports = {
-    'Validator': Validator
+    'Validator': GeneralValidator
 };

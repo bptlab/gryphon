@@ -5,6 +5,13 @@ var Scenario = require('./../models/scenario').model;
 var DomainModel = require('./../models/domainmodel').model;
 var _ = require('lodash');
 
+/**
+ * You can find further information about all endpoints in the swagger.yaml
+ */
+
+/**
+ * This endpoint returns an domainmodel by its ID.
+ */
 router.get('/:dmID', function(req, res) {
     var dm_id = req.params.dmID;
     DomainModel.findOne({_id:dm_id},function(err, result){
@@ -21,6 +28,13 @@ router.get('/:dmID', function(req, res) {
     });
 });
 
+/**
+ * When the name of an attribute of an dataclass gets changed, it's necessary to update all references to it. This is
+ * exactly what this method does. It updates all references to a given attribute in case the name has changed.
+ * @param newclass The updated dataclass
+ * @param oldclass The old version of the dataclass
+ * @param scenario The scenario that should get updated
+ */
 var changeDClassAttrReferences = function(newclass, oldclass, scenario) {
     oldclass.attributes.forEach(function(old_attr) {
         newclass.attributes.forEach(function(new_attr){
@@ -44,6 +58,14 @@ var changeDClassAttrReferences = function(newclass, oldclass, scenario) {
     });
 };
 
+/**
+ * In case the dataclasses were changed it's necessary to update all references to them. This is exactly what this
+ * function does. This works asynchronous because of the datacase-calls that are needed to load all fragments.
+ * @param dm_id The ID of the domainmodel
+ * @param old_classes The old versions of the dataclasses
+ * @param new_classes The new versions of the dataclasses
+ * @param done {Function} The function that should be called when the updating is done.
+ */
 var changeDClassReferences = function(dm_id, old_classes, new_classes, done) {
     Scenario.findOne({domainmodel:dm_id}).populate('fragments').exec(function(err, result){
         if (err) {
@@ -88,6 +110,9 @@ var changeDClassReferences = function(dm_id, old_classes, new_classes, done) {
     })
 };
 
+/**
+ * Updates the domainmodel with the given ID.
+ */
 router.post('/:dmID', function(req, res) {
     var dm_id = req.params.dmID;
     var new_dm = req.body;
@@ -135,6 +160,9 @@ router.post('/:dmID', function(req, res) {
     });
 });
 
+/**
+ * Returns a list of all available domain-models.
+ */
 router.get('/', function(req, res) {
     var name = req.query.query;
 
@@ -158,6 +186,9 @@ router.get('/', function(req, res) {
     });
 });
 
+/**
+ * Creates a new domainmodel.
+ */
 router.post('/', function(req, res) {
     var domainmodel = req.body;
 

@@ -1,3 +1,9 @@
+/**
+ * Checks wether the arrays a and b are equal.
+ * @param a {array}
+ * @param b {array}
+ * @returns {boolean}
+ */
 var arrayEquals = function(a, b) {
     if (a === b) return true;
     if (a == null || b == null) return false;

@@ -1,6 +1,10 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+/**
+ * The schema of the Scenario-document. It includes scenario information, start and termination-conditions and the
+ * references to the domainmodel and the fragments associated with this scenario.
+ */
 var ScenarioSchema = new Schema({
     name: {type: String, index: { unique: true }},
     terminationconditions: [{type: String}],
