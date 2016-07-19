@@ -58,13 +58,14 @@ router.post('/', function(req, res) {
     try {
         Scenario.find({name: scenario.name}).count(function (err, count) {
             try {
+		// scenario with that name already exists -> append '_2'
                 if (count > 0) {
-                    scenario.name = scenario.name + " 2"
+                    scenario.name = scenario.name + "_2"
                 }
 
                 var db_scenario = new Scenario({
                     name: scenario.name,
-                    terminationconditions: (scenario.terminationconditions ? scenario.terminationconditions : [Config.DEFAULT_TERMINATION_CONDITION]),
+                    terminationconditions: (scenario.terminationconditions ? scenario.terminationconditions : []), //Config.DEFAULT_TERMINATION_CONDITION]),
                     revision: 1,
                     domainmodel: -1,
                     fragments: [],
