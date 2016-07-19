@@ -12,10 +12,12 @@ var parseToOLC = require('./../helpers/json').parseToOLC;
 
 /**
  * You can find further information about all information.
+ * @module routes.scenario
  */
 
 /**
  * Returns a list of all scenarios.
+ * @class getScenarios
  */
 router.get('/', function(req, res) {
     var name = req.query.query;
@@ -52,6 +54,7 @@ router.get('/', function(req, res) {
 
 /**
  * Creates a new scenario. Fills it with default values if there are no values in the body.
+ * @class postNewScenario
  */
 router.post('/', function(req, res) {
     var scenario = req.body;
@@ -178,6 +181,7 @@ router.post('/', function(req, res) {
  * Assigns the given fragment to the given scenario.
  * By using this endpoint it's possible to assign a fragment to two or more scenarios.
  * It's suggested that this is not done, because the validation might not work anymore.
+ * @class postAssociateFragmentToScenario
  */
 router.post('/associatefragment', function(req, res) {
     var fragment_id = req.query.fragment_id;
@@ -208,6 +212,7 @@ router.post('/associatefragment', function(req, res) {
 
 /**
  * Assigns the given domainmodel to the given scenario.
+ * @class postAssociateDomainmodelToScenario
  */
 router.post('/associatedomainmodel', function(req, res) {
     var domainmodel_id = req.query.domainmodel_id;
@@ -236,6 +241,7 @@ router.post('/associatedomainmodel', function(req, res) {
 
 /**
  * Validates the given scenario.
+ * @class getValidateScenario
  */
 router.get('/:scenID/validate', function(req, res){
     var scenID = req.params.scenID;
@@ -301,7 +307,8 @@ router.get('/:scenID/validate', function(req, res){
 });
 
 /**
- * Returns the scenario with the gien ID.
+ * Returns the scenario with the given ID.
+ * @class getScenario
  */
 router.get('/:scenID', function(req, res) {
     var id = req.params.scenID;
@@ -350,6 +357,7 @@ var validateFragmentList = function(list) {
  * Exports the scenario with the given ID to the export-target with the given ID.
  * This means the scenario will be send via POST to the target with '/scenario' appended.
  * This also means that you can export scenarios to another gryphon-instance.
+ * @class postScenarioExport
  */
 router.post('/:scenID/export', function(req, res) {
     var target = req.body.exportID;
@@ -418,6 +426,7 @@ router.post('/:scenID/export', function(req, res) {
 
 /**
  * Updates a given scenario.
+ * @class postScenario
  */
 router.post('/:scenID', function(req, res) {
     var scenID = req.params.scenID;
@@ -475,6 +484,7 @@ router.post('/:scenID', function(req, res) {
 
 /**
  * Deletes the given scenario
+ * @class deleteScenario
  */
 router.delete('/:scenID', function(req, res) {
     var id = req.params.scenID;

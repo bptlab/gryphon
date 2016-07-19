@@ -1,7 +1,12 @@
 var xml2json = require('xml2json');
 
 /**
+ * @module helpers.json
+ */
+
+/**
  * Given an xml-string that contains a valid BPMN-XML this function parses it and generates an JS-Object out of it.
+ * @class parseToBPMNObject
  * @param xml {string}
  * @returns {{}}
  */
@@ -40,6 +45,7 @@ var parseToBPMNObject = function(xml) {
 
 /**
  * Given an valid BPMN-XML-String this function generates an OLC-object out of it.
+ * @class parseToOLC
  * @param xml {string}
  * @returns {{}}
  */

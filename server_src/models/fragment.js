@@ -2,7 +2,12 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 /**
+ * @module models.fragment
+ */
+
+/**
  * The schema of an fragment stored in the fragment-document.
+ * @class FragmentSchema
  */
 var FragmentSchema = new Schema({
     name: String,

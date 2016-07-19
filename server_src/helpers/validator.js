@@ -4,6 +4,10 @@ var parseToBPMNObject = require('./json').parseToBPMNObject;
 var parseToOLC = require('./json').parseToOLC;
 
 /**
+ * @module helpers.validator
+ */
+
+/**
  * An validator that checks a fragment for structural soundness.
  *
  * @class SoundnessValidator
@@ -12,6 +16,7 @@ var parseToOLC = require('./json').parseToOLC;
 var SoundnessValidator = class {
     /**
      * Initiates the soundness validator with the given fragment.
+     * @method constructor
      * @param bpmnObject
      */
     constructor(bpmnObject) {
@@ -22,6 +27,7 @@ var SoundnessValidator = class {
 
     /**
      * Creates an graph out of the given fragment, including all start end end-nodes and adjecency lists in both directions.
+     * @methode parseIntoGraph
      * @param bpmnObject
      * @returns {{startEvents: Array, endEvents: Array, adjacencyList: {}, reverseList: {}}}
      */
@@ -68,6 +74,7 @@ var SoundnessValidator = class {
     /**
      * Returns a function that appends the ID of the element given to the returned function to the array gien to this
      * method.
+     * @method parseNodes
      * @param node_list {Array}
      * @returns {Function}
      */
@@ -79,6 +86,8 @@ var SoundnessValidator = class {
 
     /**
      * Creates an adjacency list for the given sequence-flows.
+     *
+     * @methode parseSequenceFlow
      * @param sequenceFlow {Array} A list of sequence flows.
      * @returns {{}}
      */
@@ -96,6 +105,7 @@ var SoundnessValidator = class {
     /**
      * Creates an adjacency list for the given sequence-flows. The sequence flows are reversed before read,
      * this method creates an reversed adjacency list.
+     * @method parseSequenceFlowReverse
      * @param sequenceFlow {Array} A list of sequence flows.
      * @returns {{}}
      */
@@ -113,6 +123,7 @@ var SoundnessValidator = class {
     /**
      * Validates all given features. This function does not check for soundness if the start and end-event requirements
      * are not fulfilled.
+     * @method validateEverything
      * @returns {boolean}
      */
     validateEverything() {
@@ -123,6 +134,7 @@ var SoundnessValidator = class {
 
     /**
      * Checks the amount of start events (There has to be exactly one)
+     * @method validateStartEvents
      * @param startEvents
      * @returns {boolean}
      */
@@ -139,6 +151,7 @@ var SoundnessValidator = class {
 
     /**
      * Checks the amount of end events (There has to be at least one).
+     * @method validateEndEvents
      * @param endEvents
      * @returns {boolean}
      */
@@ -155,6 +168,7 @@ var SoundnessValidator = class {
 
     /**
      * Validates the given graph for structural soundness.
+     * @method validateSoundness
      * @param graph
      * @returns {boolean}
      */
@@ -226,6 +240,7 @@ var SoundnessValidator = class {
 var OLCValidator = class {
     /**
      * Initiates the OLC validator with the given fragment and  the available OLC-diagrams in this scenario.
+     * @method constructor
      * @param fragment
      * @param olc
      */
@@ -238,6 +253,7 @@ var OLCValidator = class {
 
     /**
      * Validates every feature of the given fragment.
+     * @method validateEverything
      */
     validateEverything() {
         this.validateDataObjectFlow();
@@ -245,6 +261,7 @@ var OLCValidator = class {
 
     /**
      * Returns the dataobjectreference with the given ID
+     * @method getDataObjectReference
      * @param dorefid
      * @returns {*}
      */
@@ -256,6 +273,7 @@ var OLCValidator = class {
 
     /**
      * Validates all tasks, message-receive-tasks and service tasks and their in and outputsets.
+     * @method validateDataObjectFlow
      */
     validateDataObjectFlow() {
         if(this.bpmnObject.dataObjectReference != undefined) {
@@ -319,6 +337,7 @@ var OLCValidator = class {
     /**
      * Checks an outputset by the following rules:
      * 1. On automated activitys, there is just one outputset
+     * @method validateOSetDuplicates
      * @param oset
      */
     validateOSetDuplicates(oset) {
@@ -339,6 +358,7 @@ var OLCValidator = class {
      * Validates all dataobjectreferences in the given fragment by the following rules:
      * 1. No invalid (non-existing) dataclasses
      * 2. No invalid states according to the dataclasses olc.
+     * @method validateDataObjectReference
      * @param doref
      */
     validateDataObjectReference(doref) {
@@ -359,6 +379,7 @@ var OLCValidator = class {
 
     /**
      * Searches for classes that appear in the in- and the outputset and creates a list of the state transitions.
+     * @method createMapping
      * @param iset {Array} The inputset
      * @param oset {Array} The outputset
      * @returns {Array}
@@ -395,6 +416,7 @@ var OLCValidator = class {
     /**
      * Validates an in- and outputset of a given activity by the following rules:
      * 1. Check if all transitions are allowed in the assigned olc
+     * @method validateIOSet
      * @param iset
      * @param oset
      */
@@ -423,9 +445,16 @@ var OLCValidator = class {
     }
 };
 
+/**
+ * Validates the given fragment for mistakes in event-references.
+ *
+ * @class EventValidator
+ * @type {{new(*): {validateEventBasedGateways: (function()), getSequenceFlowTarget: (function(int): *), validateEvents: (function()), validateEverything: (function())}}}
+ */
 var EventValidator = class {
     /**
      * Initiates this validator with the given fragment
+     * @mthod constructor
      * @param bpmnObject
      */
     constructor(bpmnObject) {
@@ -435,6 +464,7 @@ var EventValidator = class {
 
     /**
      * Validates every event feature of the given fragment
+     * @method validateEverything
      */
     validateEverything() {
         this.validateEvents();
@@ -446,6 +476,7 @@ var EventValidator = class {
      * 1. All message events need to have an event query.
      * 2. No other events but message and timer events are allowed.
      * 3. No throw-events
+     * @method validateEvents
      */
     validateEvents() {
         if (this.bpmnObject.intermediateCatchEvent) {
@@ -480,6 +511,7 @@ var EventValidator = class {
     /**
      * Validates all event based gateways by the following rules:
      * 1. All events after an event based gateway need to have different event queries
+     * @method validateEventBasedGateways
      */
     validateEventBasedGateways() {
         if (this.bpmnObject.eventBasedGateway) {
@@ -508,6 +540,7 @@ var EventValidator = class {
 
     /**
      * Returns the target object of an sequence flow by the ID of the sequence flow.
+     * @method getSequenceFlowTarget
      * @param seqflowid {int}
      * @returns {*}
      */
@@ -544,6 +577,7 @@ var EventValidator = class {
 var GeneralValidator = class {
     /**
      * Initiates a validator with the given fragment and the given validators.
+     * @method constructor
      * @param fragment {string} The fragment that should be validated
      * @param initDone {function} A function that should get called when the DB-initiation is done.
      * @param validators {array} A list of Classes that should be used as validator (Event Soundness and OLC on Default)
@@ -570,6 +604,7 @@ var GeneralValidator = class {
 
     /**
      * Validates every feature of the fragment that was loaded.
+     * @method validateEverything
      */
     validateEverything() {
         this.validators.forEach(function(validator){
@@ -584,6 +619,7 @@ var GeneralValidator = class {
 
     /**
      * Uses a simple validator (that needs to have an validateEverything() method) to validate the loaded fragment.
+     * @method validateWithSimpleValidator
      * @param validator
      */
     validateWithSimpleValidator(validator) {
@@ -594,6 +630,7 @@ var GeneralValidator = class {
     /**
      * This method creates adjacency lists for every dataclass according to it's olc.
      * If there is no valid olc model for the dataclass (including at least one state) it's invalid.
+     * @method parseOLCPaths
      * @param domainmodel {Domainmodel}
      */
     parseOLCPaths(domainmodel) {

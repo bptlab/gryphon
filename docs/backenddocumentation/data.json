@@ -1,0 +1,1493 @@
+{
+    "project": {},
+    "files": {
+        "helpers/array.js": {
+            "name": "helpers/array.js",
+            "modules": {
+                "helpers.array": 1
+            },
+            "classes": {
+                "arrayEquals": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "helpers/json.js": {
+            "name": "helpers/json.js",
+            "modules": {
+                "helpers.json": 1
+            },
+            "classes": {
+                "parseToBPMNObject": 1,
+                "parseToOLC": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "helpers/updaterefs.js": {
+            "name": "helpers/updaterefs.js",
+            "modules": {
+                "helpers.updaterefs": 1
+            },
+            "classes": {
+                "changeDClassAttrReferences": 1,
+                "changeDClassReferences": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "helpers/validator.js": {
+            "name": "helpers/validator.js",
+            "modules": {
+                "helpers.validator": 1
+            },
+            "classes": {
+                "SoundnessValidator": 1,
+                "OLCValidator": 1,
+                "EventValidator": 1,
+                "GeneralValidator": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "models/domainmodel.js": {
+            "name": "models/domainmodel.js",
+            "modules": {
+                "models.domainmodel": 1
+            },
+            "classes": {
+                "DomainModelSchema": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "models/export.js": {
+            "name": "models/export.js",
+            "modules": {
+                "models.export": 1
+            },
+            "classes": {
+                "ExportSchema": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "models/fragment.js": {
+            "name": "models/fragment.js",
+            "modules": {
+                "models.fragment": 1
+            },
+            "classes": {
+                "FragmentSchema": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "models/scenario.js": {
+            "name": "models/scenario.js",
+            "modules": {
+                "models.scenario": 1
+            },
+            "classes": {
+                "ScenarioSchema": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "routes/domainmodel.js": {
+            "name": "routes/domainmodel.js",
+            "modules": {
+                "routes.domainmodel": 1
+            },
+            "classes": {
+                "getDomainModel": 1,
+                "postDomainModel": 1,
+                "getDomainModels": 1,
+                "postNewDomainModel": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "routes/export.js": {
+            "name": "routes/export.js",
+            "modules": {
+                "routes.export": 1
+            },
+            "classes": {
+                "getExportTargets": 1,
+                "postNewExportTarget": 1,
+                "postExportTarget": 1,
+                "getValidateExportURL": 1,
+                "deleteExportTarget": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "routes/fragment.js": {
+            "name": "routes/fragment.js",
+            "modules": {
+                "routes.fragment": 1
+            },
+            "classes": {
+                "getFragment": 1,
+                "postFragment": 1,
+                "getFragments": 1,
+                "postNewFragment": 1,
+                "getFragmentStructure": 1,
+                "getFragmentXML": 1,
+                "deleteFragment": 1,
+                "getValidateFragment": 1,
+                "getAssociatedDomainModelFragment": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "routes/scenario.js": {
+            "name": "routes/scenario.js",
+            "modules": {
+                "routes.scenario": 1
+            },
+            "classes": {
+                "getScenarios": 1,
+                "postNewScenario": 1,
+                "postAssociateFragmentToScenario": 1,
+                "postAssociateDomainmodelToScenario": 1,
+                "getValidateScenario": 1,
+                "getScenario": 1,
+                "postScenarioExport": 1,
+                "postScenario": 1,
+                "deleteScenario": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {
+        "helpers.array": {
+            "name": "helpers.array",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "arrayEquals": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "helpers/array.js",
+            "line": 5
+        },
+        "helpers.json": {
+            "name": "helpers.json",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "parseToBPMNObject": 1,
+                "parseToOLC": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "helpers/json.js",
+            "line": 46
+        },
+        "helpers.updaterefs": {
+            "name": "helpers.updaterefs",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "changeDClassAttrReferences": 1,
+                "changeDClassReferences": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "helpers/updaterefs.js",
+            "line": 37,
+            "description": "This module contains 2 functions that help to update references to dataclasses."
+        },
+        "helpers.validator": {
+            "name": "helpers.validator",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "SoundnessValidator": 1,
+                "OLCValidator": 1,
+                "EventValidator": 1,
+                "GeneralValidator": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "helpers/validator.js",
+            "line": 571
+        },
+        "models.domainmodel": {
+            "name": "models.domainmodel",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "DomainModelSchema": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "models/domainmodel.js",
+            "line": 8
+        },
+        "models.export": {
+            "name": "models.export",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "ExportSchema": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "models/export.js",
+            "line": 8
+        },
+        "models.fragment": {
+            "name": "models.fragment",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "FragmentSchema": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "models/fragment.js",
+            "line": 8
+        },
+        "models.scenario": {
+            "name": "models.scenario",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "ScenarioSchema": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "models/scenario.js",
+            "line": 8
+        },
+        "routes.domainmodel": {
+            "name": "routes.domainmodel",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "getDomainModel": 1,
+                "postDomainModel": 1,
+                "getDomainModels": 1,
+                "postNewDomainModel": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "routes/domainmodel.js",
+            "line": 112,
+            "description": "You can find further information about all endpoints in the swagger.yaml"
+        },
+        "routes.export": {
+            "name": "routes.export",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "getExportTargets": 1,
+                "postNewExportTarget": 1,
+                "postExportTarget": 1,
+                "getValidateExportURL": 1,
+                "deleteExportTarget": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "routes/export.js",
+            "line": 97,
+            "description": "You can find further information about all endpoints in the swagger.yaml file."
+        },
+        "routes.fragment": {
+            "name": "routes.fragment",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "getFragment": 1,
+                "postFragment": 1,
+                "getFragments": 1,
+                "postNewFragment": 1,
+                "getFragmentStructure": 1,
+                "getFragmentXML": 1,
+                "deleteFragment": 1,
+                "getValidateFragment": 1,
+                "getAssociatedDomainModelFragment": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "routes/fragment.js",
+            "line": 219,
+            "description": "You can find further information about all endpoints in the swagger.yaml"
+        },
+        "routes.scenario": {
+            "name": "routes.scenario",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "getScenarios": 1,
+                "postNewScenario": 1,
+                "postAssociateFragmentToScenario": 1,
+                "postAssociateDomainmodelToScenario": 1,
+                "getValidateScenario": 1,
+                "getScenario": 1,
+                "postScenarioExport": 1,
+                "postScenario": 1,
+                "deleteScenario": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "routes/scenario.js",
+            "line": 485,
+            "description": "You can find further information about all information."
+        }
+    },
+    "classes": {
+        "arrayEquals": {
+            "name": "arrayEquals",
+            "shortname": "arrayEquals",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "helpers.array",
+            "namespace": "",
+            "file": "helpers/array.js",
+            "line": 5,
+            "description": "Checks wether the arrays a and b are equal.",
+            "params": [
+                {
+                    "name": "a",
+                    "description": "",
+                    "type": "Array"
+                },
+                {
+                    "name": "b",
+                    "description": "",
+                    "type": "Array"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Boolean"
+            }
+        },
+        "parseToBPMNObject": {
+            "name": "parseToBPMNObject",
+            "shortname": "parseToBPMNObject",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "helpers.json",
+            "namespace": "",
+            "file": "helpers/json.js",
+            "line": 7,
+            "description": "Given an xml-string that contains a valid BPMN-XML this function parses it and generates an JS-Object out of it.",
+            "params": [
+                {
+                    "name": "xml",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "}"
+            }
+        },
+        "parseToOLC": {
+            "name": "parseToOLC",
+            "shortname": "parseToOLC",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "helpers.json",
+            "namespace": "",
+            "file": "helpers/json.js",
+            "line": 46,
+            "description": "Given an valid BPMN-XML-String this function generates an OLC-object out of it.",
+            "params": [
+                {
+                    "name": "xml",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "}"
+            }
+        },
+        "changeDClassAttrReferences": {
+            "name": "changeDClassAttrReferences",
+            "shortname": "changeDClassAttrReferences",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "helpers.updaterefs",
+            "namespace": "",
+            "file": "helpers/updaterefs.js",
+            "line": 6,
+            "description": "When the name of an attribute of an dataclass gets changed, it's necessary to update all references to it. This is\nexactly what this method does. It updates all references to a given attribute in case the name has changed.",
+            "params": [
+                {
+                    "name": "newclass",
+                    "description": "The updated dataclass"
+                },
+                {
+                    "name": "oldclass",
+                    "description": "The old version of the dataclass"
+                },
+                {
+                    "name": "scenario",
+                    "description": "The scenario that should get updated"
+                }
+            ]
+        },
+        "changeDClassReferences": {
+            "name": "changeDClassReferences",
+            "shortname": "changeDClassReferences",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "helpers.updaterefs",
+            "namespace": "",
+            "file": "helpers/updaterefs.js",
+            "line": 37,
+            "description": "In case the dataclasses were changed it's necessary to update all references to them. This is exactly what this\nfunction does. This works asynchronous because of the datacase-calls that are needed to load all fragments.",
+            "params": [
+                {
+                    "name": "dm_id",
+                    "description": "The ID of the domainmodel"
+                },
+                {
+                    "name": "old_classes",
+                    "description": "The old versions of the dataclasses"
+                },
+                {
+                    "name": "new_classes",
+                    "description": "The new versions of the dataclasses"
+                },
+                {
+                    "name": "done",
+                    "description": "The function that should be called when the updating is done.",
+                    "type": "Function"
+                }
+            ]
+        },
+        "SoundnessValidator": {
+            "name": "SoundnessValidator",
+            "shortname": "SoundnessValidator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "helpers.validator",
+            "namespace": "",
+            "file": "helpers/validator.js",
+            "line": 10,
+            "description": "An validator that checks a fragment for structural soundness.",
+            "type": "{{new(*=): {parseSequenceFlowReverse: (function(Array): {}), validateEverything: (function(): boolean), validateStartEvents: (function(*): boolean), parseIntoGraph: (function(*): {startEvents: Array, endEvents: Array, adjacencyList: {}, reverseList: {}}), parseNodes: (function(Array): Function), validateEndEvents: (function(*): boolean), validateSoundness: (function(*): boolean), parseSequenceFlow: (function(Array): {})}}}"
+        },
+        "OLCValidator": {
+            "name": "OLCValidator",
+            "shortname": "OLCValidator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "helpers.validator",
+            "namespace": "",
+            "file": "helpers/validator.js",
+            "line": 234,
+            "description": "A validator that checks for olc-conformance.",
+            "type": "{{new(*, *): {validateDataObjectReference: (function(*)), createMapping: (function(Array, Array): Array), validateEverything: (function()), getDataObjectReference: (function(*): *), validateOSetDuplicates: (function(*)), validateIOSet: (function(*=, *=)), validateDataObjectFlow: (function())}}}"
+        },
+        "EventValidator": {
+            "name": "EventValidator",
+            "shortname": "EventValidator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "helpers.validator",
+            "namespace": "",
+            "file": "helpers/validator.js",
+            "line": 448,
+            "description": "Validates the given fragment for mistakes in event-references.",
+            "type": "{{new(*): {validateEventBasedGateways: (function()), getSequenceFlowTarget: (function(int): *), validateEvents: (function()), validateEverything: (function())}}}"
+        },
+        "GeneralValidator": {
+            "name": "GeneralValidator",
+            "shortname": "GeneralValidator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "helpers.validator",
+            "namespace": "",
+            "file": "helpers/validator.js",
+            "line": 571,
+            "description": "A validator that is able to validate using multiple other validators.",
+            "type": "{{new(string, Function, array=): {validateWithSimpleValidator: (function(*)), parseOLCPaths: (function(Domainmodel)), validateEverything: (function())}}}"
+        },
+        "DomainModelSchema": {
+            "name": "DomainModelSchema",
+            "shortname": "DomainModelSchema",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "models.domainmodel",
+            "namespace": "",
+            "file": "models/domainmodel.js",
+            "line": 8,
+            "description": "The schema of the domainmodel-documents, it includes the dataclasses and their attributes."
+        },
+        "ExportSchema": {
+            "name": "ExportSchema",
+            "shortname": "ExportSchema",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "models.export",
+            "namespace": "",
+            "file": "models/export.js",
+            "line": 8,
+            "description": "The schema of the export-document. It stores all available export-targets."
+        },
+        "FragmentSchema": {
+            "name": "FragmentSchema",
+            "shortname": "FragmentSchema",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "models.fragment",
+            "namespace": "",
+            "file": "models/fragment.js",
+            "line": 8,
+            "description": "The schema of an fragment stored in the fragment-document."
+        },
+        "ScenarioSchema": {
+            "name": "ScenarioSchema",
+            "shortname": "ScenarioSchema",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "models.scenario",
+            "namespace": "",
+            "file": "models/scenario.js",
+            "line": 8,
+            "description": "The schema of the Scenario-document. It includes scenario information, start and termination-conditions and the\nreferences to the domainmodel and the fragments associated with this scenario."
+        },
+        "getDomainModel": {
+            "name": "getDomainModel",
+            "shortname": "getDomainModel",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.domainmodel",
+            "namespace": "",
+            "file": "routes/domainmodel.js",
+            "line": 14,
+            "description": "This endpoint returns an domainmodel by its ID."
+        },
+        "postDomainModel": {
+            "name": "postDomainModel",
+            "shortname": "postDomainModel",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.domainmodel",
+            "namespace": "",
+            "file": "routes/domainmodel.js",
+            "line": 34,
+            "description": "Updates the domainmodel with the given ID."
+        },
+        "getDomainModels": {
+            "name": "getDomainModels",
+            "shortname": "getDomainModels",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.domainmodel",
+            "namespace": "",
+            "file": "routes/domainmodel.js",
+            "line": 85,
+            "description": "Returns a list of all available domain-models."
+        },
+        "postNewDomainModel": {
+            "name": "postNewDomainModel",
+            "shortname": "postNewDomainModel",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.domainmodel",
+            "namespace": "",
+            "file": "routes/domainmodel.js",
+            "line": 112,
+            "description": "Creates a new domainmodel."
+        },
+        "getExportTargets": {
+            "name": "getExportTargets",
+            "shortname": "getExportTargets",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.export",
+            "namespace": "",
+            "file": "routes/export.js",
+            "line": 11,
+            "description": "Returns all available export-targets."
+        },
+        "postNewExportTarget": {
+            "name": "postNewExportTarget",
+            "shortname": "postNewExportTarget",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.export",
+            "namespace": "",
+            "file": "routes/export.js",
+            "line": 26,
+            "description": "Allows it to create a new export-target."
+        },
+        "postExportTarget": {
+            "name": "postExportTarget",
+            "shortname": "postExportTarget",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.export",
+            "namespace": "",
+            "file": "routes/export.js",
+            "line": 39,
+            "description": "Updates the export with the given id."
+        },
+        "getValidateExportURL": {
+            "name": "getValidateExportURL",
+            "shortname": "getValidateExportURL",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.export",
+            "namespace": "",
+            "file": "routes/export.js",
+            "line": 61,
+            "description": "Validates if the export-target with the given URL is an valid export-target.\nAn export is valid if there is an /version and an /scenario endpoint below it,\nand the /version endpoint returns a valid version-number."
+        },
+        "deleteExportTarget": {
+            "name": "deleteExportTarget",
+            "shortname": "deleteExportTarget",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.export",
+            "namespace": "",
+            "file": "routes/export.js",
+            "line": 97,
+            "description": "Deletes the export with the given id."
+        },
+        "getFragment": {
+            "name": "getFragment",
+            "shortname": "getFragment",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.fragment",
+            "namespace": "",
+            "file": "routes/fragment.js",
+            "line": 14,
+            "description": "Returns the fragment with the given ID"
+        },
+        "postFragment": {
+            "name": "postFragment",
+            "shortname": "postFragment",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.fragment",
+            "namespace": "",
+            "file": "routes/fragment.js",
+            "line": 38,
+            "description": "Update the fragment with the given ID."
+        },
+        "getFragments": {
+            "name": "getFragments",
+            "shortname": "getFragments",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.fragment",
+            "namespace": "",
+            "file": "routes/fragment.js",
+            "line": 83,
+            "description": "Returns all fragments. This list can be filtered by the name of the fragments by using the query parameter."
+        },
+        "postNewFragment": {
+            "name": "postNewFragment",
+            "shortname": "postNewFragment",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.fragment",
+            "namespace": "",
+            "file": "routes/fragment.js",
+            "line": 110,
+            "description": "Creates a new fragment with the given name."
+        },
+        "getFragmentStructure": {
+            "name": "getFragmentStructure",
+            "shortname": "getFragmentStructure",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.fragment",
+            "namespace": "",
+            "file": "routes/fragment.js",
+            "line": 132,
+            "description": "Returns the structure of the fragment parsed into an JSON-object."
+        },
+        "getFragmentXML": {
+            "name": "getFragmentXML",
+            "shortname": "getFragmentXML",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.fragment",
+            "namespace": "",
+            "file": "routes/fragment.js",
+            "line": 153,
+            "description": "Returns the xml of the given fragment."
+        },
+        "deleteFragment": {
+            "name": "deleteFragment",
+            "shortname": "deleteFragment",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.fragment",
+            "namespace": "",
+            "file": "routes/fragment.js",
+            "line": 174,
+            "description": "Deletes the given fragment"
+        },
+        "getValidateFragment": {
+            "name": "getValidateFragment",
+            "shortname": "getValidateFragment",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.fragment",
+            "namespace": "",
+            "file": "routes/fragment.js",
+            "line": 194,
+            "description": "Validates the given fragment."
+        },
+        "getAssociatedDomainModelFragment": {
+            "name": "getAssociatedDomainModelFragment",
+            "shortname": "getAssociatedDomainModelFragment",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.fragment",
+            "namespace": "",
+            "file": "routes/fragment.js",
+            "line": 219,
+            "description": "Returns the domainmodel this fragment is associated with."
+        },
+        "getScenarios": {
+            "name": "getScenarios",
+            "shortname": "getScenarios",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.scenario",
+            "namespace": "",
+            "file": "routes/scenario.js",
+            "line": 18,
+            "description": "Returns a list of all scenarios."
+        },
+        "postNewScenario": {
+            "name": "postNewScenario",
+            "shortname": "postNewScenario",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.scenario",
+            "namespace": "",
+            "file": "routes/scenario.js",
+            "line": 55,
+            "description": "Creates a new scenario. Fills it with default values if there are no values in the body."
+        },
+        "postAssociateFragmentToScenario": {
+            "name": "postAssociateFragmentToScenario",
+            "shortname": "postAssociateFragmentToScenario",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.scenario",
+            "namespace": "",
+            "file": "routes/scenario.js",
+            "line": 180,
+            "description": "Assigns the given fragment to the given scenario.\nBy using this endpoint it's possible to assign a fragment to two or more scenarios.\nIt's suggested that this is not done, because the validation might not work anymore."
+        },
+        "postAssociateDomainmodelToScenario": {
+            "name": "postAssociateDomainmodelToScenario",
+            "shortname": "postAssociateDomainmodelToScenario",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.scenario",
+            "namespace": "",
+            "file": "routes/scenario.js",
+            "line": 213,
+            "description": "Assigns the given domainmodel to the given scenario."
+        },
+        "getValidateScenario": {
+            "name": "getValidateScenario",
+            "shortname": "getValidateScenario",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.scenario",
+            "namespace": "",
+            "file": "routes/scenario.js",
+            "line": 242,
+            "description": "Validates the given scenario."
+        },
+        "getScenario": {
+            "name": "getScenario",
+            "shortname": "getScenario",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.scenario",
+            "namespace": "",
+            "file": "routes/scenario.js",
+            "line": 309,
+            "description": "Returns the scenario with the given ID."
+        },
+        "postScenarioExport": {
+            "name": "postScenarioExport",
+            "shortname": "postScenarioExport",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.scenario",
+            "namespace": "",
+            "file": "routes/scenario.js",
+            "line": 356,
+            "description": "Exports the scenario with the given ID to the export-target with the given ID.\nThis means the scenario will be send via POST to the target with '/scenario' appended.\nThis also means that you can export scenarios to another gryphon-instance."
+        },
+        "postScenario": {
+            "name": "postScenario",
+            "shortname": "postScenario",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.scenario",
+            "namespace": "",
+            "file": "routes/scenario.js",
+            "line": 427,
+            "description": "Updates a given scenario."
+        },
+        "deleteScenario": {
+            "name": "deleteScenario",
+            "shortname": "deleteScenario",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "routes.scenario",
+            "namespace": "",
+            "file": "routes/scenario.js",
+            "line": 485,
+            "description": "Deletes the given scenario"
+        }
+    },
+    "elements": {},
+    "classitems": [
+        {
+            "file": "helpers/validator.js",
+            "line": 17,
+            "description": "Initiates the soundness validator with the given fragment.",
+            "itemtype": "method",
+            "name": "constructor",
+            "params": [
+                {
+                    "name": "bpmnObject",
+                    "description": ""
+                }
+            ],
+            "class": "SoundnessValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 28,
+            "description": "Creates an graph out of the given fragment, including all start end end-nodes and adjecency lists in both directions.",
+            "methode": "parseIntoGraph",
+            "params": [
+                {
+                    "name": "bpmnObject",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": ", reverseList: {}}}",
+                "type": "StartEvents: Array, endEvents: Array, adjacencyList: "
+            },
+            "class": "SoundnessValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 74,
+            "description": "Returns a function that appends the ID of the element given to the returned function to the array gien to this\nmethod.",
+            "itemtype": "method",
+            "name": "parseNodes",
+            "params": [
+                {
+                    "name": "node_list",
+                    "description": "",
+                    "type": "Array"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Function"
+            },
+            "class": "SoundnessValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 87,
+            "description": "Creates an adjacency list for the given sequence-flows.",
+            "methode": "parseSequenceFlow",
+            "params": [
+                {
+                    "name": "sequenceFlow",
+                    "description": "A list of sequence flows.",
+                    "type": "Array"
+                }
+            ],
+            "return": {
+                "description": "}"
+            },
+            "class": "SoundnessValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 105,
+            "description": "Creates an adjacency list for the given sequence-flows. The sequence flows are reversed before read,\nthis method creates an reversed adjacency list.",
+            "itemtype": "method",
+            "name": "parseSequenceFlowReverse",
+            "params": [
+                {
+                    "name": "sequenceFlow",
+                    "description": "A list of sequence flows.",
+                    "type": "Array"
+                }
+            ],
+            "return": {
+                "description": "}"
+            },
+            "class": "SoundnessValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 123,
+            "description": "Validates all given features. This function does not check for soundness if the start and end-event requirements\nare not fulfilled.",
+            "itemtype": "method",
+            "name": "validateEverything",
+            "return": {
+                "description": "",
+                "type": "Boolean"
+            },
+            "class": "SoundnessValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 135,
+            "description": "Checks the amount of start events (There has to be exactly one)",
+            "itemtype": "method",
+            "name": "validateStartEvents",
+            "params": [
+                {
+                    "name": "startEvents",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Boolean"
+            },
+            "class": "SoundnessValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 152,
+            "description": "Checks the amount of end events (There has to be at least one).",
+            "itemtype": "method",
+            "name": "validateEndEvents",
+            "params": [
+                {
+                    "name": "endEvents",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Boolean"
+            },
+            "class": "SoundnessValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 169,
+            "description": "Validates the given graph for structural soundness.",
+            "itemtype": "method",
+            "name": "validateSoundness",
+            "params": [
+                {
+                    "name": "graph",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Boolean"
+            },
+            "class": "SoundnessValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 241,
+            "description": "Initiates the OLC validator with the given fragment and  the available OLC-diagrams in this scenario.",
+            "itemtype": "method",
+            "name": "constructor",
+            "params": [
+                {
+                    "name": "fragment",
+                    "description": ""
+                },
+                {
+                    "name": "olc",
+                    "description": ""
+                }
+            ],
+            "class": "OLCValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 254,
+            "description": "Validates every feature of the given fragment.",
+            "itemtype": "method",
+            "name": "validateEverything",
+            "class": "OLCValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 262,
+            "description": "Returns the dataobjectreference with the given ID",
+            "itemtype": "method",
+            "name": "getDataObjectReference",
+            "params": [
+                {
+                    "name": "dorefid",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "*"
+            },
+            "class": "OLCValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 274,
+            "description": "Validates all tasks, message-receive-tasks and service tasks and their in and outputsets.",
+            "itemtype": "method",
+            "name": "validateDataObjectFlow",
+            "class": "OLCValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 337,
+            "description": "Checks an outputset by the following rules:\n1. On automated activitys, there is just one outputset",
+            "itemtype": "method",
+            "name": "validateOSetDuplicates",
+            "params": [
+                {
+                    "name": "oset",
+                    "description": ""
+                }
+            ],
+            "class": "OLCValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 357,
+            "description": "Validates all dataobjectreferences in the given fragment by the following rules:\n1. No invalid (non-existing) dataclasses\n2. No invalid states according to the dataclasses olc.",
+            "itemtype": "method",
+            "name": "validateDataObjectReference",
+            "params": [
+                {
+                    "name": "doref",
+                    "description": ""
+                }
+            ],
+            "class": "OLCValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 380,
+            "description": "Searches for classes that appear in the in- and the outputset and creates a list of the state transitions.",
+            "itemtype": "method",
+            "name": "createMapping",
+            "params": [
+                {
+                    "name": "iset",
+                    "description": "The inputset",
+                    "type": "Array"
+                },
+                {
+                    "name": "oset",
+                    "description": "The outputset",
+                    "type": "Array"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Array"
+            },
+            "class": "OLCValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 416,
+            "description": "Validates an in- and outputset of a given activity by the following rules:\n1. Check if all transitions are allowed in the assigned olc",
+            "itemtype": "method",
+            "name": "validateIOSet",
+            "params": [
+                {
+                    "name": "iset",
+                    "description": ""
+                },
+                {
+                    "name": "oset",
+                    "description": ""
+                }
+            ],
+            "class": "OLCValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 455,
+            "description": "Initiates this validator with the given fragment",
+            "mthod": "constructor",
+            "params": [
+                {
+                    "name": "bpmnObject",
+                    "description": ""
+                }
+            ],
+            "class": "EventValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 465,
+            "description": "Validates every event feature of the given fragment",
+            "itemtype": "method",
+            "name": "validateEverything",
+            "class": "EventValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 474,
+            "description": "Validates all events in the given fragment by the following rules:\n1. All message events need to have an event query.\n2. No other events but message and timer events are allowed.\n3. No throw-events",
+            "itemtype": "method",
+            "name": "validateEvents",
+            "class": "EventValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 511,
+            "description": "Validates all event based gateways by the following rules:\n1. All events after an event based gateway need to have different event queries",
+            "itemtype": "method",
+            "name": "validateEventBasedGateways",
+            "class": "EventValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 541,
+            "description": "Returns the target object of an sequence flow by the ID of the sequence flow.",
+            "itemtype": "method",
+            "name": "getSequenceFlowTarget",
+            "params": [
+                {
+                    "name": "seqflowid",
+                    "description": "",
+                    "type": "Int"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "*"
+            },
+            "class": "EventValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 578,
+            "description": "Initiates a validator with the given fragment and the given validators.",
+            "itemtype": "method",
+            "name": "constructor",
+            "params": [
+                {
+                    "name": "fragment",
+                    "description": "The fragment that should be validated",
+                    "type": "String"
+                },
+                {
+                    "name": "initDone",
+                    "description": "A function that should get called when the DB-initiation is done.",
+                    "type": "Function"
+                },
+                {
+                    "name": "validators",
+                    "description": "A list of Classes that should be used as validator (Event Soundness and OLC on Default)",
+                    "type": "Array"
+                }
+            ],
+            "class": "GeneralValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 605,
+            "description": "Validates every feature of the fragment that was loaded.",
+            "itemtype": "method",
+            "name": "validateEverything",
+            "class": "GeneralValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 620,
+            "description": "Uses a simple validator (that needs to have an validateEverything() method) to validate the loaded fragment.",
+            "itemtype": "method",
+            "name": "validateWithSimpleValidator",
+            "params": [
+                {
+                    "name": "validator",
+                    "description": ""
+                }
+            ],
+            "class": "GeneralValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 630,
+            "description": "This method creates adjacency lists for every dataclass according to it's olc.\nIf there is no valid olc model for the dataclass (including at least one state) it's invalid.",
+            "itemtype": "method",
+            "name": "parseOLCPaths",
+            "params": [
+                {
+                    "name": "domainmodel",
+                    "description": "",
+                    "type": "Domainmodel"
+                }
+            ],
+            "class": "GeneralValidator",
+            "module": "helpers.validator"
+        }
+    ],
+    "warnings": [
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " helpers/array.js:5"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " helpers/json.js:7"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " helpers/json.js:46"
+        },
+        {
+            "message": "unknown tag: methode",
+            "line": " helpers/validator.js:28"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " helpers/validator.js:28"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " helpers/validator.js:74"
+        },
+        {
+            "message": "unknown tag: methode",
+            "line": " helpers/validator.js:87"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " helpers/validator.js:87"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " helpers/validator.js:105"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " helpers/validator.js:123"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " helpers/validator.js:135"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " helpers/validator.js:152"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " helpers/validator.js:169"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " helpers/validator.js:262"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " helpers/validator.js:380"
+        },
+        {
+            "message": "unknown tag: mthod",
+            "line": " helpers/validator.js:455"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " helpers/validator.js:541"
+        },
+        {
+            "message": "Missing item type\nCreates an graph out of the given fragment, including all start end end-nodes and adjecency lists in both directions.",
+            "line": " helpers/validator.js:28"
+        },
+        {
+            "message": "Missing item type\nCreates an adjacency list for the given sequence-flows.",
+            "line": " helpers/validator.js:87"
+        },
+        {
+            "message": "Missing item type\nInitiates this validator with the given fragment",
+            "line": " helpers/validator.js:455"
+        }
+    ]
+}

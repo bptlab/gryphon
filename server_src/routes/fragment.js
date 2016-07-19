@@ -8,10 +8,12 @@ var Validator = require('./../helpers/validator').Validator;
 
 /**
  * You can find further information about all endpoints in the swagger.yaml
+ * @module routes.fragment
  */
 
 /**
  * Returns the fragment with the given ID
+ * @class getFragment
  */
 router.get('/:fragID', function(req, res) {
     var id = req.params.fragID;
@@ -35,6 +37,7 @@ router.get('/:fragID', function(req, res) {
 
 /**
  * Update the fragment with the given ID.
+ * @class postFragment
  */
 router.post('/:fragID', function(req, res) {
     var frag_id = req.params.fragID;
@@ -79,6 +82,7 @@ router.post('/:fragID', function(req, res) {
 
 /**
  * Returns all fragments. This list can be filtered by the name of the fragments by using the query parameter.
+ * @class getFragments
  */
 router.get('/', function(req, res) {
     var name = req.query.query;
@@ -105,6 +109,7 @@ router.get('/', function(req, res) {
 
 /**
  * Creates a new fragment with the given name.
+ * @class postNewFragment
  */
 router.post('/', function(req, res) {
     var fragment = req.body;
@@ -126,6 +131,7 @@ router.post('/', function(req, res) {
 
 /**
  * Returns the structure of the fragment parsed into an JSON-object.
+ * @class getFragmentStructure
  */
 router.get('/:fragID/structure', function(req, res) {
     var id = req.params.fragID;
@@ -146,6 +152,7 @@ router.get('/:fragID/structure', function(req, res) {
 
 /**
  * Returns the xml of the given fragment.
+ * @class getFragmentXML
  */
 router.get('/:fragID/xml', function(req, res){
     var id = req.params.fragID;
@@ -166,6 +173,7 @@ router.get('/:fragID/xml', function(req, res){
 
 /**
  * Deletes the given fragment
+ * @class deleteFragment
  */
 router.delete('/:fragID', function(req, res) {
     var id = req.params.fragID;
@@ -185,6 +193,7 @@ router.delete('/:fragID', function(req, res) {
 
 /**
  * Validates the given fragment.
+ * @class getValidateFragment
  */
 router.get('/:fragID/validate', function(req, res) {
    var id = req.params.fragID;
@@ -209,6 +218,7 @@ router.get('/:fragID/validate', function(req, res) {
 
 /**
  * Returns the domainmodel this fragment is associated with.
+ * @class getAssociatedDomainModelFragment
  */
 router.get('/:fragID/assocdomainmodel', function(req, res){
     Scenario.findOne({fragments:req.params.fragID}).populate('domainmodel').exec(function(err, result){

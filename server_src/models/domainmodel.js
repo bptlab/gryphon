@@ -2,6 +2,10 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 /**
+ * @module models.domainmodel
+ */
+
+/**
  * The schema of the domainmodel-documents, it includes the dataclasses and their attributes.
  * @class DomainModelSchema
  */

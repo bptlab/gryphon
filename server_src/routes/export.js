@@ -5,10 +5,12 @@ var ExportModel = require('./../models/export').model;
 
 /**
  * You can find further information about all endpoints in the swagger.yaml file.
+ * @module routes.export
  */
 
 /**
  * Returns all available export-targets.
+ * @class getExportTargets
  */
 router.get('/', function(req, res) {
     ExportModel.find(function(err,models){
@@ -23,6 +25,7 @@ router.get('/', function(req, res) {
 
 /**
  * Allows it to create a new export-target.
+ * @class postNewExportTarget
  */
 router.post('/',function(req,res) {
     var newexport = new ExportModel({
@@ -35,6 +38,7 @@ router.post('/',function(req,res) {
 
 /**
  * Updates the export with the given id.
+ * @class postExportTarget
  */
 router.post('/:id',function(req,res){
     ExportModel.findOne({_id: req.params.id},function(err, result){
@@ -58,6 +62,7 @@ router.post('/:id',function(req,res){
  * Validates if the export-target with the given URL is an valid export-target.
  * An export is valid if there is an /version and an /scenario endpoint below it,
  * and the /version endpoint returns a valid version-number.
+ * @class getValidateExportURL
  */
 router.get('/validate',function(req,res){
     var url = req.query.url + '/version';
@@ -90,7 +95,8 @@ router.get('/validate',function(req,res){
 });
 
 /**
- * Deletes the export with the given name.
+ * Deletes the export with the given id.
+ * @class deleteExportTarget
  */
 router.delete('/:id', function(req, res) {
     ExportModel.findOne({_id: req.params.id},function(err, result){
