@@ -1,3 +1,5 @@
+var Scenario = require('./../models/scenario').model;
+
 /**
  * This module contains 2 functions that help to update references to dataclasses.
  * @module helpers.updaterefs

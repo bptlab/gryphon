@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var changeDClassReferences = require('./../helpers/updaterefs').changeDClassReferences;
-var Scenario = require('./../models/scenario').model;
 
 var DomainModel = require('./../models/domainmodel').model;
 var _ = require('lodash');
