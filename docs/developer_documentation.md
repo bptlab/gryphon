@@ -90,3 +90,17 @@ Most endpoints in this package are rather simple, an functional overview and an 
 There is just one other file in the server_src directory, app.js. In app.js, most of the components in the other directorys are put together to set up the Express-JS app. This app is later used in the bin/www.js file to start the server.
 
 Another closely related file is the file config.js created in the root directory of the project. This file contains all backend-specific settings. It is created out of the config.js.example by copying it or using 'grunt config' which does exactly the same. The propertys set there are documented in the file itself.
+
+## Making export and import possible
+To be able to export from Gryphon to your preferred system and otherwise the syste that should be connected to gryphon needs to follow 
+some conventions.
+
+First of all, it needs to provide an REST-endpoint that makes it possible to export the scenarios from gryphon to your system.
+This endpoints needs to support 2 sub-endpoints:
+* endpoint/version to check wether the endpoint is a valid export-endpoint.
+* endpoint/scenario to send the scenario to your system
+
+The format that will be used to send the scenario to your system, will be the one provided in the swagger documentation,
+but with a small difference, the fragment and domainmodel fields will be populated. That means instead of getting their IDs 
+there, thoose fields will contain the full javascript object. You can try out the format by using the /scenario/{id} endpoint
+with the populate parameter.
