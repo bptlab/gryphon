@@ -241,12 +241,11 @@ var OLCValidator = class {
     /**
      * Initiates the OLC validator with the given fragment and  the available OLC-diagrams in this scenario.
      * @method constructor
-     * @param fragment
+     * @param bpmnObject
      * @param olc
      */
-    constructor(fragment,olc) {
-        this.fragment = fragment;
-        this.bpmnObject = parseToBPMNObject(fragment.content);
+    constructor(bpmnObject,olc) {
+        this.bpmnObject = bpmnObject;
         this.messages = [];
         this.olc = olc;
     }
@@ -257,6 +256,52 @@ var OLCValidator = class {
      */
     validateEverything() {
         this.validateDataObjectFlow();
+    }
+
+    /**
+     * Validates all tasks, message-receive-tasks and service tasks and their in and outputsets.
+     * @method validateDataObjectFlow
+     */
+    validateDataObjectFlow() {
+        if(this.bpmnObject.dataObjectReference != undefined) {
+            this.bpmnObject.dataObjectReference.forEach(this.validateDataObjectReference.bind(this));
+        }
+        if(this.bpmnObject.dataObjectReference != undefined && this.bpmnObject.task != undefined) {
+            this.bpmnObject.task.forEach(this.validateTask(false));
+        }
+        if(this.bpmnObject.dataObjectReference != undefined && this.bpmnObject.receiveTask != undefined) {
+            this.bpmnObject.receiveTask.forEach(this.validateTask(true));
+        }
+        if(this.bpmnObject.dataObjectReference != undefined && this.bpmnObject.serviceTask != undefined) {
+            this.bpmnObject.serviceTask.forEach(this.validateTask(true));
+        }
+    }
+
+    /**
+     * Returns a function that validates an task for several OLC-restrictions. The function can be used in iterators.
+     * @method validateTask
+     * @param validateDuplicates {Boolean} If set on true, the task will be checked for duplicates in the outputset.
+     * @returns {function(this:T)}
+     */
+    validateTask(validateDuplicates) {
+        return function(task) {
+            var iset = [];
+            var oset = [];
+            if (task.dataInputAssociation != undefined) {
+                task.dataInputAssociation.forEach(function(dia){
+                    iset.push(this.getDataObjectReference(dia['sourceRef'][0]));
+                }.bind(this));
+            }
+            if (task.dataOutputAssociation != undefined) {
+                task.dataOutputAssociation.forEach(function(doa){
+                    oset.push(this.getDataObjectReference(doa['targetRef'][0]));
+                }.bind(this));
+            }
+            if (validateDuplicates) {
+                this.validateOSetDuplicates(oset);
+            }
+            this.validateIOSet(iset,oset);
+        }.bind(this);
     }
 
     /**
@@ -272,69 +317,6 @@ var OLCValidator = class {
     };
 
     /**
-     * Validates all tasks, message-receive-tasks and service tasks and their in and outputsets.
-     * @method validateDataObjectFlow
-     */
-    validateDataObjectFlow() {
-        if(this.bpmnObject.dataObjectReference != undefined) {
-            this.bpmnObject.dataObjectReference.forEach(this.validateDataObjectReference.bind(this));
-        }
-        if(this.bpmnObject.dataObjectReference != undefined && this.bpmnObject.task != undefined) {
-            this.bpmnObject.task.forEach(function(task){
-                var iset = [];
-                var oset = [];
-                if (task.dataInputAssociation != undefined) {
-                    task.dataInputAssociation.forEach(function(dia){
-                        iset.push(this.getDataObjectReference(dia['sourceRef'][0]));
-                    }.bind(this));
-                }
-                if (task.dataOutputAssociation != undefined) {
-                    task.dataOutputAssociation.forEach(function(doa){
-                        oset.push(this.getDataObjectReference(doa['targetRef'][0]));
-                    }.bind(this));
-                }
-                this.validateIOSet(iset,oset);
-            }.bind(this));
-        }
-        if(this.bpmnObject.dataObjectReference != undefined && this.bpmnObject.receiveTask != undefined) {
-            this.bpmnObject.receiveTask.forEach(function(task){
-                var iset = [];
-                var oset = [];
-                if (task.dataInputAssociation != undefined) {
-                    task.dataInputAssociation.forEach(function(dia){
-                        iset.push(this.getDataObjectReference(dia['sourceRef'][0]));
-                    }.bind(this));
-                }
-                if (task.dataOutputAssociation != undefined) {
-                    task.dataOutputAssociation.forEach(function(doa){
-                        oset.push(this.getDataObjectReference(doa['targetRef'][0]));
-                    }.bind(this));
-                }
-                this.validateOSetDuplicates(oset);
-                this.validateIOSet(iset,oset);
-            }.bind(this));
-        }
-        if(this.bpmnObject.dataObjectReference != undefined && this.bpmnObject.serviceTask != undefined) {
-            this.bpmnObject.serviceTask.forEach(function(task){
-                var iset = [];
-                var oset = [];
-                if (task.dataInputAssociation != undefined) {
-                    task.dataInputAssociation.forEach(function(dia){
-                        iset.push(this.getDataObjectReference(dia['sourceRef'][0]));
-                    }.bind(this));
-                }
-                if (task.dataOutputAssociation != undefined) {
-                    task.dataOutputAssociation.forEach(function(doa){
-                        oset.push(this.getDataObjectReference(doa['targetRef'][0]));
-                    }.bind(this));
-                }
-                this.validateOSetDuplicates(oset);
-                this.validateIOSet(iset,oset);
-            }.bind(this));
-        }
-    }
-
-    /**
      * Checks an outputset by the following rules:
      * 1. On automated activitys, there is just one outputset
      * @method validateOSetDuplicates
@@ -347,7 +329,7 @@ var OLCValidator = class {
             if (output.indexOf(dclass) >= 0) {
                 this.messages.push({
                     'text': 'Invalid outputset. Only one possible Outputset is allowed. ' + dclass + ' is duplicate.',
-                    'type': 'warning'
+                    'type': 'danger'
                 })
             }
             output.push(dclass);
@@ -582,7 +564,10 @@ var GeneralValidator = class {
      * @param initDone {function} A function that should get called when the DB-initiation is done.
      * @param validators {array} A list of Classes that should be used as validator (Event Soundness and OLC on Default)
      */
-    constructor(fragment,initDone, validators=[EventValidator, SoundnessValidator, OLCValidator]) {
+    constructor(fragment,initDone, validators) {
+        if (validators == undefined) {
+            validators = [EventValidator, SoundnessValidator, OLCValidator];
+        }
         if (initDone == undefined) {
             initDone = function() {
                 this.validateEverything();
@@ -614,7 +599,8 @@ var GeneralValidator = class {
                 validator = new validator(this.bpmnObject);
             }
             this.validateWithSimpleValidator(validator);
-        })
+        }.bind(this));
+        console.log('What')
     }
 
     /**

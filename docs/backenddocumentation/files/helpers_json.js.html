@@ -145,7 +145,7 @@ var xml2json = require(&#x27;xml2json&#x27;);
  */
 var parseToBPMNObject = function(xml) {
 
-    if (xml == &quot;&quot;) {
+    if (xml == &quot;&quot; || xml == undefined) {
         return {}   ;
     }
     // What am I doing here? I remove all namespaces to make parsing easier. All but the griffin notations.

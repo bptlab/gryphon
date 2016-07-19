@@ -219,7 +219,7 @@
             "namespaces": {},
             "tag": "module",
             "file": "helpers/validator.js",
-            "line": 571
+            "line": 553
         },
         "models.domainmodel": {
             "name": "models.domainmodel",
@@ -534,7 +534,7 @@
             "module": "helpers.validator",
             "namespace": "",
             "file": "helpers/validator.js",
-            "line": 448,
+            "line": 430,
             "description": "Validates the given fragment for mistakes in event-references.",
             "type": "{{new(*): {validateEventBasedGateways: (function()), getSequenceFlowTarget: (function(int): *), validateEvents: (function()), validateEverything: (function())}}}"
         },
@@ -549,7 +549,7 @@
             "module": "helpers.validator",
             "namespace": "",
             "file": "helpers/validator.js",
-            "line": 571,
+            "line": 553,
             "description": "A validator that is able to validate using multiple other validators.",
             "type": "{{new(string, Function, array=): {validateWithSimpleValidator: (function(*)), parseOLCPaths: (function(Domainmodel)), validateEverything: (function())}}}"
         },
@@ -1158,7 +1158,7 @@
             "name": "constructor",
             "params": [
                 {
-                    "name": "fragment",
+                    "name": "bpmnObject",
                     "description": ""
                 },
                 {
@@ -1171,7 +1171,7 @@
         },
         {
             "file": "helpers/validator.js",
-            "line": 254,
+            "line": 253,
             "description": "Validates every feature of the given fragment.",
             "itemtype": "method",
             "name": "validateEverything",
@@ -1180,7 +1180,36 @@
         },
         {
             "file": "helpers/validator.js",
-            "line": 262,
+            "line": 261,
+            "description": "Validates all tasks, message-receive-tasks and service tasks and their in and outputsets.",
+            "itemtype": "method",
+            "name": "validateDataObjectFlow",
+            "class": "OLCValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 280,
+            "description": "Returns a function that validates an task for several OLC-restrictions. The function can be used in iterators.",
+            "itemtype": "method",
+            "name": "validateTask",
+            "params": [
+                {
+                    "name": "validateDuplicates",
+                    "description": "If set on true, the task will be checked for duplicates in the outputset.",
+                    "type": "Boolean"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Function(this:T)"
+            },
+            "class": "OLCValidator",
+            "module": "helpers.validator"
+        },
+        {
+            "file": "helpers/validator.js",
+            "line": 307,
             "description": "Returns the dataobjectreference with the given ID",
             "itemtype": "method",
             "name": "getDataObjectReference",
@@ -1199,16 +1228,7 @@
         },
         {
             "file": "helpers/validator.js",
-            "line": 274,
-            "description": "Validates all tasks, message-receive-tasks and service tasks and their in and outputsets.",
-            "itemtype": "method",
-            "name": "validateDataObjectFlow",
-            "class": "OLCValidator",
-            "module": "helpers.validator"
-        },
-        {
-            "file": "helpers/validator.js",
-            "line": 337,
+            "line": 319,
             "description": "Checks an outputset by the following rules:\n1. On automated activitys, there is just one outputset",
             "itemtype": "method",
             "name": "validateOSetDuplicates",
@@ -1223,7 +1243,7 @@
         },
         {
             "file": "helpers/validator.js",
-            "line": 357,
+            "line": 339,
             "description": "Validates all dataobjectreferences in the given fragment by the following rules:\n1. No invalid (non-existing) dataclasses\n2. No invalid states according to the dataclasses olc.",
             "itemtype": "method",
             "name": "validateDataObjectReference",
@@ -1238,7 +1258,7 @@
         },
         {
             "file": "helpers/validator.js",
-            "line": 380,
+            "line": 362,
             "description": "Searches for classes that appear in the in- and the outputset and creates a list of the state transitions.",
             "itemtype": "method",
             "name": "createMapping",
@@ -1263,7 +1283,7 @@
         },
         {
             "file": "helpers/validator.js",
-            "line": 416,
+            "line": 398,
             "description": "Validates an in- and outputset of a given activity by the following rules:\n1. Check if all transitions are allowed in the assigned olc",
             "itemtype": "method",
             "name": "validateIOSet",
@@ -1282,7 +1302,7 @@
         },
         {
             "file": "helpers/validator.js",
-            "line": 455,
+            "line": 437,
             "description": "Initiates this validator with the given fragment",
             "mthod": "constructor",
             "params": [
@@ -1296,7 +1316,7 @@
         },
         {
             "file": "helpers/validator.js",
-            "line": 465,
+            "line": 447,
             "description": "Validates every event feature of the given fragment",
             "itemtype": "method",
             "name": "validateEverything",
@@ -1305,7 +1325,7 @@
         },
         {
             "file": "helpers/validator.js",
-            "line": 474,
+            "line": 456,
             "description": "Validates all events in the given fragment by the following rules:\n1. All message events need to have an event query.\n2. No other events but message and timer events are allowed.\n3. No throw-events",
             "itemtype": "method",
             "name": "validateEvents",
@@ -1314,7 +1334,7 @@
         },
         {
             "file": "helpers/validator.js",
-            "line": 511,
+            "line": 493,
             "description": "Validates all event based gateways by the following rules:\n1. All events after an event based gateway need to have different event queries",
             "itemtype": "method",
             "name": "validateEventBasedGateways",
@@ -1323,7 +1343,7 @@
         },
         {
             "file": "helpers/validator.js",
-            "line": 541,
+            "line": 523,
             "description": "Returns the target object of an sequence flow by the ID of the sequence flow.",
             "itemtype": "method",
             "name": "getSequenceFlowTarget",
@@ -1343,7 +1363,7 @@
         },
         {
             "file": "helpers/validator.js",
-            "line": 578,
+            "line": 560,
             "description": "Initiates a validator with the given fragment and the given validators.",
             "itemtype": "method",
             "name": "constructor",
@@ -1369,7 +1389,7 @@
         },
         {
             "file": "helpers/validator.js",
-            "line": 605,
+            "line": 590,
             "description": "Validates every feature of the fragment that was loaded.",
             "itemtype": "method",
             "name": "validateEverything",
@@ -1378,7 +1398,7 @@
         },
         {
             "file": "helpers/validator.js",
-            "line": 620,
+            "line": 606,
             "description": "Uses a simple validator (that needs to have an validateEverything() method) to validate the loaded fragment.",
             "itemtype": "method",
             "name": "validateWithSimpleValidator",
@@ -1393,7 +1413,7 @@
         },
         {
             "file": "helpers/validator.js",
-            "line": 630,
+            "line": 616,
             "description": "This method creates adjacency lists for every dataclass according to it's olc.\nIf there is no valid olc model for the dataclass (including at least one state) it's invalid.",
             "itemtype": "method",
             "name": "parseOLCPaths",
@@ -1463,19 +1483,23 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " helpers/validator.js:262"
+            "line": " helpers/validator.js:280"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " helpers/validator.js:380"
+            "line": " helpers/validator.js:307"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " helpers/validator.js:362"
         },
         {
             "message": "unknown tag: mthod",
-            "line": " helpers/validator.js:455"
+            "line": " helpers/validator.js:437"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " helpers/validator.js:541"
+            "line": " helpers/validator.js:523"
         },
         {
             "message": "Missing item type\nCreates an graph out of the given fragment, including all start end end-nodes and adjecency lists in both directions.",
@@ -1487,7 +1511,7 @@
         },
         {
             "message": "Missing item type\nInitiates this validator with the given fragment",
-            "line": " helpers/validator.js:455"
+            "line": " helpers/validator.js:437"
         }
     ]
 }
