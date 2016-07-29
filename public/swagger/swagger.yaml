@@ -20,8 +20,8 @@ paths:
           in: path
           description: The scenario id.
           required: true
-          type: number
-          format: integer
+          type: string
+          format: string
         - name: populate
           in: query
           description: If true, the scenario will be populated with all child-objects.
@@ -31,9 +31,9 @@ paths:
         - Scenario
       responses:
         '200':
-          description: An scenario
+          description: An scenario. Populated if populate was set on true.
           schema:
-            $ref: '#/definitions/Scenario'
+            $ref: '#/definitions/PopulatedScenario'
         '404':
           description: Scenario not found.
           schema:
@@ -51,8 +51,8 @@ paths:
           in: path
           description: The scenario id.
           required: true
-          type: number
-          format: integer
+          type: string
+          format: string
         - name: scenario
           in: body
           description: The scenario object.
@@ -84,8 +84,8 @@ paths:
           in: path
           description: The scenario id.
           required: true
-          type: number
-          format: integer
+          type: string
+          format: string
       tags:
         - Scenario
       responses:
@@ -135,10 +135,10 @@ paths:
       parameters:
         - name: scenario
           in: body
-          description: The scenario object.
+          description: The scenario object. This can either be populated (contains domainmodel and fragments) or unpopulated.
           required: true
           schema:
-            $ref: '#/definitions/Scenario'
+            $ref: '#/definitions/PopulatedScenario'
       tags:
         - Scenario
       responses:
@@ -160,8 +160,8 @@ paths:
           in: path
           description: The fragments id.
           required: true
-          type: number
-          format: integer
+          type: string
+          format: string
         - name: deliver_xml
           in: query
           description: If false the the endpoint will not deliver the fragments xml.
@@ -197,8 +197,8 @@ paths:
           in: path
           description: The fragments id.
           required: true
-          type: number
-          format: integer
+          type: string
+          format: string
         - name: fragment
           in: body
           description: The fragment.
@@ -229,8 +229,8 @@ paths:
           in: path
           description: The fragments id.
           required: true
-          type: number
-          format: integer
+          type: string
+          format: string
       tags:
         - Fragment
       responses:
@@ -258,8 +258,8 @@ paths:
           in: path
           description: The fragments id.
           required: true
-          type: number
-          format: integer
+          type: string
+          format: string
       tags:
         - Fragment
       responses:
@@ -293,8 +293,8 @@ paths:
           in: path
           description: The fragments id.
           required: true
-          type: number
-          format: integer
+          type: string
+          format: string
       tags:
         - Fragment
       responses:
@@ -320,8 +320,8 @@ paths:
           in: path
           description: The fragments id.
           required: true
-          type: number
-          format: integer
+          type: string
+          format: string
       tags:
         - Fragment
       responses:
@@ -396,13 +396,13 @@ paths:
           in: query
           description: The fragment to associate.
           required: true
-          type: number
-          format: integer
+          type: string
+          format: string
         - name: scenarioid
           in: query
           description: The scenarios id.
-          type: number
-          format: integer
+          type: string
+          format: string
           required: true
       tags:
         - Fragment
@@ -432,14 +432,14 @@ paths:
         - name: domainmodelid
           in: query
           description: The domainmodel to associate.
-          type: number
-          format: integer
+          type: string
+          format: string
           required: true
         - name: scenarioid
           in: query
           description: The scenarios id.
-          type: number
-          format: integer
+          type: string
+          format: string
           required: true
       tags:
         - DomainModel
@@ -466,8 +466,8 @@ paths:
         - name: id
           in: path
           description: The domain models id.
-          type: number
-          format: integer
+          type: string
+          format: string
           required: true
       tags:
         - DomainModel
@@ -493,8 +493,8 @@ paths:
           in: path
           description: The domain models id.
           required: true
-          type: number
-          format: integer
+          type: string
+          format: string
         - name: domainmodel
           in: body
           description: The domainmodel-content.
@@ -518,7 +518,8 @@ paths:
             $ref: '#/definitions/Error'
   /domainmodel:
     get:
-      summary: |
+      summary: Lists all domainmodels.
+      description: |
         Returns a list of all available domain models.
         des  Returns a list of all domain models. This list might be filtered by searching
         using a name.
@@ -573,8 +574,8 @@ paths:
           in: path
           description: The scenarios id.
           required: true
-          type: number
-          format: integer
+          type: string
+          format: string
       tags:
         - Scenario
         - Fragment
@@ -592,20 +593,19 @@ paths:
     get:
       summary: Exports a scenario.
       description: |
-        This endpoint exports a scenario to the url given in the body object. Further additions to the body object might be possible.
-        This endpoint exports the whole scenario (including fragments and domain model) in JSON format.
-        The target server should respond with a 200 if everything went fine. The content of the response doesn't matter.
-        The target server should expect a POST-call according to RESTful APIs.
+        This endpoint exports the scenario to the given export-target.
+        The server should return an 200 if the export was succesfull. All messages returned by the server will be
+        returned in the response of this endpoint.
       parameters:
         - name: id
           in: path
           description: The scenarios id.
           required: true
-          type: number
-          format: int32
+          type: string
+          format: string
         - name: exportID
           in: body
-          description: The model object.
+          description: The request object that contains the exportID in the exportID-property.
           required: true
           schema:
             $ref: '#/definitions/ExportRequest'
@@ -614,7 +614,7 @@ paths:
         - Export
       responses:
         '200':
-          description: The data that was returned by the target-server.
+          description: The data that was returned by the target-server. There is no description of the response as the response will contain the response of the target-server.
         '500':
           description: Unexpected error
           schema:
@@ -669,8 +669,8 @@ paths:
           in: path
           description: The target id.
           required: true
-          type: number
-          format: integer
+          type: string
+          format: string
       tags:
         - Export
       responses:
@@ -691,8 +691,8 @@ paths:
           in: path
           description: The target id.
           required: true
-          type: number
-          format: integer
+          type: string
+          format: string
         - name: export
           in: body
           description: The export object.
@@ -719,8 +719,8 @@ paths:
         - name: id
           in: path
           description: The domain models id.
-          type: number
-          format: integer
+          type: string
+          format: string
           required: true
       tags:
         - DomainModel
@@ -746,9 +746,9 @@ definitions:
         type: string
         description: 'The scenarios name'
       _id:
-        type: number
-        format: integer
-        description: 'Unique identifier of any scenario.'
+        type: string
+        format: string
+        description: 'Unique identifier of any scenario. Usually a string with a length of 24 chars.'
       terminationconditions:
         type: array
         items:
@@ -760,15 +760,50 @@ definitions:
           $ref: '#/definitions/StartCondition'
         description: 'The start conditions that trigger the start of this scenario'
       domainmodel:
-        type: number
-        format: integer
+        type: string
+        format: string
         description: 'The ID of the associated domain model.'
       fragments:
         type: array
         items:
-          type: number
-          format: integer
+          type: string
+          format: string
         description: 'The IDs of associated fragments.'
+      revision:
+        type: number
+        format: integer
+        description: |
+          The scenarios revision. Is increased automatically if the
+          fragments, the data_objects or the termination condition is different
+          from the last version
+
+  PopulatedScenario:
+    type: object
+    properties:
+      name:
+        type: string
+        description: 'The scenarios name'
+      _id:
+        type: string
+        format: string
+        description: 'Unique identifier of any scenario. Usually a string with a length of 24 chars.'
+      terminationconditions:
+        type: array
+        items:
+          $ref: '#/definitions/TerminationCondition'
+        description: 'The termination conditions that are used.'
+      startconditions:
+        type: array
+        items:
+          $ref: '#/definitions/StartCondition'
+        description: 'The start conditions that trigger the start of this scenario'
+      domainmodel:
+        $ref: '#/definitions/DomainModel'
+      fragments:
+        type: array
+        items:
+          $ref: '#/definitions/Fragment'
+        description: 'The associated fragments.'
       revision:
         type: number
         format: integer
@@ -779,6 +814,10 @@ definitions:
   StartCondition:
     type: object
     properties:
+      _id:
+        type: string
+        format: string
+        description: 'The unique identifier the startcondition.'
       query:
         type: string
         description: 'The query that triggers this startcondition'
@@ -790,6 +829,10 @@ definitions:
   StartConditionDataclass:
     type: object
     properties:
+      _id:
+        type: string
+        format: string
+        description: 'The unique identifier the startcondition data class.'
       classname:
         type: string
         description: 'The name of the dataclass, that should be used to instantiate this object'
@@ -804,6 +847,10 @@ definitions:
   StartConditionAttrMapping:
     type: object
     properties:
+      _id:
+        type: string
+        format: string
+        description: 'The unique identifier the mapping tuple.'
       path:
         type: string
         description: 'The JSON Path that specifies where to read this value.'
@@ -818,8 +865,8 @@ definitions:
     type: object
     properties:
       _id:
-        type: number
-        format: integer
+        type: string
+        format: string
         description: 'The unique identifier of this export-target.'
       name:
         type: string
@@ -834,8 +881,8 @@ definitions:
         type: string
         description: 'The fragments name.'
       _id:
-        type: number
-        format: integer
+        type: string
+        format: string
         description: 'The fragments unique identifier.'
       content:
         type: string
@@ -857,8 +904,8 @@ definitions:
         type: string
         description: 'The name of the domain model.'
       _id:
-        type: number
-        format: long
+        type: string
+        format: string
         description: 'The unique identifier of the domain model.'
       revision:
         type: number
@@ -876,8 +923,8 @@ definitions:
         type: string
         description: 'The name of the data class.'
       _id:
-        type: number
-        format: long
+        type: string
+        format: string
         description: 'The unique identifier the data class.'
       is_root:
         type: boolean
@@ -893,6 +940,10 @@ definitions:
   DataClassAttribute:
     type: object
     properties:
+      _id:
+        type: string
+        format: string
+        description: 'The unique identifier the attribute.'
       name:
         type: string
         description: 'The name of the attribute.'
@@ -934,8 +985,8 @@ definitions:
     type: object
     properties:
       exportID:
-        type: number
-        format: int32
+        type: string
+        format: string
         description: The url the post-call should use.
   ExportList:
     type: array
