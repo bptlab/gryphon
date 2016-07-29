@@ -45,6 +45,40 @@ module.exports = function(grunt) {
                         src: '**',
                         cwd: 'node_modules/bootstrap-select/dist',
                         dest: 'public/'
+                    },
+                    {
+                        expand: true,
+                        src: '**',
+                        cwd: 'node_modules/swagger-ui/dist/css',
+                        dest: 'public/swagger/css'
+                    },
+                    {
+                        expand: true,
+                        src: '**',
+                        cwd: 'node_modules/swagger-ui/dist/fonts',
+                        dest: 'public/swagger/fonts'
+                    },
+                    {
+                        expand: true,
+                        src: '**',
+                        cwd: 'node_modules/swagger-ui/dist/images',
+                        dest: 'public/swagger/images'
+                    },
+                    {
+                        expand: true,
+                        src: '**',
+                        cwd: 'node_modules/swagger-ui/dist/lib',
+                        dest: 'public/swagger/lib'
+                    },
+                    {
+                        expand: true,
+                        src: '**',
+                        cwd: 'node_modules/swagger-ui/dist/lang',
+                        dest: 'public/swagger/lang'
+                    },
+                    {
+                        src: './node_modules/swagger-ui/dist/swagger-ui.js',
+                        dest: './public/swagger/swagger-ui.js'
                     }
                 ]
             }
