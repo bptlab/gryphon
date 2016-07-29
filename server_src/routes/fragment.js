@@ -87,20 +87,14 @@ router.post('/:fragID', function(req, res) {
 router.get('/', function(req, res) {
     var name = req.query.query;
 
-    Fragment.find({name: new RegExp('^'+name+'$', "i")},function(err, result){
+    Fragment.find({name: new RegExp(name, "i")},function(err, result){
         if (err) {
             console.error(err);
             res.status(500).end();
             return;
         }
         if (result !== null) {
-
-            var res_object = {
-                content_length: result.length,
-                fragments: result
-            };
-
-            res.json(res_object)
+            res.json(result)
         } else {
             res.status(404).end();
         }

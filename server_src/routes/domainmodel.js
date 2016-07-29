@@ -88,20 +88,14 @@ router.post('/:dmID', function(req, res) {
 router.get('/', function(req, res) {
     var name = req.query.query;
 
-    DomainModel.find({name: new RegExp('^'+name+'$', "i")},function(err, result){
+    DomainModel.find({name: new RegExp(name, "i")},function(err, result){
         if (err) {
             console.error(err);
             res.status(500).end();
             return;
         }
         if (result !== null) {
-
-            var res_object = {
-                content_length: result.length,
-                domainmodels: result
-            };
-
-            res.json(res_object);
+            res.json(result);
         } else {
             res.status(404).end();
         }

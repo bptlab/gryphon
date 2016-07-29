@@ -40,12 +40,7 @@ router.get('/', function(req, res) {
                     })
                 })
             }
-            var res_object = {
-                content_length: result.length,
-                scenarios: result
-            };
-
-            res.json(res_object)
+            res.json(result)
         } else {
             res.status(404).end();
         }
