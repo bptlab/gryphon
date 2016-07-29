@@ -87,7 +87,7 @@ router.post('/:fragID', function(req, res) {
 router.get('/', function(req, res) {
     var name = req.query.query;
 
-    Fragment.model.find({name: new RegExp('^'+name+'$', "i")},function(err, result){
+    Fragment.find({name: new RegExp('^'+name+'$', "i")},function(err, result){
         if (err) {
             console.error(err);
             res.status(500).end();
