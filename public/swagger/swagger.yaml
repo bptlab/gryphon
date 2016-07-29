@@ -502,7 +502,7 @@ paths:
           schema:
             $ref: '#/definitions/DomainModel'
       tags:
-        - Fragment
+        - DomainModel
       responses:
         '200':
           description: The domain model if found and update was succesfull.
