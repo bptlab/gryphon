@@ -13,8 +13,8 @@ var SideBarScenarios = React.createClass({
     },
     loadScenarioList: function() {
         API.getAllScenarios(true, function(data) {
-            if (data.scenarios) {
-                this.setState({list: data.scenarios});
+            if (data) {
+                this.setState({list: data});
             }
         }.bind(this))
     },

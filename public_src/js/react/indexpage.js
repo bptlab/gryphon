@@ -13,8 +13,8 @@ var IndexComponent = React.createClass({
     },
     loadScenarioList: function() {
         API.getAllScenarios(true, function(data) {
-            if (data.scenarios) {
-                this.setState({scenarios: data.scenarios});
+            if (data) {
+                this.setState({scenarios: data});
             }
         }.bind(this))
     },
