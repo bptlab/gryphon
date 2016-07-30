@@ -1,4 +1,5 @@
 var Scenario = require('./../models/scenario').model;
+var _ = require('lodash');
 
 /**
  * This module contains 2 functions that help to update references to dataclasses.
@@ -59,7 +60,7 @@ var changeDClassReferences = function(dm_id, old_classes, new_classes, done) {
                             return termcon.split(oldclass.name + '[').join(newclass.name + '[');
                         });
                         result.startconditions = result.startconditions.map(function(startcon){
-                            startcon.mapping = startcon.mapping.map(function(mapping) {
+                            startcon.dataclasses = startcon.dataclasses.map(function(mapping) {
                                 if (mapping.classname == oldclass.name) {
                                     mapping.classname = newclass.name;
                                 }
