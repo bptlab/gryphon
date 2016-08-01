@@ -7,6 +7,7 @@ window._ = _;
 var ReactDOM = require('react-dom');
 var React = require('react');
 var Bootstrap = require('bootstrap');
+var ScenarioLoader = require('./react/scenarioloader');
 var FragmentEditorComponent = require('./react/fragmenteditor');
 var ScenarioEditorComponent = require('./react/scenarioeditor/scenarioeditor');
 var DomainModelEditorComponent = require('./react/domainmodeleditor/domainmodeleditor');
@@ -23,9 +24,11 @@ $(function () {
         <Router>
             <Route path="/" component={App}>
                 <IndexRoute component={IndexComponent}/>
-                <Route path="scenario/:scenarioId" component={ScenarioEditorComponent} />
-                <Route path="scenario/:scenarioId/fragment/:fragmentId" component={FragmentEditorComponent} />
-                <Route path="scenario/:scenarioId/domainmodel/:domainmodelId" component={DomainModelEditorComponent} />
+                <Route path="scenario/" component={ScenarioLoader}>
+                  <Route path=":scenarioId" component={ScenarioEditorComponent} />
+                  <Route path=":scenarioId/fragment/:fragmentId" component={FragmentEditorComponent} />
+                  <Route path=":scenarioId/domainmodel/:domainmodelId" component={DomainModelEditorComponent} />
+                </Route>
 
                 //<Route path="fragment/:id" component={FragmentEditorComponent} />
                 //<Route path="domainmodel/:id" component={DomainModelEditorComponent} />

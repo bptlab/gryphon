@@ -1,3 +1,4 @@
+
 var React = require('react');
 var SideBarComponent = require('./sidebar/sidebar');
 var TopBarComponent = require('./topbar/topbar');
@@ -11,7 +12,7 @@ var App = React.createClass({
           <div className="app-container">
             <ModalComponent />
             <MessageBar />
-            <div className="main-content">
+            <div>
               {this.props.children}
             </div>
           </div>
