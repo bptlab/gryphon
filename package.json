@@ -35,6 +35,7 @@
     "react-dom": "^0.14.8",
     "react-router": "^1.0.1",
     "serve-favicon": "~2.3.0",
+    "swagger-ui": "^2.1.5",
     "xml2json": "^0.9.0"
   }
 }

@@ -26,6 +26,13 @@ public/font/
 public/fonts/
 public/js/
 public/vendor/
+public/swagger/css
+public/swagger/fonts
+public/swagger/images
+public/swagger/lang
+public/swagger/lib
+public/swagger/swagger-ui.js
+
 
 # Ignore all IDE files
 .idea

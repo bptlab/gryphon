@@ -10,6 +10,15 @@ var Validator = require('./../helpers/validator').Validator;
 var Export =  require('./../models/export').model;
 var parseToOLC = require('./../helpers/json').parseToOLC;
 
+/**
+ * You can find further information about all information.
+ * @module routes.scenario
+ */
+
+/**
+ * Returns a list of all scenarios.
+ * @class getScenarios
+ */
 router.get('/', function(req, res) {
     var name = req.query.query;
     var populate = req.query.populate;
@@ -31,18 +40,17 @@ router.get('/', function(req, res) {
                     })
                 })
             }
-            var res_object = {
-                content_length: result.length,
-                scenarios: result
-            };
-
-            res.json(res_object)
+            res.json(result)
         } else {
             res.status(404).end();
         }
     });
 });
 
+/**
+ * Creates a new scenario. Fills it with default values if there are no values in the body.
+ * @class postNewScenario
+ */
 router.post('/', function(req, res) {
     var scenario = req.body;
     try {
@@ -164,6 +172,12 @@ router.post('/', function(req, res) {
     }
 });
 
+/**
+ * Assigns the given fragment to the given scenario.
+ * By using this endpoint it's possible to assign a fragment to two or more scenarios.
+ * It's suggested that this is not done, because the validation might not work anymore.
+ * @class postAssociateFragmentToScenario
+ */
 router.post('/associatefragment', function(req, res) {
     var fragment_id = req.query.fragment_id;
     var scenario_id = req.query.scenario_id;
@@ -191,6 +205,10 @@ router.post('/associatefragment', function(req, res) {
 
 });
 
+/**
+ * Assigns the given domainmodel to the given scenario.
+ * @class postAssociateDomainmodelToScenario
+ */
 router.post('/associatedomainmodel', function(req, res) {
     var domainmodel_id = req.query.domainmodel_id;
     var scenario_id = req.query.scenario_id;
@@ -216,6 +234,10 @@ router.post('/associatedomainmodel', function(req, res) {
     })
 });
 
+/**
+ * Validates the given scenario.
+ * @class getValidateScenario
+ */
 router.get('/:scenID/validate', function(req, res){
     var scenID = req.params.scenID;
     Scenario.findOne({_id:scenID}).populate('fragments').populate('domainmodel').exec(function(err, result) {
@@ -279,7 +301,10 @@ router.get('/:scenID/validate', function(req, res){
     });
 });
 
-/* GET fragment belonging to scenario and fragment. */
+/**
+ * Returns the scenario with the given ID.
+ * @class getScenario
+ */
 router.get('/:scenID', function(req, res) {
     var id = req.params.scenID;
     var populate = req.query.populate;
@@ -323,6 +348,12 @@ var validateFragmentList = function(list) {
     return found;
 };
 
+/**
+ * Exports the scenario with the given ID to the export-target with the given ID.
+ * This means the scenario will be send via POST to the target with '/scenario' appended.
+ * This also means that you can export scenarios to another gryphon-instance.
+ * @class postScenarioExport
+ */
 router.post('/:scenID/export', function(req, res) {
     var target = req.body.exportID;
     var scenID = req.params.scenID;
@@ -388,7 +419,10 @@ router.post('/:scenID/export', function(req, res) {
     });
 });
 
-/* Post new fragment to a given scenario. If fragment name already exists post new revision */
+/**
+ * Updates a given scenario.
+ * @class postScenario
+ */
 router.post('/:scenID', function(req, res) {
     var scenID = req.params.scenID;
     var new_scen = req.body;
@@ -443,6 +477,10 @@ router.post('/:scenID', function(req, res) {
     })
 });
 
+/**
+ * Deletes the given scenario
+ * @class deleteScenario
+ */
 router.delete('/:scenID', function(req, res) {
     var id = req.params.scenID;
     Scenario.findOne({_id:id},function(err, result){

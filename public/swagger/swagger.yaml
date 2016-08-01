@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  title: Griffin API
+  title: Gryphon API
   description: Store and load case management fragments using BPMN and a JSON API.
   version: 1.0.0
 schemes:
@@ -20,8 +20,8 @@ paths:
           in: path
           description: The scenario id.
           required: true
-          type: number
-          format: integer
+          type: string
+          format: string
         - name: populate
           in: query
           description: If true, the scenario will be populated with all child-objects.
@@ -31,17 +31,17 @@ paths:
         - Scenario
       responses:
         '200':
-          description: An scenario
+          description: An scenario. Populated if populate was set on true.
           schema:
-            $ref: '#/definitions/Scenario'
+            $ref: '#/definitions/PopulatedScenario'
         '404':
           description: Scenario not found.
           schema:
-            $ref: '#/definitions/Error'   
+            $ref: '#/definitions/Error'
         '500':
           description: Unexpected error
           schema:
-            $ref: '#/definitions/Error'      
+            $ref: '#/definitions/Error'
     post:
       summary: Updates a given scenario
       description: |
@@ -51,8 +51,8 @@ paths:
           in: path
           description: The scenario id.
           required: true
-          type: number
-          format: integer
+          type: string
+          format: string
         - name: scenario
           in: body
           description: The scenario object.
@@ -69,11 +69,38 @@ paths:
         '404':
           description: Scenario not found.
           schema:
-            $ref: '#/definitions/Error'   
+            $ref: '#/definitions/Error'
         '500':
           description: Unexpected error
           schema:
-            $ref: '#/definitions/Error'      
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Deletes the given scenario
+      description: |
+        This endpoints deletes the given scenario. The associated domainmodel and
+        fragments stay in the database.
+      parameters:
+        - name: id
+          in: path
+          description: The scenario id.
+          required: true
+          type: string
+          format: string
+      tags:
+        - Scenario
+      responses:
+        '200':
+          description: The deleted scenario.
+          schema:
+            $ref: '#/definitions/Scenario'
+        '404':
+          description: Scenario not found.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /scenario:
     get:
       summary: Returns a list of all available scenarios.
@@ -97,32 +124,32 @@ paths:
         '500':
           description: Unexpected error
           schema:
-            $ref: '#/definitions/Error'      
+            $ref: '#/definitions/Error'
     post:
       summary: Creates a new scenario
       description: |
-        This endpoint stores a new scenario on the server. The DataObjects and 
-        Fragments will be added later using the associated endpoints. Any DomainModels and 
-        Fragments given in the objects server by the provided scenario object will be 
+        This endpoint stores a new scenario on the server. The DataObjects and
+        Fragments will be added later using the associated endpoints. Any DomainModels and
+        Fragments given in the objects server by the provided scenario object will be
         validated and added to the new scenario anyway.
       parameters:
         - name: scenario
           in: body
-          description: The scenario object.
+          description: The scenario object. This can either be populated (contains domainmodel and fragments) or unpopulated.
           required: true
           schema:
-            $ref: '#/definitions/Scenario'
+            $ref: '#/definitions/PopulatedScenario'
       tags:
         - Scenario
       responses:
         '200':
           description: The updated scenario, maybe with updated revision.
           schema:
-            $ref: '#/definitions/Scenario' 
+            $ref: '#/definitions/Scenario'
         '500':
           description: Unexpected error
           schema:
-            $ref: '#/definitions/Error'      
+            $ref: '#/definitions/Error'
   /fragment/{id}:
     get:
       summary: Returns an fragment.
@@ -133,8 +160,14 @@ paths:
           in: path
           description: The fragments id.
           required: true
-          type: number
-          format: integer
+          type: string
+          format: string
+        - name: deliver_xml
+          in: query
+          description: If false the the endpoint will not deliver the fragments xml.
+          required: false
+          type: boolean
+          format: boolean
       tags:
         - Fragment
       responses:
@@ -143,11 +176,11 @@ paths:
         '404':
           description: Fragment not found.
           schema:
-            $ref: '#/definitions/Error'   
+            $ref: '#/definitions/Error'
         '500':
           description: Unexpected error
           schema:
-            $ref: '#/definitions/Error'      
+            $ref: '#/definitions/Error'
     post:
       summary: Updates a fragment.
       description: |
@@ -155,17 +188,17 @@ paths:
         doesn't care wether the ID in the path and the ID in the fragment match,
         it always uses the fragment. The fragments revision will be increased if
         it differs (XML based) from earlier versions. All scenarios that are
-        associated with the given fragment will also get upated 
-        (including a new revision). The repository will also parse the fragment 
-        into an Object, by parsing the given XML. The parsed structure will be 
+        associated with the given fragment will also get upated
+        (including a new revision). The repository will also parse the fragment
+        into an Object, by parsing the given XML. The parsed structure will be
         used for validation and the structure endpoint.
       parameters:
         - name: id
           in: path
           description: The fragments id.
           required: true
-          type: number
-          format: integer
+          type: string
+          format: string
         - name: fragment
           in: body
           description: The fragment.
@@ -182,40 +215,127 @@ paths:
         '404':
           description: Fragment not found.
           schema:
-            $ref: '#/definitions/Error'   
+            $ref: '#/definitions/Error'
         '500':
           description: Unexpected error
           schema:
-            $ref: '#/definitions/Error'    
-  /fragment/{id}/structure:
-    get:
-      summary: Returns a fragments BPMN-structure
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Deletes a fragment.
       description: |
-        This returns the BPMN structure of a given fragment. This is done by 
-        parsing the XMl stripping all attributes that are not used for the 
-        data structure (attributes that are just used for visualisation).
+        This endpoint deletes the fragment with this id.
       parameters:
         - name: id
           in: path
           description: The fragments id.
           required: true
-          type: number
-          format: integer
+          type: string
+          format: string
       tags:
         - Fragment
       responses:
         '200':
           description: The fragment if found.
           schema:
-            $ref: '#/definitions/FragmentStructureObject'
+            $ref: '#/definitions/Fragment'
         '404':
           description: Fragment not found.
           schema:
-            $ref: '#/definitions/Error'   
+            $ref: '#/definitions/Error'
         '500':
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /fragment/{id}/structure:
+    get:
+      summary: Returns a fragments BPMN-structure
+      description: |
+        This returns the BPMN structure of a given fragment. This is done by
+        parsing the XMl stripping all attributes that are not used for the
+        data structure (attributes that are just used for visualisation).
+      parameters:
+        - name: id
+          in: path
+          description: The fragments id.
+          required: true
+          type: string
+          format: string
+      tags:
+        - Fragment
+      responses:
+        '200':
+          description: The fragments structure if found.
+          schema:
+            $ref: '#/definitions/FragmentStructureObject'
+        '404':
+          description: Fragment not found.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /fragment/{id}/validate:
+    get:
+      summary: Validates a fragment
+      description: |
+        This validates a fragment and returns all messages generated by the validator.
+        A fragment is validated according to the following rules:
+        1. The fragment is structural sound.
+        2. The fragment doesn't reference any invalid dataclasses or attributes.
+        3. There are no state-transitions that are not allowed according to the
+        dataclass-id
+        4. There are no events without Event-Query
+        5. There are no duplicate events after event-based-gateways.
+        6. There are no events that are not support in the execution engine.
+      parameters:
+        - name: id
+          in: path
+          description: The fragments id.
+          required: true
+          type: string
+          format: string
+      tags:
+        - Fragment
+      responses:
+        '200':
+          description: The list of messages.
+          schema:
+            $ref: '#/definitions/MessageList'
+        '404':
+          description: Fragment not found.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /fragment/{id}/xml:
+    get:
+      summary: Returns a fragments BPMN-xml
+      description: |
+        This returns the BPMN-xml of a given fragment.
+      parameters:
+        - name: id
+          in: path
+          description: The fragments id.
+          required: true
+          type: string
+          format: string
+      tags:
+        - Fragment
+      responses:
+        '200':
+          description: The fragment-xml if found.
+        '404':
+          description: Fragment not found.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
   /fragment:
     get:
       summary: Returns a list of all available fragments.
@@ -239,11 +359,12 @@ paths:
         '500':
           description: Unexpected error
           schema:
-            $ref: '#/definitions/Error'      
+            $ref: '#/definitions/Error'
     post:
       summary: Creates a new scenario
       description: |
-        This endpoint stores a new fragment on the server.
+        This endpoint stores a new fragment on the server. If the body contains
+        contains no content, the default fragment xml is used.
       parameters:
         - name: scenario
           in: body
@@ -261,27 +382,27 @@ paths:
         '500':
           description: Unexpected error
           schema:
-            $ref: '#/definitions/Error'    
+            $ref: '#/definitions/Error'
   /scenario/associatefragment:
     post:
       summary: Associated a fragment with a scenario.
       description: |
         This allows it to associate (add) a fragment with a scenario. To add a
         fragment to a scenario to steps are required. First upload the fragment
-        using /fragment POST and then associate it with the scenario using this 
+        using /fragment POST and then associate it with the scenario using this
         endpoint.
       parameters:
         - name: fragmentid
           in: query
           description: The fragment to associate.
           required: true
-          type: number
-          format: integer
+          type: string
+          format: string
         - name: scenarioid
           in: query
           description: The scenarios id.
-          type: number
-          format: integer
+          type: string
+          format: string
           required: true
       tags:
         - Fragment
@@ -303,22 +424,22 @@ paths:
     post:
       summary: Associates a domain model with a scenario.
       description: |
-        This allows it to associate (add) a domain model with a scenario. To add 
-        a domain model to a scenario to steps are required. First upload the 
-        domain model using /domainmodel POST and then associate it with the 
+        This allows it to associate (add) a domain model with a scenario. To add
+        a domain model to a scenario to steps are required. First upload the
+        domain model using /domainmodel POST and then associate it with the
         scenario using this endpoint.
       parameters:
         - name: domainmodelid
           in: query
           description: The domainmodel to associate.
-          type: number
-          format: integer
+          type: string
+          format: string
           required: true
         - name: scenarioid
           in: query
           description: The scenarios id.
-          type: number
-          format: integer
+          type: string
+          format: string
           required: true
       tags:
         - DomainModel
@@ -345,8 +466,8 @@ paths:
         - name: id
           in: path
           description: The domain models id.
-          type: number
-          format: integer
+          type: string
+          format: string
           required: true
       tags:
         - DomainModel
@@ -358,11 +479,11 @@ paths:
         '404':
           description: Model not found.
           schema:
-            $ref: '#/definitions/Error'   
+            $ref: '#/definitions/Error'
         '500':
           description: Unexpected error
           schema:
-            $ref: '#/definitions/Error'  
+            $ref: '#/definitions/Error'
     post:
       summary: Updates a domain model.
       description: |
@@ -372,16 +493,16 @@ paths:
           in: path
           description: The domain models id.
           required: true
-          type: number
-          format: integer
+          type: string
+          format: string
         - name: domainmodel
           in: body
-          description: The domain models content.
+          description: The domainmodel-content.
           required: true
           schema:
             $ref: '#/definitions/DomainModel'
       tags:
-        - Fragment
+        - DomainModel
       responses:
         '200':
           description: The domain model if found and update was succesfull.
@@ -390,14 +511,15 @@ paths:
         '404':
           description: Model not found.
           schema:
-            $ref: '#/definitions/Error'   
+            $ref: '#/definitions/Error'
         '500':
           description: Unexpected error
           schema:
-            $ref: '#/definitions/Error'    
+            $ref: '#/definitions/Error'
   /domainmodel:
     get:
-      summary: |
+      summary: Lists all domainmodels.
+      description: |
         Returns a list of all available domain models.
         des  Returns a list of all domain models. This list might be filtered by searching
         using a name.
@@ -418,7 +540,7 @@ paths:
         '500':
           description: Unexpected error
           schema:
-            $ref: '#/definitions/Error'      
+            $ref: '#/definitions/Error'
     post:
       summary: Creates a new domain model
       description: |
@@ -445,20 +567,15 @@ paths:
     get:
       summary: Validates a scenario.
       description: |
-        This endpoint validates a scenario. If an fragment ID is given just the fragment will get validated. It will return an Array of Suggestions that might be used to correct all errors found. See the description of ValidationReport for further information.
+        This endpoint validates a scenario. It validates all fragments according to the same rules that are used for the
+        fragment-validation and validates all fragments.
       parameters:
         - name: id
           in: path
           description: The scenarios id.
           required: true
-          type: number
-          format: integer
-        - name: fragment_id
-          in: query
-          description: A fragment id. If set only the specified fragment will get validated.
-          required: false
-          type: boolean
-          format: boolean
+          type: string
+          format: string
       tags:
         - Scenario
         - Fragment
@@ -467,7 +584,7 @@ paths:
         '200':
           description: The validation report.
           schema:
-            $ref: '#/definitions/ValidationReport'
+            $ref: '#/definitions/MessageList'
         '500':
           description: Unexpected error
           schema:
@@ -476,28 +593,28 @@ paths:
     get:
       summary: Exports a scenario.
       description: |
-        This endpoint exports a scenario to the url given in the body object. Further additions to the body object might be possible.
-        This endpoint exports the whole scenario (including fragments and domain model) in JSON format.
-        The target server should respond with a 200 if everything went fine. The content of the response doesn't matter.
-        The target server should expect a POST-call according to RESTful APIs.
+        This endpoint exports the scenario to the given export-target.
+        The server should return an 200 if the export was succesfull. All messages returned by the server will be
+        returned in the response of this endpoint.
       parameters:
         - name: id
           in: path
           description: The scenarios id.
           required: true
-          type: number
-          format: integer
-        - name: domainmodel
+          type: string
+          format: string
+        - name: exportID
           in: body
-          description: The model object.
+          description: The request object that contains the exportID in the exportID-property.
           required: true
           schema:
             $ref: '#/definitions/ExportRequest'
       tags:
         - Scenario
+        - Export
       responses:
         '200':
-          description: The data that was returned by the target-server.
+          description: The data that was returned by the target-server. There is no description of the response as the response will contain the response of the target-server.
         '500':
           description: Unexpected error
           schema:
@@ -506,6 +623,121 @@ paths:
           description: Scenario doesn't exist
         '400':
           description: Target server is unreachable or doesn't respond as expected.
+  /export:
+    get:
+      summary: |
+        Returns a list of all available export-targets.
+      tags:
+        - Export
+      responses:
+        '200':
+          description: The list of targets.
+          schema:
+            $ref: '#/definitions/ExportList'
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Creates a new export-target.
+      description: |
+        This endpoint creates a new export-target.
+      parameters:
+        - name: export
+          in: body
+          description: The export object.
+          required: true
+          schema:
+            $ref: '#/definitions/Export'
+      tags:
+        - Export
+      responses:
+        '200':
+          description: The created export-target, with updated id.
+          schema:
+            $ref: '#/definitions/Export'
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /export/{id}:
+    delete:
+      summary: |
+        Deletes the export-target with the given ID.
+      parameters:
+        - name: id
+          in: path
+          description: The target id.
+          required: true
+          type: string
+          format: string
+      tags:
+        - Export
+      responses:
+        '200':
+          description: The deleted export-target.
+          schema:
+            $ref: '#/definitions/Export'
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Creates a new export-target.
+      description: |
+        This endpoint updates the given export-target.
+      parameters:
+        - name: id
+          in: path
+          description: The target id.
+          required: true
+          type: string
+          format: string
+        - name: export
+          in: body
+          description: The export object.
+          required: true
+          schema:
+            $ref: '#/definitions/Export'
+      tags:
+        - Export
+      responses:
+        '200':
+          description: The updated export-target.
+          schema:
+            $ref: '#/definitions/Export'
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /fragment/{id}/assocdomainmodel:
+    get:
+      summary: Returns the domainmodel associated with this fragment.
+      description: |
+        Returns the domainmodel that belongs to the scenario this fragment belongs to.
+      parameters:
+        - name: id
+          in: path
+          description: The domain models id.
+          type: string
+          format: string
+          required: true
+      tags:
+        - DomainModel
+        - Fragment
+      responses:
+        '200':
+          description: The domain model if found.
+          schema:
+            $ref: '#/definitions/DomainModel'
+        '404':
+          description: Model not found.
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
 definitions:
   Scenario:
     type: object
@@ -514,40 +746,134 @@ definitions:
         type: string
         description: 'The scenarios name'
       _id:
-        type: number
-        format: integer
-        description: 'Unique identifier of any scenario.'
+        type: string
+        format: string
+        description: 'Unique identifier of any scenario. Usually a string with a length of 24 chars.'
       terminationconditions:
         type: array
         items:
           $ref: '#/definitions/TerminationCondition'
-        description: 'The termination conditions that are used.'  
-      domain_model:
-        type: number
-        format: integer
+        description: 'The termination conditions that are used.'
+      startconditions:
+        type: array
+        items:
+          $ref: '#/definitions/StartCondition'
+        description: 'The start conditions that trigger the start of this scenario'
+      domainmodel:
+        type: string
+        format: string
         description: 'The ID of the associated domain model.'
       fragments:
         type: array
         items:
-          type: number
-          format: integer
+          type: string
+          format: string
         description: 'The IDs of associated fragments.'
       revision:
         type: number
         format: integer
         description: |
           The scenarios revision. Is increased automatically if the
-          fragments, the data_objects or the termination condition is different 
+          fragments, the data_objects or the termination condition is different
           from the last version
-  TerminationCondition:
+
+  PopulatedScenario:
     type: object
     properties:
-      dataobjectname:
+      name:
         type: string
+        description: 'The scenarios name'
+      _id:
+        type: string
+        format: string
+        description: 'Unique identifier of any scenario. Usually a string with a length of 24 chars.'
+      terminationconditions:
+        type: array
+        items:
+          $ref: '#/definitions/TerminationCondition'
+        description: 'The termination conditions that are used.'
+      startconditions:
+        type: array
+        items:
+          $ref: '#/definitions/StartCondition'
+        description: 'The start conditions that trigger the start of this scenario'
+      domainmodel:
+        $ref: '#/definitions/DomainModel'
+      fragments:
+        type: array
+        items:
+          $ref: '#/definitions/Fragment'
+        description: 'The associated fragments.'
+      revision:
+        type: number
+        format: integer
         description: |
-          For each DataObject involved in this TerminationCondition, add a
-          Key/Value-Pair where the Key is the name of the DataObject and the
-          Value is the name of the state. 
+          The scenarios revision. Is increased automatically if the
+          fragments, the data_objects or the termination condition is different
+          from the last version
+  StartCondition:
+    type: object
+    properties:
+      _id:
+        type: string
+        format: string
+        description: 'The unique identifier the startcondition.'
+      query:
+        type: string
+        description: 'The query that triggers this startcondition'
+      dataclassses:
+        type: array
+        items:
+          $ref: '#/definitions/StartConditionDataclass'
+        description: 'The mapping of event-values to dataobject-values'
+  StartConditionDataclass:
+    type: object
+    properties:
+      _id:
+        type: string
+        format: string
+        description: 'The unique identifier the startcondition data class.'
+      classname:
+        type: string
+        description: 'The name of the dataclass, that should be used to instantiate this object'
+      state:
+        type: string
+        description: 'The state the newly created dataobject has.'
+      mapping:
+        type: array
+        items:
+          $ref: '#/definitions/StartConditionAttrMapping'
+        description: 'The definition which values of the event should be put in the values of this dataobject.'
+  StartConditionAttrMapping:
+    type: object
+    properties:
+      _id:
+        type: string
+        format: string
+        description: 'The unique identifier the mapping tuple.'
+      path:
+        type: string
+        description: 'The JSON Path that specifies where to read this value.'
+      attr:
+        type: string
+        description: 'The attribute were the value should get written.'
+  TerminationCondition:
+    type: string
+    description: |
+      The termination condition in the format "Dataclass[State], Dataclass[State2]"
+  Export:
+    type: object
+    properties:
+      _id:
+        type: string
+        format: string
+        description: 'The unique identifier of this export-target.'
+      name:
+        type: string
+        description: 'The name of the export-target.'
+      url:
+        type: string
+        description: 'The url of this export-target.'
   Fragment:
     type: object
     properties:
@@ -555,8 +881,8 @@ definitions:
         type: string
         description: 'The fragments name.'
       _id:
-        type: number
-        format: integer
+        type: string
+        format: string
         description: 'The fragments unique identifier.'
       content:
         type: string
@@ -578,8 +904,8 @@ definitions:
         type: string
         description: 'The name of the domain model.'
       _id:
-        type: number
-        format: long
+        type: string
+        format: string
         description: 'The unique identifier of the domain model.'
       revision:
         type: number
@@ -590,11 +916,6 @@ definitions:
         description: 'The data classes belonging to the domain model.'
         items:
           $ref: '#/definitions/DataClass'
-      aggregations:
-        type: array
-        description: 'The aggregation relationships between the data classes of this domain model.'
-        items:
-          $ref: '#/definitions/Aggregation'
   DataClass:
     type: object
     properties:
@@ -602,8 +923,8 @@ definitions:
         type: string
         description: 'The name of the data class.'
       _id:
-        type: number
-        format: long
+        type: string
+        format: string
         description: 'The unique identifier the data class.'
       is_root:
         type: boolean
@@ -619,107 +940,56 @@ definitions:
   DataClassAttribute:
     type: object
     properties:
+      _id:
+        type: string
+        format: string
+        description: 'The unique identifier the attribute.'
       name:
         type: string
         description: 'The name of the attribute.'
       datatype:
         type: string
         description: 'The datatype of the attribute.'
-  Aggregation:
+  MessageList:
+    type: array
+    description: 'A list of messages.'
+    items:
+      $ref: '#/definitions/Message'
+  Message:
     type: object
     properties:
-      sourceMultiplicity:
-        type: string
-        format: x..y
-        description: 'The source multiplicity of the aggregation relationship.'
-      targetMultiplicity:
-        type: string
-        format: x..y
-        description: 'The target multiplicity of the aggregation relationship.'
-      sourceNode:
-        type: number
-        format: long
-        description: 'The id of the aggregation relationship source node.'
-      targetNode:
-        type: number
-        format: long
-        description: 'The id of the aggregation relationship target node.'
-  ValidationReport:
-    type: object
-    properties:
-      scenario:
-        $ref: '#/definitions/Scenario'
-        description: 'The validated scenario.'
-      correct:
-        type: boolean
-        description: 'True if no errors were found. Otherwise false.'
-      errors:
-        type: array
-        description: 'All errors found.'
-        items:
-          $ref: '#/definitions/ValidationError'
-  ValidationError:
-    type: object
-    properties:
-      message:
+      text:
         type: string
         description: 'The message for this error. This should be displayed to the user.'
       type:
         type: string
         description: 'The type of the error.'
-      level:
-        type: number
-        format: integer
-        description: 'The level of the error (1 Error, 2 Warning, 3 Notice).'
   ScenarioList:
-    type: object
-    properties:
-      content_length:
-        type: number
-        format: integer
-        description: 'The number of scenarios found.'
-      scenarios:
-        type: array
-        description: 'All scenarios found.'
-        items:
-          $ref: '#/definitions/Scenario'
+    type: array
+    description: 'All scenarios found.'
+    items:
+      $ref: '#/definitions/Scenario'
   FragmentList:
-    type: object
-    properties:
-      content_length:
-        type: number
-        format: integer
-        description: 'The number of fragments found.'
-      scenarios:
-        type: array
-        description: 'All fragments found.'
-        items:
-          $ref: '#/definitions/Fragment'
+    type: array
+    description: 'All fragments found.'
+    items:
+      $ref: '#/definitions/Fragment'
   DomainModelList:
-    type: object
-    properties:
-      content_length:
-        type: number
-        format: integer
-        description: 'The number of domain models found.'
-      scenarios:
-        type: array
-        description: 'All models found.'
-        items:
-          $ref: '#/definitions/DomainModel'
+    type: array
+    description: 'All models found.'
+    items:
+      $ref: '#/definitions/DomainModel'
   Error:
     type: object
-    properties:
-      code:
-        type: integer
-        format: int32
-      message:
-        type: string
-      fields:
-        type: string
   ExportRequest:
     type: object
     properties:
-      targeturl:
+      exportID:
         type: string
+        format: string
         description: The url the post-call should use.
+  ExportList:
+    type: array
+    items:
+      $ref: '#/definitions/Export'
+    description: 'A list of export-targets'

@@ -3,7 +3,15 @@ var router = express.Router();
 var RestClient = require('node-rest-client').Client;
 var ExportModel = require('./../models/export').model;
 
-/* GET fragment belonging to scenario and fragment. */
+/**
+ * You can find further information about all endpoints in the swagger.yaml file.
+ * @module routes.export
+ */
+
+/**
+ * Returns all available export-targets.
+ * @class getExportTargets
+ */
 router.get('/', function(req, res) {
     ExportModel.find(function(err,models){
         if (err) {
@@ -15,6 +23,10 @@ router.get('/', function(req, res) {
     });
 });
 
+/**
+ * Allows it to create a new export-target.
+ * @class postNewExportTarget
+ */
 router.post('/',function(req,res) {
     var newexport = new ExportModel({
         name: req.body.name,
@@ -24,6 +36,10 @@ router.post('/',function(req,res) {
     res.json(newexport);
 });
 
+/**
+ * Updates the export with the given id.
+ * @class postExportTarget
+ */
 router.post('/:id',function(req,res){
     ExportModel.findOne({_id: req.params.id},function(err, result){
         if (err) {
@@ -42,49 +58,46 @@ router.post('/:id',function(req,res){
     });
 });
 
-function validateURL(textval) {
-    var urlregex;
-    urlregex = /\A(?:(?:https?|ftp):\/\/)(?:\S+(?::\S)?@)?(?:(?!10(?:.\d{1,3}){3})(?!127(?:.\d{1,3}){3})(?!169.254(?:.\d{1,3}){2})(?!192.168(?:.\d{1,3}){2})(?!172.(?:1[6-9]|2\d|3[0-1])(?:.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]+-?)[a-z\u00a1-\uffff0-9]+)(?:.(?:[a-z\u00a1-\uffff0-9]+-?)[a-z\u00a1-\uffff0-9]+)(?:.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?\z/i;
-    return urlregex.test(textval);
-}
-
+/**
+ * Validates if the export-target with the given URL is an valid export-target.
+ * An export is valid if there is an /version and an /scenario endpoint below it,
+ * and the /version endpoint returns a valid version-number.
+ * @class getValidateExportURL
+ */
 router.get('/validate',function(req,res){
     var url = req.query.url + '/version';
 
-    if (!validateURL(url)) {
+    var client = new RestClient();
+    client.on('error',function(){
         res.json({
             'type': 'danger',
-            'text': url + ' is not a valid URL.'
-        })
-    } else {
-        var client = new RestClient();
-        client.on('error',function(){
-            res.json({
-                'type': 'danger',
-                'text': 'No valid response using ' + url + '/version'
-            });
+            'text': 'No valid response using ' + url + '/version'
         });
-        client.get(url, function(data, response){
-            if (typeof data.version == 'undefined') {
-                res.json({
-                    'type': 'danger',
-                    'text': 'No valid response using ' + url
-                })
-            } else {
-                res.json({
-                    'type': 'success',
-                    'text': 'Valid response using ' + url
-                })
-            }
-        }.bind(this)).on('error',function(){
+    });
+    client.get(url, function(data, response){
+        if (typeof data.version == 'undefined') {
             res.json({
                 'type': 'danger',
                 'text': 'No valid response using ' + url
             })
-        }.bind(this));
-    }
+        } else {
+            res.json({
+                'type': 'success',
+                'text': 'Valid response using ' + url
+            })
+        }
+    }.bind(this)).on('error',function(){
+        res.json({
+            'type': 'danger',
+            'text': 'No valid response using ' + url
+        })
+    }.bind(this));
 });
 
+/**
+ * Deletes the export with the given id.
+ * @class deleteExportTarget
+ */
 router.delete('/:id', function(req, res) {
     ExportModel.findOne({_id: req.params.id},function(err, result){
         if (err) {
