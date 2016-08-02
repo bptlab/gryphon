@@ -45,7 +45,7 @@ var ScenarioLoader = React.createClass({
       console.log(this.props);
       this.props.children.props.params.scenario = this.state.scenario;
       return (
-        <div>
+        <div className="app-container">
         <ScenarioTopBarComponent scenario={this.state.scenario} />
         <SideBarComponent scenario={this.state.scenario} />
           <div className="main-content">

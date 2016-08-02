@@ -12,7 +12,7 @@ var App = React.createClass({
           <div className="app-container">
             <ModalComponent />
             <MessageBar />
-            <div>
+            <div className="app-container">
               {this.props.children}
             </div>
           </div>
