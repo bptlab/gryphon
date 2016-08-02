@@ -85,6 +85,7 @@
 	color: #b3bcc5;
 	display: block;
 	text-align: left;
+	word-break: break-word;
 }
 
 /* Link Colors */
