@@ -17,7 +17,8 @@ var SideBarFragmentList = React.createClass({
         var setSelectedFragment = this.setSelectedFragment;
         var list = this.props.scenario.fragments.map(function (fragment){
           var selected = (fragment._id == this.state.selected) ? 'selected' : '';
-          return <SideBarFragment scenario={this.props.scenario} fragment={fragment} selected={selected} setSelectedFragment={setSelectedFragment}/>
+          var key = "sidebarfragment_" + fragment._id;
+          return <SideBarFragment scenario={this.props.scenario} fragment={fragment} selected={selected} setSelectedFragment={setSelectedFragment} key={key} />
         }.bind(this));
         return (
             <div className="sidebar-links">

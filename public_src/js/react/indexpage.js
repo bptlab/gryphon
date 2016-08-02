@@ -20,11 +20,12 @@ var IndexComponent = React.createClass({
     },
     render: function() {
         var scenarios = this.state.scenarios.map(function(scenario){
+            var key = "scenarioLink_" + scenario._id;
             return (
-                <div className="col-md-2">
-                <Link to={"scenario/" + scenario._id}>
-                    {scenario.name}
-                </Link>
+                <div className="col-md-2" key={key}>
+                  <Link to={"scenario/" + scenario._id}>
+                      {scenario.name}
+                  </Link>
                 </div>
             )
         });
