@@ -147,52 +147,29 @@ var DomainModelEditorComponent = React.createClass({
         return types;
     },
     render: function() {
-        console.log(this.props);
-        var cols = [[],[]];
-        var col_indexes = [[],[]];
-        var cols_length = [0,0];
-        var smallest = 0;
-        this.state.dm.dataclasses.forEach(function(dataclass, index) {
-            cols_length[smallest] += (2 + dataclass.attributes.length);
-            cols[smallest].push(dataclass);
-            col_indexes[smallest].push(index);
-            smallest = 0;
-            var smallest_length = Number.MAX_VALUE;
-            cols_length.forEach(function(col_length, index) {
-                if (col_length < smallest_length) {
-                    smallest_length = col_length;
-                    smallest = index;
-                }
-            });
-        });
-        cols = cols.map(function(col, colindex){
-            var content = col.map(function(dataclass, classindex) {
-                var realIndex = col_indexes[colindex][classindex];
-                console.log('DClass: ' + colindex + '|' + classindex + '|' + realIndex);
-                return (
-                    <DataClassComponent
-                        handleUpdate={this.handleUpdate(realIndex)}
-                        handleDelete={this.handleDelete(realIndex)}
-                        handleExport={this.handleExport}
-                        validateAttrType={this.validateAttrType}
-                        initialItems={dataclass.attributes}
-                        name={dataclass.name}
-                        is_event={dataclass.is_event}
-                        availableDataTypes={this.getAvailableDataTypes()}
-                        modelChanged={this.state.changed}
-                        id={dataclass._id}
-                        dmid = {this.state.dm._id}
-                        />
-                )
-            }.bind(this));
-            return (
-                <div className="col-md-6">
-                    {content}
-                </div>
-            );
-        }.bind(this));
-        //             <ScenarioTopBarComponent scenario={this.state.scenario} />
-        //             <SideBarComponent scenario={this.state.scenario} />
+        var selectedDataclass = {};
+        var i = 0;
+        for (var i = 0; i < this.state.dm.dataclasses.length; i++){
+          if(this.state.dm.dataclasses[i]._id == this.props.params.dataclassId) {
+            selectedDataclass = this.state.dm.dataclasses[i];
+            break;
+          }
+        }
+        content =
+          <DataClassComponent
+              handleUpdate={this.handleUpdate(i)}
+              handleDelete={this.handleDelete(i)}
+              handleExport={this.handleExport}
+              validateAttrType={this.validateAttrType}
+              initialItems={selectedDataclass.attributes}
+              name={selectedDataclass.name}
+              is_event={selectedDataclass.is_event}
+              availableDataTypes={this.getAvailableDataTypes()}
+              modelChanged={this.state.changed}
+              id={selectedDataclass._id}
+              dmid = {this.state.dm._id}
+              />;
+
         return (
           <div>
             <div className="col-md-12">
@@ -205,7 +182,9 @@ var DomainModelEditorComponent = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    {cols}
+                  <div className="col-md-12">
+                    {content}
+                  </div>
                 </div>
             </div>
           </div>

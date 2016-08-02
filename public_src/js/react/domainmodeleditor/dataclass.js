@@ -290,6 +290,11 @@ var DataClassComponent = React.createClass({
             </div>
         );
     },
+    componentWillReceiveProps: function(nextProps) {
+      this.setState({
+        items: nextProps.initialItems
+      });
+    },
     componentDidMount: function() {
         this.setState({
             items: this.props.initialItems
