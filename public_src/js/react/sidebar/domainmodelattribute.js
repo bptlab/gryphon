@@ -27,7 +27,7 @@ var SideBarSingleDomainModelAttribute = React.createClass({
                   </button>
               </div>
               <Link
-                to={"domainmodel/" + this.props.dataclass._id}
+                to={"scenario/" + this.props.scenario._id + "/domainmodel/" + this.props.dataclass._id}
                 onClick={this.handleFragmentClick}
               >
                 {this.props.dataclass.name}
