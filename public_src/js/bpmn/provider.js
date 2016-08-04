@@ -18,12 +18,27 @@ var is = require('bpmn-js/lib/util/ModelUtil').is;
 var cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper');
 
 var forEach = require('lodash/collection/forEach');
+
+/**
+ * The whole generation is encapsulated in an generator that provides a special
+ * property-panel that is dependant on the fragment. This is done because the
+ * information in the associated domainmodel is needed to evaluate entries.
+ */
 function generateProvider(fragmentid) {
     var dm = null;
     API.loadAssociatedDomainModel(fragmentid,function(dm2){
         dm = dm2;
     });
 
+    /**
+     * This function generates the 3 propertys dataclass and state for dataobjects.
+     * It is more complicated then the other ones because every choice causes some things to happen.
+     * In case the class or the state gets changed the displayed name gets also changed to ensure
+     * that it is always up to date with the propertys. The 3rd entry, mapping is more complex.
+     * The mapping property of an dataobject actually contains JSON. This JSON gets parsed and
+     * for each entry there will be an different edit-field. In case one of the values gets changed
+     * the value is regenerated and stored in the object.
+     */
     function createDataObjectProperties(group, element,
                                         elementRegistry) {
         if (is(element, 'bpmn:DataObjectReference')) {
@@ -72,14 +87,17 @@ function generateProvider(fragmentid) {
                 var dataclass = dm.dataclasses.filter(function(dataclass){
                     return dataclass.name == dclass
                 });
+                //The mapping can just be defined if the dataclass provided in the dataclass attribute contains the name of an actually existing class.
                 if (dataclass.length == 1) {
                     dataclass = dataclass[0];
+                    //For each attribute of the class there is one edit-field.
                     dataclass.attributes.forEach(function(attr){
                         var jsonURLEntry = entryFactory.textField({
                             id: 'JSONPath' + attr.name,
                             description: '',
                             label: 'JSON Path for ' + attr.name,
                             modelProperty: attr.name,
+                            //The getter that parses the json-object and reads a certain class out of it.
                             get: function(element) {
                                 var bo = getBusinessObject(element);
                                 var js = bo.get('jsonpath');
@@ -94,6 +112,7 @@ function generateProvider(fragmentid) {
                                 res[attr.name] = parsed[attr.name];
                                 return res;
                             },
+                            //The setter that takes the new value and regenerates the JSON-objet and updates the property.
                             set: function(element, values) {
                                 if (values[this.modelProperty] !== '') {
                                     var bo = getBusinessObject(element);
@@ -117,6 +136,9 @@ function generateProvider(fragmentid) {
         }
     }
 
+    /**
+     * This function creates the custom event-query-editor for message-events and tasks
+     */
     function createMessageEventProperties(group, element, elementRegistry) {
         var types = [
             'bpmn:StartEvent',
@@ -147,6 +169,10 @@ function generateProvider(fragmentid) {
         }
     }
 
+    /**
+     * This function generates the additional fields WebServiceURL, Method and Body
+     * In case the visitied object is an ServiceTask
+     */
     function createWebServiceTaskProperties(group, element, elementRegistry) {
         if (is(element, "bpmn:ServiceTask")) {
             var stateEntry = entryFactory.textField({
@@ -173,6 +199,13 @@ function generateProvider(fragmentid) {
         }
     }
 
+    /**
+     * This function generates the general-tab for the propertys panel.
+     * It uses a lot of function created by bpmn-js and the 3 custom generators
+     * createWebServiceTaskProperties, createMessageEventProperties and
+     * createDataObjectProperties to generate the custom elements for gryphon.
+     * It returns all generated groups.
+     */
     function createGeneralTabGroups(element, bpmnFactory, elementRegistry) {
 
         var generalGroup = {
@@ -215,6 +248,7 @@ function generateProvider(fragmentid) {
 
         this.getTabs = function(element) {
 
+            //This function generates the only tab in the propertys panel.
             var generalTab = {
                 id: 'general',
                 label: 'General',

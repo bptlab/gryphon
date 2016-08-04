@@ -5,6 +5,11 @@ var $ = require('jquery'),
     CustomContext = require('./context');
 
 var Editor = function(canvas) {
+    /**
+     * This function renders a new olc-editor.
+     * It overrides the Palette and Context-Pad modules of bpmn-js with custom ones that
+     * have limited functionality.
+     */
     this.renderer = new Modeler({
         container: canvas,
         additionalModules: [
