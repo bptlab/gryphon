@@ -38,6 +38,11 @@ var ScenarioTopBarComponent = React.createClass({
             <div className="row">
               <div className="col-md-8">
                 <span className="h1">
+                  <a href="#">
+                    <i className="fa fa-home"></i>
+                  </a>
+                  &nbsp;
+
                     <TopBarInput
                       initialValue={this.state.newScenarioName}
                       editable={this.state.nameIsEditable}
