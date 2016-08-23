@@ -2,6 +2,7 @@ var React = require('react');
 var API = require('./../api');
 var SideBarComponent = require('./sidebar/sidebar');
 var ScenarioTopBarComponent = require('./topbar/scenariotopbar');
+var FragmentTopBarComponent = require('./topbar/fragmenttopbar');
 
 var ScenarioLoader = React.createClass({
   getInitialState: function() {
@@ -42,11 +43,23 @@ var ScenarioLoader = React.createClass({
       SideBarManager.reload();
   },
   render: function() {
-      console.log(this.props);
+      console.log("ScenarioLoader props: ", this.props);
       this.props.children.props.params.scenario = this.state.scenario;
+
+      var topBar;
+      var componentName = this.props.routes[this.props.routes.length - 1].component.displayName;
+      switch (componentName) {
+        case "FragmentEditorComponent":
+          topBar = <FragmentTopBarComponent scenario={this.state.scenario} fragmentId={this.props.params.fragmentId} />
+          break;
+        default:
+          topBar = <ScenarioTopBarComponent scenario={this.state.scenario} />
+          break;
+      }
+
       return (
         <div className="app-container">
-        <ScenarioTopBarComponent scenario={this.state.scenario} />
+        {topBar}
         <SideBarComponent scenario={this.state.scenario} />
           <div className="main-content">
             {this.props.children}
