@@ -61,7 +61,7 @@ var ScenarioTopBarComponent = React.createClass({
                         className="btn btn-danger"
                         data-toggle="modal"
                         data-target="#deleteScenarioModal"
-                        data-fragid={this.props.scenario._id}
+                        data-scenid={this.props.scenario._id}
                     >
                         <i className="fa fa-trash"></i> Delete
                     </button>
