@@ -1,22 +1,36 @@
 var React = require('react');
 var TopBarInput = require('./topbarinput');
+var API = require('./../../api');
+var MessageHandler = require('./../../messagehandler');
+var NameCheck = require('./../../namecheck');
 
 var ScenarioTopBarComponent = React.createClass({
     getInitialState: function() {
       return {
-        nameIsEditable: false
-
+        nameIsEditable: false,
+        newScenarioName: "",
       };
     },
     componentDidMount: function() {
       this.setState({nameIsEditable: false});
     },
+    componentWillReceiveProps: function(nextProps) {
+      this.setState({newScenarioName: nextProps.scenario.name});
+    },
+    onScenarioNameChange: function(name) {
+      this.setState({newScenarioName: name});
+    },
     handleRenameClick: function() {
       if(this.state.nameIsEditable)
       {
-          // update scenario name
-      }
+        var newScenario = this.props.scenario;
+        newScenario.name = this.state.newScenarioName;
 
+        if (NameCheck.check(newScenario.name)) {
+            API.exportScenario(newScenario);
+            MessageHandler.handleMessage("success","Saved scenario-details!");
+        }
+      }
       this.setState({nameIsEditable: !this.state.nameIsEditable});
     },
     render: function() {
@@ -25,9 +39,10 @@ var ScenarioTopBarComponent = React.createClass({
               <div className="col-md-8">
                 <span className="h1">
                     <TopBarInput
-                      initialValue={this.props.scenario.name}
+                      initialValue={this.state.newScenarioName}
                       editable={this.state.nameIsEditable}
                       handleEnter={this.handleRenameClick}
+                      onChange={this.onScenarioNameChange}
                     />
                   </span>
                 <hr />
@@ -38,10 +53,6 @@ var ScenarioTopBarComponent = React.createClass({
                       type="button"
                       className="btn btn-success"
                       onClick={this.handleRenameClick}
-                      //data-toggle="modal"
-                      //data-target="#handleRenameClick"
-                      //data-target="#exportScenarioModal"
-                      //data-scenid={this.props.scenario._id}
                   >
                       <i className="fa fa-pencil"></i> {this.state.nameIsEditable ? "Done" : "Edit"}
                   </button>

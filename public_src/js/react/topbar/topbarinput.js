@@ -1,19 +1,14 @@
 var React = require('react');
 
 var TopBarInput = React.createClass({
-    getInitialState: function() {
-      return {
-        value: this.props.initialValue
-      };
-    },
-    componentWillReceiveProps: function(nextProps) {
-      console.log(nextProps);
-      this.setState({value: nextProps.initialValue});
-    },
     handleChange: function(event) {
-      console.log(event);
-      console.log(event.keyCode);
-      this.setState({value: event.target.value});
+      this.props.onChange(event.target.value);
+    },
+    handleKeyDown: function(event) {
+      // submit on enter
+      if(event.keyCode == 13) {
+        this.props.handleEnter(event);
+      }
     },
     render: function() {
         var cssClass = "";
@@ -25,11 +20,11 @@ var TopBarInput = React.createClass({
         return (
           <input
             type="text"
-            value={this.state.value}
+            value={this.props.initialValue}
             onChange={this.handleChange}
             className={cssClass}
             disabled={disabledAttribute}
-            onKeyDown={this.props.handleEnter}
+            onKeyDown={this.handleKeyDown}
           />
         )
     }
