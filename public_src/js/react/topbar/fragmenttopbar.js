@@ -23,7 +23,7 @@ var FragmentTopBarComponent = React.createClass({
       });
       this.setState({newFragmentName: fragmentName});
     },
-    onScenarioNameChange: function(name) {
+    onFragmentNameChange: function(name) {
       this.setState({newScenarioName: name});
     },
     handleRenameClick: function() {
@@ -55,7 +55,7 @@ var FragmentTopBarComponent = React.createClass({
                       initialValue={this.state.newFragmentName}
                       editable={this.state.nameIsEditable}
                       handleEnter={this.handleRenameClick}
-                      onChange={this.onScenarioNameChange}
+                      onChange={this.onFragmentNameChange}
                     />
                   </span>
                 <hr />
