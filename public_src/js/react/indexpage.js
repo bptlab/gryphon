@@ -19,16 +19,41 @@ var IndexComponent = React.createClass({
         }.bind(this))
     },
     render: function() {
-        var scenarios = this.state.scenarios.map(function(scenario){
-            var key = "scenarioLink_" + scenario._id;
-            return (
-                <div className="col-md-2" key={key}>
-                  <Link to={"scenario/" + scenario._id}>
-                      {scenario.name}
-                  </Link>
-                </div>
-            )
+        var scenarioArray = [[]];
+        var row = 0;
+        var col = 0;
+        var maxCols = 4;
+        this.state.scenarios.forEach(function(scenario) {
+          scenarioArray[row].push(scenario);
+          col++;
+          if (col >= maxCols) {
+            scenarioArray.push([]);
+            row++;
+            col = 0;
+          }
         });
+
+        var scenarios = scenarioArray.map(function(scenarioRow, i) {
+
+          var scenarioCols = scenarioRow.map(function(scenario, j) {
+            var key = "scenario_row_" + i + "_col_" + j;
+            return (
+              <div className="col-md-3" key={key}>
+                <Link to={"scenario/" + scenario._id}>
+                    {scenario.name}
+                </Link>
+              </div>
+            )
+          });
+
+          var key = "scenario_row_" + i;
+          return (
+            <div className="row" key={key} >
+              {scenarioCols}
+            </div>
+          )
+        });
+
         return (
             <div className="col-md-12">
               <div className="row">
@@ -63,8 +88,18 @@ var IndexComponent = React.createClass({
                   </div>
                 </div>
 
+                {scenarios}
+
                 <div className="row">
-                  {scenarios}
+                  <div className="col-md-2">
+                    <a
+                        href="#"
+                        data-toggle="modal"
+                        data-target="#createScenarioModal"
+                    >
+                        <i className="fa fa-plus"></i>Create a scenario
+                    </a>
+                  </div>
                 </div>
 
               </div>
