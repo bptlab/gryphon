@@ -17,9 +17,9 @@ var SideBarDomainModel = React.createClass({
     return (
       <div className="sidebar-links">
           <div className="link-blue selected">
-              <Link to={"scenario/" + this.props.scenario._id + "/domainmodel/" + this.props.scenario.domainmodel._id} >
-                  <i className="fa fa-newspaper-o"></i>DomainModel
-              </Link>
+              <a>
+                <i className="fa fa-newspaper-o"></i>DomainModel
+              </a>
               <ul className="sub-links">
                   {list}
                   <li>
