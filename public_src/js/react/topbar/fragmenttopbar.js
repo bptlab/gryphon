@@ -4,12 +4,14 @@ var TopBarInput = require('./topbarinput');
 var API = require('./../../api');
 var MessageHandler = require('./../../messagehandler');
 var NameCheck = require('./../../namecheck');
+var SideBarManager = require('./../../sidebarmanager');
 
 var FragmentTopBarComponent = React.createClass({
     getInitialState: function() {
       return {
         nameIsEditable: false,
         newFragmentName: "",
+        fragmentID: "",
       };
     },
     componentDidMount: function() {
@@ -17,25 +19,40 @@ var FragmentTopBarComponent = React.createClass({
     },
     componentWillReceiveProps: function(nextProps) {
       var fragmentName = "";
+      var fragID = "";
       nextProps.scenario.fragments.forEach(function(fragment) {
         if (fragment._id == nextProps.fragmentId) {
           fragmentName = fragment.name;
+          fragID = fragment._id;
         }
       });
-      this.setState({newFragmentName: fragmentName});
+      this.setState({newFragmentName: fragmentName, fragmentID: fragID});
     },
     onFragmentNameChange: function(name) {
-      this.setState({newScenarioName: name});
+      this.setState({newFragmentName: name});
     },
     handleRenameClick: function() {
       if(this.state.nameIsEditable)
       {
-        var newScenario = this.props.scenario;
-        newScenario.name = this.state.newScenarioName;
+        var newFragment = "";
+        var fragID = this.state.fragmentID;
+        var newFragName = this.state.newFragmentName;
+        this.props.scenario.fragments.forEach(function(fragment) {
+          console.log("fragment._id: ", fragment._id, " fragID: ", fragID);
+          if(fragment._id == fragID) {
+            newFragment = JSON.parse(JSON.stringify(fragment)); // clone the object, not the pointer
+            newFragment.name = newFragName;
+            console.log("FragmentTopBar newFragment 1:", newFragment);
+          }
+        });
 
-        if (NameCheck.check(newScenario.name)) {
-            API.exportScenario(newScenario);
-            MessageHandler.handleMessage("success","Saved scenario-details!");
+        if (NameCheck.check(this.state.newFragmentName)
+        && NameCheck.isUnique(this.state.newFragmentName, this.props.scenario.fragments)) {
+          console.log("FragmentTopBar newFragment 2: ", newFragment);
+          API.exportFragment(newFragment, function() {
+            MessageHandler.handleMessage("success","Saved new fragment name!");
+            SideBarManager.reload();
+          });
         }
       }
       this.setState({nameIsEditable: !this.state.nameIsEditable});
@@ -80,7 +97,7 @@ var FragmentTopBarComponent = React.createClass({
                         data-target="#deleteScenarioModal"
                         data-scenid={this.props.scenario._id}
                     >
-                        <i className="fa fa-trash"></i> Delete
+                        <i className="fa fa-trash"></i> TODO Delete
                     </button>
                     <button
                         type="button"
@@ -89,7 +106,7 @@ var FragmentTopBarComponent = React.createClass({
                         data-target="#exportScenarioModal"
                         data-scenid={this.props.scenario._id}
                     >
-                        <i className="fa fa-wrench"></i> Deploy
+                        <i className="fa fa-wrench"></i> TODO Deploy
                     </button>
                 </div>
               </div>
