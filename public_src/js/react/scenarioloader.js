@@ -1,6 +1,8 @@
 var React = require('react');
 var API = require('./../api');
 var SideBarComponent = require('./sidebar/sidebar');
+var SideBarManager = require('./../sidebarmanager');
+var MessageHandler = require('./../messagehandler');
 var ScenarioTopBarComponent = require('./topbar/scenariotopbar');
 var FragmentTopBarComponent = require('./topbar/fragmenttopbar');
 
@@ -29,6 +31,7 @@ var ScenarioLoader = React.createClass({
       }.bind(this));
   },
   componentDidMount: function() {
+      SideBarManager.setHandler(this.loadScenario);
       this.loadScenario();
       MessageHandler.resetMessages();
   },
@@ -44,7 +47,8 @@ var ScenarioLoader = React.createClass({
   },
   render: function() {
       console.log("ScenarioLoader props: ", this.props);
-      this.props.children.props.params.scenario = this.state.scenario;
+      console.log("ScenarioLoader state: ", this.state);
+      //this.props.children.props.params.scenario = this.state.scenario;
 
       var topBar;
       var componentName = this.props.routes[this.props.routes.length - 1].component.displayName;

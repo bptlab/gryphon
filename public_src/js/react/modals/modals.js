@@ -1,4 +1,5 @@
 var React = require('react');
+var CreateFragmentModal = require('./createfragment');
 var ModifyFragmentModal = require('./modifiyfragment');
 var CreateScenarioModal = require('./createscenario');
 var DeleteScenarioModal = require('./deletescenario');
@@ -20,6 +21,7 @@ var ModalComponent = React.createClass({
     render: function() {
         return (
             <div>
+                <CreateFragmentModal />
                 <DeleteFragmentModal />
                 <ModifyFragmentModal />
                 <CreateScenarioModal />

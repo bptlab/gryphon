@@ -29,13 +29,15 @@ var SideBarFragmentList = React.createClass({
                   <ul className="sub-links">
                       {list}
                       <li>
-                        <a
-                            href="#"
+                        <button
+                            type="button"
+                            className="btn btn-link btn-sm"
                             data-toggle="modal"
                             data-target="#createFragmentModal"
+                            data-scenid={this.props.scenario._id}
                         >
                             <i className="fa fa-plus"></i> Create a fragment
-                        </a>
+                        </button>
                       </li>
                   </ul>
                 </div>
