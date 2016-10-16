@@ -37,15 +37,17 @@ var FragmentTopBarComponent = React.createClass({
         var newFragment = "";
         var fragID = this.state.fragmentID;
         var newFragName = this.state.newFragmentName;
+        var oldFragName = "";
         this.props.scenario.fragments.forEach(function(fragment) {
-          console.log("fragment._id: ", fragment._id, " fragID: ", fragID);
           if(fragment._id == fragID) {
+            oldFragName = fragment.name;
             newFragment = JSON.parse(JSON.stringify(fragment)); // clone the object, not the pointer
             newFragment.name = newFragName;
           }
         });
 
         if (NameCheck.check(this.state.newFragmentName)
+        && (this.state.newFragmentName != oldFragName)
         && NameCheck.isUnique(this.state.newFragmentName, this.props.scenario.fragments)) {
           API.exportFragment(newFragment, function() {
             MessageHandler.handleMessage("success","Saved new fragment name!");
