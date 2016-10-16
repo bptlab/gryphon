@@ -1,4 +1,5 @@
 var React = require('react');
+var Link = require('react-router').Link;
 var TopBarInput = require('./topbarinput');
 var API = require('./../../api');
 var MessageHandler = require('./../../messagehandler');
@@ -49,7 +50,10 @@ var FragmentTopBarComponent = React.createClass({
                   </a>
                   &nbsp;
 
-                  {this.props.scenario.name}&nbsp;/&nbsp;
+                  <Link to={"scenario/" + this.props.scenario._id}>
+                    {this.props.scenario.name}
+                  </Link>
+                  &nbsp;/&nbsp;
 
                     <TopBarInput
                       initialValue={this.state.newFragmentName}
