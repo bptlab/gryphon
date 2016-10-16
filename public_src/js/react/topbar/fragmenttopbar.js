@@ -42,13 +42,11 @@ var FragmentTopBarComponent = React.createClass({
           if(fragment._id == fragID) {
             newFragment = JSON.parse(JSON.stringify(fragment)); // clone the object, not the pointer
             newFragment.name = newFragName;
-            console.log("FragmentTopBar newFragment 1:", newFragment);
           }
         });
 
         if (NameCheck.check(this.state.newFragmentName)
         && NameCheck.isUnique(this.state.newFragmentName, this.props.scenario.fragments)) {
-          console.log("FragmentTopBar newFragment 2: ", newFragment);
           API.exportFragment(newFragment, function() {
             MessageHandler.handleMessage("success","Saved new fragment name!");
             SideBarManager.reload();
