@@ -92,10 +92,10 @@ var FragmentTopBarComponent = React.createClass({
                         type="button"
                         className="btn btn-danger"
                         data-toggle="modal"
-                        data-target="#deleteScenarioModal"
-                        data-scenid={this.props.scenario._id}
+                        data-target="#deleteFragmentModal"
+                        data-fragid={this.state.fragmentID}
                     >
-                        <i className="fa fa-trash"></i> TODO Delete
+                        <i className="fa fa-trash"></i> Delete
                     </button>
                     <button
                         type="button"
