@@ -40,7 +40,10 @@ ContextPadProvider.$inject = [
 
 module.exports = ContextPadProvider;
 
-
+/**
+ * The code for this provider is based on the code of the real provider (availabel in the lib/features/context-pad module of bpmn-js)
+ * It is adapted in a way that the most components are left out. The only options left are the ones to attach another node to the olc.
+ */
 ContextPadProvider.prototype.getContextPadEntries = function(element) {
 
     var contextPad = this._contextPad,

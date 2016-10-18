@@ -3,7 +3,8 @@
 var assign = require('lodash/object/assign');
 
 /**
- * A palette provider for BPMN 2.0 elements.
+ * The code for this provider is based on the code of the real provider (availabel in the lib/features/palette module of bpmn-js)
+ * It is adapted in a way that the most components are left out. The only options left are the ones to attach another node to the olc.
  */
 function PaletteProvider(palette, create, elementFactory, spaceTool, lassoTool) {
 
@@ -55,7 +56,7 @@ PaletteProvider.prototype.getPaletteEntries = function(element) {
     }
 
     assign(actions, {
-        'lasso-tool': {
+        'lasso-tool': { //The lasso-tool
             group: 'tools',
             className: 'bpmn-icon-lasso-tool',
             title: 'Activate the lasso tool',
@@ -65,7 +66,7 @@ PaletteProvider.prototype.getPaletteEntries = function(element) {
                 }
             }
         },
-        'space-tool': {
+        'space-tool': { //The space-tool
             group: 'tools',
             className: 'bpmn-icon-space-tool',
             title: 'Activate the create/remove space tool',
@@ -75,11 +76,11 @@ PaletteProvider.prototype.getPaletteEntries = function(element) {
                 }
             }
         },
-        'tool-separator': {
+        'tool-separator': { //The seperator-tool
             group: 'tools',
             separator: true
         },
-        'create.intermediate-event': createAction(
+        'create.intermediate-event': createAction( //The tool to create another event in the olc.
             'bpmn:IntermediateThrowEvent', 'event', 'bpmn-icon-intermediate-event-none'
         )
     });

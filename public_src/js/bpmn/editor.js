@@ -28,6 +28,11 @@ Editor.prototype.importFragment = function(fragment, callback) {
         $('#fragment-properties').empty();
         this.renderer.destroy();
     }
+    /**
+     * This renders an editor and loads the diagram.
+     * It overrides the PropertyPanelProvider and loads the Panel itself.
+     * It also loads (moddleExtensions) the additional bpmn-definitions.
+     */
     this.renderer = new BPMNModeller({
         container: this.canvas,
         propertiesPanel: {
@@ -47,6 +52,10 @@ Editor.prototype.importFragment = function(fragment, callback) {
     }.bind(this));
 };
 
+/**
+ * This function handles changes of the edited diagram. In case there is a change on a
+ * dataobjectreference it ensures that the propertys dataclass and state get updated correctly.
+ */
 Editor.prototype.handleChange = function(event, object) {
     if (object.element.businessObject != null) {
         var bo = object.element.businessObject;
