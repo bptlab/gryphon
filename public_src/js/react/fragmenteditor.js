@@ -54,25 +54,23 @@ var FragmentEditorComponent = React.createClass({
             show_success = true;
         }
         var res_handler = function(data) {
-            console.log("FragmentEditor saveDiagram res_handler data: ", data);
+          console.log("FragmentEditor saveDiagram res_handler data: ", data);
+          if (show_success) {
+            MessageHandler.handleMessage('success', 'Saved fragment!');
+          }
+          API.validateFragment(this.state.fragment._id,function(result){
             if (show_success) {
-                MessageHandler.handleMessage('success', 'Saved fragment!');
+              result.messages.forEach(function(message){
+                MessageHandler.handleMessage(message.type, message.text);
+              })
             }
-            API.validateFragment(this.state.fragment._id,function(result){
-                if (show_success) {
-                    result.messages.forEach(function(message){
-                        MessageHandler.handleMessage(message.type, message.text);
-
-                    })
-                }
-            }.bind(this))
+          }.bind(this))
         }.bind(this);
-        console.log("FragmentEditorComponent saveDiagram this.state:", this.state);
-        console.log("FragmentEditorComponent saveDiagram this.props:", this.props);
         if (this.state.editor !== null && this.state.fragment !== null) {
-            this.state.editor.exportFragment(this.state.fragment, function(data) {
-                API.exportFragment(this.props.scenario, data, res_handler);
-            }.bind(this));
+          this.state.editor.exportFragment(this.state.fragment, function(data) {
+            // TODO FIXME: res_handler is never called...why? Maybe because the answer is not valid JSON?
+            API.exportFragment(this.state.fragment, data, res_handler);
+          }.bind(this));
         }
     },
     componentWillUnmount: function() {
