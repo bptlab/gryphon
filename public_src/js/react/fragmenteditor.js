@@ -15,7 +15,7 @@ var FragmentEditorComponent = React.createClass({
     render: function() {
         return (
             <div className="fragmentEditor">
-                <div className="lowerRightButtons" id="upperRightButtons">
+                <div className="upperRightButtons" id="upperRightButtons">
                     <button type="button" className="btn btn-success" onClick={this.saveDiagram} >Save Fragment</button>
                 </div>
                 <div className="canvas" id="fragment-canvas" />
@@ -54,7 +54,7 @@ var FragmentEditorComponent = React.createClass({
             show_success = true;
         }
         var res_handler = function(data) {
-            console.log(data);
+            console.log("FragmentEditor saveDiagram res_handler data: ", data);
             if (show_success) {
                 MessageHandler.handleMessage('success', 'Saved fragment!');
             }
@@ -67,10 +67,12 @@ var FragmentEditorComponent = React.createClass({
                 }
             }.bind(this))
         }.bind(this);
+        console.log("FragmentEditorComponent saveDiagram this.state:", this.state);
+        console.log("FragmentEditorComponent saveDiagram this.props:", this.props);
         if (this.state.editor !== null && this.state.fragment !== null) {
             this.state.editor.exportFragment(this.state.fragment, function(data) {
                 API.exportFragment(this.props.scenario, data, res_handler);
-            });
+            }.bind(this));
         }
     },
     componentWillUnmount: function() {

@@ -16,6 +16,7 @@ var FragmentTopBarComponent = React.createClass({
     },
     componentDidMount: function() {
       this.setState({nameIsEditable: false});
+      console.log("FragmentTopBarComponent props: ", this.props)
     },
     componentWillReceiveProps: function(nextProps) {
       var fragmentName = "";
