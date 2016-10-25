@@ -2,10 +2,30 @@ var React = require('react');
 var Link = require('react-router').Link;
 var API = require('./../api');
 
+var SearchBarComponent = React.createClass({
+  handleChange: function() {
+    this.props.onUserInput(this.refs.filterTextInput.value);
+  },
+  render: function() {
+    return(
+      <form>
+        <input
+          type="text"
+          placeholder="Search..."
+          value={this.props.filterText}
+          ref="filterTextInput"
+          onChange={this.handleChange}
+        />
+      </form>
+    );
+  }
+});
+
 var IndexComponent = React.createClass({
     getInitialState: function() {
         return {
-            scenarios: []
+            scenarios: [],
+            filterText: "",
         }
     },
     componentDidMount: function() {
@@ -18,12 +38,19 @@ var IndexComponent = React.createClass({
             }
         }.bind(this))
     },
+    handleFilterChange: function(newFilterText) {
+      this.setState({filterText: newFilterText});
+    },
     render: function() {
         var scenarioArray = [[]];
         var row = 0;
         var col = 0;
         var maxCols = 4;
+
         this.state.scenarios.forEach(function(scenario) {
+          if (scenario.name.indexOf(this.state.filterText) === -1) {
+            return;
+          }
           scenarioArray[row].push(scenario);
           col++;
           if (col >= maxCols) {
@@ -31,7 +58,7 @@ var IndexComponent = React.createClass({
             row++;
             col = 0;
           }
-        });
+        }.bind(this));
 
         var scenarios = scenarioArray.map(function(scenarioRow, i) {
 
@@ -83,7 +110,10 @@ var IndexComponent = React.createClass({
                       </h2>
                     </div>
                     <div className="col-md-4 pull-right">
-                      <input type="text" defaultValue="Search Bar"/>
+                      <SearchBarComponent
+                        filterText={this.state.filterText}
+                        onUserInput={this.handleFilterChange}
+                      />
                     </div>
                   </div>
                 </div>
