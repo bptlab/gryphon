@@ -88,9 +88,10 @@ var DataClassAttributeComponent = React.createClass({
 var DataClassHeaderComponent = React.createClass({
     render: function() {
         var olcStatus = '';
+        console.log("DataClassHeader props: ", this.props);
         if (this.props.changed == false) {
             olcStatus = (
-                <Link to={"olc/" + this.props.dmid + "/" + this.props.id} className="btn btn-primary">
+                <Link to={"scenario/" + this.props.scenid + "/domainmodel/" + this.props.dmid + "/olc/" + this.props.id} className="btn btn-primary">
                     Edit OLC
                 </Link>
             )
@@ -274,6 +275,7 @@ var DataClassComponent = React.createClass({
                     handleDelete={this.props.handleDelete}
                     exportClass={this.exportClass}
                     is_event={this.props.is_event}
+                    scenid={this.props.scenid}
                     changed={this.props.modelChanged}
                 />
                 <ul className="list-group">

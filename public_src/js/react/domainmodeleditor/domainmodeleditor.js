@@ -168,6 +168,7 @@ var DomainModelEditorComponent = React.createClass({
               modelChanged={this.state.changed}
               id={selectedDataclass._id}
               dmid = {this.props.scenario.domainmodel._id}
+              scenid = {this.props.scenario._id}
               />;
 
         return (
