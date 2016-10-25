@@ -65,9 +65,9 @@ var IndexComponent = React.createClass({
           var scenarioCols = scenarioRow.map(function(scenario, j) {
             var key = "scenario_row_" + i + "_col_" + j;
             return (
-              <div className="col-md-3" key={key}>
+              <div className="col-md-3 h2" key={key}>
                 <Link to={"scenario/" + scenario._id}>
-                    {scenario.name}
+                    <i className="fa fa-briefcase"></i> {scenario.name}
                 </Link>
               </div>
             )
@@ -83,17 +83,27 @@ var IndexComponent = React.createClass({
 
         return (
             <div className="col-md-12">
+
               <div className="row">
-                <div className="col-md-8">
-                  <h1>Gryphon Case Modeler</h1>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-3">
-                  About
-                </div>
-                <div className="col-md-3">
-                  Getting Started
+                <div className="col-md-10">
+                  <div className="panel panel-default">
+
+                    <div className="panel-body bgcolor">
+                      <div className="row">
+                        <div className="h1 col-md-10 text-center">Gryphon Case Modeler</div>
+                        <div className="col-md-2 text-right">
+                          <img src="./img/hpi_bw.png" alt="HPI" style={{width:'100px',height:'100px'}} />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="panel-footer">
+                      <div className="row">
+                        <div className="col-md-2"><a href="about">About</a></div>
+                        <div className="col-md-2"><a href="gettingstarted">Getting Started</a></div>
+                      </div>
+                    </div>
+
+                  </div>
                 </div>
               </div>
 
@@ -118,24 +128,25 @@ var IndexComponent = React.createClass({
                   </div>
                 </div>
 
+                <div className="panel-body">
                 {scenarios}
-
-                <div className="row">
-                  <div className="col-md-2">
-                    <a
-                        href="#"
-                        data-toggle="modal"
-                        data-target="#createScenarioModal"
-                    >
-                        <i className="fa fa-plus"></i>Create a scenario
-                    </a>
+                  <div className="row">
+                    <div className="col-md-2">
+                      <a
+                          href="#"
+                          data-toggle="modal"
+                          data-target="#createScenarioModal"
+                      >
+                          <i className="fa fa-plus"></i>Create a scenario
+                      </a>
+                    </div>
                   </div>
                 </div>
 
               </div>
 
             </div>
-        )
+        );
     }
 });
 

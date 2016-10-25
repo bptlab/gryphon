@@ -72,3 +72,9 @@ body {
     border: none;
     background: transparent;
 }
+
+.bgcolor {
+    background-image: none;
+    background: #1A662E;
+    color: #EEEEEE;
+}
