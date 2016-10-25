@@ -1,4 +1,7 @@
 var React = require('react');
+var CreateDomainModelClassModal = require('./createdomainmodelclass');
+var DeleteDomainModelClassModal = require('./deletedomainmodelclass');
+var ModifyDomainModelClassModal = require('./modifydomainmodelclass');
 var CreateFragmentModal = require('./createfragment');
 var ModifyFragmentModal = require('./modifiyfragment');
 var CreateScenarioModal = require('./createscenario');
@@ -21,6 +24,9 @@ var ModalComponent = React.createClass({
     render: function() {
         return (
             <div>
+                <CreateDomainModelClassModal />
+                <DeleteDomainModelClassModal />
+                <ModifyDomainModelClassModal />
                 <CreateFragmentModal />
                 <DeleteFragmentModal />
                 <ModifyFragmentModal />

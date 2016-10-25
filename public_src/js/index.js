@@ -27,7 +27,6 @@ $(function () {
                 <Route path="scenario/" component={ScenarioLoader}>
                   <Route path=":scenarioId" component={ScenarioEditorComponent} />
                   <Route path=":scenarioId/fragment/:fragmentId" component={FragmentEditorComponent} />
-                  <Route path=":scenarioId/domainmodel/:domainmodelId" component={DomainModelEditorComponent} />
                   <Route path=":scenarioId/domainmodel/:domainmodelId/dataclass/:dataclassId" component={DomainModelEditorComponent} />
                 </Route>
 

@@ -10,9 +10,10 @@ var SideBarSingleDomainModelAttribute = React.createClass({
                   type="button"
                   className="btn btn-success btn-xs"
                   data-toggle="modal"
-                  data-target="#modifyFragmentModal"
-                  data-fragid={this.props.dataclass._id}
-                  data-fragname={this.props.dataclass.name}
+                  data-target="#ModifyDomainModelClassModal"
+                  data-scenid={this.props.scenario._id}
+                  data-classid={this.props.dataclass._id}
+                  data-classname={this.props.dataclass.name}
               >
                   <i className="fa fa-pencil"></i>
               </button>
@@ -20,8 +21,9 @@ var SideBarSingleDomainModelAttribute = React.createClass({
                       type="button"
                       className="btn btn-danger btn-xs"
                       data-toggle="modal"
-                      data-target="#deleteFragmentModal"
-                      data-fragid={this.props.dataclass._id}
+                      data-target="#DeleteDomainModelClassModal"
+                      data-scenid={this.props.scenario._id}
+                      data-classid={this.props.dataclass._id}
                   >
                       <i className="fa fa-trash"></i>
                   </button>

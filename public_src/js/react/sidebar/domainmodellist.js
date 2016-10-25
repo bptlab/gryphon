@@ -17,21 +17,21 @@ var SideBarDomainModel = React.createClass({
     return (
       <div className="sidebar-links">
           <div className="link-blue selected">
-              <Link
-                to={"scenario/" + this.props.scenario._id + "/domainmodel/" + this.props.scenario.domainmodel._id}
-              >
+              <a>
                 <i className="fa fa-newspaper-o"></i>DomainModel
-              </Link>
+              </a>
               <ul className="sub-links">
                   {list}
                   <li>
-                    <a
-                        href="#"
+                    <button
+                        type="button"
+                        className="btn btn-link btn-sm"
                         data-toggle="modal"
-                        data-target="#createFragmentModal"
+                        data-target="#createDomainModelClassModal"
+                        data-scenid={this.props.scenario._id}
                     >
                         <i className="fa fa-plus"></i> Create a data class
-                    </a>
+                    </button>
                   </li>
               </ul>
           </div>
