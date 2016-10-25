@@ -249,6 +249,8 @@ var DataClassComponent = React.createClass({
         }
     },
     render: function() {
+      console.log("Dataclass render props: ", this.props);
+      console.log("Dataclass render state: ", this.state);
         var items = this.state.items.map(function(item, i) {
             return (
                 <DataClassAttributeComponent

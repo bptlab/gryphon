@@ -4,8 +4,6 @@ var NameCheck = require('./../../namecheck');
 var API = require('./../../api');
 var Config = require('./../../config');
 var DataClassComponent = require('./dataclass');
-var SideBarComponent = require('./../sidebar/sidebar');
-var ScenarioTopBarComponent = require('./../topbar/scenariotopbar');
 
 var CreateNewClassComponent = React.createClass({
     getInitialState: function() {
@@ -93,14 +91,15 @@ var DomainModelEditorComponent = React.createClass({
         }
     },
     handleExport: function() {
-        API.exportDomainModel(this.state.dm,function(data){
+        API.exportDomainModel(this.props.scenario.domainmodel,function(data){
             this.setState({'changed':false,'dm':data});
         }.bind(this));
         MessageHandler.handleMessage('success','Saved domain model.');
     },
     handleUpdate: function(index) {
+        console.log("DomainModelEditor handleUpdate()");
         return function(dataclass) {
-            var dm = this.state.dm;
+            var dm = this.props.scenario.domainmodel;
             for (var attr in dataclass) {
                 if (dataclass.hasOwnProperty(attr)) {
                     dm.dataclasses[index][attr] = dataclass[attr];
@@ -111,7 +110,7 @@ var DomainModelEditorComponent = React.createClass({
     },
     handleDelete: function(index) {
         return function() {
-            var dm = this.state.dm;
+            var dm = this.props.scenario.domainmodel;
             dm.dataclasses.splice(index,1);
             this.setState({'dm':dm, 'changed':true});
         }.bind(this);
@@ -123,7 +122,7 @@ var DomainModelEditorComponent = React.createClass({
             "attributes": [],
             "olc": Config.DEFAULT_OLC_XML
         };
-        var dm = this.state.dm;
+        var dm = this.props.scenario.domainmodel;
         if (NameCheck.isUnique(dataclass.name, dm.dataclasses)) {
             dm.dataclasses.push(dataclass);
             this.setState({'dm':dm, 'changed':true});
@@ -135,23 +134,24 @@ var DomainModelEditorComponent = React.createClass({
         if (types.indexOf(type) >= 0) {
             return true;
         }
-        return this.state.dm.dataclasses.some(function(dataclass){
+        return this.props.scenario.domainmodel.dataclasses.some(function(dataclass){
             return (dataclass.name == type)
         })
     },
     getAvailableDataTypes: function() {
         var types = [];
-        types = types.concat(this.state.dm.dataclasses.map(function(dataclass){
+        types = types.concat(this.props.scenario.domainmodel.dataclasses.map(function(dataclass){
             return dataclass.name;
         }));
         return types;
     },
     render: function() {
+      console.log("DomainModelEditor.render() props: ", this.props);
         var selectedDataclass = {};
         var i = 0;
-        for (var i = 0; i < this.state.dm.dataclasses.length; i++){
-          if(this.state.dm.dataclasses[i]._id == this.props.params.dataclassId) {
-            selectedDataclass = this.state.dm.dataclasses[i];
+        for (var i = 0; i < this.props.scenario.domainmodel.dataclasses.length; i++){
+          if(this.props.scenario.domainmodel.dataclasses[i]._id == this.props.params.dataclassId) {
+            selectedDataclass = this.props.scenario.domainmodel.dataclasses[i];
             break;
           }
         }
@@ -167,7 +167,7 @@ var DomainModelEditorComponent = React.createClass({
               availableDataTypes={this.getAvailableDataTypes()}
               modelChanged={this.state.changed}
               id={selectedDataclass._id}
-              dmid = {this.state.dm._id}
+              dmid = {this.props.scenario.domainmodel._id}
               />;
 
         return (
@@ -197,7 +197,7 @@ var DomainModelEditorComponent = React.createClass({
         }.bind(this));
     },
     componentDidUpdate: function() {
-        if (this.props.params.id != this.state.dm._id) {
+        if (this.props.params.domainmodelId != this.props.scenario.domainmodel._id) {
             API.loadDomainModel(this.props.params.domainmodelId, function(data,resp) {
                 this.setState({'dm': data});
                 MessageHandler.resetMessages();
