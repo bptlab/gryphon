@@ -1,6 +1,7 @@
 var React = require('react');
 var API = require('./../../api');
 var SideBarManager = require('./../../sidebarmanager');
+var Link = require('react-router').Link;
 
 var DeleteFragmentModal = React.createClass({
     getInitialState: function() {
@@ -31,7 +32,9 @@ var DeleteFragmentModal = React.createClass({
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-danger" onClick={this.handleClick}>Delete Fragment</button>
+                            <Link to={"scenario/" + this.state.scenID}>
+                              <button type="button" className="btn btn-danger" onClick={this.handleClick}>Delete Fragment</button>
+                            </Link>
                         </div>
                     </div>
                 </div>

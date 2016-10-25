@@ -5,6 +5,7 @@ var SideBarManager = require('./../sidebarmanager');
 var MessageHandler = require('./../messagehandler');
 var ScenarioTopBarComponent = require('./topbar/scenariotopbar');
 var FragmentTopBarComponent = require('./topbar/fragmenttopbar');
+var DomainModelClassTopBarComponent = require('./topbar/domainmodelclasstopbar');
 
 var ScenarioLoader = React.createClass({
   getInitialState: function() {
@@ -51,9 +52,9 @@ var ScenarioLoader = React.createClass({
       //this.props.children.props.params.scenario = this.state.scenario;
 
       var topBar = <ScenarioTopBarComponent scenario={this.state.scenario} />
-      if (this.props.params.domainmodelId !== undefined)
+      if (this.props.params.dataclassId !== undefined)
       {
-        console.log("ScenarioLoader.render() DomainModelTopBar Stub!");
+        topBar = <DomainModelClassTopBarComponent scenario={this.state.scenario} dataclassId={this.props.params.dataclassId} />
       }
       else if (this.props.params.fragmentId !== undefined)
       {
@@ -63,17 +64,6 @@ var ScenarioLoader = React.createClass({
       var editor = React.Children.map(this.props.children, function(child) {
         return React.cloneElement(child, { scenario: this.state.scenario });
       }.bind(this));
-
-//      var topBar;
-//      var componentName = this.props.routes[this.props.routes.length - 1].component.displayName;
-//      switch (componentName) {
-//        case "FragmentEditorComponent":
-//          topBar = <FragmentTopBarComponent scenario={this.state.scenario} fragmentId={this.props.params.fragmentId} />
-//          break;
-//        default:
-//          topBar = <ScenarioTopBarComponent scenario={this.state.scenario} />
-//          break;
-//      }
 
       return (
         <div className="app-container">

@@ -1,35 +1,60 @@
 var React = require('react');
+var Link = require('react-router').Link;
 var TopBarInput = require('./topbarinput');
 var API = require('./../../api');
 var MessageHandler = require('./../../messagehandler');
 var NameCheck = require('./../../namecheck');
-var Link = require('react-router').Link;
+var SideBarManager = require('./../../sidebarmanager');
 
-var ScenarioTopBarComponent = React.createClass({
+var DomainModelClassTopBarComponent = React.createClass({
     getInitialState: function() {
       return {
         nameIsEditable: false,
-        newScenarioName: "",
+        newClassName: "",
+        dataclassId: "",
       };
     },
     componentDidMount: function() {
       this.setState({nameIsEditable: false});
     },
     componentWillReceiveProps: function(nextProps) {
-      this.setState({newScenarioName: nextProps.scenario.name});
+      var className = "";
+      var classId = "";
+      nextProps.scenario.domainmodel.dataclasses.forEach(function(dataclass) {
+        if (dataclass._id == nextProps.dataclassId) {
+          className = dataclass.name;
+          classId = dataclass._id;
+        }
+      });
+      this.setState({newClassName: className, dataclassId: classId});
+      console.log("DomainModelClassTopBarComponent props: ", this.props)
     },
-    onScenarioNameChange: function(name) {
-      this.setState({newScenarioName: name});
+    onClassNameChange: function(name) {
+      this.setState({newClassName: name});
     },
     handleRenameClick: function() {
       if(this.state.nameIsEditable)
       {
-        var newScenario = this.props.scenario;
-        newScenario.name = this.state.newScenarioName;
+        var dataclassId = this.state.dataclassId;
+        var newClassName = this.state.newClassName;
+        var oldClassName = "";
+        var dm = JSON.parse(JSON.stringify(this.props.scenario.domainmodel));
+        dm.dataclasses.forEach(function(dataclass) {
+          if(dataclass._id == dataclassId) {
+            oldClassName = dataclass.name;
+            dataclass.name = newClassName;
+          }
+        });
 
-        if (NameCheck.check(newScenario.name)) {
-            API.exportScenario(newScenario);
-            MessageHandler.handleMessage("success","Saved scenario-details!");
+        if (NameCheck.check(this.state.newClassName)
+        && (this.state.newClassName != oldClassName)
+        && NameCheck.isUnique(this.state.newClassName, this.props.scenario.domainmodel.dataclasses)) {
+          API.exportDomainModel(dm, function(){
+            this.setState({dataclassId: ''});
+            this.setState({newClassName: ''});
+            MessageHandler.handleMessage('success', 'Renamed class!');
+            SideBarManager.reload();
+          }.bind(this));
         }
       }
       this.setState({nameIsEditable: !this.state.nameIsEditable});
@@ -44,11 +69,16 @@ var ScenarioTopBarComponent = React.createClass({
                   </a>
                   &nbsp;
 
+                  <Link to={"scenario/" + this.props.scenario._id}>
+                    {this.props.scenario.name}
+                  </Link>
+                  &nbsp;/&nbsp;
+
                     <TopBarInput
-                      initialValue={this.state.newScenarioName}
+                      initialValue={this.state.newClassName}
                       editable={this.state.nameIsEditable}
                       handleEnter={this.handleRenameClick}
-                      onChange={this.onScenarioNameChange}
+                      onChange={this.onClassNameChange}
                     />
                   </span>
                 <hr />
@@ -66,8 +96,9 @@ var ScenarioTopBarComponent = React.createClass({
                         type="button"
                         className="btn btn-danger"
                         data-toggle="modal"
-                        data-target="#deleteScenarioModal"
+                        data-target="#DeleteDomainModelClassModal"
                         data-scenid={this.props.scenario._id}
+                        data-classid={this.state.dataclassId}
                     >
                         <i className="fa fa-trash"></i> Delete
                     </button>
@@ -78,7 +109,7 @@ var ScenarioTopBarComponent = React.createClass({
                         data-target="#exportScenarioModal"
                         data-scenid={this.props.scenario._id}
                     >
-                        <i className="fa fa-wrench"></i> Deploy
+                        <i className="fa fa-wrench"></i> TODO Deploy
                     </button>
                 </div>
               </div>
@@ -87,4 +118,4 @@ var ScenarioTopBarComponent = React.createClass({
     }
 });
 
-module.exports = ScenarioTopBarComponent;
+module.exports = DomainModelClassTopBarComponent;

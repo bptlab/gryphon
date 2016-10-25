@@ -4,6 +4,7 @@ var NameCheck = require('./../../namecheck');
 var Config = require('./../../config');
 var SideBarManager = require('./../../sidebarmanager');
 var MessageHandler = require('./../../messagehandler');
+var Link = require('react-router').Link;
 
 var DeleteDomainModelClassModal = React.createClass({
     getInitialState: function() {
@@ -60,7 +61,9 @@ var DeleteDomainModelClassModal = React.createClass({
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="button" className="btn btn-danger" onClick={this.handleClick}>Delete Class</button>
+                                <Link to={"scenario/" + this.state.scenID}>
+                                  <button type="button" className="btn btn-danger" onClick={this.handleClick}>Delete Class</button>
+                                </Link>
                             </div>
                         </form>
                     </div>

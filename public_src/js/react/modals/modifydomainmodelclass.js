@@ -22,7 +22,7 @@ var ModifyDomainModelClassModal = React.createClass({
             this.setState({scenID:scenid, classID:classid, name:classname});
         }.bind(this))
     },
-    handleClick: function() {
+    handleSubmit: function() {
       // Loading the scenario *again* in the modal because we can't pass objects into a modal -- nice!
       API.getFullScenario(this.state.scenID,true,function(scenario){
         var dm = scenario.domainmodel;
@@ -34,12 +34,8 @@ var ModifyDomainModelClassModal = React.createClass({
             break;
           }
         }
-
-        console.log("new dm: ", dm);
-
         API.exportDomainModel(dm, function(){
-          this.setState({classID: ''});
-          this.setState({name: ''});
+          this.setState({classID: "", scenID: "", name: ""});
           MessageHandler.handleMessage('success', 'Renamed class!');
           SideBarManager.reload();
         }.bind(this));
@@ -84,8 +80,8 @@ var ModifyDomainModelClassModal = React.createClass({
                             </div>
 
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="button" className="btn btn-primary" onClick={this.handleClick}>Save Class</button>
+                                <button type="button" className="btn" data-dismiss="modal">Close</button>
+                                <button type="button" className="btn btn-primary" onClick={this.handleSubmit}>Save Class</button>
                             </div>
                         </form>
                     </div>

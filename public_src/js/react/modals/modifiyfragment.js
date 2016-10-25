@@ -29,7 +29,7 @@ var ModifyFragmentModal = React.createClass({
     },
     handleEnterSubmit: function(e) {
         if (e.keyCode == 13) {
-            this.props.handleSubmit()
+            this.handleSubmit()
         }
     },
     render: function() {
@@ -59,7 +59,7 @@ var ModifyFragmentModal = React.createClass({
                                 </fieldset>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="button" className="btn" data-dismiss="modal">Close</button>
                                 <button type="button" className="btn btn-primary" onClick={this.handleSubmit}>Save changes</button>
                             </div>
                         </form>
