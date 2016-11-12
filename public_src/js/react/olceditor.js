@@ -13,6 +13,7 @@ var OLCEditorComponent = React.createClass({
         }
     },
     render: function() {
+        console.log("OLC Editor render props: ", this.props);
         return (
             <div className="fragmentEditor">
                 <div className="upperRightButtons" id="upperRightButtons">
@@ -31,11 +32,11 @@ var OLCEditorComponent = React.createClass({
         this.setState({interval: interval});
     },
     loadDiagram: function() {
-        API.loadDomainModel(this.props.params.domainmodelId,function(data) {
-            this.setState({dm: data, dclassid: this.props.params.dataclassId});
+        API.loadDomainModel(this.props.domainmodelId,function(data) {
+            this.setState({dm: data, dclassid: this.props.dataclassId});
             console.log(data);
             var dclass = data.dataclasses.filter(function(dclass){
-                return (dclass._id == this.props.params.dataclassId);
+                return (dclass._id == this.props.dataclassId);
             }.bind(this));
             if (dclass.length !== 1){
                 console.log("Did something wrong.");
@@ -50,7 +51,7 @@ var OLCEditorComponent = React.createClass({
         }.bind(this));
     },
     componentDidUpdate: function() {
-        if (this.state.dm != null && this.state.dm._id != null && ((this.props.params.domainmodelId != this.state.dm._id) || (this.props.params.dataclassId != this.state.dclassid))) {
+        if (this.state.dm != null && this.state.dm._id != null && ((this.props.domainmodelId != this.state.dm._id) || (this.props.dataclassId != this.state.dclassid))) {
             this.saveDiagram(false);
             MessageHandler.resetMessages();
             this.loadDiagram();

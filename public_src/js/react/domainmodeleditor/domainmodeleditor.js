@@ -4,6 +4,7 @@ var NameCheck = require('./../../namecheck');
 var API = require('./../../api');
 var Config = require('./../../config');
 var DataClassComponent = require('./dataclass');
+var OLCEditorComponent = require('./../olceditor');
 
 var CreateNewClassComponent = React.createClass({
     getInitialState: function() {
@@ -182,6 +183,26 @@ var DomainModelEditorComponent = React.createClass({
                 <div className="row">
                   <div className="col-md-12">
                     {content}
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-12">
+                    <div className="panel panel-default">
+                      <div className="panel-heading">
+                        <a data-toggle="collapse" href="#collapseExample">
+                          <h3 className="panel-title">OLC Editor</h3>
+                        </a>
+                      </div>
+                      <div className="panel-body collapse" id="collapseExample">
+                        <div style={{height: "300px"}}>
+                        <OLCEditorComponent
+                          scenarioId={this.props.params.scenarioId}
+                          domainmodelId={this.props.params.domainmodelId}
+                          dataclassId={this.props.params.dataclassId}
+                        />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
             </div>

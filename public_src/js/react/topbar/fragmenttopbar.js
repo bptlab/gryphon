@@ -104,7 +104,7 @@ var FragmentTopBarComponent = React.createClass({
                     </button>
                     <button
                         type="button"
-                        className="btn btn-primary"
+                        className="btn btn-success"
                         onClick={this.handleSaveClick}
                     >
                         <i className="fa fa-wrench"></i> Save
