@@ -175,12 +175,9 @@ var DomainModelEditorComponent = React.createClass({
           <div>
             <div className="col-md-12">
                 <div className="row">
-                    <div className="col-md-6">
-                        <OperationsComponent onSave={this.handleExport} />
-                    </div>
-                    <div className="col-md-6">
-                        <CreateNewClassComponent onSubmit={this.handleCreateNew} />
-                    </div>
+                  <div className="col-md-12">
+                    <button className="btn btn-success" onClick={this.handleExport}>Save</button>
+                  </div>
                 </div>
                 <div className="row">
                   <div className="col-md-12">
