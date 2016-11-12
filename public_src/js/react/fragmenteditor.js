@@ -30,6 +30,7 @@ var FragmentEditorComponent = React.createClass({
         MessageHandler.resetMessages();
         var interval = setInterval(this.autoSave,Config.FRAGMENT_SAVE_INTERVAL);
         this.setState({interval: interval});
+        this.props.setEditorInstance(this);
     },
     loadDiagram: function() {
         API.getFragment(this.props.params.fragmentId,function(data) {

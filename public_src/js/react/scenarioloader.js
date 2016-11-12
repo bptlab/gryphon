@@ -22,7 +22,8 @@ var ScenarioLoader = React.createClass({
               terminationconditions: [],
               _id: "",
               startconditions: []
-          }
+          },
+          editorInstance: 0
       }
   },
   loadScenario: function() {
@@ -46,10 +47,22 @@ var ScenarioLoader = React.createClass({
       this.loadScenario();
       SideBarManager.reload();
   },
+  setEditorInstance : function(instance) {
+      this.setState({editorInstance: instance});
+      console.log("Editor instance: ", instance);
+  },
+  editorSave: function() {
+    this.state.editorInstance.saveDiagram(true);
+  },
   render: function() {
       console.log("ScenarioLoader props: ", this.props);
       console.log("ScenarioLoader state: ", this.state);
       //this.props.children.props.params.scenario = this.state.scenario;
+
+      var editor = React.Children.map(this.props.children, function(child) {
+        console.log("child: ", child);
+        return React.cloneElement(child, { scenario: this.state.scenario, setEditorInstance: this.setEditorInstance });
+      }.bind(this));
 
       var topBar = <ScenarioTopBarComponent scenario={this.state.scenario} />
       if (this.props.params.dataclassId !== undefined)
@@ -58,12 +71,8 @@ var ScenarioLoader = React.createClass({
       }
       else if (this.props.params.fragmentId !== undefined)
       {
-        topBar = <FragmentTopBarComponent scenario={this.state.scenario} fragmentId={this.props.params.fragmentId} />
+        topBar = <FragmentTopBarComponent scenario={this.state.scenario} fragmentId={this.props.params.fragmentId} editorSave={this.editorSave} />
       }
-
-      var editor = React.Children.map(this.props.children, function(child) {
-        return React.cloneElement(child, { scenario: this.state.scenario });
-      }.bind(this));
 
       return (
         <div className="app-container">

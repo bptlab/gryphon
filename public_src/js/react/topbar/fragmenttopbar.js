@@ -57,6 +57,9 @@ var FragmentTopBarComponent = React.createClass({
       }
       this.setState({nameIsEditable: !this.state.nameIsEditable});
     },
+    handleSaveClick: function() {
+      this.props.editorSave();
+    },
     render: function() {
         return (
             <div className="row">
@@ -102,11 +105,9 @@ var FragmentTopBarComponent = React.createClass({
                     <button
                         type="button"
                         className="btn btn-primary"
-                        data-toggle="modal"
-                        data-target="#exportScenarioModal"
-                        data-scenid={this.props.scenario._id}
+                        onClick={this.handleSaveClick}
                     >
-                        <i className="fa fa-wrench"></i> TODO Deploy
+                        <i className="fa fa-wrench"></i> Save
                     </button>
                 </div>
               </div>
