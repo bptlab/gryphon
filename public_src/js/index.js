@@ -24,6 +24,8 @@ var App = require('./react/index');
 //<Route path="exportconfig" component={ExportConfigComponent} />
 //<Route path="olc/:dmid/:dclassid" component={OLCEditorComponent} />
 
+//<Route path=":scenarioId/domainmodel/:domainmodelId/olc/:dataclassId" component={OLCEditorComponent} />
+
 $(function () {
     ReactDOM.render(
         <Router>
@@ -33,9 +35,7 @@ $(function () {
                   <Route path=":scenarioId" component={ScenarioEditorComponent} />
                   <Route path=":scenarioId/fragment/:fragmentId" component={FragmentEditorComponent} />
                   <Route path=":scenarioId/domainmodel/:domainmodelId/dataclass/:dataclassId" component={DomainModelEditorComponent} />
-                  <Route path=":scenarioId/domainmodel/:domainmodelId/olc/:dataclassId" component={OLCEditorComponent} />
                 </Route>
-
             </Route>
         </Router>,
         document.getElementById('app-container')

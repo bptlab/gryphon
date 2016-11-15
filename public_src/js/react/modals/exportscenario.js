@@ -51,7 +51,7 @@ var ExportScenarioModal = React.createClass({
             messages.push(<MessageComponent type="success" text="Scenario validated, everything okay!" allow_dismiss={false} />);
         }
         var targets = this.state.targets.map(function(target){
-            return <option value={target._id}>{target.name}</option>
+            return <option value={target._id} key={target._id}>{target.name}</option>
         });
         return (
             <div className="modal fade bs-example-modal-sm" tabIndex="-1" role="dialog" aria-labelledby="exportScenarioModalTitle" id="exportScenarioModal">

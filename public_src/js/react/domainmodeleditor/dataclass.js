@@ -39,13 +39,13 @@ var DataClassAttributeComponent = React.createClass({
     },
     render: function() {
         var availableFixedTypes = ["String","Integer","Double","Boolean","Enum","Date"].map(function(dt){
-            var key=this.props.name + "_" + dt;
+            var key="fixedType_" + dt;
             return (
                 <option value={dt} key={key}>{dt}</option>
             )
         });
         var availableTypes = this.props.availableDataTypes.map(function(dt){
-            var key = this.props.name + "_" + dt;
+            var key = "classType_" + dt;
             return (
                 <option value={dt} key={key}>{dt}</option>
             )
@@ -148,7 +148,10 @@ var DataClassFooterComponent = React.createClass({
 
 var DataClassComponent = React.createClass({
     getInitialState: function() {
-        return {items: [],newname:""};
+        return {
+          items: [{_id:"0",name:"",datatype:"String"}],
+          newname:""
+        };
     },
     handleAttrAdd: function(newItem) {
         if (NameCheck.check(newItem) && NameCheck.isUnique(newItem, this.state.items)) {
@@ -237,7 +240,11 @@ var DataClassComponent = React.createClass({
     render: function() {
       console.log("Dataclass render props: ", this.props);
       console.log("Dataclass render state: ", this.state);
+      if(!this.state.items) {
+        return (<div className="panel panel-default">loading...</div>);
+      }
         var items = this.state.items.map(function(item, i) {
+          console.log("current item: ", item);
             return (
                 <DataClassAttributeComponent
                     name={item.name}

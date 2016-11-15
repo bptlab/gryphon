@@ -28,11 +28,14 @@ var ScenarioLoader = React.createClass({
   },
   loadScenario: function() {
       var scen_id = this.props.params.scenarioId;
+      console.log("ScenarioLoader loadScenario() ", scen_id);
       API.getFullScenario(scen_id,true,function(data){
           this.setState({scenario: data});
+          console.log("ScenarioLoader scenario loaded.");
       }.bind(this));
   },
   componentDidMount: function() {
+    console.log("ScenarioLoader componentDidMount()");
       SideBarManager.setHandler(this.loadScenario);
       this.loadScenario();
       MessageHandler.resetMessages();
