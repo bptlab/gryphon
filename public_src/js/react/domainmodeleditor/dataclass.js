@@ -39,13 +39,15 @@ var DataClassAttributeComponent = React.createClass({
     },
     render: function() {
         var availableFixedTypes = ["String","Integer","Double","Boolean","Enum","Date"].map(function(dt){
+            var key=this.props.name + "_" + dt;
             return (
-                <option value={dt}>{dt}</option>
+                <option value={dt} key={key}>{dt}</option>
             )
         });
         var availableTypes = this.props.availableDataTypes.map(function(dt){
+            var key = this.props.name + "_" + dt;
             return (
-                <option value={dt}>{dt}</option>
+                <option value={dt} key={key}>{dt}</option>
             )
         });
         return (
@@ -87,15 +89,6 @@ var DataClassAttributeComponent = React.createClass({
 
 var DataClassHeaderComponent = React.createClass({
     render: function() {
-        var olcStatus = '';
-        console.log("DataClassHeader props: ", this.props);
-        if (this.props.changed == false) {
-            olcStatus = (
-                <Link to={"scenario/" + this.props.scenid + "/domainmodel/" + this.props.dmid + "/olc/" + this.props.id} className="btn btn-primary">
-                    Edit OLC
-                </Link>
-            )
-        }
         return (
             <div className="panel-heading clearfix">
                 <div className="row">
@@ -104,14 +97,6 @@ var DataClassHeaderComponent = React.createClass({
                             is_event={this.props.is_event}
                             handleType={this.props.handleType}
                         />
-                    </div>
-                    <div className="col-sm-6">
-                        <div className="btn-group">
-                            <button type="button" className="btn btn-danger" onClick={this.props.handleDelete}>
-                                <i className="fa fa-times" />
-                            </button>
-                            {olcStatus}
-                        </div>
                     </div>
                 </div>
             </div>

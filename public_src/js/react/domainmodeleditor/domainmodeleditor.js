@@ -88,8 +88,13 @@ var DomainModelEditorComponent = React.createClass({
                 name: "",
                 dataclasses: []
             },
-            changed: false
+            changed: false,
+            editorInstance: {}
         }
+    },
+    saveDiagram: function(show_success) {
+      this.handleExport();
+      this.refs.OLCEditor.saveDiagram(show_success);
     },
     handleExport: function() {
         API.exportDomainModel(this.props.scenario.domainmodel,function(data){
@@ -177,11 +182,6 @@ var DomainModelEditorComponent = React.createClass({
             <div className="col-md-12">
                 <div className="row">
                   <div className="col-md-12">
-                    <button className="btn btn-success" onClick={this.handleExport}>Save</button>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-12">
                     {content}
                   </div>
                 </div>
@@ -199,6 +199,7 @@ var DomainModelEditorComponent = React.createClass({
                           scenarioId={this.props.params.scenarioId}
                           domainmodelId={this.props.params.domainmodelId}
                           dataclassId={this.props.params.dataclassId}
+                          ref="OLCEditor"
                         />
                         </div>
                       </div>
@@ -214,6 +215,7 @@ var DomainModelEditorComponent = React.createClass({
             this.setState({'dm': data});
             MessageHandler.resetMessages();
         }.bind(this));
+        this.props.setEditorInstance(this);
     },
     componentDidUpdate: function() {
         if (this.props.params.domainmodelId != this.props.scenario.domainmodel._id) {

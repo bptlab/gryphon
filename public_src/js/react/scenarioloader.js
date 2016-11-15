@@ -67,7 +67,7 @@ var ScenarioLoader = React.createClass({
       var topBar = <ScenarioTopBarComponent scenario={this.state.scenario} />
       if (this.props.params.dataclassId !== undefined)
       {
-        topBar = <DomainModelClassTopBarComponent scenario={this.state.scenario} dataclassId={this.props.params.dataclassId} />
+        topBar = <DomainModelClassTopBarComponent scenario={this.state.scenario} dataclassId={this.props.params.dataclassId} editorSave={this.editorSave} />
       }
       else if (this.props.params.fragmentId !== undefined)
       {

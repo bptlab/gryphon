@@ -16,9 +16,6 @@ var OLCEditorComponent = React.createClass({
         console.log("OLC Editor render props: ", this.props);
         return (
             <div className="fragmentEditor">
-                <div className="upperRightButtons" id="upperRightButtons">
-                    <button type="button" className="btn btn-success" onClick={this.saveDiagram}>Save OLC</button>
-                </div>
                 <div className="canvas" id="fragment-canvas" />
             </div>
         )
