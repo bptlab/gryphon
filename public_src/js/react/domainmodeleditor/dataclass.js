@@ -257,6 +257,17 @@ var DataClassComponent = React.createClass({
                     handleEnterSubmit={this.handleEnterSubmit}
                 />);
         }.bind(this));
+
+//        <li className="list-group-item clearfix">
+//            <input
+//                type="text"
+//                className="form-control"
+//                value={this.props.name}
+//                onChange={this.handleClassNameChange}
+//                onKeyDown={this.handleEnterSubmit}
+//            />
+//        </li>
+
         return (
             <div className="panel panel-default">
                 <DataClassHeaderComponent
@@ -271,15 +282,6 @@ var DataClassComponent = React.createClass({
                     changed={this.props.modelChanged}
                 />
                 <ul className="list-group">
-                    <li className="list-group-item clearfix">
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={this.props.name}
-                            onChange={this.handleClassNameChange}
-                            onKeyDown={this.handleEnterSubmit}
-                        />
-                    </li>
                     {items}
                 </ul>
                 <DataClassFooterComponent handleAdd={this.handleAttrAdd} />
