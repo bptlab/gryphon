@@ -181,7 +181,7 @@ var DomainModelEditorComponent = React.createClass({
           <div>
             <div className="col-md-12">
                 <div className="row">
-                  <div className="col-md-12">
+                  <div className="col-md-8 col-md-offset-2">
                     {content}
                   </div>
                 </div>
