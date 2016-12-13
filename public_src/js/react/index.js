@@ -9,7 +9,7 @@ var App = React.createClass({
     render: function() {
         console.log(this.props);
         return (
-          <div className="app-container">
+          <div className="container-fluid">
             <ModalComponent />
             <MessageBar />
             <div className="app-container">
