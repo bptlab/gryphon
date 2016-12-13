@@ -57,7 +57,7 @@ var ScenarioTopBarComponent = React.createClass({
                 <div className="btn-group pull-right">
                   <button
                       type="button"
-                      className="btn btn-success"
+                      className="btn btn-default"
                       onClick={this.handleRenameClick}
                   >
                       <i className="fa fa-pencil"></i> {this.state.nameIsEditable ? "Done" : "Edit"}
