@@ -129,7 +129,10 @@ var IndexComponent = React.createClass({
                 </div>
 
                 <div className="panel-body">
-                {scenarios}
+                  {scenarios}
+                </div>
+
+                <div className="panel-footer">
                   <div className="row">
                     <div className="col-md-2">
                       <a
