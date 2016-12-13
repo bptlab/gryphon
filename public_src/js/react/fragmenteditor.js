@@ -15,9 +15,6 @@ var FragmentEditorComponent = React.createClass({
     render: function() {
         return (
             <div className="fragmentEditor">
-                <div className="upperRightButtons" id="upperRightButtons">
-                    <button type="button" className="btn btn-success" onClick={this.saveDiagram} >Save Fragment</button>
-                </div>
                 <div className="canvas" id="fragment-canvas" />
                 <div className="properties-panel" id="fragment-properties" />
             </div>

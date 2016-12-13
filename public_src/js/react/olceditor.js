@@ -15,13 +15,14 @@ var OLCEditorComponent = React.createClass({
     render: function() {
         console.log("OLC Editor render props: ", this.props);
         return (
-            <div className="fragmentEditor">
+            <div className="olcEditor">
                 <div className="canvas" id="fragment-canvas" />
+                <div className="properties-panel" id="fragment-properties" />
             </div>
         )
     },
     componentDidMount: function() {
-        var editor = new Editor($('#fragment-canvas'));
+        var editor = new Editor($('#fragment-canvas'),$('#fragment-properties'));
         this.setState({editor: editor});
         this.loadDiagram();
         MessageHandler.resetMessages();

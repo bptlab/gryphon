@@ -178,36 +178,35 @@ var DomainModelEditorComponent = React.createClass({
               />;
 
         return (
-          <div>
-            <div className="col-md-12">
+              <div>
+
                 <div className="row">
                   <div className="col-md-8">
                     {content}
                   </div>
                 </div>
+
                 <div className="row">
                   <div className="col-md-12">
                     <div className="panel panel-default">
                       <div className="panel-heading">
-                        <a data-toggle="collapse" href="#collapseExample">
+                        <a data-toggle="collapse" href="#editorCollapse">
                           <h3 className="panel-title">OLC Editor</h3>
                         </a>
                       </div>
-                      <div className="panel-body collapse" id="collapseExample">
-                        <div style={{height: "300px"}}>
+                      <div className="panel-body collapse" id="editorCollapse">
                         <OLCEditorComponent
                           scenarioId={this.props.params.scenarioId}
                           domainmodelId={this.props.params.domainmodelId}
                           dataclassId={this.props.params.dataclassId}
                           ref="OLCEditor"
                         />
-                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-            </div>
-          </div>
+
+              </div>
         )
     },
     componentDidMount: function() {

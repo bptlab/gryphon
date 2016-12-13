@@ -51,6 +51,10 @@
     height: 100%;
 }
 
+.olcEditor {
+    height: 300px;
+}
+
 html{
     height: 100%;
 }
@@ -60,6 +64,14 @@ body {
 
 .app-container {
     height: 100%;
+}
+
+.full-height {
+    height: 100%;
+}
+
+.full-width {
+    width: 100%;
 }
 
 .lowerRightButtons {
