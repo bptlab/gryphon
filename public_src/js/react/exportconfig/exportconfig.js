@@ -10,10 +10,7 @@ var ExportConfigComponent = React.createClass({
         }
     },
     updateData: function() {
-        console.log('Starting update!');
         API.getAvailableExports(function(data){
-            console.log('Update done!');
-            console.log(data);
             this.setState({exports: data})
         }.bind(this))
     },

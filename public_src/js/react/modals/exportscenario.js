@@ -30,7 +30,6 @@ var ExportScenarioModal = React.createClass({
         if (this.state.selectedTarget != "") {
             API.exportScenarioToChimera(this.state.scenID, this.state.selectedTarget, function(response){
                 MessageHandler.handleMessage('success','Exporting scenario');
-                console.log(response);
                 if (response != null && response.constructor === Array) {
                     response.forEach(function(message){
                         MessageHandler.handleMessage(message['type'],message['text']);

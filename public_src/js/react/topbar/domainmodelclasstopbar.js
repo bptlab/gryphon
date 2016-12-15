@@ -27,7 +27,6 @@ var DomainModelClassTopBarComponent = React.createClass({
         }
       });
       this.setState({newClassName: className, dataclassId: classId});
-      console.log("DomainModelClassTopBarComponent props: ", this.props)
     },
     onClassNameChange: function(name) {
       this.setState({newClassName: name});

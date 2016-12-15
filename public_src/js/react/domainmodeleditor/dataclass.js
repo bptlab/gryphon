@@ -238,13 +238,10 @@ var DataClassComponent = React.createClass({
         }
     },
     render: function() {
-      console.log("Dataclass render props: ", this.props);
-      console.log("Dataclass render state: ", this.state);
       if(!this.state.items) {
         return (<div className="panel panel-default">loading...</div>);
       }
         var items = this.state.items.map(function(item, i) {
-          console.log("current item: ", item);
             return (
                 <DataClassAttributeComponent
                     name={item.name}
@@ -257,16 +254,6 @@ var DataClassComponent = React.createClass({
                     handleEnterSubmit={this.handleEnterSubmit}
                 />);
         }.bind(this));
-
-//        <li className="list-group-item clearfix">
-//            <input
-//                type="text"
-//                className="form-control"
-//                value={this.props.name}
-//                onChange={this.handleClassNameChange}
-//                onKeyDown={this.handleEnterSubmit}
-//            />
-//        </li>
 
         return (
             <div className="panel panel-default">

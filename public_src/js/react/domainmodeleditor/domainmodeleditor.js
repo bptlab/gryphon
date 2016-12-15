@@ -103,7 +103,6 @@ var DomainModelEditorComponent = React.createClass({
         MessageHandler.handleMessage('success','Saved domain model.');
     },
     handleUpdate: function(index) {
-        console.log("DomainModelEditor handleUpdate()");
         return function(dataclass) {
             var dm = this.props.scenario.domainmodel;
             for (var attr in dataclass) {
@@ -152,7 +151,6 @@ var DomainModelEditorComponent = React.createClass({
         return types;
     },
     render: function() {
-      console.log("DomainModelEditor.render() props: ", this.props);
         var selectedDataclass = {};
         var i = 0;
         for (var i = 0; i < this.props.scenario.domainmodel.dataclasses.length; i++){

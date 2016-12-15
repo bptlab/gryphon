@@ -28,14 +28,11 @@ var ScenarioLoader = React.createClass({
   },
   loadScenario: function() {
       var scen_id = this.props.params.scenarioId;
-      console.log("ScenarioLoader loadScenario() ", scen_id);
       API.getFullScenario(scen_id,true,function(data){
           this.setState({scenario: data});
-          console.log("ScenarioLoader scenario loaded.");
       }.bind(this));
   },
   componentDidMount: function() {
-    console.log("ScenarioLoader componentDidMount()");
       SideBarManager.setHandler(this.loadScenario);
       this.loadScenario();
       MessageHandler.resetMessages();
@@ -52,18 +49,12 @@ var ScenarioLoader = React.createClass({
   },
   setEditorInstance : function(instance) {
       this.setState({editorInstance: instance});
-      console.log("Editor instance: ", instance);
   },
   editorSave: function() {
     this.state.editorInstance.saveDiagram(true);
   },
   render: function() {
-      console.log("ScenarioLoader props: ", this.props);
-      console.log("ScenarioLoader state: ", this.state);
-      //this.props.children.props.params.scenario = this.state.scenario;
-
       var editor = React.Children.map(this.props.children, function(child) {
-        console.log("child: ", child);
         return React.cloneElement(child, { scenario: this.state.scenario, setEditorInstance: this.setEditorInstance });
       }.bind(this));
 

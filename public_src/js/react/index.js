@@ -7,7 +7,6 @@ var MessageBar = require('./messagebar/messagebar');
 
 var App = React.createClass({
     render: function() {
-        console.log(this.props);
         return (
           <div className="container-fluid full-height">
             <ModalComponent />

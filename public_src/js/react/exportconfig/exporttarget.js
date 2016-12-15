@@ -11,7 +11,6 @@ var ExportTargetComponent = React.createClass({
     },
     handleUpdate: function() {
         API.validateExport(this.state.url,function(response){
-            console.log(response);
             MessageHandler.handleMessage(response.type,response.text);
         });
         if (this.props.deletable == true) {
@@ -32,7 +31,6 @@ var ExportTargetComponent = React.createClass({
     deleteExport: function() {
         API.deleteExport(this.props.id,function(response){
             MessageHandler.handleMessage("success","Removed export!");
-            console.log('Start update!');
             this.props.onUpdate();
         }.bind(this));
     },

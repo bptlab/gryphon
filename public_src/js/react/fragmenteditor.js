@@ -52,7 +52,6 @@ var FragmentEditorComponent = React.createClass({
             show_success = true;
         }
         var res_handler = function(data) {
-          console.log("FragmentEditor saveDiagram res_handler data: ", data);
           if (show_success) {
             MessageHandler.handleMessage('success', 'Saved fragment!');
           }
