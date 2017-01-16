@@ -98,8 +98,8 @@ var IndexComponent = React.createClass({
                     </div>
                     <div className="panel-footer">
                       <div className="row">
-                        <div className="col-md-2"><a href="about">About</a></div>
-                        <div className="col-md-2"><a href="gettingstarted">Getting Started</a></div>
+                        <div className="col-md-2 col-xs-6"><a href="about">About</a></div>
+                        <div className="col-md-2 col-xs-6"><a href="gettingstarted">Getting Started</a></div>
                       </div>
                     </div>
 
