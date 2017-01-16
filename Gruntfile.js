@@ -3,7 +3,9 @@ module.exports = function(grunt) {
         browserify: {
             js: {
                 options: {
-                    transform: [['babelify', {presets: ['react']}]]
+                    transform: [['babelify', {presets: ['react']}]],
+                    watch: true,
+                    keepAlive: true
                 },
                 src: ['./public_src/js/index.js'],
                 dest: './public/js/bundle.js'
