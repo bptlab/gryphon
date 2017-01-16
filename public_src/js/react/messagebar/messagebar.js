@@ -36,8 +36,10 @@ var MessageBarComponent = React.createClass({
             return <MessageComponent handleDelete={handleDelete} type={message.type} text={message.text} key={index}/>
         });
         return (
-            <div className="messagebar">
+            <div className="messagebar row">
+              <div className="messagebar-inner col-sx-12 col-md-8 col-md-offset-2">
                 {messages}
+              </div>
             </div>
         )
     },

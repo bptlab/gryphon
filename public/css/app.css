@@ -9,8 +9,18 @@
 }
 
 .messagebar {
+    position:fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    z-index:9999;
+    border-radius:0px
+}
+
+.messagebar-inner {
     padding: 5px;
 }
+
 .main-content-bpmn {
     font-family: Arial, Helvetica, sans-serif;
     padding-top: 0px;
