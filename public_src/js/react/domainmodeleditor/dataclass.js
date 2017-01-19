@@ -14,8 +14,14 @@ var TypeSelect = React.createClass({
         this.setState({value: newState});
         this.props.handleType(newState);
     },
+    componentWillReceiveProps: function(nextProps) {
+        var type;
+        if (nextProps.is_event) {type = "event"} else {type = "data"}
+        this.setState({value: type});
+    },
     render: function() {
         var value = this.state.value;
+        console.log("TypeSelect type: ", value);
         return (
             <select value={value} onChange={this.handleChange} className="form-control">
                 <option value="data">Data</option>
