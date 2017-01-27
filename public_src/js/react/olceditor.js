@@ -49,7 +49,8 @@ var OLCEditorComponent = React.createClass({
     },
     componentDidUpdate: function() {
         if (this.state.dm != null && this.state.dm._id != null && ((this.props.domainmodelId != this.state.dm._id) || (this.props.dataclassId != this.state.dclassid))) {
-            this.saveDiagram(false);
+            // Do not save automatically, this has to be done explicitly
+            //this.saveDiagram(false);
             MessageHandler.resetMessages();
             this.loadDiagram();
         }

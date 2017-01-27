@@ -11,6 +11,9 @@ var TypeSelect = React.createClass({
     },
     handleChange: function(event) {
         var newState = event.target.value;
+        if (newState == this.state.value)
+          return;
+          
         this.setState({value: newState});
         this.props.handleType(newState);
     },
