@@ -13,7 +13,6 @@ var OLCEditorComponent = React.createClass({
         }
     },
     render: function() {
-        console.log("OLC Editor render props: ", this.props);
         return (
             <div className="olcEditor">
                 <div className="canvas" id="fragment-canvas" />
@@ -65,10 +64,12 @@ var OLCEditorComponent = React.createClass({
                 MessageHandler.handleMessage('success', 'Saved OLC-diagram!');
             }
         }.bind(this);
-        if (this.state.editor !== null && this.state.fragment !== null) {
+        if (this.state.editor !== null && this.state.dclassid !== null && this.state.dm !== null) {
             this.state.editor.exportOLC(this.state.dm, this.state.dclassid, function(data) {
-                API.exportDomainModel(data, res_handler);
-            });
+                //API.exportDomainModel(data, res_handler);
+                this.props.changeHandler(data);
+                this.setState({dm: data});
+            }.bind(this));
         }
     },
     componentWillUnmount: function() {

@@ -93,11 +93,12 @@ var DomainModelEditorComponent = React.createClass({
         }
     },
     saveDiagram: function(show_success) {
-      this.handleExport();
       this.refs.OLCEditor.saveDiagram(show_success);
+      // This is ugly as sin, but saveDiagram will callback this.handleOlcChanged, which will update the state and *after that* call this.handleExport. Sorry!
+      //this.handleExport();
     },
     handleExport: function() {
-        API.exportDomainModel(this.props.scenario.domainmodel,function(data){
+        API.exportDomainModel(this.state.dm,function(data){
             this.setState({'changed':false,'dm':data});
         }.bind(this));
         MessageHandler.handleMessage('success','Saved domain model.');
@@ -133,6 +134,27 @@ var DomainModelEditorComponent = React.createClass({
             this.setState({'dm':dm, 'changed':true});
             return true; //signal successful creation (evaluated by invoking component)
         }
+    },
+    handleOlcChanged: function(olcDm) {
+        var targetClassId = this.props.params.dataclassId;
+        var mergedDomainModelClasses = this.state.dm.dataclasses.map(function(dataclass) {
+            // Find the data class with the updated OLC and merge that into our state
+            if (dataclass._id == targetClassId) {
+              var dataClassWithNewOLC = olcDm.dataclasses.find(function(dclass) {
+                  return dclass._id == targetClassId;
+              });
+              if (dataClassWithNewOLC) {
+                dataclass.olc = dataClassWithNewOLC.olc;
+              }
+            }
+            return dataclass;
+        });
+        var newDm = this.state.dm;
+        newDm.dataclasses = mergedDomainModelClasses;
+
+        this.setState({'dm':newDm, 'changed':true}, function () {
+          this.handleExport();
+        });
     },
     validateAttrType: function(type){
         var types = ["String","Integer","Double","Boolean","Enum"];
@@ -197,6 +219,7 @@ var DomainModelEditorComponent = React.createClass({
                           scenarioId={this.props.params.scenarioId}
                           domainmodelId={this.props.params.domainmodelId}
                           dataclassId={this.props.params.dataclassId}
+                          changeHandler={this.handleOlcChanged}
                           ref="OLCEditor"
                         />
                       </div>
