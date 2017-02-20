@@ -30,7 +30,7 @@
 }
 
 .sidebar-left-collapse .sidebar-links {
-	margin: 30px auto;
+	margin: 0px auto 30px auto;
 }
 
 .sidebar-links div > a {
@@ -52,9 +52,11 @@
 .sidebar-links div.selected > a{
 	/*background-color: #35393e;*/
 	background-color: #1A662E;
-	color: #b3bcc5;
+	/* color: #b3bcc5; */
+	color: #ffffff;
 	line-height: 2.3;
 	margin: 0;
+	padding-left: 20px;
 }
 
 .sidebar-links div > a i.fa {

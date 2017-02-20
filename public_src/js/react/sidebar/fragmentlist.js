@@ -24,7 +24,7 @@ var SideBarFragmentList = React.createClass({
             <div className="sidebar-links">
                 <div className="link-blue selected">
                   <a>
-                    <i className="fa fa-newspaper-o"></i>Fragments
+                    Fragments
                   </a>
                   <ul className="sub-links">
                       {list}
