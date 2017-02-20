@@ -100,3 +100,7 @@ body {
     background: #1A662E;
     color: #EEEEEE;
 }
+
+.topbar {
+    margin-top: 20px;
+}

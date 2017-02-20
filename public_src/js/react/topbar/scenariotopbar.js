@@ -36,7 +36,7 @@ var ScenarioTopBarComponent = React.createClass({
     },
     render: function() {
         return (
-            <div className="row">
+            <div className="row topbar">
               <div className="col-md-8 col-xs-12">
                 <span className="h1">
                   <a href="#">
