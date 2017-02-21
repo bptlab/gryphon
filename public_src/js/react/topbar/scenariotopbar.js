@@ -24,12 +24,15 @@ var ScenarioTopBarComponent = React.createClass({
     handleRenameClick: function() {
       if(this.state.nameIsEditable)
       {
-        var newScenario = this.props.scenario;
-        newScenario.name = this.state.newScenarioName;
+        if(this.state.newScenarioName != this.props.scenario.name)
+        {
+          var newScenario = this.props.scenario;
+          newScenario.name = this.state.newScenarioName;
 
-        if (NameCheck.check(newScenario.name)) {
-            API.exportScenario(newScenario);
-            MessageHandler.handleMessage("success","Saved scenario-details!");
+          if (NameCheck.check(newScenario.name)) {
+              API.exportScenario(newScenario);
+              MessageHandler.handleMessage("success","Saved scenario-details!");
+          }          
         }
       }
       this.setState({nameIsEditable: !this.state.nameIsEditable});

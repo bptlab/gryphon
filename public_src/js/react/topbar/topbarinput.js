@@ -10,6 +10,12 @@ var TopBarInput = React.createClass({
         this.props.handleEnter(event);
       }
     },
+    componentDidUpdate: function() {
+      if(this.props.editable)
+      {
+        this.inputRename.focus();
+      }
+    },
     render: function() {
         var cssClass = "";
         var disabledAttribute = !this.props.editable;
@@ -19,6 +25,7 @@ var TopBarInput = React.createClass({
         }
         return (
           <input
+            ref={(input) => { this.inputRename = input; }}
             type="text"
             value={this.props.initialValue}
             onChange={this.handleChange}
