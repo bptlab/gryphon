@@ -92,7 +92,7 @@ var IndexComponent = React.createClass({
                       <div className="row">
                         <div className="h1 col-md-10 text-center">Gryphon Case Modeler</div>
                         <div className="col-md-2 text-right">
-                          <img src="./img/hpi_bw.png" alt="HPI" style={{width:'100px',height:'100px'}} />
+                          <img src="./img/hpi_bwt.png" alt="HPI" style={{width:'100px',height:'100px'}} />
                         </div>
                       </div>
                     </div>
