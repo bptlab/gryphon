@@ -32,6 +32,6 @@ var CONFIGURATION = {
      * be enough, as its generated out of the servers host then.
      * Example Value: 'localhost:3000/api', window.location.origin + '/api/
      */
-    API_HOST: window.location.origin + '/api/',
+    API_HOST: window.location.origin + window.location.pathname + 'api/',
 };
 module.exports = CONFIGURATION
