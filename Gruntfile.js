@@ -4,7 +4,7 @@ module.exports = function(grunt) {
             js: {
                 options: {
                     transform: [['babelify', {presets: ['react']}]],
-                    watch: true,
+                    //watch: true,
                     keepAlive: true
                 },
                 src: ['./public_src/js/index.js'],
