@@ -89,7 +89,8 @@ var DomainModelEditorComponent = React.createClass({
                 dataclasses: []
             },
             changed: false,
-            editorInstance: {}
+            editorInstance: {},
+            editorIsCollapsed: false,
         }
     },
     saveDiagram: function(show_success) {
@@ -172,6 +173,9 @@ var DomainModelEditorComponent = React.createClass({
         }));
         return types;
     },
+    collapseOlcEditor: function() {
+      this.setState({editorIsCollapsed: true});
+    },
     render: function() {
         var selectedDataclass = {};
         var i = 0;
@@ -197,6 +201,11 @@ var DomainModelEditorComponent = React.createClass({
               scenid = {this.props.scenario._id}
               />;
 
+            editorCssClasses = "panel-body";
+            if (this.state.editorIsCollapsed) {
+              editorCssClasses += " collapse";
+            }
+
         return (
               <div>
 
@@ -214,12 +223,13 @@ var DomainModelEditorComponent = React.createClass({
                           <h3 className="panel-title">OLC Editor</h3>
                         </a>
                       </div>
-                      <div className="panel-body collapse" id="editorCollapse">
+                      <div className={editorCssClasses} id="editorCollapse">
                         <OLCEditorComponent
                           scenarioId={this.props.params.scenarioId}
                           domainmodelId={this.props.params.domainmodelId}
                           dataclassId={this.props.params.dataclassId}
                           changeHandler={this.handleOlcChanged}
+                          diagramLoadedCallback={this.collapseOlcEditor}
                           ref="OLCEditor"
                         />
                       </div>

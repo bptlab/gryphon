@@ -22,8 +22,9 @@ var OLCEditorComponent = React.createClass({
     },
     componentDidMount: function() {
         var editor = new Editor($('#fragment-canvas'),$('#fragment-properties'));
-        this.setState({editor: editor});
-        this.loadDiagram();
+        this.setState({editor: editor}, this.loadDiagram);
+        // loadDiagram will be called once the editor is set as state
+        // this.loadDiagram();
         MessageHandler.resetMessages();
         var interval = setInterval(this.autoSave,Config.FRAGMENT_SAVE_INTERVAL);
         this.setState({interval: interval});
@@ -31,7 +32,6 @@ var OLCEditorComponent = React.createClass({
     loadDiagram: function() {
         API.loadDomainModel(this.props.domainmodelId,function(data) {
             this.setState({dm: data, dclassid: this.props.dataclassId});
-            console.log(data);
             var dclass = data.dataclasses.filter(function(dclass){
                 return (dclass._id == this.props.dataclassId);
             }.bind(this));
@@ -44,7 +44,10 @@ var OLCEditorComponent = React.createClass({
                     MessageHandler.handleMessage("danger", "Failed to load diagram.");
                     console.log(err);
                 }
-            });
+                if(this.props.diagramLoadedCallback) {
+                  this.props.diagramLoadedCallback();
+                }
+            }.bind(this));
         }.bind(this));
     },
     componentDidUpdate: function() {
