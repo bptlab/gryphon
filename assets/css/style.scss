@@ -3,22 +3,22 @@
 
 @import "{{ site.theme }}";
 header {
-    background-color: #993096;
+    background-color: #1A662E;
     background-image: none;
 }
 header h1 {
-    text-shadow: 0px 2px 0px #8B1585;
+    text-shadow: 0px 2px 0px #074818;
 }
 #banner {
-    background-color: #C2DE45;
-    border: 1px solid #AAC91F;
+    background-color: #882F23;
+    border: 1px solid #601309;
 }
 #banner .button {
-    border: 1px solid #AAC91F;
-    background-color: #DDF66E;
+    border: 1px solid #601309;
+    background-color: #AB4E42;
 }
 #banner .button:hover {
-    background-color: #E8FA99;
+    background-color: #D58176;
 }
 code {
     font-family:Monaco,"DejaVu Sans Mono","Courier New",monospace;
@@ -31,5 +31,5 @@ code {
     border-radius:3px;
     background-clip:padding-box;
     text-shadow:none;
-    background: #FFFFF
+    background: #fff
 }
