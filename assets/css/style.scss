@@ -1,0 +1,22 @@
+---
+---
+
+@import "{{ site.theme }}";
+header {
+    background-color: #993096;
+    background-image: none;
+}
+header h1 {
+    text-shadow: 0px 2px 0px #8B1585;
+}
+#banner {
+    background-color: #C2DE45;
+    border: 1px solid #AAC91F;
+}
+#banner .button {
+    border: 1px solid #AAC91F;
+    background-color: #DDF66E;
+}
+#banner .button:hover {
+    background-color: #E8FA99;
+}
