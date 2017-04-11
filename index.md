@@ -1,8 +1,6 @@
-Getting Started
-===============
+# Getting Started
 
-Local Installation (for developers)
------------------------------------
+## Local Installation (for developers)
 
 ### Prerequisites
 
@@ -66,9 +64,7 @@ dependencies:
 5.  Run `grunt` (in the gyphon directory) to build the UI files and to
     compile all script sources
 
-Starting Gryphon
-----------------
-
+## Running Gryphon
 Once your environment is set up, you can start the editor as follows
 
 1.  Navigate to the gryphon directory in your command line
@@ -78,7 +74,7 @@ Once your environment is set up, you can start the editor as follows
 4.  You can now access the editor in your browser at
     <http://localhost:3000/>
 
-### Using Gryphon in Docker
+## Using Gryphon in Docker
 
 FOR ALL PEOPLE WHO JUST WANT TO USE THE EDITOR IN AN EASY AND WINDOWS COMPATIBLE WAY READ THIS:
 If you just want to run the editor, instead of modifying it (even though that doesn't really matter,
@@ -91,12 +87,5 @@ Step Three: Run "docker build -t griffindocker ."
 Step Four: Grab another cup of coffee.
 Step Five: Run "docker run -p 3000:3000 -it --rm --name griffin griffindocker"
 
-### Troubleshooting
-If running npm install fails:
-Check wether you have installed all build-essentials (Otherwise run: sudo apt-get install build-essential)
-Run: sudo npm install -g node-gyp
-Try again.
-
-When running on Windows, make sure to have the following additional dependencies installed:
-* Python 2.7 (Python >= 3 won't work!)
-* Any version of Visual Studio (use the --msvs_version=20XY switch for Visual Studio 20XY)
+{% include Howto.md %}
+{% include Troubleshooting.md %}

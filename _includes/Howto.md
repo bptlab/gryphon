@@ -1,4 +1,4 @@
-### []{#Modelling_a_Case_1}Modelling a Case
+# Creating a Case Model
 
 You can create a new case model by clicking the “Create a
 scenario”-Button in the Gryphon sidebar.
@@ -23,20 +23,24 @@ created as well. You can rename that fragment in the sidebar.
     Your browser does not support HTML video.
 </video>
 
-You can edit the fragment by selecting it in the sidebar, or in the case
+#### Naming conventions
+The names of case model elements (fragments, data classes, attributes, task names etc.) can contain only alpha-numeric characters, underscores and spaces. The first and last character need to be alpha-numeric. There may not be more than 1 non-alphanumeric character in a row. This is checked by the following regular expression: `^([a-zA-Z\d]|[a-zA-Z\d](?!.*[ _]{2})[a-zA-Z\d _]*?[a-zA-Z\d])$`.
+
+#### Creating and editing fragments
+You can create new fragments on the case overview page, as well as give
+them a descriptive name.
+
+<video width="550" autoplay loop muted>
+    <source src="{{ site.github.url }}/vid/create_new_fragment.webm" type="video/webm">
+    Your browser does not support HTML video.
+</video>
+
+You can edit fragments by selecting it in the sidebar, or in the case
 overview page. In the integrated [bpmn.io](http://bpmn.io) editor, you
 can define the execution steps in BPMN language.
 
 <video width="550" autoplay loop muted>
     <source src="{{ site.github.url }}/vid/model_fragment.webm" type="video/webm">
-    Your browser does not support HTML video.
-</video>
-
-You can create new fragments in the case overview page, as well as give
-them a fitting name.
-
-<video width="550" autoplay loop muted>
-    <source src="{{ site.github.url }}/vid/create_new_fragment.webm" type="video/webm">
     Your browser does not support HTML video.
 </video>
 
