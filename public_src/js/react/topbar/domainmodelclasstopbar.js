@@ -64,7 +64,7 @@ var DomainModelClassTopBarComponent = React.createClass({
     render: function() {
         return (
             <div className="row topbar">
-              <div className="col-lg-8 col-xs-12">
+              <div className="col-md-8 col-xs-12">
                 <span className="h1">
                   <a href="#">
                     <i className="fa fa-home"></i>
@@ -85,7 +85,7 @@ var DomainModelClassTopBarComponent = React.createClass({
                   </span>
                 <hr />
               </div>
-              <div className="col-lg-3 col-xs-12">
+              <div className="col-md-4 col-xs-12">
                 <div className="btn-group pull-right">
                   <button
                       type="button"

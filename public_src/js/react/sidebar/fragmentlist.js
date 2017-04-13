@@ -36,7 +36,7 @@ var SideBarFragmentList = React.createClass({
                             data-target="#createFragmentModal"
                             data-scenid={this.props.scenario._id}
                         >
-                            <i className="fa fa-plus"></i> Create a fragment
+                            <i className="fa fa-plus"></i> create a fragment
                         </button>
                       </li>
                   </ul>

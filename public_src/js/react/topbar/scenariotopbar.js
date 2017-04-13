@@ -32,7 +32,7 @@ var ScenarioTopBarComponent = React.createClass({
           if (NameCheck.check(newScenario.name)) {
               API.exportScenario(newScenario);
               MessageHandler.handleMessage("success","Saved scenario-details!");
-          }          
+          }
         }
       }
       this.setState({nameIsEditable: !this.state.nameIsEditable});
@@ -56,7 +56,7 @@ var ScenarioTopBarComponent = React.createClass({
                   </span>
                 <hr />
               </div>
-              <div className="col-md-3 col-xs-12">
+              <div className="col-md-4 col-xs-12">
                 <div className="btn-group pull-right">
                   <button
                       type="button"

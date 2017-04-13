@@ -30,7 +30,7 @@ var SideBarDomainModel = React.createClass({
                         data-target="#createDomainModelClassModal"
                         data-scenid={this.props.scenario._id}
                     >
-                        <i className="fa fa-plus"></i> Create a data class
+                        <i className="fa fa-plus"></i> create a data class
                     </button>
                   </li>
               </ul>

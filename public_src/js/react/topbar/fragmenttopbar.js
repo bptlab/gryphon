@@ -84,7 +84,7 @@ var FragmentTopBarComponent = React.createClass({
                   </span>
                 <hr />
               </div>
-              <div className="col-md-3 col-xs-12">
+              <div className="col-md-4 col-xs-12">
                 <div className="btn-group pull-right">
                   <button
                       type="button"
