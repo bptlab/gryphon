@@ -13,6 +13,9 @@ var DeleteScenarioModal = React.createClass({
             API.deleteScenario(this.state.scenID);
             SideBarManager.reload();
             $('#deleteScenarioModal').modal('hide');
+
+            // Redirect back to index page
+            window.location.hash = "#/";
         }
     },
     render: function() {

@@ -19,13 +19,6 @@ var IndexRoute = require('react-router').IndexRoute;
 var ExportConfigComponent = require('./react/exportconfig/exportconfig');
 var App = require('./react/index');
 
-//<Route path="fragment/:id" component={FragmentEditorComponent} />
-//<Route path="domainmodel/:id" component={DomainModelEditorComponent} />
-//<Route path="exportconfig" component={ExportConfigComponent} />
-//<Route path="olc/:dmid/:dclassid" component={OLCEditorComponent} />
-
-//<Route path=":scenarioId/domainmodel/:domainmodelId/olc/:dataclassId" component={OLCEditorComponent} />
-
 $(function () {
     ReactDOM.render(
         <Router>
