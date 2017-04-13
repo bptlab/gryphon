@@ -1,6 +1,7 @@
 var React = require('react');
 var Link = require('react-router').Link;
 var API = require('./../api');
+var SideBarManager = require('./../sidebarmanager');
 
 var SearchBarComponent = React.createClass({
   handleChange: function() {
@@ -29,6 +30,7 @@ var IndexComponent = React.createClass({
         }
     },
     componentDidMount: function() {
+        SideBarManager.setHandler(this.loadScenarioList);
         this.loadScenarioList();
     },
     loadScenarioList: function() {
@@ -140,7 +142,7 @@ var IndexComponent = React.createClass({
                           data-toggle="modal"
                           data-target="#createScenarioModal"
                       >
-                          <i className="fa fa-plus"></i>Create a scenario
+                          <i className="fa fa-plus"></i> create new case model
                       </a>
                     </div>
                   </div>
