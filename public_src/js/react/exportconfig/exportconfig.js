@@ -15,7 +15,7 @@ var ExportConfigComponent = React.createClass({
         }.bind(this))
     },
     componentDidMount: function() {
-        $('#exportScenarioModal').modal('hide');
+        //$('#exportScenarioModal').modal('hide');
         this.updateData()
     },
     render: function() {
@@ -24,11 +24,6 @@ var ExportConfigComponent = React.createClass({
             return <ExportTargetComponent name={ex.name} url={ex.url} id={ex._id} onUpdate={updateHandler} deletable={true}/>
         });
         return (
-            <div className="col-md-12">
-                <div className="panel panel-default">
-                    <div className="panel-heading   ">
-                        <h3 className="panel-title">Available Export-Targets</h3>
-                    </div>
                     <table className="table">
                         <thead>
                             <tr>
@@ -42,8 +37,6 @@ var ExportConfigComponent = React.createClass({
                             <ExportTargetComponent name="" url="" onUpdate={this.updateData} deletable={false}/>
                         </tbody>
                     </table>
-                </div>
-            </div>
         )
     }
 });

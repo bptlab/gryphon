@@ -41,6 +41,10 @@ var ExportScenarioModal = React.createClass({
             window.location.replace(Config.API_HOST + 'scenario/' + this.state.scenID + '?populate=true&download=true');
         }
     },
+    handleTargetAdd: function() {
+      $('#exportScenarioModal').modal('hide');
+      $('#modifyExportTargetsModal').modal('show');
+    },
     render: function() {
         var messages = this.state.messages.map(function(message){
             return (<MessageComponent type={message.type} text={message.text} allow_dismiss={false} />);
@@ -79,9 +83,15 @@ var ExportScenarioModal = React.createClass({
                                             </select>
                                         </div>
                                         <div className="col-md-3">
-                                            <Link to="exportconfig" className="btn btn-success btn-block">
-                                                Add target
-                                            </Link>
+
+                                          <button
+                                              type="button"
+                                              className="btn btn-primary"
+                                              onClick={this.handleTargetAdd}
+                                          >
+                                              Add target
+                                          </button>
+
                                         </div>
                                     </div>
                                 </fieldset>
