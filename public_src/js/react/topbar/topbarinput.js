@@ -19,21 +19,24 @@ var TopBarInput = React.createClass({
     render: function() {
         var cssClass = "";
         var disabledAttribute = !this.props.editable;
-        if(!this.props.editable)
-        {
-          cssClass = "inputLabel";
+        if(this.props.editable) {
+          return (
+            <input
+              ref={(input) => { this.inputRename = input; }}
+              type="text"
+              value={this.props.initialValue}
+              onChange={this.handleChange}
+              className="topbarinput"
+              disabled={disabledAttribute}
+              onKeyDown={this.handleKeyDown}
+            />
+          )
+        } else {
+          return (
+            <span>{this.props.initialValue}</span>
+          )
         }
-        return (
-          <input
-            ref={(input) => { this.inputRename = input; }}
-            type="text"
-            value={this.props.initialValue}
-            onChange={this.handleChange}
-            className={cssClass}
-            disabled={disabledAttribute}
-            onKeyDown={this.handleKeyDown}
-          />
-        )
+
     }
 });
 
