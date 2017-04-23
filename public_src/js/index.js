@@ -29,6 +29,7 @@ $(function () {
                   <Route path=":scenarioId/fragment/:fragmentId" component={FragmentEditorComponent} />
                   <Route path=":scenarioId/domainmodel/:domainmodelId/dataclass/:dataclassId" component={DomainModelEditorComponent} />
                 </Route>
+                <Route path="exportconfig" component={ExportConfigComponent} />
             </Route>
         </Router>,
         document.getElementById('app-container')
