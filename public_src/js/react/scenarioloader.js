@@ -71,6 +71,7 @@ var ScenarioLoader = React.createClass({
       return (
         <div className="app-container">
         {topBar}
+        <hr />
         <SideBarComponent scenario={this.state.scenario} />
           <div className="main-content">
             {editor}

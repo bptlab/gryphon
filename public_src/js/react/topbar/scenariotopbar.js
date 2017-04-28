@@ -24,7 +24,7 @@ var ScenarioTopBarComponent = React.createClass({
     handleRenameClick: function() {
       if(this.state.nameIsEditable)
       {
-        if(this.state.newScenarioName != this.props.scenario.name)
+        if(this.state.newScenarioName != this.props.scenario.name && this.state.newScenarioName != "")
         {
           var newScenario = this.props.scenario;
           newScenario.name = this.state.newScenarioName;
@@ -37,7 +37,12 @@ var ScenarioTopBarComponent = React.createClass({
       }
       this.setState({nameIsEditable: !this.state.nameIsEditable});
     },
+    handleRenameCancel : function() {
+      this.setState({nameIsEditable: false, newScenarioName: this.props.scenario.name});
+    },
     render: function() {
+        var changeBtnLabel = this.state.nameIsEditable ? "Done" : "Edit";
+        var changeBtnIcon = this.state.nameIsEditable ? "fa fa-check" : "fa fa-pencil";
         return (
             <div className="row topbar">
               <div className="col-md-8 col-xs-12">
@@ -52,9 +57,9 @@ var ScenarioTopBarComponent = React.createClass({
                       editable={this.state.nameIsEditable}
                       handleEnter={this.handleRenameClick}
                       onChange={this.onScenarioNameChange}
+                      handleCancel={this.handleRenameCancel}
                     />
                   </span>
-                <hr />
               </div>
               <div className="col-md-4 col-xs-12">
                 <div className="btn-group pull-right">
@@ -63,7 +68,7 @@ var ScenarioTopBarComponent = React.createClass({
                       className="btn btn-success"
                       onClick={this.handleRenameClick}
                   >
-                      <i className="fa fa-pencil"></i> {this.state.nameIsEditable ? "Done" : "Edit"}
+                      <i className={changeBtnIcon}></i> {changeBtnLabel}
                   </button>
                     <button
                         type="button"

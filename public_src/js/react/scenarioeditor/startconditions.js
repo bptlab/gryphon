@@ -2,7 +2,7 @@ var React = require('react');
 var API = require('./../../api');
 var MessageHandler = require('./../../messagehandler');
 
-var StartConditionRowComponent = React.createClass({
+var CaseStartTriggerRowComponent = React.createClass({
     render: function() {
         var dclass = (
             <input
@@ -86,13 +86,13 @@ var StartConditionRowComponent = React.createClass({
     }
 });
 
-var StartConditionComponent = React.createClass({
+var CaseStartTriggerComponent = React.createClass({
     getDefaultProps: function() {
 
     },
     getInitialState: function() {
         return {
-            'collapsed': ''
+            'collapsed': 'in'
         }
     },
     handleCollapse: function() {
@@ -181,7 +181,7 @@ var StartConditionComponent = React.createClass({
                 }
                 console.log(tuple);
                 rows.push((
-                    <StartConditionRowComponent
+                    <CaseStartTriggerRowComponent
                         enableClassSelect = {enableClassSelect}
                         handleSubmit = {this.props.handleSubmit}
                         handleDataClassChange = {this.handleClassAttrChange(index,'classname')}
@@ -204,12 +204,12 @@ var StartConditionComponent = React.createClass({
         return (
             <div className="panel panel-default">
                 <div className="panel-heading">
-                    <h3 className="panel-title">Startcondition
+                    <h3 className="panel-title">Case start trigger
                         <button type="button" className="btn btn-xs pull-right" onClick={this.handleCollapse}>{btntext}</button>
                         <button type="button" className="btn btn-xs pull-right btn-danger" onClick={this.props.handleDelete}><i className="fa fa-times" /></button>
                     </h3>
                 </div>
-                <div className={"panel-collapse collapse " + this.state.collapsed} id={"StartConditionPanel" + this.props.id}>
+                <div className={"panel-collapse collapse " + this.state.collapsed} id={"CaseStartTriggerPanel" + this.props.id}>
                     <div className="panel-body">
                         <div className="row">
                             <div className="col-sm-12">
@@ -245,7 +245,7 @@ var StartConditionComponent = React.createClass({
     }
 });
 
-var ScenarioStartConditionForm = React.createClass({
+var ScenarioCaseStartTriggerForm = React.createClass({
     getInitialState: function() {
         return {
             'startconditions':[],
@@ -273,7 +273,7 @@ var ScenarioStartConditionForm = React.createClass({
     },
     handleSubmit: function() {
         API.exportScenario(this.state);
-        MessageHandler.handleMessage("success","Saved startconditions!");
+        MessageHandler.handleMessage("success","Saved case start triggers!");
     },
     handleAdd: function() {
         var conds = this.state.startconditions;
@@ -297,7 +297,7 @@ var ScenarioStartConditionForm = React.createClass({
     render: function() {
         var conditions = this.state.startconditions.map(function(condition,index){
             return (
-                <StartConditionComponent
+                <CaseStartTriggerComponent
                     condition={condition}
                     handleUpdate={this.handleUpdate(index)}
                     availableClasses={this.props.scenario.domainmodel.dataclasses}
@@ -307,23 +307,32 @@ var ScenarioStartConditionForm = React.createClass({
             )
         }.bind(this));
         return (
-            <div className="panel panel-default">
-                <div className="panel-heading">
-                    <h3 className="panel-title">Startconditions</h3>
-                </div>
-                <div className="panel-body">
-                    <div className="panel-group">
-                        {conditions}
-                    </div>
-                </div>
-                <div className="panel-footer clearfix">
-                    <div className="btn-group pull-right">
-                        <button type="button" className="btn btn-primary" onClick={this.handleSubmit} >Submit</button>
-                        <button type="button" className="btn btn-primary" onClick={this.handleAdd} >Add new</button>
-                    </div>
-                </div>
+          <div>
+            <div className="row">
+              <div className="col-md-12">
+                {conditions}
+              </div>
             </div>
+            <div className="row">
+              <div className="col-md-12">
+                <button
+                    type="button"
+                    className="btn btn-link btn-sm"
+                    onClick={this.handleAdd}
+                >
+                    <i className="fa fa-plus"></i> add case start trigger
+                </button>
+                <button
+                    type="button"
+                    className="btn btn-link btn-sm"
+                    onClick={this.handleSubmit}
+                >
+                    <i className="fa fa-plus"></i> save
+                </button>
+              </div>
+            </div>
+          </div>
         )
     }
 });
-module.exports = ScenarioStartConditionForm;
+module.exports = ScenarioCaseStartTriggerForm;

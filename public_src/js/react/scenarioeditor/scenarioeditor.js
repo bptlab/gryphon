@@ -8,6 +8,7 @@ var ScenarioOperations = require('./operations');
 var ScenarioEditForm = require('./scenario');
 var ScenarioStartConditionForm = require('./startconditions');
 var ScenarioStats = require('./stats');
+var TerminationConditionsComponent = require('./terminationconditions');
 
 var ScenarioEditorComponent = React.createClass({
     getInitialState: function() {
@@ -52,9 +53,10 @@ var ScenarioEditorComponent = React.createClass({
             <div>
                 <div className="row">
                   <div className="col-md-12">
-                    <ScenarioEditForm scenario={this.state.scenario}/>
+                    <TerminationConditionsComponent scenario={this.state.scenario}/>
                   </div>
                 </div>
+                <hr />
                 <div className="row">
                   <div className="col-md-12">
                     <ScenarioStartConditionForm scenario={this.state.scenario} />

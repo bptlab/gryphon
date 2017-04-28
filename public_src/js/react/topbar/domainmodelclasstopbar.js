@@ -18,6 +18,9 @@ var DomainModelClassTopBarComponent = React.createClass({
       this.setState({nameIsEditable: false});
     },
     componentWillReceiveProps: function(nextProps) {
+      this.resetDomainModel(nextProps);
+    },
+    resetDomainModel: function(nextProps) {
       var className = "";
       var classId = "";
       nextProps.scenario.domainmodel.dataclasses.forEach(function(dataclass) {
@@ -58,6 +61,10 @@ var DomainModelClassTopBarComponent = React.createClass({
       }
       this.setState({nameIsEditable: !this.state.nameIsEditable});
     },
+    handleRenameCancel : function() {
+      this.setState({nameIsEditable: false});
+      this.resetDomainModel(this.props);
+    },
     handleSaveClick: function() {
       this.props.editorSave();
     },
@@ -81,9 +88,9 @@ var DomainModelClassTopBarComponent = React.createClass({
                       editable={this.state.nameIsEditable}
                       handleEnter={this.handleRenameClick}
                       onChange={this.onClassNameChange}
+                      handleCancel={this.handleRenameCancel}
                     />
                   </span>
-                <hr />
               </div>
               <div className="col-md-4 col-xs-12">
                 <div className="btn-group pull-right">

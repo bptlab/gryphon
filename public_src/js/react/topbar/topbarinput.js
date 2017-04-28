@@ -9,6 +9,10 @@ var TopBarInput = React.createClass({
       if(event.keyCode == 13) {
         this.props.handleEnter(event);
       }
+      // cancel on esc
+      if(event.keyCode == 27) {
+        this.props.handleCancel();
+      }
     },
     componentDidUpdate: function() {
       if(this.props.editable)

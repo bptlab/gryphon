@@ -18,6 +18,9 @@ var FragmentTopBarComponent = React.createClass({
       this.setState({nameIsEditable: false});
     },
     componentWillReceiveProps: function(nextProps) {
+      this.resetFragmentName(nextProps);
+    },
+    resetFragmentName: function(nextProps) {
       var fragmentName = "";
       var fragID = "";
       nextProps.scenario.fragments.forEach(function(fragment) {
@@ -57,6 +60,10 @@ var FragmentTopBarComponent = React.createClass({
       }
       this.setState({nameIsEditable: !this.state.nameIsEditable});
     },
+    handleRenameCancel : function() {
+      this.setState({nameIsEditable: false});
+      this.resetFragmentName(this.props);
+    },
     handleSaveClick: function() {
       this.props.editorSave();
     },
@@ -80,9 +87,9 @@ var FragmentTopBarComponent = React.createClass({
                       editable={this.state.nameIsEditable}
                       handleEnter={this.handleRenameClick}
                       onChange={this.onFragmentNameChange}
+                      handleCancel={this.handleRenameCancel}
                     />
                   </span>
-                <hr />
               </div>
               <div className="col-md-4 col-xs-12">
                 <div className="btn-group pull-right">
