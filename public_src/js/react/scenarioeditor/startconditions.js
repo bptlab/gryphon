@@ -296,6 +296,7 @@ var ScenarioCaseStartTriggerForm = React.createClass({
     },
     render: function() {
         var conditions = this.state.startconditions.map(function(condition,index){
+            var id = "CaseStartTrigger" + index;
             return (
                 <CaseStartTriggerComponent
                     condition={condition}
@@ -303,6 +304,7 @@ var ScenarioCaseStartTriggerForm = React.createClass({
                     availableClasses={this.props.scenario.domainmodel.dataclasses}
                     handleSubmit={this.handleSubmit}
                     handleDelete={this.handleDelete(index)}
+                    key={id}
                 />
             )
         }.bind(this));
