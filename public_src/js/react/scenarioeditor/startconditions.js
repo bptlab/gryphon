@@ -212,13 +212,19 @@ var CaseStartTriggerComponent = React.createClass({
                 <div className={"panel-collapse collapse " + this.state.collapsed} id={"CaseStartTriggerPanel" + this.props.id}>
                     <div className="panel-body">
                         <div className="row">
-                            <div className="col-sm-12">
-                                <input type="text"
-                                       className="form-control"
-                                       onChange={this.handleQueryChange}
-                                       value={this.props.condition.query}
-                                       onKeyDown={this.handleEnterSubmit}
-                                />
+                            <div className="col-md-12">
+                                <div className="form-group">
+                                  <label htmlFor={"CaseStartTriggerInput" +  this.props.id} className="col-md-2 control-label">Event Query</label>
+                                  <div className="col-md-10">
+                                    <input type="text"
+                                           className="form-control"
+                                           onChange={this.handleQueryChange}
+                                           value={this.props.condition.query}
+                                           onKeyDown={this.handleEnterSubmit}
+                                           id={"CaseStartTriggerInput" +  this.props.id}
+                                    />
+                                  </div>
+                                </div>
                             </div>
                         </div>
                     </div>
