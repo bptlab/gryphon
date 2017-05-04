@@ -8,14 +8,17 @@ var TerminationConditionsComponent = React.createClass({
         return {
             'name': '',
             'terminationconditions': [],
-            '_id': ''
+            '_id': '',
+            'isEditable': []
         }
     },
     componentDidMount: function() {
+        var isEditable = this.props.scenario.terminationconditions.map(function(condition){ return false });
         this.setState({
             name: this.props.scenario.name,
             terminationconditions: this.props.scenario.terminationconditions,
-            _id: this.props.scenario._id
+            _id: this.props.scenario._id,
+            isEditable : isEditable
         });
     },
     handleNameChange: function(e) {
@@ -84,7 +87,9 @@ var TerminationConditionsComponent = React.createClass({
     handleAddTerminationCondition: function(e) {
         var terminationconditions = this.state.terminationconditions;
         terminationconditions.push("New termination condition");
-        this.setState({terminationconditions: terminationconditions});
+        var isEditable = this.state.isEditable;
+        isEditable.push(true);
+        this.setState({terminationconditions: terminationconditions, isEditable: isEditable});
     },
     handleTerminationConditionDelete: function(index) {
         return function(e) {
@@ -98,8 +103,20 @@ var TerminationConditionsComponent = React.createClass({
             this.handleSubmit()
         }
     },
+    handleEditButtonClicked: function(index) {
+      console.log("handleEditButtonClicked isEditable: ", this.state.isEditable);
+        if (this.state.isEditable[index]) {
+          this.handleSubmit();
+        }
+        var newIsEditable = this.state.isEditable;
+        newIsEditable[index] = ! newIsEditable[index];
+        this.setState({isEditable: newIsEditable});
+    },
     render: function() {
         var terminationConditions = this.state.terminationconditions.map(function(terminationcondition, index) {
+            var editButtonIcon = this.state.isEditable[index] ? "fa fa-check" : "fa fa-pencil";
+            var disabled = this.state.isEditable[index] == false;
+            console.log("disabled: ", disabled, " index: ", index);
             return (
                 <div className="form-group" key={index}>
                     <label htmlFor={"terminationcondition" + index} className="col-sm-2 control-label">Termination Condition {index + 1}</label>
@@ -114,12 +131,13 @@ var TerminationConditionsComponent = React.createClass({
                                 onChange = {this.handleTerminationConditionChange(index)}
                                 onBlur = {this.validateTerminationConditionChange(index)}
                                 onKeyDown = {this.handleEnterSubmit}
+                                disabled = {disabled}
                             />
                             <span className="input-group-btn">
                               <button
                                   className="btn btn-success"
                                   type="button"
-                                  onClick={this.handleSubmit}><i className="fa fa-check" />
+                                  onClick={this.handleEditButtonClicked}><i className={editButtonIcon} />
                               </button>
                               <button
                                   className="btn btn-danger"

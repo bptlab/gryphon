@@ -81,24 +81,14 @@ var CaseStartTriggerRowComponent = React.createClass({
                        onChange={this.props.handleStateChange} />
             )
         }
-        var btn = "";
-        if (this.props.enableClassSelect) {
-            btn = (
-                <button type="button"
-                        className="btn btn-success"
-                        onClick={this.props.handleAdd}>
-                    <i className="fa fa-plus" />
-                </button>
-            )
-        } else {
-            btn = (
+        var btn = (
                 <button type="button"
                         className="btn btn-danger"
                         onClick={this.props.handleDelete}>
                     <i className="fa fa-times" />
                 </button>
             )
-        }
+
         return (
             <tr key={this.props._id}>
                 <td>
@@ -302,8 +292,8 @@ var CaseStartTriggerComponent = React.createClass({
                         </tbody>
                     </table>
                     <div className="panel-footer">
-                        <button type="button" className="btn btn-primary" onClick={this.handleAddClass} >Add new</button>
-                        </div>
+                        <button type="button" className="btn btn-primary" onClick={this.props.handleSubmit} >Save</button>
+                    </div>
                 </div>
             </div>
         );
@@ -388,13 +378,6 @@ var ScenarioCaseStartTriggerForm = React.createClass({
                     onClick={this.handleAdd}
                 >
                     <i className="fa fa-plus"></i> add case start trigger
-                </button>
-                <button
-                    type="button"
-                    className="btn btn-link btn-sm"
-                    onClick={this.handleSubmit}
-                >
-                    <i className="fa fa-plus"></i> save
                 </button>
               </div>
             </div>
