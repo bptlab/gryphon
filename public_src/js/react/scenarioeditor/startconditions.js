@@ -2,6 +2,50 @@ var React = require('react');
 var API = require('./../../api');
 var MessageHandler = require('./../../messagehandler');
 
+var MapAnotherAttributeComponent = React.createClass({
+  render: function() {
+    return(
+      <tr>
+          <td></td>
+          <td></td>
+          <td>
+            <button
+                type="button"
+                className="btn btn-link btn-sm"
+                onClick={this.props.handleAdd}
+            >
+                <i className="fa fa-plus"></i> map another attribute
+            </button>
+          </td>
+          <td></td>
+          <td></td>
+      </tr>
+    );
+  }
+});
+
+var MapAnotherDataClassComponent = React.createClass({
+  render: function() {
+    return(
+      <tr>
+          <td>
+            <button
+                type="button"
+                className="btn btn-link btn-sm"
+                onClick={this.props.handleAdd}
+            >
+                <i className="fa fa-plus"></i> map another data class
+            </button>
+          </td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+    );
+  }
+});
+
 var CaseStartTriggerRowComponent = React.createClass({
     render: function() {
         var dclass = (
@@ -56,7 +100,7 @@ var CaseStartTriggerRowComponent = React.createClass({
             )
         }
         return (
-            <tr key={this.props._id} className="info">
+            <tr key={this.props._id}>
                 <td>
                     {dclass}
                 </td>
@@ -118,7 +162,7 @@ var CaseStartTriggerComponent = React.createClass({
     },
     handleClassMappingChange: function(index, tindex, attr) {
         return function(e) {
-            console.log('lel');
+            console.log('handleClassMappingChange()');
             var condition = this.props.condition;
             condition['dataclasses'][index]['mapping'][tindex][attr] = e.target.value;
             this.props.handleUpdate(condition);
@@ -126,7 +170,7 @@ var CaseStartTriggerComponent = React.createClass({
     },
     handleAdd: function(index) {
         return function(e) {
-            console.log('lel');
+            console.log('handleAdd');
             var condition = this.props.condition;
             condition['dataclasses'][index]['mapping'].push({'attr':'','path':''});
             this.props.handleUpdate(condition);
@@ -196,10 +240,25 @@ var CaseStartTriggerComponent = React.createClass({
                         path = {tuple.path}
                         availableClasses = {availableClasses}
                         availableAttributes = {availableAttributes}
+                        key = {tuple._id}
                     />
-                ))
+                ));
             }.bind(this))
+
+            rows.push(
+              <MapAnotherAttributeComponent
+                handleAdd = {this.handleAdd(index)}
+              />
+            );
+
         }.bind(this));
+
+        rows.push(
+          <MapAnotherDataClassComponent
+            handleAdd = {this.handleAddClass}
+          />
+        );
+
         var btntext = this.state.collapsed == '' ? 'Show' : 'Hide';
         return (
             <div className="panel panel-default">
@@ -235,7 +294,7 @@ var CaseStartTriggerComponent = React.createClass({
                             <th>State</th>
                             <th>Attribute</th>
                             <th>JSON-Path</th>
-                            <th>Operations</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
