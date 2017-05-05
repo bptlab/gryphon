@@ -47,6 +47,14 @@ var MapAnotherDataClassComponent = React.createClass({
 });
 
 var CaseStartTriggerRowComponent = React.createClass({
+    getInitialState: function() {
+        return {
+            'disabled': true
+        }
+    },
+    handleEditButtonClicked: function() {
+      this.setState({disabled : !this.state.disabled});
+    },
     render: function() {
         var dclass = (
             <input
@@ -60,7 +68,9 @@ var CaseStartTriggerRowComponent = React.createClass({
                 <select className="form-control"
                         onChange={this.props.handleDataClassChange}
                         value={this.props.classname}
-                        id={this.props._id + "-dtselect-class"}>
+                        id={this.props._id + "-dtselect-class"}
+                        disabled={this.state.disabled}
+                        >
                     <option value="">Nothing</option>
                     {this.props.availableClasses}
                 </select>
@@ -78,16 +88,11 @@ var CaseStartTriggerRowComponent = React.createClass({
                 <input type="text"
                        className="form-control"
                        value={this.props.state}
-                       onChange={this.props.handleStateChange} />
+                       onChange={this.props.handleStateChange}
+                       disabled={this.state.disabled}
+                       />
             )
         }
-        var btn = (
-                <button type="button"
-                        className="btn btn-danger"
-                        onClick={this.props.handleDelete}>
-                    <i className="fa fa-times" />
-                </button>
-            )
 
         return (
             <tr key={this.props._id}>
@@ -100,7 +105,9 @@ var CaseStartTriggerRowComponent = React.createClass({
                 <td>
                     <select className="form-control"
                             onChange={this.props.handleAttrChange}
-                            value={this.props.attr}>
+                            value={this.props.attr}
+                            disabled={this.state.disabled}
+                            >
                         <option value="">Nothing</option>
                         {this.props.availableAttributes}
                     </select>
@@ -110,10 +117,22 @@ var CaseStartTriggerRowComponent = React.createClass({
                            className="form-control"
                            value={this.props.path}
                            onChange={this.props.handlePathChange}
+                           disabled={this.state.disabled}
                     />
                 </td>
                 <td>
-                    {btn}
+                  <div className="btn-group" role="group">
+                    <button type="button"
+                            className="btn btn-success"
+                            onClick={this.handleEditButtonClicked}>
+                        <i className={"fa " + (this.state.disabled ? "fa-pencil" : "fa-check")} />
+                    </button>
+                    <button type="button"
+                            className="btn btn-danger"
+                            onClick={this.props.handleDelete}>
+                        <i className="fa fa-times" />
+                    </button>
+                  </div>
                 </td>
             </tr>
         )
