@@ -102,7 +102,7 @@ var TerminationConditionsComponent = React.createClass({
     },
     handleEnterSubmit: function(e) {
         if (e.keyCode == 13) {
-            this.handleSubmit()
+            this.handleSubmit();
         }
     },
     handleEditButtonClicked: function(index) {
@@ -162,13 +162,6 @@ var TerminationConditionsComponent = React.createClass({
                   onClick={this.handleAddTerminationCondition}
               >
                   <i className="fa fa-plus"></i> add termination condition
-              </button>
-              <button
-                  type="button"
-                  className="btn btn-link btn-sm"
-                  onClick={this.handleSubmit}
-              >
-                  <i className="fa fa-plus"></i> submit
               </button>
             </form>
         );
