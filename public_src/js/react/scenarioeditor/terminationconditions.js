@@ -71,10 +71,12 @@ var TerminationConditionsComponent = React.createClass({
     },
     componentDidUpdate: function() {
         if (this.props.scenario._id != this.state._id) {
+            var isEditable = this.props.scenario.terminationconditions.map(function(condition){ return false });
             this.setState({
                 name: this.props.scenario.name,
                 terminationconditions: this.props.scenario.terminationconditions,
-                _id: this.props.scenario._id
+                _id: this.props.scenario._id,
+                isEditable: isEditable
             });
         }
     },
@@ -104,19 +106,19 @@ var TerminationConditionsComponent = React.createClass({
         }
     },
     handleEditButtonClicked: function(index) {
-      console.log("handleEditButtonClicked isEditable: ", this.state.isEditable);
+      return function() {
         if (this.state.isEditable[index]) {
           this.handleSubmit();
         }
-        var newIsEditable = this.state.isEditable;
-        newIsEditable[index] = ! newIsEditable[index];
+        var newIsEditable = this.state.isEditable.slice();
+        newIsEditable[index] = (this.state.isEditable[index] == true ? false : true);
         this.setState({isEditable: newIsEditable});
+      }.bind(this);
     },
     render: function() {
         var terminationConditions = this.state.terminationconditions.map(function(terminationcondition, index) {
             var editButtonIcon = this.state.isEditable[index] ? "fa fa-check" : "fa fa-pencil";
             var disabled = this.state.isEditable[index] == false;
-            console.log("disabled: ", disabled, " index: ", index);
             return (
                 <div className="form-group" key={index}>
                     <label htmlFor={"terminationcondition" + index} className="col-sm-2 control-label">Termination Condition {index + 1}</label>
@@ -137,7 +139,7 @@ var TerminationConditionsComponent = React.createClass({
                               <button
                                   className="btn btn-success"
                                   type="button"
-                                  onClick={this.handleEditButtonClicked}><i className={editButtonIcon} />
+                                  onClick={this.handleEditButtonClicked(index)}><i className={editButtonIcon} />
                               </button>
                               <button
                                   className="btn btn-danger"
