@@ -299,10 +299,10 @@ var CaseStartTriggerComponent = React.createClass({
                     <table className="table">
                         <thead>
                         <tr>
-                            <th>Dataclass</th>
+                            <th>Data Class</th>
                             <th>State</th>
                             <th>Attribute</th>
-                            <th>JSON-Path</th>
+                            <th>JSON Path Expression</th>
                             <th></th>
                         </tr>
                         </thead>
