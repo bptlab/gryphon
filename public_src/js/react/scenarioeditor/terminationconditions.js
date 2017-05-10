@@ -104,7 +104,7 @@ var TerminationConditionsComponent = React.createClass({
         return function(e) {
             var terminationconditions = this.state.terminationconditions;
             terminationconditions.splice(index, 1);
-            this.setState({terminationconditions: terminationconditions});
+            this.setState({terminationconditions: terminationconditions}, this.handleSubmit);
         }.bind(this);
     },
     render: function() {
