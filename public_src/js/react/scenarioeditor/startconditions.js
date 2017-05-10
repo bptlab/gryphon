@@ -233,7 +233,6 @@ var CaseStartTriggerComponent = React.createClass({
                         )
                     })
                 }
-                console.log(tuple);
                 rows.push((
                     <CaseStartTriggerRowComponent
                         enableClassSelect = {enableClassSelect}
@@ -288,10 +287,11 @@ var CaseStartTriggerComponent = React.createClass({
                                 placeholder="New Event Query"
                                 label="Event Query"
                                 deletable={false}
+                                handleChange={this.handleQueryChange}
                                 handleSubmit={this.props.handleSubmit}
                                 key={"CaseStartTriggerInput" + this.props.id}
                               />
-                            
+
                             </div>
                         </div>
                     </div>

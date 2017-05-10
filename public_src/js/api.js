@@ -78,7 +78,7 @@ API.prototype.exportFragment = function(fragment, callback) {
     $.post(this.createURL("fragment/" + fragment._id),fragment,callback);
 };
 
-API.prototype.exportScenario = function(scenario) {
+API.prototype.exportScenario = function(scenario, callback) {
     if(scenario.fragments) {
         scenario.fragments = scenario.fragments.map(function(fragment) {
             return fragment._id;
@@ -92,6 +92,9 @@ API.prototype.exportScenario = function(scenario) {
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify(scenario)
+    }).done(function() {
+      if (callback)
+        callback();
     });
 };
 
@@ -130,8 +133,20 @@ API.prototype.validateFragment = function(fragid,callback) {
     $.get(this.createURL("fragment/" + fragid + "/validate"),callback);
 };
 
-API.prototype.validateScenario = function(scenid,callback) {
-    $.get(this.createURL("scenario/" + scenid + "/validate"),callback);
+API.prototype.validateScenario = function(scenid, callbackDone, callbackFail, callbackAlways) {
+    $.get(this.createURL("scenario/" + scenid + "/validate"))
+      .done(function() {
+        if (callbackDone)
+          callbackDone();
+      })
+      .fail(function() {
+        if (callbackFail)
+          callbackFail();
+      })
+      .always(function() {
+        if (callbackAlways)
+          callbackAlways();
+      });
 };
 
 API.prototype.deleteScenario = function(id, callback) {

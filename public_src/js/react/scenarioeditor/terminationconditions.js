@@ -20,7 +20,10 @@ var TerminationConditionsComponent = React.createClass({
         });
     },
     handleNameChange: function(e) {
+      return function(e) {
+        console.log("e: ", e);
         this.setState({name: e.target.value});
+      }.bind(this);
     },
     validateTerminationCondition: function(terminationcondition) {
         var split = terminationcondition.split(", ");
@@ -78,13 +81,23 @@ var TerminationConditionsComponent = React.createClass({
     },
     handleSubmit: function() {
         if (NameCheck.check(this.state.name)) {
-            API.exportScenario(this.state);
-            MessageHandler.handleMessage("success","Saved scenario-details!");
+            var validationSuccess = true;
+            this.state.terminationconditions.forEach(function(terminationCondition) {
+              console.log("validating ", terminationCondition);
+              if (!this.validateTerminationCondition(terminationCondition)) {
+                validationSuccess = false;
+              }
+            }.bind(this));
+
+            if (validationSuccess) {
+              API.exportScenario(this.state);
+              MessageHandler.handleMessage("success","Saved scenario-details!");
+            }
         }
     },
     handleAddTerminationCondition: function(e) {
         var terminationconditions = this.state.terminationconditions;
-        terminationconditions.push("New termination condition");
+        terminationconditions.push("");
         this.setState({terminationconditions: terminationconditions});
     },
     handleTerminationConditionDelete: function(index) {
@@ -102,6 +115,7 @@ var TerminationConditionsComponent = React.createClass({
                 placeholder="New Termination Condition"
                 label="Termination Condition"
                 deletable={true}
+                handleChange={this.handleTerminationConditionChange(index)}
                 handleDelete={this.handleTerminationConditionDelete(index)}
                 handleSubmit={this.handleSubmit}
                 key={"terminationCondition" + index}

@@ -30,8 +30,17 @@ var ScenarioTopBarComponent = React.createClass({
           newScenario.name = this.state.newScenarioName;
 
           if (NameCheck.check(newScenario.name)) {
-              API.exportScenario(newScenario);
-              MessageHandler.handleMessage("success","Saved scenario-details!");
+
+              API.exportScenario(newScenario, function(data) {
+
+                MessageHandler.handleMessage("success","Saved scenario-details!");
+
+                API.validateScenario(this.props.scenario._id, null, function(){
+                    MessageHandler.handleMessage("validation", "Validation failed!");
+                }.bind(this));
+
+              }.bind(this));
+
           }
         }
       }

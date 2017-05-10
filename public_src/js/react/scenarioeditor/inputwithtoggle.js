@@ -17,18 +17,18 @@ var InputWithToggleComponent = React.createClass({
     componentWillReceiveProps: function(nextProps) {
       if (this.state.initialValue != nextProps.initialValue) {
         this.setState({
-          value : this.nextProps.initialValue,
-          initialValue : this.nextProps.initialValue
+          value : nextProps.initialValue,
+          initialValue : nextProps.initialValue
         });
       }
     },
     handleChange: function(event) {
-      if (this.props.onChange)
-        this.props.onChange(event.target.value);
+      if (this.props.handleChange)
+        this.props.handleChange(event);
     },
     handleOnBlur: function(event) {
       if (this.props.handleOnBlur)
-        this.props.handleOnBlur(event.target.value);
+        this.props.handleOnBlur(event);
     },
     handleDelete: function() {
       if (this.props.deletable && this.props.handleDelete)
