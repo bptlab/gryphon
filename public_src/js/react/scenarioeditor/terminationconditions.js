@@ -2,6 +2,7 @@ var React = require('react');
 var API = require('./../../api');
 var MessageHandler = require('./../../messagehandler');
 var NameCheck = require('./../../namecheck');
+var InputWithToggleComponent = require('./inputwithtoggle');
 
 var TerminationConditionsComponent = React.createClass({
     getInitialState: function() {
@@ -9,16 +10,13 @@ var TerminationConditionsComponent = React.createClass({
             'name': '',
             'terminationconditions': [],
             '_id': '',
-            'isEditable': []
         }
     },
     componentDidMount: function() {
-        var isEditable = this.props.scenario.terminationconditions.map(function(condition){ return false });
         this.setState({
             name: this.props.scenario.name,
             terminationconditions: this.props.scenario.terminationconditions,
             _id: this.props.scenario._id,
-            isEditable : isEditable
         });
     },
     handleNameChange: function(e) {
@@ -71,12 +69,10 @@ var TerminationConditionsComponent = React.createClass({
     },
     componentDidUpdate: function() {
         if (this.props.scenario._id != this.state._id) {
-            var isEditable = this.props.scenario.terminationconditions.map(function(condition){ return false });
             this.setState({
                 name: this.props.scenario.name,
                 terminationconditions: this.props.scenario.terminationconditions,
                 _id: this.props.scenario._id,
-                isEditable: isEditable
             });
         }
     },
@@ -89,9 +85,7 @@ var TerminationConditionsComponent = React.createClass({
     handleAddTerminationCondition: function(e) {
         var terminationconditions = this.state.terminationconditions;
         terminationconditions.push("New termination condition");
-        var isEditable = this.state.isEditable;
-        isEditable.push(true);
-        this.setState({terminationconditions: terminationconditions, isEditable: isEditable});
+        this.setState({terminationconditions: terminationconditions});
     },
     handleTerminationConditionDelete: function(index) {
         return function(e) {
@@ -100,56 +94,18 @@ var TerminationConditionsComponent = React.createClass({
             this.setState({terminationconditions: terminationconditions});
         }.bind(this);
     },
-    handleEnterSubmit: function(e) {
-        if (e.keyCode == 13) {
-            this.handleSubmit();
-        }
-    },
-    handleEditButtonClicked: function(index) {
-      return function() {
-        if (this.state.isEditable[index]) {
-          this.handleSubmit();
-        }
-        var newIsEditable = this.state.isEditable.slice();
-        newIsEditable[index] = (this.state.isEditable[index] == true ? false : true);
-        this.setState({isEditable: newIsEditable});
-      }.bind(this);
-    },
     render: function() {
         var terminationConditions = this.state.terminationconditions.map(function(terminationcondition, index) {
-            var editButtonIcon = this.state.isEditable[index] ? "fa fa-check" : "fa fa-pencil";
-            var disabled = this.state.isEditable[index] == false;
             return (
-                <div className="form-group" key={index}>
-                    <label htmlFor={"terminationcondition" + index} className="col-sm-2 control-label">Termination Condition {index + 1}</label>
-                    <div className="col-sm-10">
-                        <div className="input-group">
-                            <input
-                                type="text"
-                                className="form-control"
-                                id={"terminationcondition" + index}
-                                placeholder="Termination Condition"
-                                value = {terminationcondition}
-                                onChange = {this.handleTerminationConditionChange(index)}
-                                onBlur = {this.validateTerminationConditionChange(index)}
-                                onKeyDown = {this.handleEnterSubmit}
-                                disabled = {disabled}
-                            />
-                            <span className="input-group-btn">
-                              <button
-                                  className="btn btn-success"
-                                  type="button"
-                                  onClick={this.handleEditButtonClicked(index)}><i className={editButtonIcon} />
-                              </button>
-                              <button
-                                  className="btn btn-danger"
-                                  type="button"
-                                  onClick={this.handleTerminationConditionDelete(index)}><i className="fa fa-times" />
-                              </button>
-                            </span>
-                        </div>
-                    </div>
-                </div>
+              <InputWithToggleComponent
+                initialValue={terminationcondition}
+                placeholder="New Termination Condition"
+                label="Termination Condition"
+                deletable={true}
+                handleDelete={this.handleTerminationConditionDelete(index)}
+                handleSubmit={this.handleSubmit}
+                key={"terminationCondition" + index}
+              />
             );
         }.bind(this));
         return (

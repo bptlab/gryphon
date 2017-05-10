@@ -1,6 +1,7 @@
 var React = require('react');
 var API = require('./../../api');
 var MessageHandler = require('./../../messagehandler');
+var InputWithToggleComponent = require('./inputwithtoggle');
 
 var MapAnotherAttributeComponent = React.createClass({
   render: function() {
@@ -281,18 +282,16 @@ var CaseStartTriggerComponent = React.createClass({
                     <div className="panel-body">
                         <div className="row">
                             <div className="col-md-12">
-                                <div className="form-group">
-                                  <label htmlFor={"CaseStartTriggerInput" +  this.props.id} className="col-md-2 control-label">Event Query</label>
-                                  <div className="col-md-10">
-                                    <input type="text"
-                                           className="form-control"
-                                           onChange={this.handleQueryChange}
-                                           value={this.props.condition.query}
-                                           onKeyDown={this.handleEnterSubmit}
-                                           id={"CaseStartTriggerInput" +  this.props.id}
-                                    />
-                                  </div>
-                                </div>
+
+                              <InputWithToggleComponent
+                                initialValue={this.props.condition.query}
+                                placeholder="New Event Query"
+                                label="Event Query"
+                                deletable={false}
+                                handleSubmit={this.props.handleSubmit}
+                                key={"CaseStartTriggerInput" + this.props.id}
+                              />
+                            
                             </div>
                         </div>
                     </div>
