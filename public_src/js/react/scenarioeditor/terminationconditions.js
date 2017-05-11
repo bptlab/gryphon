@@ -33,17 +33,17 @@ var TerminationConditionsComponent = React.createClass({
             var realend = dataobject.indexOf("]");
             if (end == dataobject.length - 1 || end == -1 || realend < dataobject.length - 1) {
                 MessageHandler.handleMessage("danger","You must specify a state for your termination condition in: " + dataobject);
-                ret = false;
+                return false;
             } else {
                 var substr = dataobject.substring(0,end);
                 console.log(substr);
                 var found = false;
                 this.props.scenario.domainmodel.dataclasses.forEach(function(dataclass){
-                    found = found || (dataclass.name == substr)
+                    found = found || (dataclass.name == substr);
                 }.bind(this));
                 if (!found) {
                     MessageHandler.handleMessage("danger","You referenced an invalid dataclass: " + dataobject);
-                    ret = false;
+                    return false;
                 }
             }
         }.bind(this));
