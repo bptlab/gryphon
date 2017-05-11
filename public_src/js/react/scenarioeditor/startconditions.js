@@ -54,6 +54,9 @@ var CaseStartTriggerRowComponent = React.createClass({
         }
     },
     handleEditButtonClicked: function() {
+      if (!this.state.disabled) {
+        this.props.handleSubmit();
+      }
       this.setState({disabled : !this.state.disabled});
     },
     render: function() {
@@ -191,6 +194,7 @@ var CaseStartTriggerComponent = React.createClass({
             var condition = this.props.condition;
             condition['dataclasses'][index]['mapping'].splice(tindex,1);
             this.props.handleUpdate(condition);
+            this.props.handleSubmit();
         }.bind(this)
     },
     handleAddClass: function() {
@@ -205,7 +209,7 @@ var CaseStartTriggerComponent = React.createClass({
     render: function() {
         var availableClasses = this.props.availableClasses.map(function(dmclass){
             return (
-                <option value={dmclass.name}>{dmclass.name}</option>
+                <option value={dmclass.name} key={"availableClasses" + dmclass.name}>{dmclass.name}</option>
             )
         });
 
@@ -229,7 +233,7 @@ var CaseStartTriggerComponent = React.createClass({
                 if (dmclasses.length == 1) {
                     availableAttributes = dmclasses[0].attributes.map(function(attr){
                         return (
-                            <option value={attr.name}>{attr.name}</option>
+                            <option value={attr.name} key={"availableAttributes" + attr.name}>{attr.name}</option>
                         )
                     })
                 }
@@ -257,6 +261,7 @@ var CaseStartTriggerComponent = React.createClass({
             rows.push(
               <MapAnotherAttributeComponent
                 handleAdd = {this.handleAdd(index)}
+                key = {"MapAnotherAttributeComponent" + index}
               />
             );
 
@@ -364,7 +369,7 @@ var ScenarioCaseStartTriggerForm = React.createClass({
             startconditions.splice(index,1);
             this.setState({
                 'startconditions':startconditions
-            })
+            }, this.handleSubmit);
         }.bind(this)
     },
     render: function() {
