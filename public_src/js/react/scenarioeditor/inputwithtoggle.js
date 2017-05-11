@@ -89,10 +89,23 @@ var InputWithToggleComponent = React.createClass({
                 </span>
             }
 
+            var label = "";
+            var inputGridClassName = "col-sm-12";
+            if (this.props.label) {
+              inputGridClassName = "col-sm-10";
+              label =
+                <label
+                  htmlFor={"inputwithtoggle" + this.props.key}
+                  className="col-sm-2 control-label"
+                >
+                  {this.props.label}
+                </label>;
+            }
+
             return (
                 <div className="form-group">
-                    <label htmlFor={"inputwithtoggle" + this.props.key} className="col-sm-2 control-label">{this.props.label}</label>
-                    <div className="col-sm-10">
+                  {label}
+                    <div className={inputGridClassName}>
                         <div className="input-group">
                             <input
                                 type="text"
