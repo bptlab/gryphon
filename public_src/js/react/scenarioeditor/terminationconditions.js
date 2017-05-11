@@ -113,7 +113,6 @@ var TerminationConditionsComponent = React.createClass({
               <InputWithToggleComponent
                 initialValue={terminationcondition}
                 placeholder="New Termination Condition"
-                label="Termination Condition"
                 deletable={true}
                 handleChange={this.handleTerminationConditionChange(index)}
                 handleDelete={this.handleTerminationConditionDelete(index)}
@@ -124,6 +123,8 @@ var TerminationConditionsComponent = React.createClass({
         }.bind(this));
         return (
             <form className="form-horizontal">
+              <h3>Termination Conditions</h3>
+
               {terminationConditions}
 
               <button

@@ -276,12 +276,6 @@ var CaseStartTriggerComponent = React.createClass({
         var btntext = this.state.collapsed == '' ? 'Show' : 'Hide';
         return (
             <div className="panel panel-default">
-                <div className="panel-heading">
-                    <h3 className="panel-title">Case start trigger
-                        <button type="button" className="btn btn-xs pull-right" onClick={this.handleCollapse}>{btntext}</button>
-                        <button type="button" className="btn btn-xs pull-right btn-danger" onClick={this.props.handleDelete}><i className="fa fa-times" /></button>
-                    </h3>
-                </div>
                 <div className={"panel-collapse collapse " + this.state.collapsed} id={"CaseStartTriggerPanel" + this.props.id}>
                     <div className="panel-body">
                         <div className="row">
@@ -315,7 +309,11 @@ var CaseStartTriggerComponent = React.createClass({
                         </tbody>
                     </table>
                     <div className="panel-footer">
-                        <button type="button" className="btn btn-primary" onClick={this.props.handleSubmit} >Save</button>
+                      <div className="row">
+                        <div className="col-md-12">
+                          <button type="button" className="btn btn-danger pull-right" onClick={this.props.handleDelete} > Delete </button>
+                        </div>
+                      </div>
                     </div>
                 </div>
             </div>
@@ -390,6 +388,7 @@ var ScenarioCaseStartTriggerForm = React.createClass({
           <div>
             <div className="row">
               <div className="col-md-12">
+                <h3>Case Start Trigger</h3>
                 {conditions}
               </div>
             </div>
