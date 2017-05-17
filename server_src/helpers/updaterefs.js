@@ -81,7 +81,7 @@ var changeDClassReferences = function(dm_id, old_classes, new_classes, done) {
                         })
                     }
                     if ((newclass._id == oldclass._id.toString()) && !_.isEqual(newclass.attributes, oldclass.attributes)) {
-                        changeDClassAttrReferences(oldclass, newclass, result);
+                        changeDClassAttrReferences(newclass, oldclass, result);
                     }
                 });
             });
