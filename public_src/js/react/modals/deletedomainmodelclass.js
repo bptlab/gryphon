@@ -53,11 +53,11 @@ var DeleteDomainModelClassModal = React.createClass({
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
-                                <h4 className="modal-title" id="DeleteDomainModelClassModalTitle">Delete domain model class</h4>
+                                <h4 className="modal-title" id="DeleteDomainModelClassModalTitle">Delete data class</h4>
                             </div>
 
                             <div className="modal-body">
-                                Are you sure? Do really want to delete this domain model class?
+                                Are you sure? Do really want to delete this data class?
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
