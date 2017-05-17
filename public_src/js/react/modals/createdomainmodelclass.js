@@ -41,7 +41,9 @@ var CreateDomainModelClassModal = React.createClass({
           dm.dataclasses.push(dataclass);
           API.exportDomainModel(dm, function(){
             this.setState({name: ''});
+
             MessageHandler.handleMessage('success', 'Added new class!');
+
             SideBarManager.reload();
           }.bind(this));
         }
@@ -52,11 +54,6 @@ var CreateDomainModelClassModal = React.createClass({
     },
     handleNameChange: function(e) {
         this.setState({name: e.target.value});
-    },
-    handleEnterSubmit: function(e) {
-        if (e.keyCode == 13) {
-            this.handleSubmit()
-        }
     },
     render: function() {
         return (
@@ -80,12 +77,11 @@ var CreateDomainModelClassModal = React.createClass({
                                         placeholder="Class name"
                                         value={this.state.name}
                                         onChange={this.handleNameChange}
-                                        onKeyDown={this.handleEnterSubmit}
                                     />
                                 </fieldset>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="button" className="btn" data-dismiss="modal">Close</button>
                                 <button type="button" className="btn btn-primary" onClick={this.handleCreateDataclass}>Create dataclass</button>
                                 <button type="button" className="btn btn-primary" onClick={this.handleCreateEventclass}>Create eventclass</button>
                             </div>
