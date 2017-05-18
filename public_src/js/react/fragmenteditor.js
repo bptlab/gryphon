@@ -66,8 +66,8 @@ var FragmentEditorComponent = React.createClass({
         if (this.state.editor !== null && this.state.fragment !== null) {
           this.state.editor.exportFragment(this.state.fragment, function(data) {
             // TODO FIXME: res_handler is never called...why? Maybe because the answer is not valid JSON?
-            API.exportFragment(this.state.fragment, data, res_handler);
-          }.bind(this));
+            API.exportFragment(data, res_handler);
+          });
         }
     },
     componentWillUnmount: function() {
