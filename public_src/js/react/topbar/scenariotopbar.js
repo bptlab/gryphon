@@ -35,8 +35,10 @@ var ScenarioTopBarComponent = React.createClass({
 
                 MessageHandler.handleMessage("success","Saved scenario-details!");
 
-                API.validateScenario(this.props.scenario._id, null, function(){
-                    MessageHandler.handleMessage("validation", "Validation failed!");
+                API.validateScenario(this.props.scenario._id, function(data){
+                  data.forEach(function(message){
+                      MessageHandler.handleMessage(message.type, message.text);
+                  });
                 }.bind(this));
 
               }.bind(this));

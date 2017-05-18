@@ -133,20 +133,8 @@ API.prototype.validateFragment = function(fragid,callback) {
     $.get(this.createURL("fragment/" + fragid + "/validate"),callback);
 };
 
-API.prototype.validateScenario = function(scenid, callbackDone, callbackFail, callbackAlways) {
-    $.get(this.createURL("scenario/" + scenid + "/validate"))
-      .done(function() {
-        if (callbackDone)
-          callbackDone();
-      })
-      .fail(function() {
-        if (callbackFail)
-          callbackFail();
-      })
-      .always(function() {
-        if (callbackAlways)
-          callbackAlways();
-      });
+API.prototype.validateScenario = function(scenid,callback) {
+    $.get(this.createURL("scenario/" + scenid + "/validate"),callback);
 };
 
 API.prototype.deleteScenario = function(id, callback) {
