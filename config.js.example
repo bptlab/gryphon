@@ -22,7 +22,7 @@ var CONFIGURATION = {
     /**
      * The Mongo-DB Path that should be used (it should specify host and collection)
      */
-    MONGODB_HOST: 'mongodb://localhost/griffin'
+    MONGODB_HOST: 'mongodb://localhost/gryphondb'
 };
 
 module.exports = CONFIGURATION
