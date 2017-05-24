@@ -85,16 +85,14 @@ If you just want to run the editor, instead of modifying it (even though that do
 you could also edit it this way, just the building part will take longer), you can run the whole
 thing in a docker container in 3 easy steps:
 
-Step One: Grab a cup of coffee.
-Step Two: Install Docker.
-Step Three: Run "docker build -t griffindocker ."
-Step Four: Grab another cup of coffee.
-Step Five: Run "docker run -p 3000:3000 -it --rm --name griffin griffindocker"
+1.  Install Docker.
+2.  `cd` into the gryphon dir and run `docker build -t bpt/gryphon .`
+3.  Run `docker run -it --rm -p 3000:3000 --name gryphon bpt/gryphon`
 
 ### Troubleshooting
 If running npm install fails:
-Check wether you have installed all build-essentials (Otherwise run: sudo apt-get install build-essential)
-Run: sudo npm install -g node-gyp
+Check wether you have installed all build-essentials (Otherwise run: `sudo apt-get install build-essential`)
+Run: `sudo npm install -g node-gyp`
 Try again.
 
 When running on Windows, make sure to have the following additional dependencies installed:
