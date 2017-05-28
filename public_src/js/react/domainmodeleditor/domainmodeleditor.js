@@ -201,10 +201,37 @@ var DomainModelEditorComponent = React.createClass({
               scenid = {this.props.scenario._id}
               />;
 
-            editorCssClasses = "panel-body";
-            if (this.state.editorIsCollapsed) {
-              editorCssClasses += " collapse";
-            }
+        var editorCssClasses = "panel-body";
+        if (this.state.editorIsCollapsed) {
+          editorCssClasses += " collapse";
+        }
+
+        // Events do not have a life cycle
+        var olcEditor = "";
+        if (!selectedDataclass.is_event) {
+          olcEditor =
+              <div className="row">
+                <div className="col-md-12">
+                  <div className="panel panel-default">
+                    <div className="panel-heading">
+                      <a data-toggle="collapse" href="#editorCollapse">
+                        <h3 className="panel-title">OLC Editor</h3>
+                      </a>
+                    </div>
+                    <div className={editorCssClasses} id="editorCollapse">
+                      <OLCEditorComponent
+                        scenarioId={this.props.params.scenarioId}
+                        domainmodelId={this.props.params.domainmodelId}
+                        dataclassId={this.props.params.dataclassId}
+                        changeHandler={this.handleOlcChanged}
+                        diagramLoadedCallback={this.collapseOlcEditor}
+                        ref="OLCEditor"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>;
+        }
 
         return (
               <div>
@@ -215,27 +242,7 @@ var DomainModelEditorComponent = React.createClass({
                   </div>
                 </div>
 
-                <div className="row">
-                  <div className="col-md-12">
-                    <div className="panel panel-default">
-                      <div className="panel-heading">
-                        <a data-toggle="collapse" href="#editorCollapse">
-                          <h3 className="panel-title">OLC Editor</h3>
-                        </a>
-                      </div>
-                      <div className={editorCssClasses} id="editorCollapse">
-                        <OLCEditorComponent
-                          scenarioId={this.props.params.scenarioId}
-                          domainmodelId={this.props.params.domainmodelId}
-                          dataclassId={this.props.params.dataclassId}
-                          changeHandler={this.handleOlcChanged}
-                          diagramLoadedCallback={this.collapseOlcEditor}
-                          ref="OLCEditor"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                {olcEditor}
 
               </div>
         )
