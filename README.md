@@ -87,7 +87,7 @@ thing in a docker container in 3 easy steps:
 
 1.  Install Docker.
 2.  `cd` into the gryphon dir and run `docker build -t bpt/gryphon .`
-3.  Run `docker run -it --rm -p 3000:3000 --name gryphon bpt/gryphon`
+3.  Run `docker run -it --rm -p 3000:3000 --name gryphon -v gryphon-mongodb-data:/var/lib/mongodb bpt/gryphon`
 
 ### Troubleshooting
 If running npm install fails:
