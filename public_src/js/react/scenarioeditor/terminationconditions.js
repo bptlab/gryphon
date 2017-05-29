@@ -134,6 +134,14 @@ var TerminationConditionsComponent = React.createClass({
               >
                   <i className="fa fa-plus"></i> add termination condition
               </button>
+
+              <a
+                data-toggle="tooltip"
+                title="The case can terminate if one of its termination conditions is satisfied."
+              >
+                <i className="fa fa-info-circle"></i>
+              </a>
+
             </form>
         );
     }
