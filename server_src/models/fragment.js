@@ -12,6 +12,7 @@ var Schema = mongoose.Schema;
 var FragmentSchema = new Schema({
     name: String,
     content: String,
+    preconditions: [{type: String}],
     revision: Number
 });
 
