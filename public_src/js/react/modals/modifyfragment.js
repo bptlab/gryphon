@@ -16,12 +16,26 @@ var ModifyFragmentModal = React.createClass({
             _id: this.state.fragID
         }
     },
+    bindToButton: function() {
+      $('#modifyFragmentModal').off('show.bs.modal');
+      $('#modifyFragmentModal').on('show.bs.modal', function (event) {
+          var button = $(event.relatedTarget);
+          var fragid = button.data('fragid');
+          var fragname = button.data('fragname');
+          this.setState({fragID:fragid,name:fragname})
+          console.log("ModifyFragmentModal on show.bs.modal name: ", fragname, "button: ", button);
+      }.bind(this))
+    },
+    componentDidMount: function() {
+      this.bindToButton();
+    },
     handleSubmit: function() {
         var newFragment = this.getFinalState();
         if (NameCheck.check(newFragment.name)) {
             API.exportFragment(newFragment);
             SideBarManager.reload();
             $('#modifyFragmentModal').modal('hide');
+            this.bindToButton();
         }
     },
     handleChange: function(e) {
@@ -67,14 +81,6 @@ var ModifyFragmentModal = React.createClass({
                 </div>
             </div>
         )
-    },
-    componentDidMount: function() {
-        $('#modifyFragmentModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget);
-            var fragid = button.data('fragid');
-            var fragname = button.data('fragname');
-            this.setState({fragID:fragid,name:fragname})
-        }.bind(this))
     }
 });
 module.exports = ModifyFragmentModal;
