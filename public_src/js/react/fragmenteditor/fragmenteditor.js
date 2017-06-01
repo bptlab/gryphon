@@ -1,23 +1,35 @@
 var React = require('react');
-var Editor = require('./../bpmn/editor');
-var MessageHandler = require('./../messagehandler');
-var API = require('./../api');
-var Config = require('./../config');
+var Editor = require('./../../bpmn/editor');
+var MessageHandler = require('./../../messagehandler');
+var API = require('./../../api');
+var Config = require('./../../config');
+var InputWithToggleComponent = require('./../inputwithtoggle');
+var FragmentPreconditionsComponent = require('./fragmentpreconditions');
 
 var FragmentEditorComponent = React.createClass({
     getInitialState: function() {
         return {
             editor: null,
-            fragment: null,
+            fragment: {
+                name: "",
+                content: "",
+                preconditions: [""],
+                revision: 0
+            },
             interval: -1
         }
     },
     render: function() {
         return (
+          <div className="full-height full-width">
+            <FragmentPreconditionsComponent
+              fragment={this.state.fragment}
+              />
             <div className="fragmentEditor">
                 <div className="canvas" id="fragment-canvas" />
                 <div className="properties-panel" id="fragment-properties" />
             </div>
+          </div>
         )
     },
     componentDidMount: function() {
@@ -31,6 +43,7 @@ var FragmentEditorComponent = React.createClass({
     },
     loadDiagram: function() {
         API.getFragment(this.props.params.fragmentId,function(data) {
+            console.log("Fragment: ", data);
             this.setState({fragment: data});
             this.state.editor.importFragment(data, function(err){
                 if (err) {
@@ -65,7 +78,6 @@ var FragmentEditorComponent = React.createClass({
         }.bind(this);
         if (this.state.editor !== null && this.state.fragment !== null) {
           this.state.editor.exportFragment(this.state.fragment, function(data) {
-            // TODO FIXME: res_handler is never called...why? Maybe because the answer is not valid JSON?
             API.exportFragment(data, res_handler);
           });
         }

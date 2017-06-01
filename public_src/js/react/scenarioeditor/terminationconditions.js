@@ -2,7 +2,7 @@ var React = require('react');
 var API = require('./../../api');
 var MessageHandler = require('./../../messagehandler');
 var NameCheck = require('./../../namecheck');
-var InputWithToggleComponent = require('./inputwithtoggle');
+var InputWithToggleComponent = require('./../inputwithtoggle');
 
 var TerminationConditionsComponent = React.createClass({
     getInitialState: function() {

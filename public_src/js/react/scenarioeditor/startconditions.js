@@ -1,7 +1,7 @@
 var React = require('react');
 var API = require('./../../api');
 var MessageHandler = require('./../../messagehandler');
-var InputWithToggleComponent = require('./inputwithtoggle');
+var InputWithToggleComponent = require('./../inputwithtoggle');
 
 var MapAnotherAttributeComponent = React.createClass({
   render: function() {
