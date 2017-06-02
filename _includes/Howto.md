@@ -26,7 +26,7 @@ created as well. You can rename that fragment in the sidebar.
 #### Naming conventions
 The names of case model elements (fragments, data classes, attributes, task names etc.) can contain only alpha-numeric characters, underscores and spaces. The first and last character need to be alpha-numeric. There may not be more than 1 non-alphanumeric character in a row. This is checked by the following regular expression: `^([a-zA-Z\d]|[a-zA-Z\d](?!.*[ _]{2})[a-zA-Z\d _]*?[a-zA-Z\d])$`.
 
-#### Creating and editing fragments
+## Creating and editing fragments
 You can create new fragments on the case overview page, as well as give
 them a descriptive name.
 
@@ -43,6 +43,13 @@ can define the execution steps in BPMN language.
     <source src="{{ site.github.url }}/vid/model_fragment.webm" type="video/webm">
     Your browser does not support HTML video.
 </video>
+
+### Fragment Pre-conditions
+
+To express that a fragment, and thus its activities, should only be enabled when the case is in a certain state, *conditional start events* can be used.
+The label of the event should contain an expression that specifies which data objects need to be in which state for the fragment to be enabled, e.g. `Customer[verified]`.
+
+## Defining the Data Model
 
 In order to use data objects in the fragments, their corresponding data
 classes have to be defined in the domain model. The domain model for a
