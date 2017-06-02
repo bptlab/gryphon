@@ -600,7 +600,6 @@ var GeneralValidator = class {
             }
             this.validateWithSimpleValidator(validator);
         }.bind(this));
-        console.log('What')
     }
 
     /**
