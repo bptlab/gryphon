@@ -24,6 +24,7 @@ var FragmentEditorComponent = React.createClass({
           <div className="full-height full-width">
             <FragmentPreconditionsComponent
               fragment={this.state.fragment}
+              onChanged={this.handlePreConditionChange}
               />
             <div className="fragmentEditor">
                 <div className="canvas" id="fragment-canvas" />
@@ -81,6 +82,11 @@ var FragmentEditorComponent = React.createClass({
             API.exportFragment(data, res_handler);
           });
         }
+    },
+    handlePreConditionChange: function(preconditions) {
+        var fragment = this.state.fragment;
+        fragment.preconditions = preconditions;
+        this.setState({fragment: fragment});
     },
     componentWillUnmount: function() {
         this.saveDiagram(false);

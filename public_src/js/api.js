@@ -75,7 +75,15 @@ API.prototype.getAllScenarios = function(populate, callback) {
 };
 
 API.prototype.exportFragment = function(fragment, callback) {
-    $.post(this.createURL("fragment/" + fragment._id),fragment,callback);
+    $.ajax({
+      url: this.createURL("fragment/" + fragment._id),
+      type: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(fragment)
+    }).done(function() {
+      if(callback)
+        callback();
+    });
 };
 
 API.prototype.exportScenario = function(scenario, callback) {

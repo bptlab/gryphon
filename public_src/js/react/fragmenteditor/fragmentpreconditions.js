@@ -26,6 +26,7 @@ var FragmentPreconditionsComponent = React.createClass({
       }.bind(this);
     },
     validatePreCondition: function(precondition) {
+        //MessageHandler.handleMessage("warning","TODO implement validating of Fragment Pre-Conditions!");
         return true;
         // var split = precondition.split(", ");
         // var ret = true;
@@ -91,6 +92,7 @@ var FragmentPreconditionsComponent = React.createClass({
 
             MessageHandler.handleMessage("warning","TODO implement saving of Fragment Pre-Conditions!");
             if (validationSuccess) {
+              this.props.onChanged(this.state.preconditions);
               //API.exportScenario(this.state);
               //MessageHandler.handleMessage("success","Saved fragment-details!");
             }

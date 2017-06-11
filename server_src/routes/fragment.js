@@ -5,6 +5,7 @@ var Fragment = require('./../models/fragment').model;
 var Scenario = require('./../models/scenario').model;
 var JSONHelper = require('./../helpers/json');
 var Validator = require('./../helpers/validator').Validator;
+var _ = require('lodash');
 
 /**
  * You can find further information about all endpoints in the swagger.yaml
@@ -50,7 +51,6 @@ router.post('/:fragID', function(req, res) {
             return;
         }
         if (result !== null) {
-
             var changed = false;
 
             if (new_frag.name != null && result.name !== new_frag.name) {
@@ -61,6 +61,11 @@ router.post('/:fragID', function(req, res) {
             if (new_frag.content != null && result.content !== new_frag.content) {
                 changed = true;
                 result.content = new_frag.content;
+            }
+            
+            if (new_frag.preconditions != null && ! (_.isEqual(result.preconditions, new_frag.preconditions))) {
+                changed = true;
+                result.preconditions = new_frag.preconditions;
             }
 
             if (changed) {
@@ -110,6 +115,7 @@ router.post('/', function(req, res) {
     var db_fragment = new Fragment({
         name: fragment.name,
         content: (fragment.content ? fragment.content : Config.DEFAULT_FRAGMENT_XML),
+        preconditions: (fragment.preconditions ? fragment.preconditions : [""]),
         revision: 1
     });
 
