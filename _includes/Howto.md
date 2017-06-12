@@ -129,8 +129,11 @@ transition is found, that was not modelled in the object life cycle.
 ## Termination Conditions and Case Start Triggers
 
 In the case overview, you can add termination conditions and case start triggers.
-Termination conditions define sets of data states, that when reached,
-symbolize that the case is terminated.
+
+Case models can have several termination conditions defining the goal state(s) of the case.
+When the case execution fulfills one of the termination conditions it can be terminated by the user.
+Termination conditions consists of one or more atomic *data object state conditions* that are pairs of a data class name and one of its states, e.g. `Application[accepted]`.
+Several of those data object state conditions are separated by a comma, meaning that all of the conditions, i.e. their conjunction, has to be fulfilled, e.g. `Application[accepted], Customer[verified]` means that application is in state accepted and the customer is verified.
 
 <video width="550" autoplay loop muted>
     <source src="{{ site.github.url }}/vid/termination_condition.webm" type="video/webm">
