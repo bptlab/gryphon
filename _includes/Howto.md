@@ -44,6 +44,47 @@ can define the execution steps in BPMN language.
     Your browser does not support HTML video.
 </video>
 
+### Supported Modeling Elements
+
+Although the bpmn.io editor offers a variety of types for events and activities, e.g. user task, conditional start event, most of these elements are **not supported** by the execution engine [Chimera](https://bptlab.github.io/chimera). Using them might cause the deployment to fail.
+The following elements are supported:
+- plain start events
+- message start event
+- plain end event
+- intermediate timer event
+- intermediate message catch event
+- exclusive (XOR) gateways
+- parallel (AND) gateways 
+- event-based gateways
+- plain tasks
+- service tasks
+- send task (Mail task)
+- data objects
+
+### Syntax for Timer Events
+
+The syntax for timer events follows the [ISO 8601 standard](https://en.wikipedia.org/wiki/ISO_8601).
+However, **only durations are supported**.
+The timer expression has to be provided as a property of the timer event.
+An example for a timer expression is `P1DT2H5M25S`, which means a duration of one day, 2 hours, 5 minutes and 25 seconds.
+
+Offering support for fixed points in time would only make sense, when the time could be set programmatically.
+Otherwise, such an event could occur only once and once it is past, it would never occur, even in newly created cases.
+
+
+### Process Variables
+
+Variables allow to access the case data in gateways, service tasks, and send tasks.
+
+#### Usage in data-based gateways
+
+The branches leaving a XOR split can be annotated with an expression that evaluates to true or false.
+Basically, there are two types of expressions: 1) data object state conditions and 2) attribute value conditions.
+The former check the state of a data object, while the later check attribute values.
+To refer to a data object, use a hash symbol followed by the data class name, an equality operator and a state, e.g. `#Application = rejected`.
+To access attribute values, use the dot-notation, i.e. `#Application.amount <= 5000`.
+Only those branches for which the expression yields true are control-flow enabled.
+
 ### Fragment Pre-conditions
 
 To express that a fragment, and thus its activities, should only be enabled when the case is in a certain state, *conditional start events* can be used.
@@ -85,19 +126,9 @@ transition is found, that was not modelled in the object life cycle.
     Your browser does not support HTML video.
 </video>
 
-In the case overview, you can add start conditions and termination
-conditions.
+## Termination Conditions and Case Start Triggers
 
-In start conditions, you can register for certain events that trigger
-the instantiation of a case. You can define data classes that are
-instantiated into a certain state, as well as attribute values from the
-event that should be saved.
-
-<video width="550" autoplay loop muted>
-    <source src="{{ site.github.url }}/vid/start_condition.webm" type="video/webm">
-    Your browser does not support HTML video.
-</video>
-
+In the case overview, you can add termination conditions and case start triggers.
 Termination conditions define sets of data states, that when reached,
 symbolize that the case is terminated.
 
@@ -106,7 +137,20 @@ symbolize that the case is terminated.
     Your browser does not support HTML video.
 </video>
 
-##### []{#Event_integration_45}Event integration
+Case start triggers are used to automatically create a case whenever a specific external event occurs.
+Each start trigger contains an Esper EPL query that is registered with the event processing platform [Unicorn](https://bpt.hpi.uni-potsdam.de/UNICORN).
+When an event matching this query occurs (and is detected by Unicorn) the Chimera engine is notified and a case is instantiated.
+Additionally, data classes can be defined, data objects of which will be automatcally instantiated in the specified state.
+Also, data contained in the event notification can be mapped to attributes of the instantiated data objects.
+For each attribute that should instantiated the user has to provide a **JsonPath** expression that will be applied to the event notification and the result will be stored in the selected attribute.
+In this way, event data can be used inside a case by mapping 
+
+<video width="550" autoplay loop muted>
+    <source src="{{ site.github.url }}/vid/start_condition.webm" type="video/webm">
+    Your browser does not support HTML video.
+</video>
+
+## Event integration
 
 In fragments, events can be modelled with BPMN message receive events.
 You can add an event query to these events in the fragment sidebar. The
@@ -118,7 +162,7 @@ plattform. Once it triggers, the BPMN event will be triggered as well.
     Your browser does not support HTML video.
 </video>
 
-Similar to start conditions, you can also define data attribute values
+Similar to case start triggers, you can also define data attribute values
 that should be saved from events. To this end, you have to add outgoing
 data objects to the event. In the fragment sidebar, you can then add
 JSONPath expressions for the data attributes.
@@ -132,9 +176,9 @@ Further reading about event integration can be found in the [bachelor
 thesis](https://bpt.hpi.uni-potsdam.de/FCM/CMPublications) of Jonas
 Beyer.
 
-### []{#Executing_a_Case_55}Executing a Case
+## Executing a Case
 
-In the case overview, case models can be exported to running Chimera
+In the case overview, case models can be deployed to running Chimera
 instances. In the export window, export targets for running Chimera
 instances can be defined by clicking the “Add target” button.
 
@@ -144,5 +188,4 @@ instances can be defined by clicking the “Add target” button.
 </video>
 
 See [the Chimera
-documentation](https://bpt.hpi.uni-potsdam.de/Chimera/GettingStarted)
-for further information on the execution of cases.
+documentation](https://bptlab.github.io/chimera) for further information on the execution of cases.
