@@ -137,7 +137,7 @@ var TerminationConditionsComponent = React.createClass({
 
               <a
                 data-toggle="tooltip"
-                title="The case can terminate if one of its termination conditions is satisfied."
+                title="A case can terminate if one of its termination conditions is fulfilled. Each termination condition specifies that certain data objects need to be in a specific state, e.g. Application[archived], CreditCard[activated]."
               >
                 <i className="fa fa-info-circle"></i>
               </a>

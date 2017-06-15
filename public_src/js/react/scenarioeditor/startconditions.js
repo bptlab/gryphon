@@ -37,6 +37,13 @@ var MapAnotherDataClassComponent = React.createClass({
             >
                 <i className="fa fa-plus"></i> map another data class
             </button>
+
+            <a
+              data-toggle="tooltip"
+              title="If data classes are added to the mapping the case start trigger will create data objects of that classes in the specified lifecycle state."
+            >
+              <i className="fa fa-info-circle"></i>
+            </a>
           </td>
           <td></td>
           <td></td>
@@ -285,6 +292,7 @@ var CaseStartTriggerComponent = React.createClass({
                                 initialValue={this.props.condition.query}
                                 placeholder="New Event Query"
                                 label="Event Query"
+                                tooltip="This Esper EPL query will be registered with Unicorn. When a matching event occurs, the case start trigger will be triggered and instantiate a new case."
                                 deletable={false}
                                 handleChange={this.handleQueryChange}
                                 handleSubmit={this.props.handleSubmit}
@@ -300,7 +308,16 @@ var CaseStartTriggerComponent = React.createClass({
                             <th>Data Class</th>
                             <th>State</th>
                             <th>Attribute</th>
-                            <th>JSON Path Expression</th>
+                            <th>
+                              JSON Path Expression
+                              &nbsp;
+                              <a
+                                data-toggle="tooltip"
+                                title="The JsonPath expression is applied to the event matching the event query and the resulting values are stored in the specified data object attributes."
+                              >
+                                <i className="fa fa-info-circle"></i>
+                              </a>
+                            </th>
                             <th></th>
                         </tr>
                         </thead>
@@ -401,6 +418,13 @@ var ScenarioCaseStartTriggerForm = React.createClass({
                 >
                     <i className="fa fa-plus"></i> add case start trigger
                 </button>
+
+                <a
+                  data-toggle="tooltip"
+                  title="Case start triggers automatically instantiate cases whenever a specified external event occurs."
+                >
+                  <i className="fa fa-info-circle"></i>
+                </a>
               </div>
             </div>
           </div>

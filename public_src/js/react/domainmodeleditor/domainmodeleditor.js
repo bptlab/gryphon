@@ -215,7 +215,15 @@ var DomainModelEditorComponent = React.createClass({
                   <div className="panel panel-default">
                     <div className="panel-heading">
                       <a data-toggle="collapse" href="#editorCollapse">
-                        <h3 className="panel-title">OLC Editor</h3>
+                        <span className="h3 panel-title">OLC Editor</span>
+                      </a>
+                      &nbsp;
+                      <a
+                        data-toggle="tooltip"
+                        data-container="body"
+                        title="This editor allows to model the object lifecycle (OLC) of a data class. The OLC defines states and valid state transitions for data objects of that data class. Fragments are validated against the OLC, e.g. no activities are allowed to change the state of a data object if this transition is not allowed in the OLC."
+                      >
+                        <i className="fa fa-info-circle"></i>
                       </a>
                     </div>
                     <div className={editorCssClasses} id="editorCollapse">

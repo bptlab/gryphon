@@ -91,6 +91,13 @@ var ExportScenarioModal = React.createClass({
                                           >
                                               Add target
                                           </button>
+                                          &nbsp;
+                                          <a
+                                            data-toggle="tooltip"
+                                            title="Enter the endpoint for the REST API of the Chimera instance you want to connect, e.g. http://localhost:8080/&#8203;Chimera/&#8203;api/&#8203;interface/&#8203;v2 ."
+                                          >
+                                            <i className="fa fa-info-circle"></i>
+                                          </a>
 
                                         </div>
                                     </div>

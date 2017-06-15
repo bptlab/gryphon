@@ -93,13 +93,25 @@ var InputWithToggleComponent = React.createClass({
             var inputGridClassName = "col-sm-12";
             if (this.props.label) {
               inputGridClassName = "col-sm-10";
+              var tooltip = "";
+              if (this.props.tooltip) {
+                tooltip =
+                  <a
+                    data-toggle="tooltip"
+                    title={this.props.tooltip}
+                  >
+                    <i className="fa fa-info-circle"></i>
+                  </a>
+              }
               label =
                 <label
                   htmlFor={"inputwithtoggle" + this.props.key}
                   className="col-sm-2 control-label"
                 >
                   {this.props.label}
-                </label>;
+                  &nbsp;
+                  {tooltip}
+                </label>
             }
 
             return (
