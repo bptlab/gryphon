@@ -4,9 +4,9 @@ var StaticInit = React.createClass({
     render: function() {
 
       // Initialize tooltips
-      $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-      })
+      $("body").tooltip({
+          selector: '[data-toggle="tooltip"]'
+      });
 
       // Dummy DOM object
       return (
