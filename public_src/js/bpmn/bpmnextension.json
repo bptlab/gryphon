@@ -57,7 +57,7 @@
         {
           "name": "scripttaskfile",
           "isAttr": true,
-          "type": "Boolean"
+          "type": "String"
         }
       ]
     },
