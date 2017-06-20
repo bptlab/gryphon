@@ -169,6 +169,22 @@ function generateProvider(fragmentid) {
         }
     }
 
+
+    /**
+     * This function creates the properties for the ScriptTask
+     */
+    function createScriptTaskProperties(group, element, elementRegistry) {
+        if (is(element, "bpmn:ScriptTask")) {
+            var stateEntry = entryFactory.textField({
+                id: 'ScriptTaskFile',
+                description: '',
+                label: 'Script File',
+                modelProperty: 'scripttaskfile'
+            });
+            group.entries.push(stateEntry);
+        }
+    }
+
     /**
      * This function generates the additional fields WebServiceURL, Method and Body
      * In case the visitied object is an ServiceTask
@@ -226,6 +242,9 @@ function generateProvider(fragmentid) {
         createDataObjectProperties(detailsGroup, element, bpmnFactory);
         createMessageEventProperties(detailsGroup, element, bpmnFactory);
         createWebServiceTaskProperties(detailsGroup, element, bpmnFactory);
+
+        createScriptTaskProperties(detailsGroup, element, bpmnFactory);
+
         var documentationGroup = {
             id: 'documentation',
             label: 'Documentation',

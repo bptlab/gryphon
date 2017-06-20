@@ -48,6 +48,20 @@
       ]
     },
     {
+      "name": "ScriptTask",
+      "isAbstract": false,
+      "extends": [
+        "bpmn:ScriptTask"
+      ],
+      "properties": [
+        {
+          "name": "scripttaskfile",
+          "isAttr": true,
+          "type": "Boolean"
+        }
+      ]
+    },
+    {
       "name": "WebServiceTask",
       "isAbstract": false,
       "extends": [
