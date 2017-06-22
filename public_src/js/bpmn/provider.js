@@ -176,10 +176,17 @@ function generateProvider(fragmentid) {
     function createScriptTaskProperties(group, element, elementRegistry) {
         if (is(element, "bpmn:ScriptTask")) {
             var stateEntry = entryFactory.textField({
-                id: 'ScriptTaskFile',
+                id: 'ScriptTaskJar',
                 description: '',
-                label: 'Script File',
-                modelProperty: 'scripttaskfile'
+                label: 'Script Jar File',
+                modelProperty: 'scripttaskjar'
+            });
+            group.entries.push(stateEntry);
+            stateEntry = entryFactory.textField({
+                id: 'ScriptTaskClassPath',
+                description: '',
+                label: 'Script Task Class Path',
+                modelProperty: 'scripttaskclasspath'
             });
             group.entries.push(stateEntry);
         }
