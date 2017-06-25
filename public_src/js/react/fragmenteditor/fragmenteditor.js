@@ -23,6 +23,7 @@ var FragmentEditorComponent = React.createClass({
         return (
           <div className="full-height full-width">
             <FragmentPreconditionsComponent
+              scenario={this.props.scenario}
               fragment={this.state.fragment}
               onChanged={this.handlePreConditionChange}
               />
@@ -44,7 +45,6 @@ var FragmentEditorComponent = React.createClass({
     },
     loadDiagram: function() {
         API.getFragment(this.props.params.fragmentId,function(data) {
-            console.log("Fragment: ", data);
             this.setState({fragment: data});
             this.state.editor.importFragment(data, function(err){
                 if (err) {

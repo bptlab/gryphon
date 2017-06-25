@@ -36,8 +36,9 @@ var InputWithToggleComponent = React.createClass({
     },
     handleOnKeyDown: function(e) {
         // submit on enter
-        if (e.keyCode == 13) {
+        if (e.keyCode == 13 && this.state.isEditable) {
             this.props.handleSubmit();
+            this.setState({isEditable: false});
         }
         // cancel on esc
         if (e.keyCode == 27) {

@@ -6,7 +6,6 @@ var SideBarSingleFragment = React.createClass({
         this.props.setSelectedFragment(this.props.fragment._id);
     },
     render: function() {
-        console.log("Fragment render this.props.fragment: ", this.props.fragment);
         return (
           <li key={this.props.fragment._id}>
               <div className="btn-group pull-right">
