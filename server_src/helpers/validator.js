@@ -3,6 +3,7 @@
 var Scenario = require('./../models/scenario').model;
 var parseToBPMNObject = require('./json').parseToBPMNObject;
 var parseToOLC = require('./json').parseToOLC;
+var parseOLCPaths = require('./json').parseOLCPaths;
 
 var SoundnessValidator = require('./soundnessvalidator');
 var OLCValidator = require('./olcvalidator');
@@ -45,7 +46,7 @@ var GeneralValidator = class {
                 throw "Can't find domainmodel for fragment";
             }
             this.scenario = result;
-            this.parseOLCPaths(result.domainmodel);
+            this.olc = parseOLCPaths(result.domainmodel);
             initDone();
         }.bind(this))
     }
@@ -77,48 +78,6 @@ var GeneralValidator = class {
         this.messages = this.messages.concat(validator.messages);
     }
 
-    /**
-     * This method creates adjacency lists for every dataclass according to it's olc.
-     * If there is no valid olc model for the dataclass (including at least one state) it's invalid.
-     * @method parseOLCPaths
-     * @param domainmodel {Domainmodel}
-     */
-    parseOLCPaths(domainmodel) {
-        this.olc = {};
-        domainmodel.dataclasses.forEach(function(dclass){
-            if (dclass.olc != undefined) {
-                var olc = parseToOLC(dclass.olc);
-                var adjlist = {};
-                var namemap  = {};
-                if ('state' in olc) {
-
-                    olc['state'].forEach(function(state){
-                        if ('name' in state) {
-                            namemap[state['id']] = state['name'];
-                        } else {
-                            namemap[state['id']] = state['id'];
-                        }
-                        adjlist[namemap[state['id']]] = [];
-                    });
-
-                    if ('sequenceFlow' in olc) {
-                        olc['sequenceFlow'].forEach(function(seqFlow){
-                            if ((seqFlow['sourceRef'] in namemap) && (seqFlow['targetRef'] in namemap)) {
-                                adjlist[namemap[seqFlow['sourceRef']]].push(namemap[seqFlow['targetRef']]);
-                            }
-                        });
-                        this.olc[dclass.name] = adjlist;
-                    } else {
-                        this.olc[dclass.name] = null;
-                    }
-                } else {
-                    this.olc[dclass.name] = null;
-                }
-            } else {
-                this.olc[dclass.name] = null;
-            }
-        }.bind(this))
-    }
 };
 
 module.exports = {
