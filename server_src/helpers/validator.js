@@ -7,6 +7,7 @@ var parseToOLC = require('./json').parseToOLC;
 var SoundnessValidator = require('./soundnessvalidator');
 var OLCValidator = require('./olcvalidator');
 var EventValidator = require('./eventvalidator');
+var DataObjectReferenceValidator = require('./dataobjectreferencevalidator');
 
 /**
  * @module helpers.validator
@@ -28,7 +29,7 @@ var GeneralValidator = class {
      */
     constructor(fragment,initDone, validators) {
         if (validators == undefined) {
-            validators = [EventValidator, SoundnessValidator, OLCValidator];
+            validators = [EventValidator, SoundnessValidator, OLCValidator, DataObjectReferenceValidator];
         }
         if (initDone == undefined) {
             initDone = function() {
@@ -57,6 +58,8 @@ var GeneralValidator = class {
         this.validators.forEach(function(validator){
             if (validator == OLCValidator) {
                 validator = new validator(this.bpmnObject, this.olc)
+            } else if (validator == DataObjectReferenceValidator) {
+                validator = new validator(this.fragment.preconditions, this.olc);
             } else {
                 validator = new validator(this.bpmnObject);
             }

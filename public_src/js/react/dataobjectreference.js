@@ -20,28 +20,38 @@ var DataObjectReference = React.createClass({
         }
     },
     validateDataObjectReference: function(dataObjectReference, showErrors) {
-        var end = dataObjectReference.indexOf("[");
-        var realend = dataObjectReference.indexOf("]");
-        if (end == dataObjectReference.length - 1 || end == -1 || realend < dataObjectReference.length - 1) {
-            if (showErrors)
-              MessageHandler.handleMessage("danger","You must specify a state for your data object reference in: " + dataObjectReference);
+        var individualReferences = dataObjectReference.split(',');
+        var ret = true;
+        individualReferences.forEach(function(reference) {
+            reference = reference.trim();
+            ret |= this.validateReference(reference, showErrors);
+        }.bind(this));
+        return ret;
+    },
+    validateReference: function(individualReference, showErrors) {
+      console.log(individualReference);
+      var end = individualReference.indexOf("[");
+      var realend = individualReference.indexOf("]");
+      if (end == individualReference.length - 1 || end == -1 || realend < individualReference.length - 1) {
+          if (showErrors)
+            MessageHandler.handleMessage("danger","You must specify a state for your data object reference in: " + individualReference);
 
-            return false;
-        } else {
-            var substr = dataObjectReference.substring(0,end);
-            console.log(substr);
-            var found = false;
-            this.props.scenario.domainmodel.dataclasses.forEach(function(dataclass){
-                found = found || (dataclass.name == substr);
-            }.bind(this));
-            if (!found) {
-                if (showErrors)
-                  MessageHandler.handleMessage("danger","You referenced an invalid dataclass: " + dataObjectReference);
+          return false;
+      } else {
+          var substr = individualReference.substring(0,end);
+          console.log(substr);
+          var found = false;
+          this.props.scenario.domainmodel.dataclasses.forEach(function(dataclass){
+              found = found || (dataclass.name == substr);
+          }.bind(this));
+          if (!found) {
+              if (showErrors)
+                MessageHandler.handleMessage("danger","You referenced an invalid dataclass: " + individualReference);
 
-                return false;
-            }
-        }
-        return true;
+              return false;
+          }
+      }
+      return true;
     },
     handleChange: function(e) {
         this.setState({dataObjectReference: e.target.value}, this.validateDataObjectReferenceChange);
