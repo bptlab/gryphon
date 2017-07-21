@@ -92,17 +92,31 @@ var CaseStartTriggerRowComponent = React.createClass({
                 type="text"
                 disabled="disabled"
                 value={this.props.state}
-                className="form-control" />
+                id={this.props._id + "-dtselect-state"}
+                className="form-control"
+            />
         );
         if (this.props.enableClassSelect) {
+            var availableStates = [];
+            var classname = this.props.classname;
+            if (this.props.classname in this.props.olcPaths) {
+                availableStates = Object.keys(this.props.olcPaths[this.props.classname]);
+            }
+
             state = (
-                <input type="text"
-                       className="form-control"
-                       value={this.props.state}
-                       onChange={this.props.handleStateChange}
-                       disabled={this.state.disabled}
-                       />
-            )
+                <select className="form-control"
+                    onChange={this.props.handleStateChange}
+                    value={this.props.state}
+                    id={this.props._id + "-dtselect-state"}
+                    disabled={this.state.disabled}
+                    className="form-control"
+                >
+                    <option value="">Nothing</option>
+                    {availableStates.map((statename) => {
+                        return <option value={statename} key={"availableStates_" + classname + "_" + statename}>{statename}</option>
+                    })}
+                </select>
+            );
         }
 
         return (
@@ -182,7 +196,6 @@ var CaseStartTriggerComponent = React.createClass({
     },
     handleClassMappingChange: function(index, tindex, attr) {
         return function(e) {
-            console.log('handleClassMappingChange()');
             var condition = this.props.condition;
             condition['dataclasses'][index]['mapping'][tindex][attr] = e.target.value;
             this.props.handleUpdate(condition);
@@ -259,6 +272,7 @@ var CaseStartTriggerComponent = React.createClass({
                         attr = {tuple.attr}
                         path = {tuple.path}
                         availableClasses = {availableClasses}
+                        olcPaths = {this.props.olcPaths}
                         availableAttributes = {availableAttributes}
                         key = {tuple._id}
                     />
@@ -342,7 +356,8 @@ var ScenarioCaseStartTriggerForm = React.createClass({
     getInitialState: function() {
         return {
             'startconditions':[],
-            '_id':''
+            '_id':'',
+            'olcPaths' : {}
         }
     },
     handleUpdate: function(index){
@@ -359,10 +374,16 @@ var ScenarioCaseStartTriggerForm = React.createClass({
             this.setState(
                 {
                     '_id':this.props.scenario._id,
-                    'startconditions':this.props.scenario.startconditions
-                }
-            )
+                    'startconditions':this.props.scenario.startconditions,
+                },
+                this.loadOLCPaths
+            );
         }
+    },
+    loadOLCPaths: function() {
+      API.loadOLCPaths(this.props.scenario.domainmodel._id,function(data){
+          this.setState({olcPaths: data});
+      }.bind(this));
     },
     handleSubmit: function() {
         API.exportScenario(this.state);
@@ -395,6 +416,7 @@ var ScenarioCaseStartTriggerForm = React.createClass({
                     condition={condition}
                     handleUpdate={this.handleUpdate(index)}
                     availableClasses={this.props.scenario.domainmodel.dataclasses}
+                    olcPaths={this.state.olcPaths}
                     handleSubmit={this.handleSubmit}
                     handleDelete={this.handleDelete(index)}
                     key={id}
