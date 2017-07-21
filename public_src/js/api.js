@@ -54,6 +54,10 @@ API.prototype.exportDomainModel = function(dm, callback) {
     });
 };
 
+API.prototype.loadOLCPaths = function(dmid, callback) {
+    $.getJSON(this.createURL("domainmodel/" + dmid + "/olcPaths"), callback);
+};
+
 API.prototype.associateFragment = function(scen_id, frag_id, callback) {
     var url = "scenario/associatefragment?";
     url += "scenario_id=" + scen_id;
