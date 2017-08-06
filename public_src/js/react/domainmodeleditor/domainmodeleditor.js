@@ -158,7 +158,7 @@ var DomainModelEditorComponent = React.createClass({
         });
     },
     validateAttrType: function(type){
-        var types = ["String","Integer","Double","Boolean","Enum","Date"];
+        var types = ["String","Integer","Double","Boolean","Enum","Date","File"];
         if (types.indexOf(type) >= 0) {
             return true;
         }
