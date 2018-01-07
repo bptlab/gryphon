@@ -194,9 +194,14 @@ router.post('/associatefragment', function(req, res) {
                 if (result.fragments.indexOf(fragment_id) === -1) {
                     result.fragments.push(fragment_id);
                     result.revision++;
-                    result.save()
+                    result.save(function(save_err){
+                        if(save_err) {
+                            console.error(save_err);
+                            res.status(500).end();
+                        }
+                    });
+                    res.json(result);
                 }
-                res.json(result)
             } else {
                 res.status(404).end();
             }
