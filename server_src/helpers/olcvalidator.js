@@ -170,6 +170,7 @@ var OLCValidator = class {
     /**
      * Validates an in- and outputset of a given activity by the following rules:
      * 1. Check if all transitions are allowed in the assigned olc
+     * 2. Hack: Allow Self-loops (instate == outstate) that cannot be modeled yet (See https://github.com/bpmn-io/bpmn-js/issues/178)
      * @method validateIOSet
      * @param iset
      * @param oset
@@ -185,13 +186,11 @@ var OLCValidator = class {
                             'text': iotuple.instate + ' -> ' + iotuple.outstate + ' is not a valid state change according to the olc of the dataclass ' + iotuple.dataclass,
                             'type': 'danger'
                         })
-                    } else {
-                        if (olc[iotuple.instate].indexOf(iotuple.outstate) < 0) {
-                            this.messages.push({
-                                'text': iotuple.instate + ' -> ' + iotuple.outstate + ' is not a valid state change according to the olc of the dataclass ' + iotuple.dataclass,
-                                'type': 'danger'
-                            })
-                        }
+                    } else if (iotuple.instate != iotuple.outstate && olc[iotuple.instate].indexOf(iotuple.outstate) < 0) {
+                        this.messages.push({
+                            'text': iotuple.instate + ' -> ' + iotuple.outstate + ' is not a valid state change according to the olc of the dataclass ' + iotuple.dataclass,
+                            'type': 'danger'
+                        })                  
                     }
                 }
             }
