@@ -229,28 +229,28 @@ function generateProvider(fragmentid) {
      * createDataObjectProperties to generate the custom elements for gryphon.
      * It returns all generated groups.
      */
-    function createGeneralTabGroups(element, bpmnFactory, elementRegistry) {
+    function createGeneralTabGroups(element, bpmnFactory, elementRegistry, translate) {
 
         var generalGroup = {
             id: 'general',
             label: 'General',
             entries: []
         };
-        idProps(generalGroup, element, elementRegistry);
-        processProps(generalGroup, element);
+        idProps(generalGroup, element, translate);
+        processProps(generalGroup, element, translate);
 
         var detailsGroup = {
             id: 'details',
             label: 'Details',
             entries: []
         };
-        linkProps(detailsGroup, element);
-        eventProps(detailsGroup, element, bpmnFactory);
-        createDataObjectProperties(detailsGroup, element, bpmnFactory);
-        createMessageEventProperties(detailsGroup, element, bpmnFactory);
-        createWebServiceTaskProperties(detailsGroup, element, bpmnFactory);
+        linkProps(detailsGroup, element, translate);
+        eventProps(detailsGroup, element, bpmnFactory, translate);
+        createDataObjectProperties(detailsGroup, element, bpmnFactory, translate);
+        createMessageEventProperties(detailsGroup, element, bpmnFactory, translate);
+        createWebServiceTaskProperties(detailsGroup, element, bpmnFactory, translate);
 
-        createScriptTaskProperties(detailsGroup, element, bpmnFactory);
+        createScriptTaskProperties(detailsGroup, element, bpmnFactory, translate);
 
         var documentationGroup = {
             id: 'documentation',
@@ -258,7 +258,7 @@ function generateProvider(fragmentid) {
             entries: []
         };
 
-        documentationProps(documentationGroup, element, bpmnFactory);
+        documentationProps(documentationGroup, element, bpmnFactory, translate);
 
         return[
             generalGroup,
@@ -268,7 +268,7 @@ function generateProvider(fragmentid) {
 
     }
 
-    function Provider(eventBus, bpmnFactory, elementRegistry) {
+    function Provider(eventBus, bpmnFactory, elementRegistry, translate) {
 
         PropertiesActivator.call(this, eventBus);
 
@@ -278,7 +278,7 @@ function generateProvider(fragmentid) {
             var generalTab = {
                 id: 'general',
                 label: 'General',
-                groups: createGeneralTabGroups(element, bpmnFactory, elementRegistry)
+                groups: createGeneralTabGroups(element, bpmnFactory, elementRegistry, translate)
             };
 
             return [
