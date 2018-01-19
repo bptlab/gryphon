@@ -191,7 +191,7 @@ var OLCValidator = class {
                             'text': iotuple.instate + ' -> ' + iotuple.outstate + ' is not a valid state change (' + iotuple.outstate + ' does not exist) according to the olc of the dataclass ' + iotuple.dataclass,
                             'type': 'danger'
                         })
-                    } else if (iotuple.instate != iotuple.outstate && olc[iotuple.instate].indexOf(iotuple.outstate) < 0) {
+                    } else if (olc[iotuple.instate].indexOf(iotuple.outstate) < 0) {
                         this.messages.push({
                             'text': iotuple.instate + ' -> ' + iotuple.outstate + ' is not a valid state change (no direct connection) according to the olc of the dataclass ' + iotuple.dataclass,
                             'type': 'danger'
