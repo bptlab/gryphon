@@ -3,6 +3,7 @@ var API = require('./../../api');
 var NameCheck = require('./../../namecheck');
 var SideBarManager = require('./../../sidebarmanager');
 var MessageHandler = require('./../../messagehandler');
+var Redirecter = require('./../../redirecter');
 
 var CreateFragmentModal = React.createClass({
     getInitialState: function() {
@@ -23,11 +24,14 @@ var CreateFragmentModal = React.createClass({
       //  && NameCheck.isUnique(this.state.name, this.state.scenario.fragments)
       // but using the data- attribute of the button, we only get strings, not objects (afaik)
       if (NameCheck.check(this.state.name)) {
-        API.createFragment(this.state.name,function(data, res){
-          API.associateFragment(this.state.scenID,data._id,function(data, res){
+        API.createFragment(this.state.name,function(fragmentData, res){
+          API.associateFragment(this.state.scenID,fragmentData._id,function(data, res){
             this.setState({newname: ''});
             MessageHandler.handleMessage('success', 'Added new fragment!');
             SideBarManager.reload();
+
+            // Redirect to new fragment page
+            Redirecter.redirectToFragment(this.state.scenID, fragmentData._id);
           }.bind(this));
         }.bind(this));
         $('#createFragmentModal').modal('hide');
@@ -68,8 +72,8 @@ var CreateFragmentModal = React.createClass({
                                 </fieldset>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="button" className="btn btn-primary" onClick={this.handleSubmit}>Create fragment</button>
+                                <button type="button" className="btn" data-dismiss="modal">Close</button>
+                                <button type="button" className="btn btn-default btn-primary" onClick={this.handleSubmit}>Create fragment</button>
                             </div>
                         </form>
                     </div>
