@@ -5,30 +5,29 @@ var Link = require('react-router').Link;
 
 var TypeSelect = React.createClass({
     getInitialState: function() {
-        var type;
-        if (this.props.is_event) {type = "event"} else {type = "data"}
-        return {value: type};
+        return {isEvent: this.props.is_event};
     },
     handleChange: function(event) {
-        var newState = event.target.value;
-        if (newState == this.state.value)
-          return;
-
-        this.setState({value: newState});
-        this.props.handleType(newState);
+        var isEvent = event.target.checked == true;
+        this.setState({isEvent: isEvent});
+        this.props.handleType(isEvent);
     },
     componentWillReceiveProps: function(nextProps) {
-        var type;
-        if (nextProps.is_event) {type = "event"} else {type = "data"}
-        this.setState({value: type});
+        this.setState({isEvent: nextProps.is_event});
     },
     render: function() {
         var value = this.state.value;
         return (
-            <select value={value} onChange={this.handleChange} className="form-control">
-                <option value="data">Data</option>
-                <option value="event">Event</option>
-            </select>
+            <div className="checkbox">
+                <label>
+                <input
+                    type="checkbox"
+                    checked={this.state.isEvent}
+                    onChange={this.handleChange}
+                />
+                Use as event type
+                </label>
+            </div>
         );
     }
 });
@@ -100,7 +99,7 @@ var DataClassHeaderComponent = React.createClass({
         return (
             <div className="panel-heading clearfix">
                 <div className="row">
-                    <div className="col-sm-6">
+                    <div className="col-sm-8 col-md-6 col-lg-4">
                         <TypeSelect
                             is_event={this.props.is_event}
                             handleType={this.props.handleType}
@@ -198,9 +197,8 @@ var DataClassComponent = React.createClass({
             _id: this.props.id
         });
     },
-    handleType: function(type) {
-        var is_event = false;
-        if (type == "event") {is_event = true;}
+    handleType: function(new_is_event) {
+        var is_event = new_is_event;
         this.props.handleUpdate({
             name: this.props.name,
             is_event: is_event,
