@@ -114,7 +114,13 @@ API.prototype.createScenario = function(name, callback) {
     var scenario = {
         name: name
     };
-    $.post(this.createURL("scenario"),scenario,callback);
+    $.ajax({
+        url: this.createURL("scenario"),
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(scenario),
+        complete: callback
+    });
 };
 
 API.prototype.deleteFragment = function(id, callback) {

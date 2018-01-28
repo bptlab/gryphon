@@ -133,12 +133,7 @@ router.post('/', function(req, res) {
                             }]
                         );
                     } else {
-                        res.json(
-                            [{
-                                "type": "success",
-                                "text": "Import into Gryphon successful."
-                            }]
-                        );
+                        res.json(db_scenario);
                     }
                 })
             } catch (err) {
