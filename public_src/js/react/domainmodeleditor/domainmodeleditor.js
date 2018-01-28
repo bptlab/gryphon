@@ -206,11 +206,16 @@ var DomainModelEditorComponent = React.createClass({
           editorCssClasses += " collapse";
         }
 
-        // Events do not have a life cycle
-        var olcEditor = "";
-        if (!selectedDataclass.is_event) {
-          olcEditor =
-              <div className="row">
+        return (
+              <div>
+
+                <div className="row">
+                  <div className="col-md-8">
+                    {content}
+                  </div>
+                </div>
+
+                <div className="row">
                 <div className="col-md-12">
                   <div className="panel panel-default">
                     <div className="panel-heading">
@@ -239,18 +244,6 @@ var DomainModelEditorComponent = React.createClass({
                   </div>
                 </div>
               </div>;
-        }
-
-        return (
-              <div>
-
-                <div className="row">
-                  <div className="col-md-8">
-                    {content}
-                  </div>
-                </div>
-
-                {olcEditor}
 
               </div>
         )
