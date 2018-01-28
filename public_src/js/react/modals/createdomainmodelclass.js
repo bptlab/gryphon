@@ -4,6 +4,7 @@ var NameCheck = require('./../../namecheck');
 var Config = require('./../../config');
 var SideBarManager = require('./../../sidebarmanager');
 var MessageHandler = require('./../../messagehandler');
+var Redirecter = require('./../../redirecter');
 
 var CreateDomainModelClassModal = React.createClass({
     getInitialState: function() {
@@ -19,16 +20,15 @@ var CreateDomainModelClassModal = React.createClass({
             this.setState({scenID:scenid});
         }.bind(this))
     },
-    handleCreateDataclass: function() {
-      this.handleCreateClass(false);
+    handleEnterSubmit: function(e) {
+        if (e.keyCode == 13) {
+            this.handleCreateClass()
+        }
     },
-    handleCreateEventclass: function() {
-      this.handleCreateClass(true);
-    },
-    handleCreateClass: function(is_event) {
+    handleCreateClass: function() {
       var dataclass = {
           "name": this.state.name,
-          "is_event": is_event,
+          "is_event": false,
           "attributes": [],
           "olc": Config.DEFAULT_OLC_XML
       };
@@ -77,13 +77,13 @@ var CreateDomainModelClassModal = React.createClass({
                                         placeholder="Class name"
                                         value={this.state.name}
                                         onChange={this.handleNameChange}
+                                        onKeyDown={this.handleEnterSubmit}
                                     />
                                 </fieldset>
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn" data-dismiss="modal">Close</button>
-                                <button type="button" className="btn btn-primary" onClick={this.handleCreateDataclass}>Create dataclass</button>
-                                <button type="button" className="btn btn-primary" onClick={this.handleCreateEventclass}>Create eventclass</button>
+                                <button type="button" className="btn btn-default btn-primary" onClick={this.handleCreateClass}>Create new class</button>
                             </div>
                         </form>
                     </div>
