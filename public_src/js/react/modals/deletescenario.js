@@ -1,6 +1,7 @@
 var React = require('react');
 var API = require('./../../api');
 var SideBarManager = require('./../../sidebarmanager');
+var Redirecter = require('./../../redirecter');
 
 var DeleteScenarioModal = React.createClass({
     getInitialState: function() {
@@ -15,7 +16,7 @@ var DeleteScenarioModal = React.createClass({
             $('#deleteScenarioModal').modal('hide');
 
             // Redirect back to index page
-            window.location.hash = "#/";
+            Redirecter.redirectToIndex();
         }
     },
     render: function() {

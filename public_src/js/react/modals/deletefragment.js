@@ -2,6 +2,7 @@ var React = require('react');
 var API = require('./../../api');
 var SideBarManager = require('./../../sidebarmanager');
 var Link = require('react-router').Link;
+var Redirecter = require('./../../redirecter');
 
 var DeleteFragmentModal = React.createClass({
     getInitialState: function() {
@@ -14,6 +15,7 @@ var DeleteFragmentModal = React.createClass({
             API.deleteFragment(this.state.fragID);
             SideBarManager.reload();
             $('#deleteFragmentModal').modal('hide');
+            Redirecter.redirectToScenario(this.state.scenID);
         }
     },
     render: function() {

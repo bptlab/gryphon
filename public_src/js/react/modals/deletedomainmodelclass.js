@@ -5,6 +5,7 @@ var Config = require('./../../config');
 var SideBarManager = require('./../../sidebarmanager');
 var MessageHandler = require('./../../messagehandler');
 var Link = require('react-router').Link;
+var Redirecter = require('./../../redirecter');
 
 var DeleteDomainModelClassModal = React.createClass({
     getInitialState: function() {
@@ -38,6 +39,7 @@ var DeleteDomainModelClassModal = React.createClass({
           this.setState({classID: ''});
           MessageHandler.handleMessage('success', 'Removed class!');
           SideBarManager.reload();
+          Redirecter.redirectToScenario(this.state.scenID);
         }.bind(this));
       }.bind(this));
 
