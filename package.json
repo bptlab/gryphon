@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "prepare": "patch-package"
   },
   "dependencies": {
     "babel-preset-react": "^6.1.18",
@@ -17,6 +18,7 @@
     "cookie-parser": "~1.4.3",
     "datatables": "^1.10.13",
     "debug": "~2.2.0",
+    "diagram-js": "^0.22.4",
     "eve": "^0.5.4",
     "express": "^4.16.2",
     "grunt": "^1.0.1",
@@ -37,5 +39,8 @@
     "serve-favicon": "~2.3.0",
     "swagger-ui": "^2.1.5",
     "xml2json": "^0.11.0"
+  },
+  "devDependencies": {
+    "patch-package": "^5.0.0"
   }
 }
