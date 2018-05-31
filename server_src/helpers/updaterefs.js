@@ -17,21 +17,32 @@ var _ = require('lodash');
 var changeDClassAttrReferences = function(newclass, oldclass, scenario) {
     oldclass.attributes.forEach(function(old_attr) {
         newclass.attributes.forEach(function(new_attr){
-            if (old_attr._id.toString() == new_attr._id && old_attr.name != new_attr.name) {
-                scenario.startconditions = scenario.startconditions.forEach(function(startcon){
-                    startcon.dataclasses = startcon.dataclasses.map(function(mapping){
-                        if (mapping.classname == newclass.name) {
-                            mapping.mapping = mapping.mapping.map(function(attribute){
+            if (old_attr._id == new_attr._id
+		&& old_attr.name != new_attr.name) { // found renamed attribute
+		// update references to renamed attribute in case start triggers
+		
+		console.log(JSON.stringify(scenario.startconditions))
+		scenario.startconditions = scenario.startconditions.map(function (startcondition) {
+		    // go through all case start triggers
+                    startcondition.dataclasses = startcondition.dataclasses.map(function (dataclass) {
+			// go through all data classes of a case start trigger
+                        if (dataclass.classname == newclass.name) {
+			    // go through all attributes belonging to a mapping 
+                            dataclass.mapping = dataclass.mapping.map(function(attribute){
                                 if (attribute.attr == old_attr.name) {
-                                    mapping.attr = new_attr.name;
+                                    attribute.attr = new_attr.name;
                                 }
-                                return mapping
+				// return the attribute, possibly with updated name
+                                return attribute;
                             })
-                        }
-                        return mapping;
-                    });
-                    return startcon;
+			}
+			// return the data class mapping, possibly with updated mapping
+                        return dataclass;
+                    })
+		    // return the case start trigger, possibly updated
+                    return startcondition;
                 })
+		console.log(JSON.stringify(scenario.startconditions))
             }
         })
     });
@@ -82,6 +93,7 @@ var changeDClassReferences = function(dm_id, old_classes, new_classes, done) {
                     }
                     if ((newclass._id == oldclass._id.toString()) && !_.isEqual(newclass.attributes, oldclass.attributes)) {
                         changeDClassAttrReferences(newclass, oldclass, result);
+			result.save();
                     }
                 });
             });
