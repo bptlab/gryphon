@@ -16,6 +16,9 @@ RUN npm install -g node-gyp grunt-cli
 # Copy package.json early for module dependencies (to allow for npm caching)
 COPY package.json /var/gryphon/
 
+# Copy patches
+COPY patches /var/gryphon/
+
 # Install dependencies
 RUN cd /var/gryphon && npm install --unsafe-perm
 
