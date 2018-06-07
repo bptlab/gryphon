@@ -79,15 +79,19 @@
           "type": "String"
         },
         {
+          "name": "webservicemethod",
+          "isAttr": true,
+          "type": "String"
+        },        {
           "name": "webservicebody",
           "isAttr": true,
           "type": "String"
         },
         {
-          "name": "webservicemethod",
+          "name": "webserviceheaders",
           "isAttr": true,
           "type": "String"
-        }
+        }	  
       ]
     }
   ],
