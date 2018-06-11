@@ -82,16 +82,17 @@
           "name": "webservicemethod",
           "isAttr": true,
           "type": "String"
-        },        {
+        },
+	{
           "name": "webservicebody",
           "isAttr": true,
           "type": "String"
         },
         {
-          "name": "webserviceheaders",
+          "name": "webserviceheader",
           "isAttr": true,
           "type": "String"
-        }	  
+        }
       ]
     }
   ],

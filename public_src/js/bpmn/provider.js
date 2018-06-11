@@ -200,8 +200,8 @@ function generateProvider(fragmentid) {
         if (is(element, "bpmn:ServiceTask")) {
             var stateEntry = entryFactory.textField({
                 id: 'WebServiceURL',
-                description: 'The URI of the web service that is called.',
-                label: 'web service URI',
+                description: 'The URL of the web service that is called.',
+                label: 'web service URL',
                 modelProperty: 'webserviceurl'
             });
             group.entries.push(stateEntry);
@@ -221,9 +221,9 @@ function generateProvider(fragmentid) {
             group.entries.push(stateEntry);
 	    stateEntry = entryFactory.textField({
                 id: 'WebServiceHeader',
-                description: 'A comma-separated list of headers that are included in the web service call. Each header is of the form "key: value".',
-                label: 'headers (optional)',
-                modelProperty: 'webserviceheaders'
+                description: 'The header that is sent to the web service. This should be a JSON object.',
+                label: 'header (optional)',
+                modelProperty: 'webserviceheader'
             });
             group.entries.push(stateEntry);
 

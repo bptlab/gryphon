@@ -80,7 +80,6 @@ Once your environment is set up, you can start the editor as follows
 
 ### Using Gryphon in Docker
 
-FOR ALL PEOPLE WHO JUST WANT TO USE THE EDITOR IN AN EASY AND WINDOWS COMPATIBLE WAY READ THIS:
 If you just want to run the editor, instead of modifying it (even though that doesn't really matter,
 you could also edit it this way, just the building part will take longer), you can run the whole
 thing in a docker container in 3 easy steps:
@@ -88,6 +87,13 @@ thing in a docker container in 3 easy steps:
 1.  Install Docker.
 2.  `cd` into the gryphon dir and run `docker build -t bpt/gryphon .`
 3.  Run `docker run -it --rm -p 3000:3000 --name gryphon -v gryphon-mongodb-data:/var/lib/mongodb bpt/gryphon`
+
+
+### Using Gryphon in Docker Compose
+MOST EASY AND CONVENIENT WAY TO RUN GRYPHON
+
+1. Install docker & docker-compose
+1. `docker-compose up`
 
 ### Troubleshooting
 If running npm install fails:
