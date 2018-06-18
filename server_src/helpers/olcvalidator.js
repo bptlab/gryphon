@@ -61,12 +61,17 @@ var OLCValidator = class {
             var oset = [];
             if (task.dataInputAssociation != undefined) {
                 task.dataInputAssociation.forEach(function(dia){
-                    iset.push(this.getDataObjectReference(dia['sourceRef'][0]));
+		    // Todo: sometimes there are empty bpmn:dataInputAssociation in the XML, see #32
+		    if (dia['sourceRef'] !== undefined) {
+			iset.push(this.getDataObjectReference(dia['sourceRef'][0]));
+		    }
                 }.bind(this));
             }
             if (task.dataOutputAssociation != undefined) {
                 task.dataOutputAssociation.forEach(function(doa){
-                    oset.push(this.getDataObjectReference(doa['targetRef'][0]));
+		    if (doa['targetRef'] !== undefined) {
+			oset.push(this.getDataObjectReference(doa['targetRef'][0]));
+		    }
                 }.bind(this));
             }
             if (validateDuplicates) {
@@ -76,6 +81,7 @@ var OLCValidator = class {
         }.bind(this);
     }
 
+    
     /**
      * Returns the dataobjectreference with the given ID
      * @method getDataObjectReference
