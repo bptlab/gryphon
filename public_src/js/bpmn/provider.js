@@ -213,8 +213,18 @@ function generateProvider(fragmentid) {
             });
             group.entries.push(stateEntry);
             stateEntry = entryFactory.textField({
+                id: 'ContentType',
+                description: 'The Content-Type of the Webservice Request, ' +
+                                'ENUM[application/json, application/x-www-form-urlencoded, application/atom+xml, ' +
+                                'application/octet-stream, application/svg+xml, application/xhtml+xml, application/xml, ' +
+                                'multipart/form-data, text/html, text/plain, text/xml',
+                label: 'Content-Type',
+                modelProperty: 'contenttype'
+            });
+            group.entries.push(stateEntry);
+            stateEntry = entryFactory.textField({
                 id: 'WebServiceBody',
-                description: 'The body that is send to the web service. This should be a JSON object.',
+                description: 'The body that is send to the web service. Content must be according to your content-type.',
                 label: 'body (optional)',
                 modelProperty: 'webservicebody'
             });
@@ -238,7 +248,7 @@ function generateProvider(fragmentid) {
     function createTaskProperties(group, element, elementRegistry) {
         if (is(element, "bpmn:Task") &&
 	    !is(element, "bpmn:ServiceTask") &&
-	    !is(element, "bpmn:SendTask")
+	    !is(element, "bpmn:SendTask") &&
    	    !is(element, "bpmn:ReceiveTask")) {
             var stateEntry = entryFactory.textField({
                 id: 'TaskRole',
