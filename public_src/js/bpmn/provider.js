@@ -230,12 +230,32 @@ function generateProvider(fragmentid) {
         }
     }
 
+     /**
+     * This function generates the additional field TaskRole
+     * In case the visitied object is a Task but neither a
+     * ServiceTask, SendTask, or ReceiveTask
+     */
+    function createTaskProperties(group, element, elementRegistry) {
+        if (is(element, "bpmn:Task") &&
+	    !is(element, "bpmn:ServiceTask") &&
+	    !is(element, "bpmn:SendTask")
+   	    !is(element, "bpmn:ReceiveTask")) {
+            var stateEntry = entryFactory.textField({
+                id: 'TaskRole',
+                description: 'The role required to execute this task.',
+                label: 'required role for task',
+                modelProperty: 'taskrole'
+            });
+            group.entries.push(stateEntry);
+	}
+    }
+   
     /**
      * This function generates the general-tab for the propertys panel.
-     * It uses a lot of function created by bpmn-js and the 3 custom generators
-     * createWebServiceTaskProperties, createMessageEventProperties and
-     * createDataObjectProperties to generate the custom elements for gryphon.
-     * It returns all generated groups.
+     * It uses a lot of function created by bpmn-js and the 4 custom generators
+     * createWebServiceTaskProperties, createMessageEventProperties,
+     * createDataObjectProperties, and createTaskProperties to generate the
+     * custom elements for gryphon. It returns all generated groups.
      */
     function createGeneralTabGroups(element, bpmnFactory, elementRegistry, translate) {
 
@@ -257,8 +277,8 @@ function generateProvider(fragmentid) {
         createDataObjectProperties(detailsGroup, element, bpmnFactory, translate);
         createMessageEventProperties(detailsGroup, element, bpmnFactory, translate);
         createWebServiceTaskProperties(detailsGroup, element, bpmnFactory, translate);
-
         createScriptTaskProperties(detailsGroup, element, bpmnFactory, translate);
+        createTaskProperties(detailsGroup, element, bpmnFactory, translate);
 
         var documentationGroup = {
             id: 'documentation',

@@ -94,6 +94,18 @@
           "type": "String"
         }
       ]
+    },
+    {
+	"name": "TaskWithRole",
+	"isAbstract": false,
+	"extends": [ "bpmn:Task" ],
+	"properties": [
+	    {
+		"name": "taskrole",
+		"isAttr": true,
+		"type": "String"
+	    }
+	]
     }
   ],
   "enumerations": []
