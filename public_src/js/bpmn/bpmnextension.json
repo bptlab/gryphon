@@ -83,7 +83,12 @@
           "isAttr": true,
           "type": "String"
         },
-	{
+        {
+          "name": "contenttype",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
           "name": "webservicebody",
           "isAttr": true,
           "type": "String"
