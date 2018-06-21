@@ -53,13 +53,18 @@ The following elements are supported:
 - plain end event
 - intermediate timer event
 - intermediate message catch event
+- intermediate message throw event
 - exclusive (XOR) gateways
 - parallel (AND) gateways 
 - event-based gateways
 - plain tasks
-- service tasks
-- send task (Mail task)
-- data objects
+- manual tasks (treated as plain task)
+- user tasks (treated as plain task)
+- service tasks (result in an webservice task)
+- send task (result in an email task)
+- data objects (need to refer to a data class and a state, e.g. `DC1[state2]`)
+
+Some modeling constructs have additional attributes in the properties panel. For example, *service tasks* have attributes for the URL of the webservice to call, the http method, the body, and so on. 
 
 ### Syntax for Timer Events
 
