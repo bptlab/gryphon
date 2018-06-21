@@ -9,7 +9,7 @@ var SoundnessValidator = require('./soundnessvalidator');
 var OLCValidator = require('./olcvalidator');
 var EventValidator = require('./eventvalidator');
 var DataObjectReferenceValidator = require('./dataobjectreferencevalidator');
-
+var ThrowEventValidator = require('./throweventvalidator');
 /**
  * @module helpers.validator
  */
@@ -30,7 +30,7 @@ var GeneralValidator = class {
      */
     constructor(fragment,initDone, validators) {
         if (validators == undefined) {
-            validators = [EventValidator, SoundnessValidator, OLCValidator, DataObjectReferenceValidator];
+            validators = [EventValidator, SoundnessValidator, OLCValidator, DataObjectReferenceValidator, ThrowEventValidator];
         }
         if (initDone == undefined) {
             initDone = function() {
@@ -47,6 +47,7 @@ var GeneralValidator = class {
             }
             this.scenario = result;
             this.olc = parseOLCPaths(result.domainmodel);
+	    this.dm = result.domainmodel;
             initDone();
         }.bind(this))
     }
@@ -61,7 +62,9 @@ var GeneralValidator = class {
                 validator = new validator(this.bpmnObject, this.olc)
             } else if (validator == DataObjectReferenceValidator) {
                 validator = new validator(this.fragment.preconditions, this.olc);
-            } else {
+            } else if (validator == ThrowEventValidator) {
+		validator = new validator(this.bpmnObject, this.dm)
+	    } else {
                 validator = new validator(this.bpmnObject);
             }
             this.validateWithSimpleValidator(validator);
