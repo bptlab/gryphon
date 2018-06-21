@@ -32,9 +32,11 @@ var EventValidator = class {
 
     /**
      * Validates all events in the given fragment by the following rules:
-     * 1. All message events need to have an event query.
-     * 2. No other events but message and timer events are allowed.
-     * 3. No throw-events
+     * 1. All message events need to have an event query
+     * 2. Only message and timer catch events allowed
+     * 3. Only intermediate message throw events allowed
+     * 3.a) intermediate message throw events need data input
+     * 3.b) only one input data node for message throw events
      * @method validateEvents
      */
     validateEvents() {
@@ -47,23 +49,40 @@ var EventValidator = class {
                 }.bind(this));
                 if (!found) {
                     this.messages.push({
-                        'text': 'Currently all catch events but Timer and Event are not supported in chimera! Remove them to allow export.',
+                        'text': 'Only timer and message receive events are supported by Chimera. Remove other types of catching events to allow export.',
                         'type': 'danger'
                     })
                 }
                 if (ev.hasOwnProperty('messageEventDefinition') && (!ev.hasOwnProperty('griffin:eventquery') || ev['griffin:eventquery'] == "")) {
                     this.messages.push({
-                        'text': 'Message-Events need a query-definition.',
+                        'text': 'No event query specified for message receive event.',
                         'type': 'danger'
                     });
                 }
             }.bind(this));
         }
         if (this.bpmnObject.intermediateThrowEvent) {
-            this.messages.push({
-                'text': 'Currently all throw events are not supported in chimera! Remove them to allow export.',
-                'type': 'danger'
-            })
+	    this.bpmnObject.intermediateThrowEvent.forEach(function (ev) {
+		if (ev['messageEventDefinition'] == null) {
+		    this.messages.push({
+			'text': 'Only message send events are supported by Chimera. Remove other types of throwing events to allow export.',
+			'type': 'danger'
+		    })
+		}
+		if (ev.dataInputAssociation == undefined ) {
+		    this.messages.push({
+			'text': 'No data input for message send event.',
+			'type': 'danger'
+		    })
+		} else {
+		    if (ev.dataInputAssociation.length > 1) {
+			this.messages.push({
+			    'text': 'Multiple data inputs for message send event.',
+			    'type': 'danger'
+			})
+		    }
+		}
+	    }.bind(this));
         }
     }
 
