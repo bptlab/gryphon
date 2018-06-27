@@ -249,6 +249,7 @@ function generateProvider(fragmentid) {
         if (is(element, "bpmn:Task") &&
 	    !is(element, "bpmn:ServiceTask") &&
 	    !is(element, "bpmn:SendTask") &&
+        !is(element, "bpmn:EmptyTask") &&
    	    !is(element, "bpmn:ReceiveTask")) {
             var stateEntry = entryFactory.textField({
                 id: 'TaskRole',
@@ -257,9 +258,9 @@ function generateProvider(fragmentid) {
                 modelProperty: 'taskrole'
             });
             group.entries.push(stateEntry);
-	}
+	    }
     }
-   
+
     /**
      * This function generates the general-tab for the propertys panel.
      * It uses a lot of function created by bpmn-js and the 4 custom generators
