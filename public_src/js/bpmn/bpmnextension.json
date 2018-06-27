@@ -111,6 +111,12 @@
 		"type": "String"
 	    }
 	]
+    },
+    {
+      "name": "EmptyActivity",
+      "isAbstract": false,
+      "extends": [ "bpmn:CallActivity" ],
+      "properties": []
     }
   ],
   "enumerations": []
