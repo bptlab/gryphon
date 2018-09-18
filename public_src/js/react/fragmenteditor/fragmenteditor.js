@@ -5,6 +5,7 @@ var API = require('./../../api');
 var Config = require('./../../config');
 var InputWithToggleComponent = require('./../inputwithtoggle');
 var FragmentPreconditionsComponent = require('./fragmentpreconditions');
+var FragmentPolicyComponent = require('./fragmentinstantiationpolicy');
 
 var FragmentEditorComponent = React.createClass({
     getInitialState: function() {
@@ -13,6 +14,8 @@ var FragmentEditorComponent = React.createClass({
             fragment: {
                 name: "",
                 content: "",
+                policiy: "",
+                bound: {},
                 preconditions: [""],
                 revision: 0
             },
@@ -27,6 +30,13 @@ var FragmentEditorComponent = React.createClass({
               fragment={this.state.fragment}
               onChanged={this.handlePreConditionChange}
               />
+            <hr />
+            <FragmentPolicyComponent
+              fragment={this.state.fragment}
+              changePolicy={this.handlePolicyChange}
+              handleBoundChange={this.handleBoundChange}
+              />
+            <hr />
             <div className="fragmentEditor">
                 <div className="canvas" id="fragment-canvas" />
                 <div className="properties-panel" id="fragment-properties" />
@@ -86,6 +96,17 @@ var FragmentEditorComponent = React.createClass({
     handlePreConditionChange: function(preconditions) {
         var fragment = this.state.fragment;
         fragment.preconditions = preconditions;
+        this.setState({fragment: fragment});
+    },
+    handlePolicyChange: function(policy) {
+        var fragment = this.state.fragment;
+        fragment.policy = policy;
+        this.setState({fragment: fragment});
+    },
+    handleBoundChange: function(bound) {
+        var fragment = this.state.fragment;
+        console.log(bound)
+        fragment.bound = bound;
         this.setState({fragment: fragment});
     },
     componentWillUnmount: function() {
