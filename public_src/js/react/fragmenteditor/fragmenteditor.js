@@ -14,7 +14,7 @@ var FragmentEditorComponent = React.createClass({
             fragment: {
                 name: "",
                 content: "",
-                policiy: "",
+                policy: "",
                 bound: {},
                 preconditions: [""],
                 revision: 0
