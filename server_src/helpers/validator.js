@@ -5,6 +5,7 @@ var parseToBPMNObject = require('./json').parseToBPMNObject;
 var parseToOLC = require('./json').parseToOLC;
 var parseOLCPaths = require('./json').parseOLCPaths;
 
+var BoundValidator = require('./boundvalidator');
 var SoundnessValidator = require('./soundnessvalidator');
 var OLCValidator = require('./olcvalidator');
 var EventValidator = require('./eventvalidator');
@@ -30,7 +31,7 @@ var GeneralValidator = class {
      */
     constructor(fragment,initDone, validators) {
         if (validators == undefined) {
-            validators = [EventValidator, SoundnessValidator, OLCValidator, DataObjectReferenceValidator, ThrowEventValidator];
+            validators = [BoundValidator, EventValidator, SoundnessValidator, OLCValidator, DataObjectReferenceValidator, ThrowEventValidator];
         }
         if (initDone == undefined) {
             initDone = function() {
@@ -58,13 +59,15 @@ var GeneralValidator = class {
      */
     validateEverything() {
         this.validators.forEach(function(validator){
-            if (validator == OLCValidator) {
+            if (validator == BoundValidator) {
+                validator = new validator(this.fragment)
+            } else if (validator == OLCValidator) {
                 validator = new validator(this.bpmnObject, this.olc)
             } else if (validator == DataObjectReferenceValidator) {
                 validator = new validator(this.fragment.preconditions, this.olc);
             } else if (validator == ThrowEventValidator) {
-		validator = new validator(this.bpmnObject, this.dm)
-	    } else {
+      				validator = new validator(this.bpmnObject, this.dm)
+      			} else {
                 validator = new validator(this.bpmnObject);
             }
             this.validateWithSimpleValidator(validator);

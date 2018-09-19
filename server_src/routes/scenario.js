@@ -101,6 +101,11 @@ router.post('/', function(req, res) {
                     var new_fragment = new Fragment();
                     new_fragment.name = "First Fragment";
                     new_fragment.content = Config.DEFAULT_FRAGMENT_XML;
+					new_fragment.policy = Config.DEFAULT_FRAGMENT_POLICY;
+					new_fragment.bound = {
+						hasBound: false,
+						limit: Config.DEFAULT_FRAGMENT_INSTANTIATION_AMOUNT
+					},
                     new_fragment.revision = 1;
                     new_fragment.save();
                     scenario.fragments = [];
