@@ -63,6 +63,7 @@ router.post('/', function(req, res) {
 
                 var db_scenario = new Scenario({
                     name: scenario.name,
+					description: (scenario.description ? scenario.description : ""),
                     terminationconditions: (scenario.terminationconditions ? scenario.terminationconditions : []), //Config.DEFAULT_TERMINATION_CONDITION]),
                     revision: 1,
                     domainmodel: -1,
@@ -446,6 +447,11 @@ router.post('/:scenID', function(req, res) {
                 changed = true;
             }
 
+			if (new_scen.description != null && result.description !== new_scen.description) {
+                result.description = new_scen.description;
+                changed = true;
+            }
+			
             if (new_scen.terminationconditions != null && !(_.isEqual(result.terminationconditions, new_scen.terminationconditions))) {
                 result.terminationconditions = new_scen.terminationconditions;
                 changed = true;
