@@ -87,7 +87,7 @@ router.post('/', function(req, res) {
                         new_domainmodel.revision = scenario.domainmodel.revision;
                         new_domainmodel.dataclasses = scenario.domainmodel.dataclasses.map(function(dclass){
                             if (typeof dclass.olc !== 'string') {
-                                dclass.olc = "";
+                                dclass.olc = dclass.olc.content ? dclass.olc.content : "";
                             }
                             return dclass;
                         });
@@ -102,11 +102,12 @@ router.post('/', function(req, res) {
                     var new_fragment = new Fragment();
                     new_fragment.name = "First Fragment";
                     new_fragment.content = Config.DEFAULT_FRAGMENT_XML;
-					new_fragment.policy = Config.DEFAULT_FRAGMENT_POLICY;
-					new_fragment.bound = {
-						hasBound: false,
-						limit: Config.DEFAULT_FRAGMENT_INSTANTIATION_AMOUNT
-					},
+                    new_fragment.preconditions = [""];
+                    new_fragment.policy = Config.DEFAULT_FRAGMENT_POLICY;
+                    new_fragment.bound = {
+                        hasBound: false,
+                        limit: Config.DEFAULT_FRAGMENT_INSTANTIATION_AMOUNT
+                    },
                     new_fragment.revision = 1;
                     new_fragment.save();
                     scenario.fragments = [];
@@ -120,6 +121,9 @@ router.post('/', function(req, res) {
                             new_fragment.name = fragment.name;
                             new_fragment.content = fragment.content;
                             new_fragment.revision = fragment.revision;
+                            new_fragment.preconditions = fragment.preconditions;
+                            new_fragment.policy = fragment.policy;
+                            new_fragment.bound = fragment.bound;
                             new_fragment.save();
                             scenario.fragments = [];
                             db_scenario.fragments.push(new_fragment._id);
@@ -330,12 +334,17 @@ router.get('/:scenID', function(req, res) {
                 result = result.toObject();
                 if (populate) {
                     result.domainmodel.dataclasses = result.domainmodel.dataclasses.map(function(dclass){
-                        if (dclass.olc != undefined) dclass.olc = parseToOLC(dclass.olc);
+                        if (dclass.olc != undefined) {
+                            // the xml for the olc will be kept in olc.content
+                            var xml = dclass.olc;
+                            dclass.olc = parseToOLC(xml);
+                            dclass.olc.content = xml;
+                        }
                         return dclass;
                     });
                 }
-                res.append('Content-disposition','attachment');
-                res.append('filename', result.name + '.json');
+                var filename = result.name + '.json';
+                res.append('Content-disposition','attachment; filename=' + filename);
             }
             res.json(result)
         } else {
@@ -384,7 +393,10 @@ router.post('/:scenID/export', function(req, res) {
                     result = result.toObject();
                     result.domainmodel.dataclasses = result.domainmodel.dataclasses.map(function(dclass){
                         if (dclass.olc != undefined) {
-                            dclass.olc = parseToOLC(dclass.olc);
+                            // the xml for the olc will be kept in olc.content
+                            var xml = dclass.olc;
+                            dclass.olc = parseToOLC(xml);
+                            dclass.olc.content = xml;
                         }
                         return dclass;
                     });
@@ -451,7 +463,7 @@ router.post('/:scenID', function(req, res) {
                 result.description = new_scen.description;
                 changed = true;
             }
-			
+
             if (new_scen.terminationconditions != null && !(_.isEqual(result.terminationconditions, new_scen.terminationconditions))) {
                 result.terminationconditions = new_scen.terminationconditions;
                 changed = true;

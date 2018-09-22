@@ -145,6 +145,15 @@ var IndexComponent = React.createClass({
                           <i className="fa fa-plus"></i> create new case model
                       </a>
                     </div>
+                    <div className="col-md-2">
+                      <a
+                          href="#"
+                          data-toggle="modal"
+                          data-target="#importCaseModelModal"
+                      >
+                          <i className="fa fa-plus"></i> import case model
+                      </a>
+                    </div>
                   </div>
                 </div>
 
