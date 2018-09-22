@@ -212,7 +212,11 @@ var CaseStartTriggerComponent = React.createClass({
     handleDelete: function(index, tindex) {
         return function(e) {
             var condition = this.props.condition;
-            condition['dataclasses'][index]['mapping'].splice(tindex,1);
+            if (condition['dataclasses'][index]['mapping'].length == 1) {
+                condition['dataclasses'].splice(index, 1);
+            } else {
+                condition['dataclasses'][index]['mapping'].splice(tindex,1);
+            }
             this.props.handleUpdate(condition);
             this.props.handleSubmit();
         }.bind(this)
