@@ -10,6 +10,7 @@ var DeleteScenarioModal = require('./deletescenario');
 var DeleteFragmentModal = require('./deletefragment');
 var ExportScenarioModal = require('./exportscenario');
 var ModifyExportTargetsModal = require('./modifyexporttargets');
+var ImportCaseModelModal = require('./importcasemodelmodal');
 
 /**
  * All modals used in the project
@@ -37,6 +38,7 @@ var ModalComponent = React.createClass({
                 <DeleteScenarioModal />
                 <ExportScenarioModal />
                 <ModifyExportTargetsModal />
+                <ImportCaseModelModal />
             </div>
         )
     }

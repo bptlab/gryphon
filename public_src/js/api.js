@@ -123,6 +123,16 @@ API.prototype.createScenario = function(name, callback) {
     });
 };
 
+API.prototype.importCaseModel = function(casemodel, callback) {
+    $.ajax({
+        url: this.createURL("scenario"),
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(casemodel),
+        complete: callback
+    });
+};
+
 API.prototype.deleteFragment = function(id, callback) {
     $.ajax({
         url: this.createURL("fragment/" + id),
