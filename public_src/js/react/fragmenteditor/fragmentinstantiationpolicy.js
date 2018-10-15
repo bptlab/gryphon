@@ -23,8 +23,10 @@ var InstantiationPolicyComponent = React.createClass({
     if (this.props.fragment._id != this.state._id) {
       this.setState({
         policy: this.props.fragment.policy,
-        hasBound: this.props.fragment.bound.hasBound,
-        limit: this.props.fragment.bound.limit,
+        hasBound: this.props.fragment.bound
+          ? this.props.fragment.bound.hasBound
+          : false,
+        limit: this.props.fragment.bound ? this.props.fragment.bound.limit : 10,
         _id: this.props.fragment._id
       });
     }
