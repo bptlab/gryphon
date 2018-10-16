@@ -17,6 +17,10 @@ var mongoose = require('mongoose');
 var app = express();
 
 // mongoose init
+// MongoDB node.js driver deprecated some functions, thus the setting below
+// (see https://mongoosejs.com/docs/deprecations)
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useCreateIndex', true);
 mongoose.connect(config.MONGODB_HOST);
 
 app.use(logger('dev'));
