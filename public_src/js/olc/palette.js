@@ -1,6 +1,6 @@
 'use strict';
 
-var assign = require('lodash/object/assign');
+var assign = require('lodash/assign');
 
 /**
  * The code for this provider is based on the code of the real provider (availabel in the lib/features/palette module of bpmn-js)

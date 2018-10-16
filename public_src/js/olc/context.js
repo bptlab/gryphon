@@ -1,8 +1,8 @@
 'use strict';
 
-var assign = require('lodash/object/assign'),
-    forEach = require('lodash/collection/forEach'),
-    isArray = require('lodash/lang/isArray'),
+var assign = require('lodash/assign'),
+    forEach = require('lodash/forEach'),
+    isArray = require('lodash/isArray'),
     is = require('bpmn-js/lib/util/ModelUtil').is,
     isAny = require('bpmn-js/lib/features/modeling/util/ModelingUtil').isAny,
     getChildLanes = require('bpmn-js/lib/features/modeling/util/LaneUtil').getChildLanes,

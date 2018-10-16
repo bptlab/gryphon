@@ -17,7 +17,7 @@ var processProps = require('bpmn-js-properties-panel/lib/provider/bpmn/parts/Pro
 var is = require('bpmn-js/lib/util/ModelUtil').is;
 var cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper');
 
-var forEach = require('lodash/collection/forEach');
+var forEach = require('lodash/forEach');
 
 /**
  * The whole generation is encapsulated in an generator that provides a special
