@@ -31,10 +31,10 @@ function generateProvider(fragmentid) {
     });
 
     /**
-     * This function generates the 3 propertys dataclass and state for dataobjects.
+     * This function generates the 3 properties dataclass and state for dataobjects.
      * It is more complicated then the other ones because every choice causes some things to happen.
      * In case the class or the state gets changed the displayed name gets also changed to ensure
-     * that it is always up to date with the propertys. The 3rd entry, mapping is more complex.
+     * that it is always up to date with the properties. The 3rd entry, mapping is more complex.
      * The mapping property of an dataobject actually contains JSON. This JSON gets parsed and
      * for each entry there will be an different edit-field. In case one of the values gets changed
      * the value is regenerated and stored in the object.
@@ -112,7 +112,7 @@ function generateProvider(fragmentid) {
                                 res[attr.name] = parsed[attr.name];
                                 return res;
                             },
-                            //The setter that takes the new value and regenerates the JSON-objet and updates the property.
+                            //The setter that takes the new value and regenerates the JSON-object and updates the property.
                             set: function(element, values) {
                                 if (values[this.modelProperty] !== '') {
                                     var bo = getBusinessObject(element);
@@ -194,7 +194,7 @@ function generateProvider(fragmentid) {
 
     /**
      * This function generates the additional fields WebServiceURL, Method and Body
-     * In case the visitied object is an ServiceTask
+     * In case the visited object is an ServiceTask
      */
     function createWebServiceTaskProperties(group, element, elementRegistry) {
         if (is(element, "bpmn:ServiceTask")) {
@@ -242,7 +242,7 @@ function generateProvider(fragmentid) {
 
      /**
      * This function generates the additional field TaskRole
-     * In case the visitied object is a Task but neither a
+     * In case the visited object is a Task but neither a
      * ServiceTask, SendTask, or ReceiveTask
      */
     function createTaskProperties(group, element, elementRegistry) {
@@ -262,7 +262,7 @@ function generateProvider(fragmentid) {
     }
 
     /**
-     * This function generates the general-tab for the propertys panel.
+     * This function generates the general-tab for the properties panel.
      * It uses a lot of function created by bpmn-js and the 4 custom generators
      * createWebServiceTaskProperties, createMessageEventProperties,
      * createDataObjectProperties, and createTaskProperties to generate the
@@ -313,7 +313,7 @@ function generateProvider(fragmentid) {
 
         this.getTabs = function(element) {
 
-            //This function generates the only tab in the propertys panel.
+            //This function generates the only tab in the properties panel.
             var generalTab = {
                 id: 'general',
                 label: 'General',
