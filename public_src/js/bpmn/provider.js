@@ -93,14 +93,14 @@ function generateProvider(fragmentid) {
                     //For each attribute of the class there is one edit-field.
                     dataclass.attributes.forEach(function(attr){
                         var jsonURLEntry = entryFactory.textField({
-                            id: 'JSONPath' + attr.name,
+                            id: 'DataSource' + attr.name,
                             description: '',
-                            label: 'JSON Path for ' + attr.name,
+                            label: 'Data source for attribute: ' + attr.name,
                             modelProperty: attr.name,
                             //The getter that parses the json-object and reads a certain class out of it.
                             get: function(element) {
                                 var bo = getBusinessObject(element);
-                                var js = bo.get('jsonpath');
+                                var js = bo.get('datasource');
                                 if (js == undefined) {
                                     js = "{}";
                                 }
@@ -116,14 +116,14 @@ function generateProvider(fragmentid) {
                             set: function(element, values) {
                                 if (values[this.modelProperty] !== '') {
                                     var bo = getBusinessObject(element);
-                                    var js = bo.get('jsonpath');
+                                    var js = bo.get('datasource');
                                     if (js == undefined) {
                                         js = "{}";
                                     }
                                     var parsed = JSON.parse(js);
                                     parsed[attr.name] = values[attr.name];
                                     var res = {};
-                                    res['jsonpath'] = JSON.stringify(parsed);
+                                    res['datasource'] = JSON.stringify(parsed);
                                     return cmdHelper.updateProperties(element, res);
                                 }
                                 return cmdHelper.updateProperties(element, {});

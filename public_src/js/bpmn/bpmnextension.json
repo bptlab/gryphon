@@ -23,7 +23,7 @@
           "type": "String"
         },
         {
-          "name": "jsonpath",
+          "name": "datasource",
           "isAttr": true,
           "type": "String"
         }
