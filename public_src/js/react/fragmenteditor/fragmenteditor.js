@@ -28,7 +28,7 @@ var FragmentEditorComponent = React.createClass({
         <FragmentPreconditionsComponent
           scenario={this.props.scenario}
           fragment={this.state.fragment}
-          onChanged={this.handlePreConditionChange}
+          onChanpged={this.handlePreConditionChange}
         />
         <hr />
         <FragmentPolicyComponent
