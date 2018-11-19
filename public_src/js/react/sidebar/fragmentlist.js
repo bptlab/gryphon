@@ -15,7 +15,7 @@ var SideBarFragmentList = React.createClass({
     },
     render: function() {
         var setSelectedFragment = this.setSelectedFragment;
-        var list = this.props.scenario.fragments.map(function (fragment){
+        var list = this.props.scenario.fragments.sort((a, b) => { if (a.name < b.name) return -1; else if (a.name > b.name) return 1; else return 0; }).map(function (fragment){
           var selected = (fragment._id == this.state.selected) ? 'selected' : '';
           var key = "sidebarfragment_" + fragment._id;
           return <SideBarFragment scenario={this.props.scenario} fragment={fragment} selected={selected} setSelectedFragment={setSelectedFragment} key={key} />
