@@ -26,7 +26,7 @@ COPY . /var/gryphon/
 RUN cd /var/gryphon && grunt config
 RUN cd /var/gryphon && grunt
 
-CMD mongod --syslog --fork --dbpath /var/lib/mongodb start && node /var/gryphon/bin/www
+CMD mongod --logpath /var/log/mongodb/mongodb.log --fork --dbpath /var/lib/mongodb start && node /var/gryphon/bin/www
 
 EXPOSE 3000
 EXPOSE 27017
