@@ -90,7 +90,7 @@ var DataClassAttributeComponent = React.createClass({
         $('#' + this.props.name + '-dtselect').selectpicker();
     },
     componentDidUpdate: function() {
-        $('#' + this.props.name + '-dtselect').selectpicker();
+        $('#' + this.props.name + '-dtselect').selectpicker('refresh');
     }
 });
 
