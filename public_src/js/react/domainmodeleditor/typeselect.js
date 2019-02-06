@@ -18,7 +18,6 @@ var TypeSelect = React.createClass({
             this.setState({ isResource: isResource });
             this.props.handleType(this.state.isEvent, isResource);
         }
-        console.log(this.state);
         
     },
     componentWillReceiveProps: function (nextProps) {
