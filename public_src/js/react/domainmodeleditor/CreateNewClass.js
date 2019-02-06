@@ -11,10 +11,12 @@ var CreateNewClassComponent = React.createClass({
     },
     handleSubmit: function(type) {
         var is_event = false;
+        var is_resource = false;
         if (type == "event") {is_event = true;}
+        if (type == "resource") {is_resource = true;}
         var newItem = this.state.newname;
         if (NameCheck.check(newItem)) {
-            if (this.props.onSubmit(newItem, is_event)) {
+            if (this.props.onSubmit(newItem, is_event, is_resource)) {
                 this.setState({newname: ''});
             }
         }
