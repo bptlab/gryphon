@@ -3,7 +3,7 @@ var MessageHandler = require('./../../messagehandler');
 var NameCheck = require('./../../namecheck');
 var API = require('./../../api');
 var Config = require('./../../config');
-var DataClassComponent = require('./dataclass');
+var DataClassComponent = require('./DataClass');
 var OLCEditorComponent = require('./../olceditor');
 
 var CreateNewClassComponent = React.createClass({
