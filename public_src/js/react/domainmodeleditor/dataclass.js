@@ -20,6 +20,7 @@ var DataClassComponent = React.createClass({
             this.props.handleUpdate({
                 name: this.props.name,
                 is_event: this.props.is_event,
+                is_resource: this.props.is_resource,
                 attributes: newItems,
                 _id: this.props.id
             });
@@ -37,15 +38,18 @@ var DataClassComponent = React.createClass({
         this.props.handleUpdate({
             name: this.props.name,
             is_event: this.props.is_event,
+            is_resource: this.props.is_resource,
             attributes: this.state.items,
             _id: this.props.id
         });
     },
-    handleType: function(new_is_event) {
+    handleType: function(new_is_event, new_is_resource) {
         var is_event = new_is_event;
+        var is_resource = new_is_resource;
         this.props.handleUpdate({
             name: this.props.name,
             is_event: is_event,
+            is_resource: is_resource,
             attributes: this.state.items,
             _id: this.props.id
         });
@@ -54,6 +58,7 @@ var DataClassComponent = React.createClass({
         this.props.handleUpdate({
             name: e.target.value,
             is_event: this.props.is_event,
+            is_resource: this.props.is_resource,
             attributes: this.state.items,
             _id: this.props.id
         });
@@ -86,6 +91,7 @@ var DataClassComponent = React.createClass({
             this.props.handleUpdate({
                 name: this.props.name,
                 is_event: this.props.is_event,
+                is_resource: this.props.is_resource,
                 attributes: this.state.items,
                 _id: this.props.id
             });
@@ -124,6 +130,7 @@ var DataClassComponent = React.createClass({
                     handleDelete={this.props.handleDelete}
                     exportClass={this.exportClass}
                     is_event={this.props.is_event}
+                    is_resource={this.props.is_resource}
                     scenid={this.props.scenid}
                     changed={this.props.modelChanged}
                 />
