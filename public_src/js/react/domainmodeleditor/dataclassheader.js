@@ -10,6 +10,7 @@ var DataClassHeaderComponent = React.createClass({
                         <TypeSelect
                             is_event={this.props.is_event}
                             is_resource={this.props.is_resource}
+                            resource_id={this.props.resource_id}
                             handleType={this.props.handleType}
                         />
                     </div>

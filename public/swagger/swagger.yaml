@@ -935,6 +935,9 @@ definitions:
       is_resource:
         type: boolean
         description: 'Describes whether the data class represents a resource in the resource manager.'
+      resource_id:
+        type: string
+        description: 'The ID of the selected resource type (in case the data object refers to a resource).'
       attributes:
         type: array
         description: 'The attributes of the data class.'

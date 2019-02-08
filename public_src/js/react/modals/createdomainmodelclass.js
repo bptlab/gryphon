@@ -30,6 +30,7 @@ var CreateDomainModelClassModal = React.createClass({
           "name": this.state.name,
           "is_event": false,
           "is_resource": false,
+          "resource_id": null,
           "attributes": [],
           "olc": Config.DEFAULT_OLC_XML
       };
