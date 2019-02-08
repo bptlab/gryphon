@@ -47,11 +47,12 @@ var DomainModelEditorComponent = React.createClass({
             this.setState({'dm':dm, 'changed':true});
         }.bind(this);
     },
-    handleCreateNew: function(name, is_event, is_resource) {
+    handleCreateNew: function(name, is_event, is_resource, resource_id) {
         var dataclass = {
             "name": name,
             "is_event": is_event,
             "is_resource": is_resource,
+            "resource_id": resource_id,
             "attributes": [],
             "olc": Config.DEFAULT_OLC_XML
         };
@@ -121,6 +122,7 @@ var DomainModelEditorComponent = React.createClass({
               name={selectedDataclass.name}
               is_event={selectedDataclass.is_event}
               is_resource={selectedDataclass.is_resource}
+              resource_id={selectedDataclass.resource_id}
               availableDataTypes={this.getAvailableDataTypes()}
               modelChanged={this.state.changed}
               id={selectedDataclass._id}

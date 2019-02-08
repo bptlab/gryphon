@@ -21,6 +21,7 @@ var DataClassComponent = React.createClass({
                 name: this.props.name,
                 is_event: this.props.is_event,
                 is_resource: this.props.is_resource,
+                resource_id: this.props.resource_id,
                 attributes: newItems,
                 _id: this.props.id
             });
@@ -39,17 +40,20 @@ var DataClassComponent = React.createClass({
             name: this.props.name,
             is_event: this.props.is_event,
             is_resource: this.props.is_resource,
+            resource_id: this.props.resource_id,
             attributes: this.state.items,
             _id: this.props.id
         });
     },
-    handleType: function(new_is_event, new_is_resource) {
+    handleType: function(new_is_event, new_is_resource, new_resource_id) {
         var is_event = new_is_event;
         var is_resource = new_is_resource;
+        var resource_id = new_resource_id;
         this.props.handleUpdate({
             name: this.props.name,
             is_event: is_event,
             is_resource: is_resource,
+            resource_id: resource_id,
             attributes: this.state.items,
             _id: this.props.id
         });
@@ -59,6 +63,7 @@ var DataClassComponent = React.createClass({
             name: e.target.value,
             is_event: this.props.is_event,
             is_resource: this.props.is_resource,
+            resource_id: this.props.resource_id,
             attributes: this.state.items,
             _id: this.props.id
         });
@@ -92,6 +97,7 @@ var DataClassComponent = React.createClass({
                 name: this.props.name,
                 is_event: this.props.is_event,
                 is_resource: this.props.is_resource,
+                resource_id: this.props.resource_id,
                 attributes: this.state.items,
                 _id: this.props.id
             });
@@ -131,6 +137,7 @@ var DataClassComponent = React.createClass({
                     exportClass={this.exportClass}
                     is_event={this.props.is_event}
                     is_resource={this.props.is_resource}
+                    resource_id={this.props.resource_id}
                     scenid={this.props.scenid}
                     changed={this.props.modelChanged}
                 />

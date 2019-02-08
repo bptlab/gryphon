@@ -5,7 +5,8 @@ var TypeSelect = React.createClass({
     getInitialState: function () {
         return {
             isEvent: this.props.is_event,
-            isResource: this.props.is_resource
+            isResource: this.props.is_resource,
+            resourceId: this.props.resource_id,
         };
     },
     componentDidMount: function () {
@@ -16,23 +17,32 @@ var TypeSelect = React.createClass({
         }.bind(this));
     },
     handleChange: function (event) {
-        if (event.target.value === "isEvent") {
-            var isEvent = event.target.checked == true;
-            this.setState({ isEvent: isEvent });
-            this.props.handleType(isEvent, this.state.isResource);
+        switch(event.target.name) {
+            case "isEvent":
+                this.setState({ isEvent: event.target.checked });
+                this.props.handleType(event.target.checked, this.state.isResource, this.state.resourceId);
+                break;
+            case "isResource":
+                this.setState({ isResource: event.target.checked });
+                let currentResourceId = this.state.resourceId;
+                if (currentResourceId == null) {
+                    currentResourceId = String(this.state.availableResourceTypes[0]["id"]);
+                    this.setState({ 'resourceId': currentResourceId });
+                }
+                this.props.handleType(this.state.isEvent, event.target.checked, currentResourceId);
+                break;
+            case "resourceId":
+                this.setState({ resourceId: event.target.value });
+                this.props.handleType(this.state.isEvent, this.state.isResource, event.target.value);
+                break;
         }
-        else {
-            var isResource = event.target.checked == true;
-            this.setState({ isResource: isResource });
-            this.props.handleType(this.state.isEvent, isResource);
-        }
-        console.log(this.state);
 
     },
     componentWillReceiveProps: function (nextProps) {
         this.setState({
             isEvent: nextProps.is_event,
-            isResource: nextProps.is_resource
+            isResource: nextProps.is_resource,
+            resourceId: nextProps.resource_id,
         });
     },
     render: function () {
@@ -43,7 +53,7 @@ var TypeSelect = React.createClass({
                     <label>
                         <input
                             type="checkbox"
-                            value="isEvent"
+                            name="isEvent"
                             checked={this.state.isEvent}
                             onChange={this.handleChange}
                         />
@@ -52,7 +62,7 @@ var TypeSelect = React.createClass({
                     <label>
                         <input
                             type="checkbox"
-                            value="isResource"
+                            name="isResource"
                             checked={this.state.isResource}
                             onChange={this.handleChange}
                         />
@@ -61,7 +71,7 @@ var TypeSelect = React.createClass({
                 </div>
                 {this.state.isResource && this.state.availableResourceTypes && 
                     <div>
-                        <select>
+                        <select name="resourceId" value={this.state.resourceId} onChange={this.handleChange}>
                         {this.state.availableResourceTypes.map(type => {
                             return(<option key={type["id"]} value={type["id"]}>{type["name"]}</option>);
                         })}
