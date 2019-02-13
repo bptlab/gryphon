@@ -97,8 +97,19 @@ var FragmentEditorComponent = React.createClass({
         }.bind(this)
       );
     }.bind(this);
+
+    var stripLineFeeds = function(fragment) {
+      let newFragmentXml = fragment.content.replace(/name="([^"]+)&#10;"/g, function(string, matchedGroup){
+        console.log("Stripping newline from node name: ", string, " matchedGroup: ", matchedGroup);
+        return "name=\"" + matchedGroup + "\"";
+      });
+      fragment.content = newFragmentXml;
+      return fragment;
+    }
+
     if (this.state.editor !== null && this.state.fragment !== null) {
       this.state.editor.exportFragment(this.state.fragment, function(data) {
+        data = stripLineFeeds(data);
         API.exportFragment(data, res_handler);
       });
     }
