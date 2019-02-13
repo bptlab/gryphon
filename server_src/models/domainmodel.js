@@ -12,6 +12,7 @@ var Schema = mongoose.Schema;
 var DomainModelSchema = new Schema({
     name: String,
     revision: Number,
+    caseclass : String,
     dataclasses: [{
         name: String,
         is_root: Boolean,

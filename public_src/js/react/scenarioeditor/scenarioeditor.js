@@ -10,6 +10,7 @@ var ScenarioStartConditionForm = require('./startconditions');
 var ScenarioStats = require('./stats');
 var TerminationConditionsComponent = require('./terminationconditions');
 var ScenarioDescription = require('./scenariodescription');
+var CaseClassSelectorComponent = require('./caseclassselector');
 
 var ScenarioEditorComponent = React.createClass({
     getInitialState: function() {
@@ -22,6 +23,7 @@ var ScenarioEditorComponent = React.createClass({
                 domainmodel: {
                     name: "",
                     revision: 0,
+                    caseclass: "",
                     dataclasses: []
                 },
                 terminationconditions: [],
@@ -56,6 +58,12 @@ var ScenarioEditorComponent = React.createClass({
                 <div className="row">
                   <div className="col-md-12">
                     <ScenarioDescription scenario={this.state.scenario}/>
+                  </div>
+                </div>
+                <hr />
+                <div className="row">
+                  <div className="col-md-12">
+                    <CaseClassSelectorComponent scenario={this.state.scenario} />
                   </div>
                 </div>
                 <hr />

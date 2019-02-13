@@ -62,6 +62,11 @@ router.post('/:dmID', function(req, res) {
                     changed = true;
                 }
 
+                if (new_dm.caseclass != null && !_.isEqual(new_dm.caseclass, result.caseclass)) {
+                    result.caseclass = new_dm.caseclass;
+                    changed = true;
+                }
+
                 if (changed) {
                     result.revision++;
                     result.save(function (err) {
