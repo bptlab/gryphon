@@ -81,7 +81,7 @@ var OLCValidator = class {
         }.bind(this);
     }
 
-    
+
     /**
      * Returns the dataobjectreference with the given ID
      * @method getDataObjectReference
@@ -122,15 +122,17 @@ var OLCValidator = class {
      * @param doref
      */
     validateDataObjectReference(doref) {
-        if (!(doref['griffin:dataclass'] in this.olc)) {
+        var referencedDataClass = doref['griffin:dataclass'].trim();
+        var referencedState = doref['griffin:state'].trim();
+        if (!(referencedDataClass in this.olc)) {
             this.messages.push({
                 'text': 'You referenced an invalid dataclass. (' + doref['griffin:dataclass'] + ')',
                 'type': 'danger'
             })
         } else {
-            if (this.olc[doref['griffin:dataclass']] != null && !(doref['griffin:state'] in this.olc[doref['griffin:dataclass']])) {
+            if (this.olc[referencedDataClass] != null && !(referencedState in this.olc[referencedDataClass])) {
                 this.messages.push({
-                    'text': 'You referenced an invalid state (' + doref['griffin:state'] + ') for data object ' + doref['griffin:dataclass'],
+                    'text': 'You referenced an invalid state (' + referencedState + ') for data object ' + referencedDataClass + '. Available states: \'' + Object.keys(this.olc[referencedDataClass]).join("\', \'") + '\'',
                     'type': 'danger'
                 })
             }
@@ -201,7 +203,7 @@ var OLCValidator = class {
                         this.messages.push({
                             'text': iotuple.instate + ' -> ' + iotuple.outstate + ' is not a valid state change (no direct connection) according to the olc of the dataclass ' + iotuple.dataclass,
                             'type': 'danger'
-                        })                  
+                        })
                     }
                 }
             }

@@ -136,6 +136,17 @@ var DomainModelEditorComponent = React.createClass({
             return true; //signal successful creation (evaluated by invoking component)
         }
     },
+    stripLineFeeds: function(newDm) {
+      for (let i = 0; i < newDm.dataclasses.length; i++) {
+        let dataclass = newDm.dataclasses[i];
+        let newOlc = dataclass.olc.replace(/name="([^"]+)&#10;"/g, function(string, matchedGroup){
+          console.log("Stripping newline from state name: ", string, " matchedGroup: ", matchedGroup);
+          return "name=\"" + matchedGroup + "\"";
+        });
+        dataclass.olc = newOlc;
+      }
+      return newDm;
+    },
     handleOlcChanged: function(olcDm) {
         var targetClassId = this.props.params.dataclassId;
         var mergedDomainModelClasses = this.state.dm.dataclasses.map(function(dataclass) {
@@ -152,6 +163,9 @@ var DomainModelEditorComponent = React.createClass({
         });
         var newDm = this.state.dm;
         newDm.dataclasses = mergedDomainModelClasses;
+
+        // While we're at it, strip these weird line feeds
+        newDM = this.stripLineFeeds(newDm);
 
         this.setState({'dm':newDm, 'changed':true}, function () {
           this.handleExport();
