@@ -32,6 +32,15 @@ var CONFIGURATION = {
      * The Mongo-DB Path that should be used (it should specify host and collection)
      */
     MONGODB_HOST: 'mongodb://localhost/gryphondb'
+
+    /**
+     * ### Resource Manager Configuration
+     */
+
+    /**
+     * The host address of the resource manager
+     */
+    RESOURCE_MANAGER_HOST: 'http://localhost:3500/',
 };
 
 module.exports = CONFIGURATION
