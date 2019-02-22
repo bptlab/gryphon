@@ -17,6 +17,7 @@ var ScenarioLoader = React.createClass({
               domainmodel: {
                   name: "",
                   revision: 0,
+                  caseclass : "",
                   dataclasses: []
               },
               terminationconditions: [],
