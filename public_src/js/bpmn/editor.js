@@ -6,6 +6,9 @@ var $ = require('jquery'),
     generateProvider = require('./provider');
 
 var ModdleDescriptor = require('./bpmnextension');
+var resourceDescriptor = require('./resource.json')
+
+var ResourceRenderer = require('./resource/ResourceRenderer');
 
 var Editor = function(canvas, propertypanel) {
     this.canvas = canvas;
@@ -40,10 +43,11 @@ Editor.prototype.importFragment = function(fragment, callback) {
         },
         additionalModules: [
             BPMNPropertyPanel,
-            generateProvider(fragment._id)
+            generateProvider(fragment._id)            
         ],
         moddleExtensions: {
-            griffin: ModdleDescriptor
+            griffin: ModdleDescriptor,
+            resource: resourceDescriptor,
         }
     });
     this.renderer.importXML(fragment.content, function(){
