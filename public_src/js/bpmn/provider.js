@@ -192,6 +192,46 @@ function generateProvider(fragmentid) {
         }
     }
 
+    
+    /**
+     * This function creates the properties for the ScriptTask
+     */
+    function createResourceTaskProperties(group, element, elementRegistry) {
+        if (is(element, "resource:ResourceTask")) {
+            var stateEntry = entryFactory.selectBox({
+                id: 'host',
+                description: '',
+                label: 'Resource-Manager-Host:',
+                modelProperty: 'host',
+                selectOptions:[
+                    { "name": "Resource Manager (Local)", "value": "50" },
+                  ],
+            });
+            group.entries.push(stateEntry);
+            stateEntry = entryFactory.textField({
+                id: 'Method',
+                description: '',
+                label: 'Optimization Method:',
+                modelProperty: 'method'
+            });
+            group.entries.push(stateEntry);
+            stateEntry = entryFactory.textField({
+                id: 'Return',
+                description: '',
+                label: 'Expected Return:',
+                modelProperty: 'return'
+            });
+            group.entries.push(stateEntry);
+            stateEntry = entryFactory.textField({
+                id: 'Constraint',
+                description: '',
+                label: 'Constraints:',
+                modelProperty: 'constraint'
+            });
+            group.entries.push(stateEntry);
+        }
+    }
+
     /**
      * This function generates the additional fields WebServiceURL, Method and Body
      * In case the visitied object is an ServiceTask
@@ -246,7 +286,7 @@ function generateProvider(fragmentid) {
      * ServiceTask, SendTask, or ReceiveTask
      */
     function createTaskProperties(group, element, elementRegistry) {
-        if (is(element, "bpmn:Task") &&
+        if (!is(element, "bpmn:Task") &&
 	    !is(element, "bpmn:ServiceTask") &&
 	    !is(element, "bpmn:SendTask") &&
         !is(element, "bpmn:EmptyTask") &&
@@ -289,6 +329,7 @@ function generateProvider(fragmentid) {
         createMessageEventProperties(detailsGroup, element, bpmnFactory, translate);
         createWebServiceTaskProperties(detailsGroup, element, bpmnFactory, translate);
         createScriptTaskProperties(detailsGroup, element, bpmnFactory, translate);
+        createResourceTaskProperties(detailsGroup, element, bpmnFactory, translate);
         createTaskProperties(detailsGroup, element, bpmnFactory, translate);
 
         var documentationGroup = {
