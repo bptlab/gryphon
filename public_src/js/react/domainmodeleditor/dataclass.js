@@ -1,9 +1,9 @@
 var React = require('react');
-var MessageHandler = require('./../../messagehandler');
-var NameCheck = require('./../../namecheck');
-var DataClassAttributeComponent = require('./DataClassAttribute');
-var DataClassHeaderComponent = require('./DataClassHeader');
-var DataClassFooterComponent = require('./DataClassFooter');
+var MessageHandler = require('../../messagehandler');
+var NameCheck = require('../../namecheck');
+var DataClassAttributeComponent = require('./dataclassattribute');
+var DataClassHeaderComponent = require('./dataclassheader');
+var DataClassFooterComponent = require('./dataclassfooter');
 var Link = require('react-router').Link;
 
 var DataClassComponent = React.createClass({

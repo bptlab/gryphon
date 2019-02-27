@@ -1,5 +1,5 @@
 var React = require('react');
-var TypeSelect = require('./TypeSelect');
+var TypeSelect = require('./typeselect');
 
 var DataClassHeaderComponent = React.createClass({
     render: function() {

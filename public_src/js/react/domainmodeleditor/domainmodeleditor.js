@@ -1,10 +1,10 @@
 var React = require('react');
-var MessageHandler = require('./../../messagehandler');
-var NameCheck = require('./../../namecheck');
-var API = require('./../../api');
-var Config = require('./../../config');
-var DataClassComponent = require('./DataClass');
-var OLCEditorComponent = require('./../olceditor');
+var MessageHandler = require('../../messagehandler');
+var NameCheck = require('../../namecheck');
+var API = require('../../api');
+var Config = require('../../config');
+var DataClassComponent = require('./dataclass');
+var OLCEditorComponent = require('../olceditor');
 
 var DomainModelEditorComponent = React.createClass({
     getInitialState: function() {
