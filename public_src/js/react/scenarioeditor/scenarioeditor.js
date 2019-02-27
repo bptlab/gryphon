@@ -11,6 +11,7 @@ var ScenarioStats = require('./stats');
 var TerminationConditionsComponent = require('./terminationconditions');
 var ScenarioDescription = require('./scenariodescription');
 var CaseClassSelectorComponent = require('./caseclassselector');
+var ComplianceCheckerComponent = require('./compliancechecker/compliancechecker');
 
 var ScenarioEditorComponent = React.createClass({
     getInitialState: function() {
@@ -55,6 +56,14 @@ var ScenarioEditorComponent = React.createClass({
     render: function() {
         return (
             <div>
+                <div className="row">
+                  <div className="col-md-12">
+                    <ComplianceCheckerComponent scenario={this.state.scenario} />
+                  </div>
+                </div>
+
+                <hr />
+
                 <div className="row">
                   <div className="col-md-12">
                     <ScenarioDescription scenario={this.state.scenario}/>
