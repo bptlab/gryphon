@@ -32,4 +32,3 @@ RUN cd /var/gryphon && grunt
 CMD mongod --logpath /var/log/mongodb/mongodb.log --fork --dbpath /var/lib/mongodb && node /var/gryphon/bin/www
 
 EXPOSE 3000
-EXPOSE 27017
