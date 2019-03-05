@@ -2,56 +2,26 @@ var React = require('react');
 var API = require('./../../../api');
 var MessageHandler = require('./../../../messagehandler');
 var ComplianceQuery = require('./compliancequery');
+var Dropdown = require('../../dropdown');
 
 var ComplianceCheckerComponent = React.createClass({
     getInitialState: function() {
         return {
-            scenario: {},
             exports: [],
             selectedExportName: '',
             selectedExportUrl: '',
             complianceQuery: '',
             complianceResult: '',
             deployedScenarioId: 'n/a',
-            deployedScenarioName: ''
+            deployedScenarioName: '',
+            caseInstances: [],
+            selectedCaseInstanceId: ''
         }
     },
     componentDidMount: function() {
-        this.setState({
-            scenario: this.props.scenario
-          });
-
         this.fetchAvailableChimeraInstances();
-
-        // update dropdown
-        $('#chimera-instance-dtselect').selectpicker('refresh');
     },
     componentDidUpdate: function() {
-        console.log(this.props);
-        if (this.props.scenario._id != this.state.scenario._id) {
-            this.setState({
-                scenario: this.props.scenario
-            });
-        }
-
-        // update dropdown
-        $('#chimera-instance-dtselect').selectpicker('refresh');
-    },
-    handleSelectedExportChanged: function(e) {
-        var newSelectedExportName = e.target.value;
-
-        var chimeraEndpoint = this.state.exports.find(function(element) {
-            return element.name === newSelectedExportName;
-        });
-        if (!chimeraEndpoint) {
-            console.log("no endpoint named ", newSelectedExportName);
-            return;
-        }
-
-        this.setState({
-            selectedExportName: newSelectedExportName,
-            selectedExportUrl: chimeraEndpoint.url
-        }, this.fetchDeployedCases());
     },
     fetchAvailableChimeraInstances: function() {
         API.getAvailableExports(function(data){
@@ -63,13 +33,23 @@ var ComplianceCheckerComponent = React.createClass({
             console.log("default chimera: ", data[0].name, data[0].url);
         }.bind(this))
     },
-    fetchDeployedCases: function() {
+    handleSelectedExportChanged: function(index, value) {
+
+        var chimeraInstance = this.state.exports[index];
+        console.log(this.state.exports, chimeraInstance);
+
+        this.setState({
+            selectedExportName: chimeraInstance.name,
+            selectedExportUrl: chimeraInstance.url
+        }, this.fetchDeployedCaseModels());
+    },
+    fetchDeployedCaseModels: function() {
         var chimeraUrl = this.state.selectedExportUrl;
         if (!chimeraUrl) {
             return;
         }
 
-        queryUrl = chimeraUrl + "/scenario/?filter=" + this.state.scenario.name;
+        queryUrl = chimeraUrl + "/scenario/?filter=" + this.props.scenario.name;
         console.log("queryUrl: ", queryUrl);
 
         $.getJSON(queryUrl, function(data) {
@@ -90,6 +70,26 @@ var ComplianceCheckerComponent = React.createClass({
                     deployedScenarioName: "multiple matches"
                 });
             }
+        }.bind(this));
+    },
+    fetchCaseInstances: function() {
+        var chimeraUrl = this.state.selectedExportUrl;
+        if (!chimeraUrl) {
+            console.log("Chimera URL not valid");
+            return;
+        }
+
+        if (!this.state.deployedScenarioId) {
+            console.log("Deployed scenario id not valid");
+            return;
+        }
+
+        queryUrl = chimeraUrl + "/scenario/" + this.state.deployedScenarioId + "/instance";
+        console.log("queryUrl: ", queryUrl);
+
+        $.getJSON(queryUrl, function(data) {
+            console.log("response data: ", data);
+            this.setState({caseInstances : data});
         }.bind(this));
     },
     submitComplianceQuery: function(query) {
@@ -117,13 +117,8 @@ var ComplianceCheckerComponent = React.createClass({
         }.bind(this));
     },
     render: function() {
-        var chimeraInstances = [];
-        chimeraInstances = chimeraInstances.concat(this.state.exports.map(function(chimeraInstance){
-            var value = chimeraInstance.name;
-            var key = "export_" + value;
-            return (
-                <option value={value} key={key}>{value}</option>
-            )
+        var chimeraInstances = [].concat(this.state.exports.map(function(chimeraInstance) {
+            return chimeraInstance.name;
         }));
 
         var complianceResult = "";
@@ -141,23 +136,19 @@ var ComplianceCheckerComponent = React.createClass({
                 </div>
 
                 <div className="col-md-4">
-                    <select
-                        className="selectpicker"
-                        onChange={this.handleSelectedExportChanged}
-                        value={this.state.selectedExportName}
-                        data-live-search="true"
-                        id={"chimera-instance-dtselect"}>
-                        <optgroup label="Chimera instance">
-                            {chimeraInstances}
-                        </optgroup>
-                    </select>
+                    <Dropdown
+                        id="chimeraInstances"
+                        handleSelectionChanged={this.handleSelectedExportChanged}
+                        options={chimeraInstances}
+                        selectedValue={this.state.selectedExportName}
+                    />
                 </div>
 
                 <div className="col-md-1">
                     <button
                         type="button"
                         className="btn btn-success"
-                        onClick={this.fetchDeployedCases}>
+                        onClick={this.fetchDeployedCaseModels}>
                             <i className={"fa fa-refresh"} />
                     </button>
                 </div>

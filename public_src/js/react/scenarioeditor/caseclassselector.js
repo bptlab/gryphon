@@ -1,12 +1,12 @@
 var React = require('react');
 var API = require('./../../api');
 var MessageHandler = require('./../../messagehandler');
-var DataObjectReference = require('./../dataobjectreference');
+var Dropdown = require('../dropdown');
 
 var CaseClassSelectorComponent = React.createClass({
     getInitialState: function() {
         return {
-            caseclass: 'FlubWub',
+            caseclass: '',
             _id: ''
         }
     },
@@ -15,9 +15,6 @@ var CaseClassSelectorComponent = React.createClass({
             caseclass: this.props.scenario.domainmodel.caseclass,
             _id: this.props.scenario.domainmodel._id
           });
-
-        // update dropdown
-        $('#case-class-dtselect').selectpicker('refresh');
     },
     componentDidUpdate: function() {
         if (this.props.scenario.domainmodel._id != this.state._id) {
@@ -26,28 +23,12 @@ var CaseClassSelectorComponent = React.createClass({
                 _id: this.props.scenario.domainmodel._id
             });
         }
-
-        // update dropdown
-        $('#case-class-dtselect').selectpicker('refresh');
     },
-    getAvailableDataClasses: function() {
-        var dataclasses = [];
-        dataclasses = dataclasses.concat(this.props.scenario.domainmodel.dataclasses.map(function(dataclass){
-            var value = dataclass.name;
-            var key = "dataclass_" + value;
-            return (
-                <option value={value} key={key}>{value}</option>
-            )
-        }));
-        return dataclasses;
-    },
-    handleCaseClassChange: function(e) {
-        var newCaseClass = e.target.value;
-        this.setState({caseclass: newCaseClass});
+    handleCaseClassChange: function(index, value) {
+        this.setState({caseclass: value});
     },
     handleSaveClick: function(e) {
         this.submitAll();
-        //this.setState({terminationconditions: terminationconditions}, this.submitAll);
     },
     submitAll: function(index) {
         API.exportDomainModel(this.state, function() {
@@ -56,7 +37,9 @@ var CaseClassSelectorComponent = React.createClass({
     },
     render: function() {
 
-        var dataclasses = this.getAvailableDataClasses();
+        var dataclasses = [].concat(this.props.scenario.domainmodel.dataclasses.map(function(dataclass){
+            return dataclass.name;
+        }));
 
         return (
             <form className="form-horizontal">
@@ -64,11 +47,12 @@ var CaseClassSelectorComponent = React.createClass({
               <row>
 
                 <div className="col-sm-5">
-                    <select className="selectpicker" onChange={this.handleCaseClassChange} value={this.state.caseclass} data-live-search="true" id={"case-class-dtselect"}>
-                        <optgroup label="Data class">
-                            {dataclasses}
-                        </optgroup>
-                    </select>
+                    <Dropdown
+                        id="caseClass"
+                        handleSelectionChanged={this.handleCaseClassChange}
+                        options={dataclasses}
+                        selectedValue={this.state.caseclass}
+                    />
                 </div>
 
                 <div className="col-sm-3">
