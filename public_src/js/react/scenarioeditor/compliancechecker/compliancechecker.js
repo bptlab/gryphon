@@ -2,6 +2,7 @@ var React = require('react');
 var API = require('./../../../api');
 var MessageHandler = require('./../../../messagehandler');
 var ComplianceQuery = require('./compliancequery');
+var ComplianceResultDisplay = require('./complianceresultdisplay');
 var Dropdown = require('../../dropdown');
 
 var ComplianceCheckerComponent = React.createClass({
@@ -139,44 +140,6 @@ var ComplianceCheckerComponent = React.createClass({
             this.setState({ complianceResult: data });
         }.bind(this));
     },
-    formatComplianceResult: function () {
-        if (!this.state.complianceResult) {
-            return "";
-        }
-
-        var custom_check = this.state.complianceResult.checks["custom_check"];
-        if (!custom_check) {
-            return "compliance result does not contain 'custom_check' check";
-        }
-
-        console.log(custom_check);
-
-        var generalResult = <p>Formula is satisfied: {custom_check.result ? "true" : "false"}</p>;
-        
-        var witnessPath = "";
-        if (custom_check.witness_path) {
-            witnessPathListElements = custom_check.witness_path.map(function(witnessPathElement, index) {
-                return <li key={index}>{witnessPathElement}</li>;
-            });
-            witnessPath = <span>Witness path:<br/><ol>{witnessPathListElements}</ol></span>;
-        }
-
-        var witnessState = "";
-        if (custom_check.witness_state) {
-            witnessStateListElements = Object.keys(custom_check.witness_state).map(function(key, index) {
-                return <li key={index}>{key}: {custom_check.witness_state[key]}</li>
-            })
-            witnessState = <span>Witness state (marking):<br/><ul>{witnessStateListElements}</ul></span>;
-        }
-
-        return (
-            <div>
-                {generalResult}
-                {witnessPath}
-                {witnessState}
-            </div>
-        );
-    },
     render: function () {
         var chimeraInstances = [].concat(this.state.exports.map(function (chimeraInstance) {
             return chimeraInstance.name;
@@ -189,8 +152,6 @@ var ComplianceCheckerComponent = React.createClass({
         var selectedCaseInstanceName = this.state.caseInstances.find(function (caseInstance) {
             return caseInstance.id == this.state.selectedCaseInstanceId;
         }.bind(this));
-
-        var complianceResult = this.formatComplianceResult();
 
         return (
             <form className="form-horizontal">
@@ -247,7 +208,7 @@ var ComplianceCheckerComponent = React.createClass({
 
                 <row>
                     <div className="col-md-12">
-                        {complianceResult}
+                        <ComplianceResultDisplay complianceResult={this.state.complianceResult} />
                     </div>
                 </row>
 
