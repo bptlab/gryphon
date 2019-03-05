@@ -5,7 +5,7 @@ var ComplianceQuery = require('./compliancequery');
 var Dropdown = require('../../dropdown');
 
 var ComplianceCheckerComponent = React.createClass({
-    getInitialState: function() {
+    getInitialState: function () {
         return {
             exports: [],
             selectedExportName: '',
@@ -18,13 +18,18 @@ var ComplianceCheckerComponent = React.createClass({
             selectedCaseInstanceId: ''
         }
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         this.fetchAvailableChimeraInstances();
     },
-    componentDidUpdate: function() {
+    componentDidUpdate: function (prevProps) {
+        if (this.props.scenario.name
+            && this.props.scenario.name != prevProps.scenario.name
+            && this.state.selectedExportName) {
+            this.fetchDeployedCaseModels();
+        }
     },
-    fetchAvailableChimeraInstances: function() {
-        API.getAvailableExports(function(data){
+    fetchAvailableChimeraInstances: function () {
+        API.getAvailableExports(function (data) {
             this.setState({
                 exports: data,
                 selectedExportName: data[0].name,
@@ -33,17 +38,16 @@ var ComplianceCheckerComponent = React.createClass({
             console.log("default chimera: ", data[0].name, data[0].url);
         }.bind(this))
     },
-    handleSelectedExportChanged: function(index, value) {
-
+    handleSelectedExportChanged: function (index, value) {
         var chimeraInstance = this.state.exports[index];
         console.log(this.state.exports, chimeraInstance);
 
         this.setState({
             selectedExportName: chimeraInstance.name,
             selectedExportUrl: chimeraInstance.url
-        }, this.fetchDeployedCaseModels());
+        }, this.fetchDeployedCaseModels);
     },
-    fetchDeployedCaseModels: function() {
+    fetchDeployedCaseModels: function () {
         var chimeraUrl = this.state.selectedExportUrl;
         if (!chimeraUrl) {
             return;
@@ -52,18 +56,18 @@ var ComplianceCheckerComponent = React.createClass({
         queryUrl = chimeraUrl + "/scenario/?filter=" + this.props.scenario.name;
         console.log("queryUrl: ", queryUrl);
 
-        $.getJSON(queryUrl, function(data) {
+        $.getJSON(queryUrl, function (data) {
             console.log("response data: ", data);
-            if(data.length == 0) {
+            if (data.length == 0) {
                 this.setState({
                     deployedScenarioId: "",
                     deployedScenarioName: "not found"
                 });
-            } else if(data.length == 1) {
+            } else if (data.length == 1) {
                 this.setState({
                     deployedScenarioId: data[0].id,
                     deployedScenarioName: data[0].name
-                });
+                }, this.fetchCaseInstances);
             } else {
                 this.setState({
                     deployedScenarioId: "",
@@ -72,7 +76,7 @@ var ComplianceCheckerComponent = React.createClass({
             }
         }.bind(this));
     },
-    fetchCaseInstances: function() {
+    fetchCaseInstances: function () {
         var chimeraUrl = this.state.selectedExportUrl;
         if (!chimeraUrl) {
             console.log("Chimera URL not valid");
@@ -87,19 +91,28 @@ var ComplianceCheckerComponent = React.createClass({
         queryUrl = chimeraUrl + "/scenario/" + this.state.deployedScenarioId + "/instance";
         console.log("queryUrl: ", queryUrl);
 
-        $.getJSON(queryUrl, function(data) {
+        $.getJSON(queryUrl, function (data) {
             console.log("response data: ", data);
-            this.setState({caseInstances : data});
+            selectedCaseInstanceId = '';
+            if (data[0].id) {
+                selectedCaseInstanceId = data[0].id;
+            }
+            this.setState({
+                caseInstances: data,
+                selectedCaseInstanceId: selectedCaseInstanceId
+            });
         }.bind(this));
     },
-    submitComplianceQuery: function(query) {
+    handleSelectedCaseInstanceChanged: function (index, value) {
+
+        selectedCaseInstanceId = caseInstances[index];
+        console.log(index, value, selectedCaseInstanceId);
+
+        this.setState({ selectedCaseInstanceId: selectedCaseInstanceId });
+    },
+    submitComplianceQuery: function (query) {
         if (!query) {
             console.log("empty query");
-            return;
-        }
-        
-        if (!this.state.deployedScenarioId) {
-            console.log("scenario not deployed");
             return;
         }
 
@@ -109,66 +122,134 @@ var ComplianceCheckerComponent = React.createClass({
             return;
         }
 
-        queryUrl = chimeraUrl + "/scenario/" + this.state.deployedScenarioId + "/compliance/" + query;
+        if (!this.state.deployedScenarioId) {
+            console.log("scenario not deployed");
+            return;
+        }
+
+        if (!this.state.selectedCaseInstanceId) {
+            console.log("no case instance selected");
+            return;
+        }
+
+        queryUrl = chimeraUrl + "/scenario/" + this.state.deployedScenarioId + "/instance/" + this.state.selectedCaseInstanceId + "/compliance/" + query;
         console.log("queryUrl: ", queryUrl);
-        $.get(queryUrl, function(data) {
+        $.get(queryUrl, function (data) {
             console.log("response data: ", data);
-            this.setState({complianceResult: data});
+            this.setState({ complianceResult: data });
         }.bind(this));
     },
-    render: function() {
-        var chimeraInstances = [].concat(this.state.exports.map(function(chimeraInstance) {
-            return chimeraInstance.name;
-        }));
+    formatComplianceResult: function () {
+        if (!this.state.complianceResult) {
+            return "";
+        }
 
-        var complianceResult = "";
-        if (this.state.complianceResult) {
-            complianceResult = "Compliance result: " + this.state.complianceResult;
+        var custom_check = this.state.complianceResult.checks["custom_check"];
+        if (!custom_check) {
+            return "compliance result does not contain 'custom_check' check";
+        }
+
+        console.log(custom_check);
+
+        var generalResult = <p>Formula is satisfied: {custom_check.result ? "true" : "false"}</p>;
+        
+        var witnessPath = "";
+        if (custom_check.witness_path) {
+            witnessPathListElements = custom_check.witness_path.map(function(witnessPathElement, index) {
+                return <li key={index}>{witnessPathElement}</li>;
+            });
+            witnessPath = <span>Witness path:<br/><ol>{witnessPathListElements}</ol></span>;
+        }
+
+        var witnessState = "";
+        if (custom_check.witness_state) {
+            witnessStateListElements = Object.keys(custom_check.witness_state).map(function(key, index) {
+                return <li key={index}>{key}: {custom_check.witness_state[key]}</li>
+            })
+            witnessState = <span>Witness state (marking):<br/><ul>{witnessStateListElements}</ul></span>;
         }
 
         return (
+            <div>
+                {generalResult}
+                {witnessPath}
+                {witnessState}
+            </div>
+        );
+    },
+    render: function () {
+        var chimeraInstances = [].concat(this.state.exports.map(function (chimeraInstance) {
+            return chimeraInstance.name;
+        }));
+
+        var caseInstanceList = [].concat(this.state.caseInstances.map(function (caseInstance) {
+            return caseInstance.name;
+        }));
+
+        var selectedCaseInstanceName = this.state.caseInstances.find(function (caseInstance) {
+            return caseInstance.id == this.state.selectedCaseInstanceId;
+        }.bind(this));
+
+        var complianceResult = this.formatComplianceResult();
+
+        return (
             <form className="form-horizontal">
-              <h3>Checking compliance</h3>
+                <h3>Checking compliance</h3>
 
-              <row>
-                <div className="col-md-2">
-                Chimera instance:
-                </div>
+                <row>
+                    <div className="col-md-2">
+                        Chimera instance:
+                    </div>
 
-                <div className="col-md-4">
-                    <Dropdown
-                        id="chimeraInstances"
-                        handleSelectionChanged={this.handleSelectedExportChanged}
-                        options={chimeraInstances}
-                        selectedValue={this.state.selectedExportName}
-                    />
-                </div>
+                    <div className="col-md-4">
+                        <Dropdown
+                            id="chimeraInstances"
+                            handleSelectionChanged={this.handleSelectedExportChanged}
+                            options={chimeraInstances}
+                            selectedValue={this.state.selectedExportName}
+                        />
+                    </div>
 
-                <div className="col-md-1">
-                    <button
-                        type="button"
-                        className="btn btn-success"
-                        onClick={this.fetchDeployedCaseModels}>
+                    <div className="col-md-1">
+                        <button
+                            type="button"
+                            className="btn btn-success"
+                            onClick={this.fetchDeployedCaseModels}>
                             <i className={"fa fa-refresh"} />
-                    </button>
-                </div>
+                        </button>
+                    </div>
 
-                <div className="col-md-5">
-                    Deployed scenario id: {this.state.deployedScenarioId} ({this.state.deployedScenarioName})
-                </div>
-              </row>
+                    <div className="col-md-5">
+                        Deployed scenario id: {this.state.deployedScenarioId} ({this.state.deployedScenarioName})
+                    </div>
+                </row>
 
-              <row>
-                  <div className="col-md-12">
-                    <ComplianceQuery handleChange={this.submitComplianceQuery} />
-                  </div>
-              </row>
+                <row>
+                    <div className="col-md-2">
+                        Case instance:
+                    </div>
 
-              <row>
-                  <div className="col-md-12">
-                  {complianceResult}
-                  </div>
-              </row>
+                    <div className="col-md-10">
+                        <Dropdown
+                            id="caseInstance"
+                            handleSelectionChanged={this.handleSelectedCaseInstanceChanged}
+                            options={caseInstanceList}
+                            selectedValue={selectedCaseInstanceName}
+                        />
+                    </div>
+                </row>
+
+                <row>
+                    <div className="col-md-12">
+                        <ComplianceQuery handleChange={this.submitComplianceQuery} />
+                    </div>
+                </row>
+
+                <row>
+                    <div className="col-md-12">
+                        {complianceResult}
+                    </div>
+                </row>
 
             </form>
         );
