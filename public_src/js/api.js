@@ -110,6 +110,18 @@ API.prototype.exportScenario = function(scenario, callback) {
     });
 };
 
+API.prototype.checkCompliance = function(scenario, deployedScenarioId, selectedCaseInstanceId, query, callback) {
+    $.ajax({
+        url: this.createURL("scenario/" + deployedScenarioId + "/instance/" + selectedCaseInstanceId + "/compliance/" + query),
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(scenario)
+    }).done(function() {
+      if (callback)
+        callback();
+    });
+};
+
 API.prototype.createScenario = function(name, callback) {
     var scenario = {
         name: name

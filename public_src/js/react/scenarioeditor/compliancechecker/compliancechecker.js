@@ -133,9 +133,20 @@ var ComplianceCheckerComponent = React.createClass({
             return;
         }
 
+        // API.checkCompliance(this.props.scenario, this.state.deployedScenarioId, this.state.selectedCaseInstanceId, query, function(data) {
+        //     console.log("response data: ", data);
+        //     this.setState({ complianceResult: data });
+        // }.bind(this));
+
         queryUrl = chimeraUrl + "/scenario/" + this.state.deployedScenarioId + "/instance/" + this.state.selectedCaseInstanceId + "/compliance/" + query;
         console.log("queryUrl: ", queryUrl);
-        $.get(queryUrl, function (data) {
+
+        $.ajax({
+            url: queryUrl,
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(this.props.scenario)
+        }).done(function(data) {
             console.log("response data: ", data);
             this.setState({ complianceResult: data });
         }.bind(this));
