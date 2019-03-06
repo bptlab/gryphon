@@ -13,18 +13,12 @@
           { 
             "name": "host", 
             "isAttr": true, 
-            "type": "Dropdown",
-            "choices": [
-                { "name": "low", "value": "50" },
-                { "name": "medium", "value": "100" },
-                { "name": "high", "value": "150" }
-              ],
-              "value": "50"
+            "type": "Dropdown"
           }, 
           { 
             "name": "method", 
             "isAttr": true, 
-            "type": "String" 
+            "type": "Dropdown" 
           }
         ] 
       } 

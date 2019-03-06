@@ -19,6 +19,10 @@ var cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper');
 
 var forEach = require('lodash/forEach');
 
+var ResourceAPI = require('./../resourceApi');
+
+var Config = require('./../../../config');
+
 /**
  * The whole generation is encapsulated in an generator that provides a special
  * property-panel that is dependant on the fragment. This is done because the
@@ -26,10 +30,17 @@ var forEach = require('lodash/forEach');
  */
 function generateProvider(fragmentid) {
     var dm = null;
+    var resourceManagerHosts = [{"name": Config.RESOURCE_MANAGER_HOST, "value": Config.RESOURCE_MANAGER_HOST}];
+    var resourceOptimizationMethods = [];
     API.loadAssociatedDomainModel(fragmentid,function(dm2){
         dm = dm2;
     });
-
+    ResourceAPI.getAvailableResourceTypes(function (data) {
+        for (var i = 0; i < data["resources"].length; i++) {
+            method = data["resources"][i];
+            resourceOptimizationMethods.push({"name": method["name"], "value": method["id"]});
+        }
+    });
     /**
      * This function generates the 3 propertys dataclass and state for dataobjects.
      * It is more complicated then the other ones because every choice causes some things to happen.
@@ -194,7 +205,7 @@ function generateProvider(fragmentid) {
 
     
     /**
-     * This function creates the properties for the ScriptTask
+     * This function creates the properties for the ResourceTask
      */
     function createResourceTaskProperties(group, element, elementRegistry) {
         if (is(element, "resource:ResourceTask")) {
@@ -203,12 +214,10 @@ function generateProvider(fragmentid) {
                 description: 'The resource manager to be used for optimization.',
                 label: 'Resource-Manager-Host:',
                 modelProperty: 'host',
-                selectOptions:[
-                    { "name": "Resource Manager (Local)", "value": "50" },
-                  ],
+                selectOptions: resourceManagerHosts,
             });
             group.entries.push(stateEntry);
-            stateEntry = entryFactory.textField({
+            stateEntry = entryFactory.selectBox({
                 id: 'Method',
                 description: 'Choose the appropriate optimization-problem.<br><br>' +
                     '<b>Required Input (I):</b><br>' +
@@ -217,7 +226,8 @@ function generateProvider(fragmentid) {
                     '<b>Expected Return (R):</b><br>' +
                     '&emsp;Parcel<br><br><br>',
                 label: 'Optimization Method:',
-                modelProperty: 'method'
+                modelProperty: 'method',
+                selectOptions: resourceOptimizationMethods,
             });
             group.entries.push(stateEntry);
         }
