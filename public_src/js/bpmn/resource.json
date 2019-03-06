@@ -25,16 +25,6 @@
             "name": "method", 
             "isAttr": true, 
             "type": "String" 
-          },
-          {
-              "name": "return",
-              "isAttr": true,
-              "type": "String"
-          },
-          {
-              "name": "constraint",
-              "isAttr": true,
-              "type": "String"
           }
         ] 
       } 
