@@ -200,7 +200,7 @@ function generateProvider(fragmentid) {
         if (is(element, "resource:ResourceTask")) {
             var stateEntry = entryFactory.selectBox({
                 id: 'host',
-                description: '',
+                description: 'The resource manager to be used for optimization.',
                 label: 'Resource-Manager-Host:',
                 modelProperty: 'host',
                 selectOptions:[
@@ -210,23 +210,14 @@ function generateProvider(fragmentid) {
             group.entries.push(stateEntry);
             stateEntry = entryFactory.textField({
                 id: 'Method',
-                description: '',
+                description: 'Choose the appropriate optimization-problem.<br><br>' +
+                    '<b>Required Input (I):</b><br>' +
+                    '&emsp;Parcel<br>' + 
+                    '&emsp;Recipient Data<br><br>' + 
+                    '<b>Expected Return (R):</b><br>' +
+                    '&emsp;Parcel<br><br><br>',
                 label: 'Optimization Method:',
                 modelProperty: 'method'
-            });
-            group.entries.push(stateEntry);
-            stateEntry = entryFactory.textField({
-                id: 'Return',
-                description: '',
-                label: 'Expected Return:',
-                modelProperty: 'return'
-            });
-            group.entries.push(stateEntry);
-            stateEntry = entryFactory.textField({
-                id: 'Constraint',
-                description: '',
-                label: 'Constraints:',
-                modelProperty: 'constraint'
             });
             group.entries.push(stateEntry);
         }
