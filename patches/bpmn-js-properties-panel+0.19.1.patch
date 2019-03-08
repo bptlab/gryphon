@@ -1,0 +1,12 @@
+patch-package
+--- a/node_modules/bpmn-js-properties-panel/lib/factory/SelectEntryFactory.js
++++ b/node_modules/bpmn-js-properties-panel/lib/factory/SelectEntryFactory.js
+@@ -67,7 +67,7 @@ var selectbox = function(options, defaultParameters) {
+   resource.html += '</select>';
+ 
+   // add description below select box entry field
+-  if (description && !typeof options.showCustomInput === 'function') {
++  if (description && !(typeof options.showCustomInput === 'function')) {
+     resource.html += entryFieldDescription(description);
+   }
+ 
