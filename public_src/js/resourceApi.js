@@ -21,7 +21,7 @@ ResourceAPI.prototype.getAvailableOptimizationProblems = function(callback) {
 }
 
 ResourceAPI.prototype.getAvailableOptimizationMethodsForProblem = function(problemId, callback) {
-    $.getJSON(this.createProblemURL(problemId), callback);
+    $.getJSON(this.createProblemURL(problemId + "/methods"), callback);
 }
 
 module.exports = new ResourceAPI(Config.RESOURCE_MANAGER_HOST);
