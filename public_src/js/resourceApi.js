@@ -8,16 +8,20 @@ ResourceAPI.prototype.createResourceURL = function(endpoint) {
     return this.host.concat("resources/" + endpoint);
 };
 
-ResourceAPI.prototype.createMethodURL = function(endpoint) {
-    return this.host.concat("methods/" + endpoint);
+ResourceAPI.prototype.createProblemURL = function(endpoint) {
+    return this.host.concat("problems/" + endpoint);
 };
 
 ResourceAPI.prototype.getAvailableResourceTypes = function(callback) {
     $.getJSON(this.createResourceURL(""), callback);
 }
 
-ResourceAPI.prototype.getAvailableOptimizationMethods = function(callback) {
-    $.getJSON(this.createMethodURL(""), callback);
+ResourceAPI.prototype.getAvailableOptimizationProblems = function(callback) {
+    $.getJSON(this.createProblemURL(""), callback);
+}
+
+ResourceAPI.prototype.getAvailableOptimizationMethodsForProblem = function(problemId, callback) {
+    $.getJSON(this.createProblemURL(problemId), callback);
 }
 
 module.exports = new ResourceAPI(Config.RESOURCE_MANAGER_HOST);

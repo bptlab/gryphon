@@ -31,14 +31,22 @@ var Config = require('./../../../config');
 function generateProvider(fragmentid) {
     var dm = null;
     var resourceManagerHosts = [{"name": Config.RESOURCE_MANAGER_HOST, "value": Config.RESOURCE_MANAGER_HOST}];
+    var resourceOptimizationProblems = [];
     var resourceOptimizationMethods = [];
     API.loadAssociatedDomainModel(fragmentid,function(dm2){
         dm = dm2;
     });
-    ResourceAPI.getAvailableResourceTypes(function (data) {
-        for (var i = 0; i < data["resources"].length; i++) {
-            method = data["resources"][i];
-            resourceOptimizationMethods.push({"name": method["name"], "value": method["id"]});
+    ResourceAPI.getAvailableOptimizationProblems(function (data) {
+        for (var i = 0; i < data["problems"].length; i++) {
+            problem = data["problems"][i];
+            resourceOptimizationProblems.push({"name": problem["name"], "value": problem["id"]});
+
+            ResourceAPI.getAvailableOptimizationMethodsForProblem(problem["id"], function (data) {
+                for (var i = 0; i < data["methods"].length; i++) {
+                    method = data["methods"][i];
+                    resourceOptimizationMethods.push({"name": method["name"], "value": method["id"]});
+                }    
+            });
         }
     });
     /**
@@ -218,8 +226,16 @@ function generateProvider(fragmentid) {
             });
             group.entries.push(stateEntry);
             stateEntry = entryFactory.selectBox({
+                id: 'Problem',
+                description: 'Choose the appropriate optimization-problem.',
+                label: 'Problem Definition:',
+                modelProperty: 'problem',
+                selectOptions: resourceOptimizationProblems
+            });
+            group.entries.push(stateEntry);
+            stateEntry = entryFactory.selectBox({
                 id: 'Method',
-                description: 'Choose the appropriate optimization-problem.<br><br>' +
+                description: 'Choose the appropriate optimization-method.<br><br>' +
                     '<b>Required Input (I):</b><br>' +
                     '&emsp;Parcel<br>' + 
                     '&emsp;Recipient Data<br><br>' + 
@@ -227,7 +243,7 @@ function generateProvider(fragmentid) {
                     '&emsp;Parcel<br><br><br>',
                 label: 'Optimization Method:',
                 modelProperty: 'method',
-                selectOptions: resourceOptimizationMethods,
+                selectOptions: resourceOptimizationMethods
             });
             group.entries.push(stateEntry);
         }
