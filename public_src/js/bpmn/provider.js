@@ -37,18 +37,19 @@ function generateProvider(fragmentid) {
         dm = dm2;
     });
     ResourceAPI.getAvailableOptimizationProblems(function (data) {
-        for (var i = 0; i < data["problems"].length; i++) {
-            problem = data["problems"][i];
+        for (var i = 0; i < data.length; i++) {
+            problem = data[i];
             resourceOptimizationProblems.push({"name": problem["name"], "value": problem["id"]});
 
             ResourceAPI.getAvailableOptimizationMethodsForProblem(problem["id"], function (data) {
-                for (var i = 0; i < data["methods"].length; i++) {
-                    method = data["methods"][i];
+                for (var i = 0; i < data.length; i++) {
+                    method = data[i];
                     resourceOptimizationMethods.push({"name": method["name"], "value": method["id"]});
                 }    
             });
         }
     });
+
     /**
      * This function generates the 3 propertys dataclass and state for dataobjects.
      * It is more complicated then the other ones because every choice causes some things to happen.
