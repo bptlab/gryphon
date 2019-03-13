@@ -9,8 +9,8 @@ var ComplianceCheckerComponent = React.createClass({
     getInitialState: function () {
         return {
             exports: [],
+            selectedExportId: '',
             selectedExportName: '',
-            selectedExportUrl: '',
             complianceQuery: '',
             complianceResult: '',
             deployedScenarioId: 'n/a',
@@ -33,10 +33,10 @@ var ComplianceCheckerComponent = React.createClass({
         API.getAvailableExports(function (data) {
             this.setState({
                 exports: data,
+                selectedExportId: data[0]._id,
                 selectedExportName: data[0].name,
-                selectedExportUrl: data[0].url
             });
-            console.log("default chimera: ", data[0].name, data[0].url);
+            console.log("default chimera: ", data[0]._id, data[0].name);
         }.bind(this))
     },
     handleSelectedExportChanged: function (index, value) {
@@ -44,43 +44,53 @@ var ComplianceCheckerComponent = React.createClass({
         console.log(this.state.exports, chimeraInstance);
 
         this.setState({
+            selectedExportId: chimeraInstance._id,
             selectedExportName: chimeraInstance.name,
-            selectedExportUrl: chimeraInstance.url
         }, this.fetchDeployedCaseModels);
     },
     fetchDeployedCaseModels: function () {
-        var chimeraUrl = this.state.selectedExportUrl;
-        if (!chimeraUrl) {
+
+        if(!this.state.selectedExportId) {
+            console.log("No Chimera instance selected");
             return;
         }
 
-        queryUrl = chimeraUrl + "/scenario/?filter=" + this.props.scenario.name;
-        console.log("queryUrl: ", queryUrl);
+        if(!this.props.scenario._id) {
+            console.log("No scenario id");
+            return;
+        }
 
-        $.getJSON(queryUrl, function (data) {
-            console.log("response data: ", data);
-            if (data.length == 0) {
-                this.setState({
-                    deployedScenarioId: "",
-                    deployedScenarioName: "not found"
-                });
-            } else if (data.length == 1) {
-                this.setState({
-                    deployedScenarioId: data[0].id,
-                    deployedScenarioName: data[0].name
-                }, this.fetchCaseInstances);
-            } else {
-                this.setState({
-                    deployedScenarioId: "",
-                    deployedScenarioName: "multiple matches"
-                });
-            }
-        }.bind(this));
+        API.getDeployedCaseModels(
+            this.props.scenario._id,
+            this.state.selectedExportId,
+            function(data) {
+                console.log("response data: ", data);
+                if (data.length == 0) {
+                    this.setState({
+                        deployedScenarioId: "",
+                        deployedScenarioName: "not found"
+                    });
+                } else if (data.length == 1) {
+                    this.setState({
+                        deployedScenarioId: data[0].id,
+                        deployedScenarioName: data[0].name
+                    }, this.fetchCaseInstances);
+                } else {
+                    this.setState({
+                        deployedScenarioId: "",
+                        deployedScenarioName: "multiple matches"
+                    });
+                }
+            }.bind(this));
+
+        if (!this.state.selectedExportId) {
+            return;
+        }
     },
     fetchCaseInstances: function () {
-        var chimeraUrl = this.state.selectedExportUrl;
-        if (!chimeraUrl) {
-            console.log("Chimera URL not valid");
+
+        if(!this.props.scenario._id) {
+            console.log("No scenario ID");
             return;
         }
 
@@ -89,20 +99,26 @@ var ComplianceCheckerComponent = React.createClass({
             return;
         }
 
-        queryUrl = chimeraUrl + "/scenario/" + this.state.deployedScenarioId + "/instance";
-        console.log("queryUrl: ", queryUrl);
+        if (!this.state.selectedExportId) {
+            console.log("No Chimera instances selected");
+            return;
+        }
 
-        $.getJSON(queryUrl, function (data) {
-            console.log("response data: ", data);
-            selectedCaseInstanceId = '';
-            if (data[0].id) {
-                selectedCaseInstanceId = data[0].id;
-            }
-            this.setState({
-                caseInstances: data,
-                selectedCaseInstanceId: selectedCaseInstanceId
-            });
-        }.bind(this));
+        API.getDeployedCaseModelInstances(
+            this.props.scenario._id,
+            this.state.selectedExportId,
+            this.state.deployedScenarioId,
+            function (data) {
+                console.log("response data: ", data);
+                selectedCaseInstanceId = '';
+                if (data[0].id) {
+                    selectedCaseInstanceId = data[0].id;
+                }
+                this.setState({
+                    caseInstances: data,
+                    selectedCaseInstanceId: selectedCaseInstanceId
+                });
+            }.bind(this));
     },
     handleSelectedCaseInstanceChanged: function (index, value) {
 
@@ -117,8 +133,12 @@ var ComplianceCheckerComponent = React.createClass({
             return;
         }
 
-        var chimeraUrl = this.state.selectedExportUrl;
-        if (!chimeraUrl) {
+        if(!this.props.scenario._id) {
+            console.log("No scenario ID");
+            return;
+        }
+
+        if (!this.state.selectedExportId) {
             console.log("no chimera url");
             return;
         }
@@ -133,23 +153,16 @@ var ComplianceCheckerComponent = React.createClass({
             return;
         }
 
-        // API.checkCompliance(this.props.scenario, this.state.deployedScenarioId, this.state.selectedCaseInstanceId, query, function(data) {
-        //     console.log("response data: ", data);
-        //     this.setState({ complianceResult: data });
-        // }.bind(this));
-
-        queryUrl = chimeraUrl + "/scenario/" + this.state.deployedScenarioId + "/instance/" + this.state.selectedCaseInstanceId + "/compliance/" + query;
-        console.log("queryUrl: ", queryUrl);
-
-        $.ajax({
-            url: queryUrl,
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(this.props.scenario)
-        }).done(function(data) {
-            console.log("response data: ", data);
-            this.setState({ complianceResult: data });
-        }.bind(this));
+        API.checkCompliance(
+            this.props.scenario._id,
+            this.state.selectedExportId,
+            this.state.deployedScenarioId,
+            this.state.selectedCaseInstanceId,
+            query,
+            function(data) {
+                console.log("response data: ", data);
+                this.setState({ complianceResult: data });
+        }.bind(this))
     },
     render: function () {
         var chimeraInstances = [].concat(this.state.exports.map(function (chimeraInstance) {

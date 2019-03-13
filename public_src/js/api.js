@@ -190,4 +190,29 @@ API.prototype.deleteExport = function(id, callback) {
     });
 };
 
+API.prototype.getDeployedCaseModels = function(id, exportId, callback) {
+    $.get(this.createURL("scenario/" + id + "/export/" + exportId + "/deployed"), callback);
+}
+
+API.prototype.getDeployedCaseModelInstances = function(id, exportId, deployedScenarioId, callback) {
+    $.get(this.createURL("scenario/" + id + "/export/" + exportId + "/deployed/" + deployedScenarioId), callback);
+}
+
+API.prototype.checkCompliance = function(id, exportId, deployedScenarioId, selectedCaseInstanceId, complianceQuery, callback) {
+
+    var payload = {
+        exportId: exportId,
+        deployedScenarioId: deployedScenarioId,
+        selectedCaseInstanceId: selectedCaseInstanceId,
+        complianceQuery: complianceQuery
+    };
+
+    $.ajax({
+        url: this.createURL("scenario/" + id + "/compliance"),
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(payload)
+    }).done(callback);
+}
+
 module.exports = new API(Config.API_HOST);
