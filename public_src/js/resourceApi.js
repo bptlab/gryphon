@@ -12,6 +12,10 @@ ResourceAPI.prototype.createProblemURL = function(endpoint) {
     return this.host.concat("problems/" + endpoint);
 };
 
+ResourceAPI.prototype.getServerInformation = function(callback) {
+    $.getJSON(this.host.concat("server"), callback);
+}
+
 ResourceAPI.prototype.getAvailableResourceTypes = function(callback) {
     $.getJSON(this.createResourceURL(""), callback);
 }

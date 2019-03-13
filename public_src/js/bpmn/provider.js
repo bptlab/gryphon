@@ -30,12 +30,15 @@ var Config = require('./../../../config');
  */
 function generateProvider(fragmentid) {
     var dm = null;
-    var resourceManagerHosts = [{"name": Config.RESOURCE_MANAGER_HOST, "value": Config.RESOURCE_MANAGER_HOST}];
+    var resourceManagerHosts = [];
     var resourceOptimizationProblems = [];
     var resourceOptimizationMethods = [];
     API.loadAssociatedDomainModel(fragmentid,function(dm2){
         dm = dm2;
     });
+    ResourceAPI.getServerInformation(function (data) {
+        resourceManagerHosts.push({"name": data["name"], "value": Config.RESOURCE_MANAGER_HOST});
+    })
     ResourceAPI.getAvailableOptimizationProblems(function (data) {
         for (var i = 0; i < data.length; i++) {
             problem = data[i];
