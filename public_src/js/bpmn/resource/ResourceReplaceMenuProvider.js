@@ -22,7 +22,7 @@ function CustomReplaceMenuProvider(injector, connect, translate) {
         actionName: 'replace-with-resource-task',
         className: 'bpmn-icon-send',
         target: {
-          type: 'bpmn:ResourceTask'
+          type: 'resource:ResourceTask'
         }
       }, element));
     }

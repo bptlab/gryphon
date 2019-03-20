@@ -28,13 +28,7 @@ ResourceRenderer.$inject = [ 'eventBus', 'styles' ];
  
  
 ResourceRenderer.prototype.canRender = function(element) { 
-  if (!is(element, 'resource:ResourceTask')) { 
-    return; 
-  } 
- 
-  var businessObject = getBusinessObject(element); 
- 
-  return businessObject.resource; 
+  return /^resource:/.test(element.type);
 }; 
  
 ResourceRenderer.prototype.drawShape = function(parentNode, element) { 
