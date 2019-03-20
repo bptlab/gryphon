@@ -31,6 +31,7 @@
     "kerberos": "^1.1.2",
     "lodash": "^4.17.11",
     "mongoose": "^5.4.16",
+    "min-dash": "^3.4.0",
     "morgan": "^1.9.1",
     "node-rest-client": "^3.1.0",
     "react": "^0.14.8",
