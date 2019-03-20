@@ -9,6 +9,7 @@ var ModdleDescriptor = require('./bpmnextension');
 var resourceDescriptor = require('./resource.json')
 
 var ResourceRenderer = require('./resource/ResourceRenderer');
+var ResourceReplaceMenuProvider = require('./resource/ResourceReplaceMenuProvider');
 
 var Editor = function(canvas, propertypanel) {
     this.canvas = canvas;
@@ -42,6 +43,11 @@ Editor.prototype.importFragment = function(fragment, callback) {
             parent: this.propertypanel
         },
         additionalModules: [
+            {
+                __init__: ['resourceRenderer', 'replaceMenuProvider'],
+                resourceRenderer: [ 'type', ResourceRenderer ],
+                replaceMenuProvider: ['type', ResourceReplaceMenuProvider]
+            },
             BPMNPropertyPanel,
             generateProvider(fragment._id)            
         ],
