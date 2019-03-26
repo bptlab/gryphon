@@ -148,7 +148,7 @@ function generateProvider(fragmentid) {
         ];
         var bo = getBusinessObject(element);
         forEach(types, function(type) {
-            if (is(element, type) && 'eventDefinitions' in bo && (is(bo.eventDefinitions[0],'bpmn:MessageEventDefinition') || is (bo.eventDefinitions[0], 'bpmn:SignalEventDefinition'))) {
+            if (is(element, type) && 'eventDefinitions' in bo && (is(bo.eventDefinitions[0],'bpmn:MessageEventDefinition') || is(bo.eventDefinitions[0], 'bpmn:SignalEventDefinition'))) {
                 var stateEntry = entryFactory.textField({
                     id: 'EventQuery',
                     description: '',
