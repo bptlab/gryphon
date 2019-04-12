@@ -46,9 +46,8 @@ ResourceRenderer.prototype.drawShape = function(parentNode, element) {
     y: 25
   });
 
-  svgClasses(text).add('djs-label');
 
-  svgAppend(text, document.createTextNode(resource));
+  svgAppend(text, document.createTextNode("Resource"));
 
   svgAppend(parentNode, text);
 
