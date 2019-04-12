@@ -520,4 +520,170 @@ router.delete('/:scenID', function(req, res) {
     });
 });
 
+/**
+ * Check compliance
+ */
+router.post('/:scenID/compliance', function(req, res) {
+    var scenID = req.params.scenID;
+    var target = req.body.exportId;
+    var deployedScenarioId = req.body.deployedScenarioId;
+    var selectedCaseInstanceId = req.body.selectedCaseInstanceId;
+    var complianceQuery = req.body.complianceQuery;
+
+    var query = Scenario.findOne({_id:scenID}).populate('domainmodel').populate('fragments');
+
+    query.exec(function(err, result){
+        if (err) {
+            console.error(err);
+            res.status(500).end();
+            return;
+        }
+        if (result !== null) {
+            Export.findOne({_id:target},function(err, result2){
+                if (err) {
+                    console.error(err);
+                    res.status(500).end();
+                    return;
+                }
+                if (result2 !== null) {
+                    var client = new RestClient();
+                    result = result.toObject();
+                    result.domainmodel.dataclasses = result.domainmodel.dataclasses.map(function(dclass){
+                        if (dclass.olc != undefined) {
+                            // the xml for the olc will be kept in olc.content
+                            var xml = dclass.olc;
+                            dclass.olc = parseToOLC(xml);
+                            dclass.olc.content = xml;
+                        }
+                        return dclass;
+                    });
+                    var args = {
+                        data: result,
+                        headers: {"Content-Type": "application/json"}
+                    };
+
+                    var url = result2.url + "/scenario/" + deployedScenarioId + "/instance/" + selectedCaseInstanceId + "/compliance/" + complianceQuery;
+
+                    client.post(url, args, function(data, response){
+                        console.log(data);
+                        res.status(response.statusCode).json(data);
+                    }).on('error',function(){
+                        res.status(200);
+                        res.json([{
+                            'type': 'danger',
+                            'text': 'Export not succesfull, Error occured.'
+                        }]);
+                    });
+                } else {
+                    console.error("Cannot find export target with ID " + target);
+                    res.status(404).end();
+                }
+            });
+        } else {
+            console.error("Cannot find scenario with ID " + scenID)
+            res.status(404).end();
+        }
+    });
+
+});
+
+/**
+ * Get deployed case models
+ */
+router.get('/:scenID/export/:exportID/deployed', function(req, res) {
+    var scenID = req.params.scenID;
+    var target = req.params.exportID;
+
+    var query = Scenario.findOne({_id:scenID});
+
+    query.exec(function(err, result){
+        if (err) {
+            console.error(err);
+            res.status(500).end();
+            return;
+        }
+        if (result !== null) {
+            Export.findOne({_id:target},function(err, result2){
+                if (err) {
+                    console.error(err);
+                    res.status(500).end();
+                    return;
+                }
+                if (result2 !== null) {
+                    var client = new RestClient();
+                    result = result.toObject();
+
+                    var scenarioName = result.name;
+                    var url = result2.url + "/scenario/?filter=" + scenarioName;
+
+                    client.get(url, function(data){
+                        console.log(data);
+                        res.json(data);
+                    }).on('error',function(){
+                        res.status(200);
+                        res.json([{
+                            'type': 'danger',
+                            'text': 'Could not fetch list of deployed case models.'
+                        }]);
+                    });
+                } else {
+                    res.status(404).end();
+                }
+            });
+        } else {
+            res.status(404).end();
+        }
+    });
+});
+
+/**
+ * Get case instances
+ */
+router.get('/:scenID/export/:exportID/deployed/:deployedID', function(req, res) {
+    var scenID = req.params.scenID;
+    var target = req.params.exportID;
+    var deployedScenarioId = req.params.deployedID;
+
+    var query = Scenario.findOne({_id:scenID});
+
+    query.exec(function(err, result){
+        if (err) {
+            console.error(err);
+            res.status(500).end();
+            return;
+        }
+        if (result !== null) {
+            Export.findOne({_id:target},function(err, result2){
+                if (err) {
+                    console.error(err);
+                    res.status(500).end();
+                    return;
+                }
+                if (result2 !== null) {
+                    var client = new RestClient();
+                    result = result.toObject();
+
+                    var scenarioName = result.name;
+                    var url = result2.url + "/scenario/" + deployedScenarioId + "/instance";
+
+                    client.get(url, function(data){
+                        console.log(data);
+                        res.json(data);
+                    }).on('error',function(){
+                        res.status(200);
+                        res.json([{
+                            'type': 'danger',
+                            'text': 'Could not fetch list of deployed case models.'
+                        }]);
+                    });
+                } else {
+                    res.status(404).end();
+                }
+            });
+        } else {
+            res.status(404).end();
+        }
+    });
+});
+
 module.exports = router;
