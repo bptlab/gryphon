@@ -37,6 +37,13 @@ var FragmentEditorComponent = React.createClass({
           handleBoundChange={this.handleBoundChange}
         />
         <hr />
+          <button
+            type="button"
+            className="btn btn-success"
+            onClick={this.downloadSVG}>
+              <i className={"fa fa-download"} /> Download fragment as SVG
+          </button>
+        <hr />
         <div className="fragmentEditor">
           <div className="canvas" id="fragment-canvas" />
           <div className="properties-panel" id="fragment-properties" />
@@ -113,6 +120,9 @@ var FragmentEditorComponent = React.createClass({
         API.exportFragment(data, res_handler);
       });
     }
+  },
+  downloadSVG: function() {
+    this.state.editor.downloadSVG(this.state.fragment.name + ".svg");
   },
   handlePreConditionChange: function(preconditions) {
     var fragment = this.state.fragment;
