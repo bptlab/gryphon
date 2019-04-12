@@ -75,6 +75,9 @@ Editor.prototype.handleChange = function(event, object) {
 };
 
 Editor.prototype.downloadSVG = function(filename) {
+
+    // Replace non-alphanumeric characters (except for '-' and '.') with '-'
+    filename = filename.replace(/[^a-zA-Z0-9\-.]+/g, '-');
     
     this.renderer.saveSVG({}, function(err, svgStr) {
 
