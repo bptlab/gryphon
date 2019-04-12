@@ -8,7 +8,7 @@
     "types": [ 
       { 
         "name": "ResourceTask", 
-        "extends": [ "bpmn:Task" ], 
+        "superClass": [ "bpmn:Task" ],
         "properties": [ 
           { 
             "name": "host", 
