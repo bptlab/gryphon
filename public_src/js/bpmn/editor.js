@@ -74,4 +74,22 @@ Editor.prototype.handleChange = function(event, object) {
     }
 };
 
+Editor.prototype.downloadSVG = function(filename) {
+    
+    this.renderer.saveSVG({}, function(err, svgStr) {
+
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgStr));
+        element.setAttribute('download', filename);
+      
+        element.style.display = 'none';
+        document.body.appendChild(element);
+      
+        element.click();
+      
+        document.body.removeChild(element);
+
+    });
+}
+
 module.exports = Editor;
