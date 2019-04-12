@@ -10,6 +10,7 @@ var resourceDescriptor = require('./resource.json')
 
 var ResourceRenderer = require('./resource/ResourceRenderer');
 var ResourceReplaceMenuProvider = require('./resource/ResourceReplaceMenuProvider');
+var ResourceElementFactory = require('./resource/ResourceElementFactory');
 
 var Editor = function(canvas, propertypanel) {
     this.canvas = canvas;
@@ -44,9 +45,10 @@ Editor.prototype.importFragment = function(fragment, callback) {
         },
         additionalModules: [
             {
-                __init__: ['resourceRenderer', 'replaceMenuProvider'],
+                __init__: ['resourceRenderer', 'replaceMenuProvider', 'elementFactory'],
                 resourceRenderer: [ 'type', ResourceRenderer ],
-                replaceMenuProvider: ['type', ResourceReplaceMenuProvider]
+                replaceMenuProvider: ['type', ResourceReplaceMenuProvider],
+                elementFactory: ['type', ResourceElementFactory]
             },
             BPMNPropertyPanel,
             generateProvider(fragment._id)            
