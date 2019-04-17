@@ -562,7 +562,11 @@ router.post('/:scenID/compliance', function(req, res) {
                         headers: {"Content-Type": "application/json"}
                     };
 
-                    var url = result2.url + "/scenario/" + deployedScenarioId + "/instance/" + selectedCaseInstanceId + "/compliance/" + complianceQuery;
+                    var url = result2.url + "/scenario/" + deployedScenarioId;
+                    if (selectedCaseInstanceId) {
+                        url += "/instance/" + selectedCaseInstanceId;
+                    }
+                    url += "/compliance/" + complianceQuery;
 
                     client.post(url, args, function(data, response){
                         console.log(data);

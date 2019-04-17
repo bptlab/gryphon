@@ -122,7 +122,12 @@ var ComplianceCheckerComponent = React.createClass({
     },
     handleSelectedCaseInstanceChanged: function (index, value) {
 
-        selectedCaseInstanceId = caseInstances[index];
+        if (value == "(any)") {
+            this.setState({ selectedCaseInstanceId : null });
+            return;
+        }
+
+        selectedCaseInstanceId = this.state.caseInstances[index];
         console.log(index, value, selectedCaseInstanceId);
 
         this.setState({ selectedCaseInstanceId: selectedCaseInstanceId });
@@ -147,12 +152,7 @@ var ComplianceCheckerComponent = React.createClass({
             console.log("scenario not deployed");
             return;
         }
-
-        if (!this.state.selectedCaseInstanceId) {
-            console.log("no case instance selected");
-            return;
-        }
-
+        
         API.checkCompliance(
             this.props.scenario._id,
             this.state.selectedExportId,
@@ -172,6 +172,7 @@ var ComplianceCheckerComponent = React.createClass({
         var caseInstanceList = [].concat(this.state.caseInstances.map(function (caseInstance) {
             return caseInstance.name;
         }));
+        caseInstanceList.push("(any)");
 
         var selectedCaseInstanceName = this.state.caseInstances.find(function (caseInstance) {
             return caseInstance.id == this.state.selectedCaseInstanceId;
