@@ -9,7 +9,6 @@ var ModdleDescriptor = require('./bpmnextension');
 var resourceDescriptor = require('./resource.json')
 
 var ResourceRenderer = require('./resource/ResourceRenderer');
-var ResourceReplaceMenuProvider = require('./resource/ResourceReplaceMenuProvider');
 var ResourceElementFactory = require('./resource/ResourceElementFactory');
 var ResourceContextPad = require('./resource/ResourceContextPad');
 
@@ -46,10 +45,9 @@ Editor.prototype.importFragment = function(fragment, callback) {
         },
         additionalModules: [
             {
-                __init__: ['resourceRenderer', 'replaceMenuProvider', 'resourceContextPad', 'elementFactory'],
+                __init__: ['resourceRenderer', 'resourceContextPad', 'elementFactory'],
                 resourceRenderer: [ 'type', ResourceRenderer ],
                 resourceContextPad: [ 'type', ResourceContextPad ],
-                replaceMenuProvider: ['type', ResourceReplaceMenuProvider],
                 elementFactory: ['type', ResourceElementFactory]
             },
             BPMNPropertyPanel,
