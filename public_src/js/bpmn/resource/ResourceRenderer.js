@@ -1,81 +1,69 @@
-var inherits = require('inherits'); 
+var inherits = require('inherits');
 
-var BaseRenderer = require('diagram-js/lib/draw/BaseRenderer'); 
+var BaseRenderer = require('diagram-js/lib/draw/BaseRenderer');
 
-var { 
-  append: svgAppend, 
-  attr: svgAttr, 
-  classes: svgClasses, 
-  create: svgCreate 
-} = require('tiny-svg'); 
+var {
+  append: svgAppend,
+  attr: svgAttr,
+  classes: svgClasses,
+  create: svgCreate
+} = require('tiny-svg');
 
 var {
   getRoundRectPath
 } = require('bpmn-js/lib/draw/BpmnRenderer');
 
-var TASK_BORDER_RADIUS = 10; 
+var {
+  is,
+  getBusinessObject
+} = require('bpmn-js/lib/util/ModelUtil');
 
+var { isNil } = require('min-dash');
 
-function ResourceRenderer(eventBus) { 
-  BaseRenderer.call(this, eventBus, 2000); 
-} 
+const TASK_BORDER_RADIUS = 2;
+
 
 inherits(ResourceRenderer, BaseRenderer); 
 
-ResourceRenderer.$inject = [ 'eventBus', 'styles' ]; 
+function ResourceRenderer(eventBus, bpmnRenderer) {
+    BaseRenderer.call(this, eventBus, 2000); 
 
-ResourceRenderer.prototype.canRender = function(element) { 
-  return /^resource:/.test(element.type);
-}; 
+    this.bpmnRenderer = bpmnRenderer;
+  }
 
-ResourceRenderer.prototype.drawShape = function(parentNode, element) {
-  var businessObject = element.businessObject,
-      resource = businessObject.resource;
+  ResourceRenderer.prototype.canRender = function(element) {
+    return /^resource:/.test(element.type);
+  }
 
-  var width = element.width,
-      height = element.height;
+  ResourceRenderer.prototype.drawShape = function(parentNode, element) {
+    element["type"] = "bpmn:Task";
+    const shape = this.bpmnRenderer.drawShape(parentNode, element);
 
-  var rect = drawRect(parentNode, width, height, TASK_BORDER_RADIUS);
+    svgAppend(parentNode, shape);
+    var text = svgCreate('text');
 
-  svgAppend(parentNode, rect);
+    svgAttr(text, {
+      x: 10,
+      y: 25
+    });
+  
+  
+    svgAppend(text, document.createTextNode("Resource"));
+  
+    svgAppend(parentNode, text);
 
-  var text = svgCreate('text');
+    return shape;
+  }
 
-  svgAttr(text, {
-    x: 10,
-    y: 25
-  });
+  ResourceRenderer.prototype.getShapePath = function(shape) {
+    if (is(shape, 'bpmn:Task')) {
+      return getRoundRectPath(shape, TASK_BORDER_RADIUS);
+    }
+
+    return this.bpmnRenderer.getShapePath(shape);
+  }
 
 
-  svgAppend(text, document.createTextNode("Resource"));
-
-  svgAppend(parentNode, text);
-
-  return rect;
-};
-
-ResourceRenderer.prototype.getShapePath = function(shape) {
-  return getRoundRectPath(shape, TASK_BORDER_RADIUS);
-};
-
-function drawRect(parentNode, width, height, borderRadius) {
-  var rect = svgCreate('rect');
-
-  svgAttr(rect, {
-    x: 0,
-    y: 0,
-    width: width,
-    height: height,
-    rx: borderRadius,
-    ry: borderRadius,
-    stroke: 'black',
-    strokeWidth: 2,
-    fill: '#FFFFFF'
-  });
-
-  svgAppend(parentNode, rect);
-
-  return rect;
-}
+ResourceRenderer.$inject = [ 'eventBus', 'bpmnRenderer' ];
 
 module.exports = ResourceRenderer;
