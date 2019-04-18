@@ -11,6 +11,7 @@ var resourceDescriptor = require('./resource.json')
 var ResourceRenderer = require('./resource/ResourceRenderer');
 var ResourceReplaceMenuProvider = require('./resource/ResourceReplaceMenuProvider');
 var ResourceElementFactory = require('./resource/ResourceElementFactory');
+var ResourceContextPad = require('./resource/ResourceContextPad');
 
 var Editor = function(canvas, propertypanel) {
     this.canvas = canvas;
@@ -45,8 +46,9 @@ Editor.prototype.importFragment = function(fragment, callback) {
         },
         additionalModules: [
             {
-                __init__: ['resourceRenderer', 'replaceMenuProvider', 'elementFactory'],
+                __init__: ['resourceRenderer', 'replaceMenuProvider', 'resourceContextPad', 'elementFactory'],
                 resourceRenderer: [ 'type', ResourceRenderer ],
+                resourceContextPad: [ 'type', ResourceContextPad ],
                 replaceMenuProvider: ['type', ResourceReplaceMenuProvider],
                 elementFactory: ['type', ResourceElementFactory]
             },
