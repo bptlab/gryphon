@@ -137,7 +137,7 @@ function generateProvider(fragmentid) {
     }
 
     /**
-     * This function creates the custom event-query-editor for message-events and tasks
+     * This function creates the custom event-query-editor for message/signal-events and tasks
      */
     function createMessageEventProperties(group, element, elementRegistry) {
         var types = [
@@ -148,7 +148,7 @@ function generateProvider(fragmentid) {
         ];
         var bo = getBusinessObject(element);
         forEach(types, function(type) {
-            if (is(element, type) && 'eventDefinitions' in bo && is(bo.eventDefinitions[0],'bpmn:MessageEventDefinition')) {
+            if (is(element, type) && 'eventDefinitions' in bo && (is(bo.eventDefinitions[0],'bpmn:MessageEventDefinition') || is(bo.eventDefinitions[0], 'bpmn:SignalEventDefinition'))) {
                 var stateEntry = entryFactory.textField({
                     id: 'EventQuery',
                     description: '',
