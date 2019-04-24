@@ -17,8 +17,6 @@ function CustomElementFactory(bpmnFactory, moddle) {
   BpmnElementFactory.call(this, bpmnFactory, moddle);
 
   var self = this;
-  console.log(bpmnFactory);
-  console.log(moddle);
   /**
    * Create a diagram-js element with the given type (any of shape, connection, label).
    *
@@ -40,19 +38,13 @@ function CustomElementFactory(bpmnFactory, moddle) {
           type: type
         };
         if (attrs.id) {
-
           assign(attrs.businessObject, {
             id: attrs.id
           });
         }
       }
 
-
-      // add width and height if shape
-      if (!/:connection$/.test(type)) {
-        assign(attrs, self._getCustomElementSize(type));
-      }
-
+      assign(attrs, self._getCustomElementSize(type));
 
       // we mimic the ModdleElement API to allow interoperability with
       // other components, i.e. the Modeler and Properties Panel
@@ -90,7 +82,7 @@ function CustomElementFactory(bpmnFactory, moddle) {
 
       // END minic ModdleElement API
 
-      return self.baseCreate(elementType, attrs);
+      return self.createBpmnElement(elementType, attrs);
     }
 
     return self.createBpmnElement(elementType, attrs);
@@ -104,22 +96,7 @@ CustomElementFactory.$inject = [
   'moddle'
 ];
 
-
 /**
- * Returns the default size of custom shapes.
- *
- * The following example shows an interface on how
- * to setup the custom shapes's dimensions.
- *
- * @example
- *
- * var shapes = {
- *   triangle: { width: 40, height: 40 },
- *   rectangle: { width: 100, height: 20 }
- * };
- *
- * return shapes[type];
- *
  *
  * @param {String} type
  *
