@@ -26,7 +26,7 @@ function ResourceContextPad (bpmnFactory, config, contextPad, create, elementFac
           const businessObject = bpmnFactory.create('resource:ResourceTask');
     
           const shape = elementFactory.createShape({
-            type: 'bpmn:Task',
+            type: 'resource:ResourceTask',
             businessObject: businessObject
           });
     
@@ -42,7 +42,7 @@ function ResourceContextPad (bpmnFactory, config, contextPad, create, elementFac
         const businessObject = bpmnFactory.create('resource:ResourceTask');
 
         const shape = elementFactory.createShape({
-          type: 'bpmn:Task',
+          type: 'resource:ResourceTask',
           businessObject: businessObject
         });
 
