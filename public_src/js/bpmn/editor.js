@@ -6,11 +6,11 @@ var $ = require('jquery'),
     generateProvider = require('./provider');
 
 var ModdleDescriptor = require('./bpmnextension');
-var resourceDescriptor = require('./resource.json')
+var resourceDescriptor = require('./resource/resource.json')
 
-var ResourceRenderer = require('./resource/ResourceRenderer');
-var ResourceElementFactory = require('./resource/ResourceElementFactory');
-var ResourceContextPad = require('./resource/ResourceContextPad');
+var ResourceRenderer = require('./resource/resourceRenderer');
+var ResourceElementFactory = require('./resource/resourceElementFactory');
+var ResourceContextPad = require('./resource/resourceContextPad');
 
 var Editor = function(canvas, propertypanel) {
     this.canvas = canvas;
