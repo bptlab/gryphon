@@ -51,7 +51,7 @@ Editor.prototype.importFragment = function(fragment, callback) {
                 elementFactory: ['type', ResourceElementFactory]
             },
             BPMNPropertyPanel,
-            generateProvider(fragment._id)            
+            generateProvider(fragment._id)
         ],
         moddleExtensions: {
             griffin: ModdleDescriptor,
