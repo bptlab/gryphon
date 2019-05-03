@@ -309,8 +309,9 @@ function generateProvider(fragmentid) {
      * ServiceTask, SendTask, or ReceiveTask
      */
     function createTaskProperties(group, element, elementRegistry) {
-        if (!is(element, "bpmn:Task") &&
+        if (is(element, "bpmn:Task") &&
 	    !is(element, "bpmn:ServiceTask") &&
+	    !is(element, "resource:ResourceTask") &&
 	    !is(element, "bpmn:SendTask") &&
         !is(element, "bpmn:EmptyTask") &&
    	    !is(element, "bpmn:ReceiveTask")) {
