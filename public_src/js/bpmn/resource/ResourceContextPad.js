@@ -53,7 +53,7 @@ function ResourceContextPad (bpmnFactory, config, contextPad, create, elementFac
     return {
       'append.resource-task': {
         group: 'model',
-        className: 'bpmn-icon-task red',
+        className: 'resource-icon-task',
         title: translate('Append Resource Task'),
         action: {
           click: appendResourceTask(),
