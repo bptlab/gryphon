@@ -144,7 +144,9 @@ var DataClassComponent = React.createClass({
                 <ul className="list-group">
                     {items}
                 </ul>
-                <DataClassFooterComponent handleAdd={this.handleAttrAdd} />
+                {!this.props.is_resource &&
+                    <DataClassFooterComponent handleAdd={this.handleAttrAdd} />
+                }
             </div>
         );
     },
