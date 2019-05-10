@@ -72,7 +72,8 @@ var DataClassComponent = React.createClass({
         }
         const newItems = [];
         for (attribute of this.state.availableResourceTypes[resourceId].attributes) {
-            newItems.push({name: attribute.name, datatype: attribute.type});
+            const capitalizedType = attribute.type.charAt(0).toUpperCase() + attribute.type.slice(1);
+            newItems.push({name: attribute.name, datatype: capitalizedType});
         }
         return newItems;
     },
