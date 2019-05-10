@@ -55,6 +55,7 @@ var TypeSelect = React.createClass({
                             type="checkbox"
                             name="isEvent"
                             checked={this.state.isEvent}
+                            disabled={this.state.isResource}
                             onChange={this.handleChange}
                         />
                         Use as event type
@@ -64,6 +65,7 @@ var TypeSelect = React.createClass({
                             type="checkbox"
                             name="isResource"
                             checked={this.state.isResource}
+                            disabled={this.state.isEvent}
                             onChange={this.handleChange}
                         />
                         Use as a resource
