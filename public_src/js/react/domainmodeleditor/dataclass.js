@@ -68,7 +68,7 @@ var DataClassComponent = React.createClass({
     },
     getResourceTypeAttributes: function(isResource, resourceId) {
         if (!isResource) {
-            return this.getInitialState().items;
+            return [];
         }
         const newItems = [];
         for (attribute of this.state.availableResourceTypes[resourceId].attributes) {
