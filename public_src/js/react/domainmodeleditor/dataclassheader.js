@@ -11,6 +11,7 @@ var DataClassHeaderComponent = React.createClass({
                             is_event={this.props.is_event}
                             is_resource={this.props.is_resource}
                             resource_id={this.props.resource_id}
+                            availableResourceTypes={this.props.availableResourceTypes}
                             handleType={this.props.handleType}
                         />
                     </div>
