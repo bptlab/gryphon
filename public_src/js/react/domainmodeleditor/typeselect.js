@@ -12,7 +12,7 @@ var TypeSelect = React.createClass({
     componentDidMount: function () {
         ResourceAPI.getAvailableResourceTypes(function (data) {
             if (this.isMounted()) {
-                this.setState({ 'availableResourceTypes': data["resources"] });
+                this.setState({ 'availableResourceTypes': data });
             }
         }.bind(this));
     },
