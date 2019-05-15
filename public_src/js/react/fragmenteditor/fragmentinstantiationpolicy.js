@@ -131,6 +131,26 @@ var InstantiationPolicyComponent = React.createClass({
           </div>
           {limit}
         </div>
+        <br />
+        <div className="row">
+          <div className="col-sm-2 checkbox">
+            <label>
+              <input
+                  name="automaticExecution"
+                  type="checkbox"
+                  //checked={this.state.hasBound}
+              />
+              Is started automatically
+            </label>
+            &nbsp;
+            <a
+                data-toggle="tooltip"
+                title="If checked the fragment will be enabled whenever the dataflow is enabled"
+            >
+              <i className="fa fa-info-circle" />
+            </a>
+          </div>
+        </div>
       </form>
     );
   }
