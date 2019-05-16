@@ -34,12 +34,12 @@ var TypeSelect = React.createClass({
 
 var TypeSelectDB = React.createClass({
     getInitialState: function() {
-        return {isDBClass: this.props.is_dbclass};
+        return {isDBClass: this.props.is_DBClass};
     },
     handleChange: function(event) {
         var isDBClass = event.target.checked == true;
         this.setState({isDBClass: isDBClass});
-        this.props.handleType(isDBClass);
+        this.props.handleTypeDB(isDBClass);
     },
     componentWillReceiveProps: function(nextProps) {
         this.setState({isDBClass: nextProps.is_DBClass});

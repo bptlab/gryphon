@@ -122,7 +122,7 @@ var DomainModelEditorComponent = React.createClass({
             this.setState({'dm':dm, 'changed':true});
         }.bind(this);
     },
-    handleCreateNew: function(name, is_event) {
+    handleCreateNew: function(name, is_event, is_DBClass) {
         var dataclass = {
             "name": name,
             "is_event": is_event,
