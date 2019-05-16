@@ -126,6 +126,7 @@ var DomainModelEditorComponent = React.createClass({
         var dataclass = {
             "name": name,
             "is_event": is_event,
+            "is_DBClass": is_DBClass,
             "attributes": [],
             "olc": Config.DEFAULT_OLC_XML
         };
@@ -194,6 +195,7 @@ var DomainModelEditorComponent = React.createClass({
               initialItems={selectedDataclass.attributes}
               name={selectedDataclass.name}
               is_event={selectedDataclass.is_event}
+              is_DBClass={selectedDataclass.is_DBClass}
               availableDataTypes={this.getAvailableDataTypes()}
               modelChanged={this.state.changed}
               id={selectedDataclass._id}

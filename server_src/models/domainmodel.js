@@ -16,6 +16,7 @@ var DomainModelSchema = new Schema({
         name: String,
         is_root: Boolean,
         is_event: Boolean,
+        is_DBClass: Boolean,
         attributes: [{
             name: String,
             datatype: String
