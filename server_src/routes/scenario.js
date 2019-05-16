@@ -108,6 +108,7 @@ router.post('/', function(req, res) {
                         hasBound: false,
                         limit: Config.DEFAULT_FRAGMENT_INSTANTIATION_AMOUNT
                     },
+                    new_fragment.automaticActivation = false;
                     new_fragment.revision = 1;
                     new_fragment.save();
                     scenario.fragments = [];
@@ -124,6 +125,7 @@ router.post('/', function(req, res) {
                             new_fragment.preconditions = fragment.preconditions;
                             new_fragment.policy = fragment.policy;
                             new_fragment.bound = fragment.bound;
+                            new_fragment.automaticActivation = fragment.automaticActivation;
                             new_fragment.save();
                             scenario.fragments = [];
                             db_scenario.fragments.push(new_fragment._id);
