@@ -210,7 +210,7 @@ var DataClassComponent = React.createClass({
             this.props.handleUpdate({
                 name: this.props.name,
                 is_event: this.props.is_event,
-                is_CBClass: this.props.is_DBClass,
+                is_DBClass: this.props.is_DBClass,
                 attributes: newItems,
                 _id: this.props.id
             });
@@ -228,7 +228,7 @@ var DataClassComponent = React.createClass({
         this.props.handleUpdate({
             name: this.props.name,
             is_event: this.props.is_event,
-            is_CBClass: this.props.is_DBClass,
+            is_DBClass: this.props.is_DBClass,
             attributes: this.state.items,
             _id: this.props.id
         });
@@ -238,16 +238,16 @@ var DataClassComponent = React.createClass({
         this.props.handleUpdate({
             name: this.props.name,
             is_event: is_event,
-            is_CBClass: this.props.is_DBClass,
+            is_DBClass: this.props.is_DBClass,
             attributes: this.state.items,
             _id: this.props.id
         });
     },
-    handleTypeDB: function(new_is_dbType) {
+    handleTypeDB: function(new_is_DBType) {
         this.props.handleUpdate({
             name: this.props.name,
             is_event: this.props.is_event,
-            is_CBClass: new_is_dbType,
+            is_DBClass: new_is_DBType,
             attributes: this.state.items,
             _id: this.props.id
         });
@@ -256,7 +256,7 @@ var DataClassComponent = React.createClass({
         this.props.handleUpdate({
             name: e.target.value,
             is_event: this.props.is_event,
-            is_CBClass: this.props.is_DBClass,
+            is_DBClass: this.props.is_DBClass,
             attributes: this.state.items,
             _id: this.props.id
         });
@@ -289,7 +289,7 @@ var DataClassComponent = React.createClass({
             this.props.handleUpdate({
                 name: this.props.name,
                 is_event: this.props.is_event,
-                is_CBClass: this.props.is_DBClass,
+                is_DBClass: this.props.is_DBClass,
                 attributes: this.state.items,
                 _id: this.props.id
             });
