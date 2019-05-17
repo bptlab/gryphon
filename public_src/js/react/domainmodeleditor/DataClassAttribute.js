@@ -1,4 +1,5 @@
 var React = require('react');
+var camelCase = require('lodash/camelCase');
 
 var DataClassAttributeComponent = React.createClass({
     getDefaultProps: function() {
@@ -38,7 +39,7 @@ var DataClassAttributeComponent = React.createClass({
                         />
                     </div>
                     <div className="col-sm-5">
-                        <select className="selectpicker" onChange={this.handleDataTypeChange} value={this.props.datatype} data-live-search="true" id={this.props.name + "-dtselect"}>
+                        <select className="selectpicker" onChange={this.handleDataTypeChange} value={this.props.datatype} data-live-search="true" id={camelCase(this.props.name) + "-dtselect"}>
                             <optgroup label="Scalar Type">
                                 {availableFixedTypes}
                             </optgroup>
@@ -55,10 +56,10 @@ var DataClassAttributeComponent = React.createClass({
         );
     },
     componentDidMount: function() {
-        $('#' + this.props.name + '-dtselect').selectpicker();
+        $('#' + camelCase(this.props.name) + '-dtselect').selectpicker();
     },
     componentDidUpdate: function() {
-        $('#' + this.props.name + '-dtselect').selectpicker();
+        $('#' + camelCase(this.props.name) + '-dtselect').selectpicker();
     }
 });
 
