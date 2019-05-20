@@ -78,6 +78,11 @@ router.post('/:fragID', function(req, res) {
 				result.bound = new_frag.bound;
 			}
 
+			if (new_frag.automaticActivation != null && result.automaticActivation !== new_frag.automaticActivation) {
+			    changed = true;
+			    result.automaticActivation = new_frag.automaticActivation;
+            }
+
             if (changed) {
                 result.revision++;
                 result.save(function(err){
@@ -128,6 +133,7 @@ router.post('/', function(req, res) {
         preconditions: (fragment.preconditions ? fragment.preconditions : [""]),
         policy: (fragment.policy ? fragment.policy : Config.DEFAULT_FRAGMENT_POLICY),
         bound: (fragment.bound ? fragment.bound : {hasBound: false, limit: Config.DEFAULT_FRAGMENT_INSTANTIATION_AMOUNT}),
+        automaticActivation: !!fragment.automaticActivation,
         revision: 1
     });
 
