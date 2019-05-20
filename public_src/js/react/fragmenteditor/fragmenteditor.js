@@ -16,6 +16,7 @@ var FragmentEditorComponent = React.createClass({
         content: "",
         policy: "",
         bound: {},
+        automaticActivation: false,
         preconditions: [""],
         revision: 0
       },
@@ -35,6 +36,7 @@ var FragmentEditorComponent = React.createClass({
           fragment={this.state.fragment}
           changePolicy={this.handlePolicyChange}
           handleBoundChange={this.handleBoundChange}
+          changeAutomaticActivation={this.handleAutomaticActivationChange}
         />
         <hr />
           <button
@@ -137,6 +139,11 @@ var FragmentEditorComponent = React.createClass({
   handleBoundChange: function(bound) {
     var fragment = this.state.fragment;
     fragment.bound = bound;
+    this.setState({ fragment: fragment });
+  },
+  handleAutomaticActivationChange: function(automaticActivation) {
+    const fragment = this.state.fragment;
+    fragment.automaticActivation = automaticActivation;
     this.setState({ fragment: fragment });
   },
   componentWillUnmount: function() {
