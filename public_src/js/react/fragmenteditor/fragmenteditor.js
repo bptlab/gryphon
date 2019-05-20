@@ -121,7 +121,7 @@ var FragmentEditorComponent = React.createClass({
     this.setState({ fragment: fragment });
   },
   handleAutomaticActivationChange: function(automaticActivation) {
-    var fragment = this.state.fragment;
+    const fragment = this.state.fragment;
     fragment.automaticActivation = automaticActivation;
     this.setState({ fragment: fragment });
   },

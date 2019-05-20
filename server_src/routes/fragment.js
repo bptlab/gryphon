@@ -133,7 +133,7 @@ router.post('/', function(req, res) {
         preconditions: (fragment.preconditions ? fragment.preconditions : [""]),
         policy: (fragment.policy ? fragment.policy : Config.DEFAULT_FRAGMENT_POLICY),
         bound: (fragment.bound ? fragment.bound : {hasBound: false, limit: Config.DEFAULT_FRAGMENT_INSTANTIATION_AMOUNT}),
-        automaticActivation: (fragment.automaticActivation ? fragment.automaticActivation : false),
+        automaticActivation: !!fragment.automaticActivation,
         revision: 1
     });
 
