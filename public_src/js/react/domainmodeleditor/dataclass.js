@@ -4,6 +4,7 @@ var NameCheck = require('../../namecheck');
 var DataClassAttributeComponent = require('./dataclassattribute');
 var DataClassHeaderComponent = require('./dataclassheader');
 var DataClassFooterComponent = require('./dataclassfooter');
+var ResourceAPI = require('./../../resourceApi');
 var Link = require('react-router').Link;
 
 var DataClassComponent = React.createClass({
@@ -49,14 +50,32 @@ var DataClassComponent = React.createClass({
         var is_event = new_is_event;
         var is_resource = new_is_resource;
         var resource_id = new_resource_id;
+
+        var attributeItems = this.state.items;
+
+        if (new_is_resource != this.props.is_resource || new_resource_id != this.props.resource_id) {
+            attributeItems = this.getResourceTypeAttributes(new_is_resource, new_resource_id);
+        }
+
         this.props.handleUpdate({
             name: this.props.name,
             is_event: is_event,
             is_resource: is_resource,
             resource_id: resource_id,
-            attributes: this.state.items,
+            attributes: attributeItems,
             _id: this.props.id
         });
+    },
+    getResourceTypeAttributes: function(isResource, resourceId) {
+        if (!isResource) {
+            return [];
+        }
+        const newItems = [];
+        for (attribute of this.state.availableResourceTypes[resourceId].attributes) {
+            const capitalizedType = attribute.type.charAt(0).toUpperCase() + attribute.type.slice(1);
+            newItems.push({name: attribute.name, datatype: capitalizedType});
+        }
+        return newItems;
     },
     handleClassNameChange: function(e) {
         this.props.handleUpdate({
@@ -123,6 +142,7 @@ var DataClassComponent = React.createClass({
                     handleNameChange={this.handleAttrNameChange(i)}
                     availableDataTypes={this.props.availableDataTypes}
                     handleEnterSubmit={this.handleEnterSubmit}
+                    readOnly={this.props.is_resource}
                 />);
         }.bind(this));
 
@@ -137,6 +157,7 @@ var DataClassComponent = React.createClass({
                     exportClass={this.exportClass}
                     is_event={this.props.is_event}
                     is_resource={this.props.is_resource}
+                    availableResourceTypes={this.state.availableResourceTypes}
                     resource_id={this.props.resource_id}
                     scenid={this.props.scenid}
                     changed={this.props.modelChanged}
@@ -144,7 +165,9 @@ var DataClassComponent = React.createClass({
                 <ul className="list-group">
                     {items}
                 </ul>
-                <DataClassFooterComponent handleAdd={this.handleAttrAdd} />
+                {!this.props.is_resource &&
+                    <DataClassFooterComponent handleAdd={this.handleAttrAdd} />
+                }
             </div>
         );
     },
@@ -157,6 +180,12 @@ var DataClassComponent = React.createClass({
         this.setState({
             items: this.props.initialItems
         });
+        ResourceAPI.getAvailableResourceTypes(function (data) {
+            if (this.isMounted()) {
+                console.log(data);
+                this.setState({ 'availableResourceTypes': data });
+            }
+        }.bind(this));
     }
 });
 

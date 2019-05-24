@@ -1,5 +1,4 @@
 var React = require('react');
-var ResourceAPI = require('./../../resourceApi');
 
 var TypeSelect = React.createClass({
     getInitialState: function () {
@@ -8,13 +7,6 @@ var TypeSelect = React.createClass({
             isResource: this.props.is_resource,
             resourceId: this.props.resource_id,
         };
-    },
-    componentDidMount: function () {
-        ResourceAPI.getAvailableResourceTypes(function (data) {
-            if (this.isMounted()) {
-                this.setState({ 'availableResourceTypes': data["resources"] });
-            }
-        }.bind(this));
     },
     handleChange: function (event) {
         switch(event.target.name) {
@@ -26,7 +18,7 @@ var TypeSelect = React.createClass({
                 this.setState({ isResource: event.target.checked });
                 let currentResourceId = this.state.resourceId;
                 if (currentResourceId == null) {
-                    currentResourceId = String(this.state.availableResourceTypes[0]["id"]);
+                    currentResourceId = String(this.props.availableResourceTypes[0]["id"]);
                     this.setState({ 'resourceId': currentResourceId });
                 }
                 this.props.handleType(this.state.isEvent, event.target.checked, currentResourceId);
@@ -55,6 +47,7 @@ var TypeSelect = React.createClass({
                             type="checkbox"
                             name="isEvent"
                             checked={this.state.isEvent}
+                            disabled={this.state.isResource}
                             onChange={this.handleChange}
                         />
                         Use as event type
@@ -64,15 +57,16 @@ var TypeSelect = React.createClass({
                             type="checkbox"
                             name="isResource"
                             checked={this.state.isResource}
+                            disabled={this.state.isEvent}
                             onChange={this.handleChange}
                         />
                         Use as a resource
                     </label>
                 </div>
-                {this.state.isResource && this.state.availableResourceTypes && 
+                {this.state.isResource && this.props.availableResourceTypes && 
                     <div>
                         <select name="resourceId" value={this.state.resourceId} onChange={this.handleChange}>
-                        {this.state.availableResourceTypes.map(type => {
+                        {this.props.availableResourceTypes.map(type => {
                             return(<option key={type["id"]} value={type["id"]}>{type["name"]}</option>);
                         })}
                         </select>

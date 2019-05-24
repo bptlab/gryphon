@@ -36,10 +36,11 @@ var DataClassAttributeComponent = React.createClass({
                             value={this.props.name}
                             onChange={this.handleNameChange}
                             onKeyDown={this.props.handleEnterSubmit}
+                            disabled={this.props.readOnly}
                         />
                     </div>
                     <div className="col-sm-5">
-                        <select className="selectpicker" onChange={this.handleDataTypeChange} value={this.props.datatype} data-live-search="true" id={camelCase(this.props.name) + "-dtselect"}>
+                        <select className="selectpicker" onChange={this.handleDataTypeChange} value={this.props.datatype} data-live-search="true" id={camelCase(this.props.name) + "-dtselect"} disabled={this.props.readOnly}>
                             <optgroup label="Scalar Type">
                                 {availableFixedTypes}
                             </optgroup>
@@ -49,7 +50,7 @@ var DataClassAttributeComponent = React.createClass({
                         </select>
                     </div>
                     <div className="col-sm-1">
-                        <button type="button" className="btn btn-danger" onClick={this.props.onDelete}><i className="fa fa-times"></i></button>
+                        <button type="button" className="btn btn-danger" onClick={this.props.onDelete} disabled={this.props.readOnly}><i className="fa fa-times"></i></button>
                     </div>
                 </div>
             </li>
@@ -59,7 +60,7 @@ var DataClassAttributeComponent = React.createClass({
         $('#' + camelCase(this.props.name) + '-dtselect').selectpicker();
     },
     componentDidUpdate: function() {
-        $('#' + camelCase(this.props.name) + '-dtselect').selectpicker();
+        $('#' + camelCase(this.props.name) + '-dtselect').selectpicker('val', this.props.datatype);
     }
 });
 
