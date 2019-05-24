@@ -60,7 +60,7 @@ var DataClassAttributeComponent = React.createClass({
         $('#' + camelCase(this.props.name) + '-dtselect').selectpicker();
     },
     componentDidUpdate: function() {
-        $('#' + camelCase(this.props.name) + '-dtselect').selectpicker('val', this.props.datatype);
+        $('#' + camelCase(this.props.name) + '-dtselect').selectpicker('refresh');
     }
 });
 
