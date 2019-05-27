@@ -37,7 +37,7 @@ var TypeSelectDB = React.createClass({
         return {isDBClass: this.props.is_DBClass};
     },
     handleChange: function(event) {
-        var isDBClass = event.target.checked == true;
+        var isDBClass = event.target.checked === true;
         this.setState({isDBClass: isDBClass});
         this.props.handleTypeDB(isDBClass);
     },
@@ -60,6 +60,34 @@ var TypeSelectDB = React.createClass({
     }
 });
 
+var TypeSelectTest = React.createClass({
+    getInitialState: function() {
+        return {save: this.props.autoSave};
+    },
+    handleChange: function(event) {
+        var save = event.target.checked === true;
+        this.setState({save: save});
+        this.props.handleAutoSaveChange(save);
+    },
+    componentWillReceiveProps: function(nextProps) {
+        this.setState({save: nextProps.autoSave});
+    },
+    render: function() {
+        return (
+            <div className="checkbox">
+                <label>
+                    <input
+                        type="checkbox"
+                        checked={this.props.autoSave}
+                        onChange={this.handleChange}
+                    />
+                    Save
+                </label>
+            </div>
+        );
+    }
+});
+
 var DataClassAttributeComponent = React.createClass({
     getDefaultProps: function() {
         return {
@@ -71,6 +99,9 @@ var DataClassAttributeComponent = React.createClass({
     },
     handleDataTypeChange: function(e) {
         this.props.handleDataTypeChange(e);
+    },
+    handleAutoSaveChange: function(e) {
+        this.props.handleAutoSaveChange(e);
     },
     render: function() {
         var availableFixedTypes = ["String","Integer","Double","Boolean","Enum","Date","File"].map(function(dt){
@@ -106,6 +137,12 @@ var DataClassAttributeComponent = React.createClass({
                                 {availableTypes}
                             </optgroup>
                         </select>
+                    </div>
+                    <div>
+                    <TypeSelectTest
+                        autoSave={this.props.autoSave}
+                        handleAutoSaveChange={this.props.handleAutoSaveChange}
+                    />
                     </div>
                     <div className="col-sm-1">
                         <button type="button" className="btn btn-danger" onClick={this.props.onDelete}><i className="fa fa-times"></i></button>
@@ -205,7 +242,7 @@ var DataClassComponent = React.createClass({
     },
     handleAttrAdd: function(newItem) {
         if (NameCheck.check(newItem) && NameCheck.isUnique(newItem, this.state.items)) {
-            var newItems = this.state.items.concat([{name: newItem, datatype: 'String'}]);
+            var newItems = this.state.items.concat([{name: newItem, datatype: 'String', autoSave: false}]);
             this.setState({items: newItems,newname:""});
             this.props.handleUpdate({
                 name: this.props.name,
@@ -265,6 +302,15 @@ var DataClassComponent = React.createClass({
         this.update();
         this.props.handleExport();
     },
+    handleCheckboxChange: function(i) {
+        return (function (e) {
+            //var value = e.target.checked == true;
+            var items = this.state.items;
+            items[i].autoSave = e;
+            this.setState({items: items});
+            this.update();
+        }).bind(this);
+    },
     handleAttrNameChange: function(i) {
         return (function(e) {
             var value = e.target.value;
@@ -309,12 +355,14 @@ var DataClassComponent = React.createClass({
                 <DataClassAttributeComponent
                     name={item.name}
                     key={"dataclass"+i}
+                    autoSave={item.autoSave}
                     datatype={item.datatype}
                     onDelete={this.handleRemove(i)}
                     handleDataTypeChange={this.handleAttrTypeChange(i)}
                     handleNameChange={this.handleAttrNameChange(i)}
                     availableDataTypes={this.props.availableDataTypes}
                     handleEnterSubmit={this.handleEnterSubmit}
+                    handleAutoSaveChange={this.handleCheckboxChange(i)}
                 />);
         }.bind(this));
 

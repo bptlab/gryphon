@@ -19,7 +19,8 @@ var DomainModelSchema = new Schema({
         is_DBClass: Boolean,
         attributes: [{
             name: String,
-            datatype: String
+            datatype: String,
+            autoSave: Boolean
         }],
         olc: String
     }]
