@@ -5,7 +5,6 @@ var DataClassAttributeComponent = require('./dataclassattribute');
 var DataClassHeaderComponent = require('./dataclassheader');
 var DataClassFooterComponent = require('./dataclassfooter');
 var ResourceAPI = require('./../../resourceApi');
-var Link = require('react-router').Link;
 
 var DataClassComponent = React.createClass({
     getInitialState: function() {
@@ -71,8 +70,11 @@ var DataClassComponent = React.createClass({
             return [];
         }
         const newItems = [];
-        for (attribute of this.state.availableResourceTypes[resourceId].attributes) {
-            const capitalizedType = attribute.type.charAt(0).toUpperCase() + attribute.type.slice(1);
+        const selectedResourceType = this.state.availableResourceTypes.find((resourceType) => {
+            return (resourceType.id === resourceId);
+        });
+        for (attribute of selectedResourceType.attributes.attributes) {
+            const capitalizedType = attribute.dataType.charAt(0).toUpperCase() + attribute.dataType.slice(1);
             newItems.push({name: attribute.name, datatype: capitalizedType});
         }
         return newItems;
@@ -182,7 +184,6 @@ var DataClassComponent = React.createClass({
         });
         ResourceAPI.getAvailableResourceTypes(function (data) {
             if (this.isMounted()) {
-                console.log(data);
                 this.setState({ 'availableResourceTypes': data });
             }
         }.bind(this));

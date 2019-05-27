@@ -67,7 +67,7 @@ var TypeSelect = React.createClass({
                     <div>
                         <select name="resourceId" value={this.state.resourceId} onChange={this.handleChange}>
                         {this.props.availableResourceTypes.map(type => {
-                            return(<option key={type["id"]} value={type["id"]}>{type["name"]}</option>);
+                            return(<option key={type["id"]} value={type["id"]}>{type["attributes"]["name"]}</option>);
                         })}
                         </select>
                     </div>
