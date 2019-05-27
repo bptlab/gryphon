@@ -239,14 +239,7 @@ function generateProvider(fragmentid) {
             group.entries.push(stateEntry);
             stateEntry = entryFactory.selectBox({
                 id: 'Method',
-                description: 'Choose the appropriate optimization-method.<br><br>' +
-                    '<b>Required Input Attributes(I):</b><br>' +
-                    '&emsp;Destination<br>' + 
-                    '&emsp;Weight<br>' + 
-                    '&emsp;Dimensions<br>' + 
-                    '&emsp;Time Window<br><br>' + 
-                    '<b>Expected Return Attributes(R):</b><br>' +
-                    '&emsp;Scheduled Time<br><br><br>',
+                description: 'Choose the appropriate optimization-method.<br><br>',
                 label: 'Optimization Method:',
                 modelProperty: 'method',
                 selectOptions: resourceOptimizationMethods
