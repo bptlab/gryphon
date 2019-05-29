@@ -6,8 +6,7 @@ var ResourceAPI = function(host) {
 };
 
 ResourceAPI.prototype.createResourceURL = function(endpoint) {
-    // return this.host.concat("resource-types/" + endpoint);
-    return "http://localhost:7000/resource-types/" + endpoint;
+    return this.host.concat("resource-types/" + endpoint);
 };
 
 ResourceAPI.prototype.createProblemURL = function(endpoint) {
