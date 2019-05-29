@@ -40,7 +40,7 @@ var TypeSelect = React.createClass({
     render: function () {
         var value = this.state.value;
         return (
-            <div>
+            <div className="form-group">
                 <div className="checkbox">
                     <label>
                         <input
@@ -51,6 +51,13 @@ var TypeSelect = React.createClass({
                             onChange={this.handleChange}
                         />
                         Use as event type
+                        <span
+                            style={{marginLeft: 5 + 'px'}}
+                            data-toggle="tooltip"
+                            data-container="body"
+                            title="Data classes store information available in a case. Event classes specify expected external events and are registered with Unicorn.">
+                            <i className="fa fa-info-circle"></i>
+                        </span>
                     </label>
                 </div>
                 <div className="checkbox">
@@ -61,13 +68,20 @@ var TypeSelect = React.createClass({
                             checked={this.state.isResource}
                             disabled={this.state.isEvent}
                             onChange={this.handleChange}
-                        />
+                            />
                         Use as a resource
+                        <span
+                            style={{marginLeft: 5 + 'px'}}
+                            data-toggle="tooltip"
+                            data-container="body"
+                            title="Resource data classes are not managed by Chimera or Gryphon but by the connected resource manager.">
+                            <i className="fa fa-info-circle"></i>
+                        </span>
                     </label>
                 </div>
                 {this.state.isResource && this.props.availableResourceTypes && 
                     <div>
-                        <select name="resourceId" value={this.state.resourceId} onChange={this.handleChange}>
+                        <select className="form-control" name="resourceId" value={this.state.resourceId} onChange={this.handleChange}>
                         {this.props.availableResourceTypes.map(type => {
                             return(<option key={type["id"]} value={type["id"]}>{type["name"]}</option>);
                         })}

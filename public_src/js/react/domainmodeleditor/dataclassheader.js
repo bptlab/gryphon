@@ -15,15 +15,6 @@ var DataClassHeaderComponent = React.createClass({
                             handleType={this.props.handleType}
                         />
                     </div>
-                    <div className="col-sm-1">
-                      <a
-                        data-toggle="tooltip"
-                        data-container="body"
-                        title="Data classes store information available in a case. Event classes specify expected external events and are registered with Unicorn."
-                      >
-                        <i className="fa fa-info-circle"></i>
-                      </a>
-                    </div>
                 </div>
             </div>
         )
