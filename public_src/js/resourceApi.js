@@ -18,7 +18,6 @@ ResourceAPI.prototype.getServerInformation = function(callback) {
 }
 
 ResourceAPI.prototype.getAvailableResourceTypes = function(callback) {
-    // $.getJSON(this.createResourceURL(""), callback);
     $.ajax({
         method: 'GET',
         url: this.createResourceURL(""),
