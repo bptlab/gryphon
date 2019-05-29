@@ -52,6 +52,8 @@ var TypeSelect = React.createClass({
                         />
                         Use as event type
                     </label>
+                </div>
+                <div className="checkbox">
                     <label>
                         <input
                             type="checkbox"
