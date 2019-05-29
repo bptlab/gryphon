@@ -9,7 +9,7 @@ var TypeSelect = React.createClass({
         };
     },
     handleChange: function (event) {
-        switch(event.target.name) {
+        switch (event.target.name) {
             case "isEvent":
                 this.setState({ isEvent: event.target.checked });
                 this.props.handleType(event.target.checked, this.state.isResource, this.state.resourceId);
@@ -40,7 +40,7 @@ var TypeSelect = React.createClass({
     render: function () {
         var value = this.state.value;
         return (
-            <div>
+            <div className="form-group">
                 <div className="checkbox">
                     <label>
                         <input
@@ -51,7 +51,16 @@ var TypeSelect = React.createClass({
                             onChange={this.handleChange}
                         />
                         Use as event type
+                        <span
+                            style={{ marginLeft: 5 + 'px' }}
+                            data-toggle="tooltip"
+                            data-container="body"
+                            title="Data classes store information available in a case. Event classes specify expected external events and are registered with Unicorn.">
+                            <i className="fa fa-info-circle"></i>
+                        </span>
                     </label>
+                </div>
+                <div className="checkbox">
                     <label>
                         <input
                             type="checkbox"
@@ -61,14 +70,21 @@ var TypeSelect = React.createClass({
                             onChange={this.handleChange}
                         />
                         Use as a resource
+                        <span
+                            style={{ marginLeft: 5 + 'px' }}
+                            data-toggle="tooltip"
+                            data-container="body"
+                            title="Resource data classes are not managed by Chimera or Gryphon but by the connected resource manager.">
+                            <i className="fa fa-info-circle"></i>
+                        </span>
                     </label>
                 </div>
-                {this.state.isResource && this.props.availableResourceTypes && 
+                {this.state.isResource && this.props.availableResourceTypes &&
                     <div>
-                        <select name="resourceId" value={this.state.resourceId} onChange={this.handleChange}>
-                        {this.props.availableResourceTypes.map(type => {
-                            return(<option key={type["id"]} value={type["id"]}>{type["name"]}</option>);
-                        })}
+                        <select className="form-control" name="resourceId" value={this.state.resourceId} onChange={this.handleChange}>
+                            {this.props.availableResourceTypes.map(type => {
+                                return (<option key={type["id"]} value={type["id"]}>{type["name"]}</option>);
+                            })}
                         </select>
                     </div>
                 }
