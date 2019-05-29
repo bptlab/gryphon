@@ -73,7 +73,7 @@ var DataClassComponent = React.createClass({
         const selectedResourceType = this.state.availableResourceTypes.find((resourceType) => {
             return (resourceType.id === resourceId);
         });
-        for (attribute of selectedResourceType.attributes.attributes) {
+        for (attribute of selectedResourceType.attributes) {
             const capitalizedType = attribute.dataType.charAt(0).toUpperCase() + attribute.dataType.slice(1);
             newItems.push({name: attribute.name, datatype: capitalizedType});
         }

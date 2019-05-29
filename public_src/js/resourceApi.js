@@ -1,4 +1,5 @@
 var Config = require('./../../config');
+var JSONAPIDeserializer = require('jsonapi-serializer').Deserializer;
 
 var ResourceAPI = function(host) {
     this.host = host;
@@ -17,25 +18,17 @@ ResourceAPI.prototype.getServerInformation = function(callback) {
     $.getJSON(this.host.concat("server"), callback);
 }
 
-ResourceAPI.prototype.getAvailableResourceTypes = function (callback) {
+ResourceAPI.prototype.getAvailableResourceTypes = function(callback) {
     // $.getJSON(this.createResourceURL(""), callback);
     $.ajax({
         method: 'GET',
         url: this.createResourceURL(""),
         contentType: "application/vnd.api+json",
-        success: callback,
-        accepts: {
-            mycustomtype: 'application/vnd.api+json'
-        },
-        converters: {
-            'text mycustomtype': function (result) {
-                const jsonResult = JSON.parse(result);
-                return jsonResult.data;
-            }
-        },
-
-        // Expect a `mycustomtype` back from server
-        dataType: 'mycustomtype'
+        success: function(json) {
+            new JSONAPIDeserializer({ keyForAttribute: 'camelCase' }).deserialize(json, function (err, resourceTypes) {
+                callback(resourceTypes);
+            });
+        }
     });
 }
 
