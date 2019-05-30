@@ -41,6 +41,7 @@ public/swagger/swagger-ui.js
 # Ignore macos files
 .DS_Store
 
+.vscode
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json

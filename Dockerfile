@@ -1,7 +1,9 @@
 FROM node:jessie
 # MONGOINSTALL
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv BC711F9BA15703C6
-RUN echo "deb http://ftp.debian.org/debian jessie-backports main" | tee /etc/apt/sources.list
+# jessie-backports is not valid anymore, FIX THIS
+RUN echo "Acquire::Check-Valid-Until \"false\";" > /etc/apt/apt.conf.d/100disablechecks
+RUN echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie-backports main" | tee /etc/apt/sources.list
 RUN echo "deb http://repo.mongodb.org/apt/debian jessie/mongodb-org/3.4 main" | tee /etc/apt/sources.list.d/mongodb-org-3.4.list
 # Update apt-get sources AND install MongoDB
 RUN apt-get update \
