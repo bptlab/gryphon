@@ -122,6 +122,24 @@ var InstantiationPolicyComponent = React.createClass({
           <div className="col-sm-2 checkbox">
             <label>
               <input
+                  name="automaticActivation"
+                  type="checkbox"
+                  checked={this.state.automaticActivation}
+                  onChange={this.handleAutomaticActivationChange}
+              />
+              Is activated automatically
+            </label>
+            &nbsp;
+            <a
+                data-toggle="tooltip"
+                title="If checked the fragment will be activated whenever the dataflow is enabled"
+            >
+              <i className="fa fa-info-circle" />
+            </a>
+          </div>
+          <div className="col-sm-2 checkbox">
+            <label>
+              <input
                 name="hasBound"
                 type="checkbox"
                 checked={this.state.hasBound}
@@ -138,27 +156,6 @@ var InstantiationPolicyComponent = React.createClass({
             </a>
           </div>
           {limit}
-        </div>
-        <br />
-        <div className="row">
-          <div className="col-sm-2 checkbox">
-            <label>
-              <input
-                  name="automaticActivation"
-                  type="checkbox"
-                  checked={this.state.automaticActivation}
-                  onChange={this.handleAutomaticActivationChange}
-              />
-              Is activated automatically
-            </label>
-            &nbsp;
-            <a
-                data-toggle="tooltip"
-                title="If checked the fragment will be activated whenever the dataflow is enabled"
-            >
-              <i className="fa fa-info-circle" />
-            </a>
-          </div>
         </div>
       </form>
     );
