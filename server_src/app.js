@@ -23,9 +23,11 @@ mongoose.set('useNewUrlParser', true);
 mongoose.set('useCreateIndex', true);
 mongoose.connect(config.MONGODB_HOST);
 
+const maxBodySize = '50mb';
+
 app.use(logger('dev'));
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
+app.use(bodyParser.json({ limit: maxBodySize }));
+app.use(bodyParser.urlencoded({ extended: false, limit: maxBodySize }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
