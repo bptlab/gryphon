@@ -17,7 +17,7 @@ var mongoose = require('mongoose');
 var app = express();
 
 // mongoose init
-mongoose.connect(config.MONGODB_HOST);
+mongoose.connect(config.MONGODB_HOST, { useMongoClient: true });
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
