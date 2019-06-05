@@ -21,7 +21,7 @@ var app = express();
 // (see https://mongoosejs.com/docs/deprecations)
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useCreateIndex', true);
-mongoose.connect(config.MONGODB_HOST);
+mongoose.connect(config.MONGODB_HOST, { useMongoClient: true });
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
