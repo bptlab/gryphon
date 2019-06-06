@@ -8,6 +8,10 @@ var ComplianceResultDisplayComponent = React.createClass({
             return (<span></span>);
         }
 
+        if (this.props.complianceResult.error) {
+            return (<span>Error: {this.props.complianceResult.error}</span>);
+        }
+
         var custom_check = this.props.complianceResult.checks["custom_check"];
         if (!custom_check) {
             return (<span>compliance result does not contain 'custom_check' check</span>);
