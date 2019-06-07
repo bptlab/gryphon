@@ -1,8 +1,8 @@
-FROM node:jessie
+FROM node:stretch
 # MONGOINSTALL
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv BC711F9BA15703C6
-RUN echo "deb http://ftp.debian.org/debian jessie-backports main" | tee /etc/apt/sources.list
-RUN echo "deb http://repo.mongodb.org/apt/debian jessie/mongodb-org/3.4 main" | tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+#RUN echo "deb http://ftp.debian.org/debian stretch-backports main" | tee /etc/apt/sources.list
+RUN echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | tee /etc/apt/sources.list.d/mongodb-org-4.0.list
 # Update apt-get sources AND install MongoDB
 RUN apt-get update \
  && apt-get install -y \
