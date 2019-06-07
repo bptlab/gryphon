@@ -6,6 +6,7 @@ var parseOLCPaths = require('./../helpers/json').parseOLCPaths;
 
 var BoundValidator = require('./boundvalidator');
 var SoundnessValidator = require('./soundnessvalidator');
+var ResourceValidator = require('./resourcevalidator');
 var OLCValidator = require('./olcvalidator');
 var EventValidator = require('./eventvalidator');
 var DataObjectReferenceValidator = require('./dataobjectreferencevalidator');
@@ -30,7 +31,7 @@ var GeneralValidator = class {
      */
     constructor(fragment, initDone, validators) {
         if (validators == undefined) {
-            validators = [BoundValidator, EventValidator, SoundnessValidator, OLCValidator, DataObjectReferenceValidator, ThrowEventValidator];
+            validators = [BoundValidator, EventValidator, SoundnessValidator, ResourceValidator, OLCValidator, DataObjectReferenceValidator, ThrowEventValidator];
         }
         if (initDone == undefined) {
             initDone = function () {
