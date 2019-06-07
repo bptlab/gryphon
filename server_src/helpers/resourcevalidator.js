@@ -6,12 +6,12 @@ var parseToOLC = require('./json').parseToOLC;
 /**
  * An validator that checks a fragment with resource activities whether all required data objects are connected.
  *
- * @class SoundnessValidator
+ * @class ResourceValidator
  * @type {{new(*=): {parseSequenceFlowReverse: (function(Array): {}), validateEverything: (function(): boolean), validateStartEvents: (function(*): boolean), parseIntoGraph: (function(*): {startEvents: Array, endEvents: Array, adjacencyList: {}, reverseList: {}}), parseNodes: (function(Array): Function), validateEndEvents: (function(*): boolean), validateSoundness: (function(*): boolean), parseSequenceFlow: (function(Array): {})}}}
  */
-var SoundnessValidator = class {
+var ResourceValidator = class {
     /**
-     * Initiates the soundness validator with the given fragment.
+     * Initiates the resource validator with the given fragment.
      * @method constructor
      * @param bpmnObject
      */
