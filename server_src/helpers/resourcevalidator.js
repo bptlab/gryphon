@@ -19,6 +19,7 @@ var ResourceValidator = class {
         this.bpmnObject = bpmnObject;
         this.messages = [];
         this.graph = this.parseIntoGraph(bpmnObject);
+        this.needsValidation = true;
     }
 
     /**
@@ -31,19 +32,19 @@ var ResourceValidator = class {
         var nodes = {};
         var nodes_reverse = {};
 
-        var startEvents = [];
-        if (bpmnObject.startEvent != undefined) {
-            bpmnObject.startEvent.forEach(this.parseNodes(startEvents));
+        if (bpmnObject['resource:resourceTask'] == undefined) {
+            this.needsValidation = false;
+            return {};
         }
 
-        var endEvents = [];
-        if (bpmnObject.endEvent != undefined) {
-            bpmnObject.endEvent.forEach(this.parseNodes(endEvents));
-        }
-
+        console.log(JSON.stringify(bpmnObject));
+        
         if (bpmnObject.sequenceFlow != undefined) {
             nodes = this.parseSequenceFlow(bpmnObject.sequenceFlow);
             nodes_reverse = this.parseSequenceFlowReverse(bpmnObject.sequenceFlow)
+        }
+        if (bpmnObject.dataObjectReference != undefined) {
+            console.log("yes DOs!");
         }
         if (bpmnObject.boundaryEvent != undefined) {
             bpmnObject.boundaryEvent.forEach(function(boundaryEvent){
@@ -60,8 +61,6 @@ var ResourceValidator = class {
         }
 
         return {
-            startEvents: startEvents,
-            endEvents: endEvents,
             adjacencyList: nodes,
             reverseList: nodes_reverse
         }
@@ -123,44 +122,13 @@ var ResourceValidator = class {
      * @returns {boolean}
      */
     validateEverything() {
-        if(this.validateStartEvents(this.graph.startEvents)&&this.validateEndEvents(this.graph.endEvents))
-            return this.validateSoundness(this.graph);
-        return false;
+        if (!this.needsValidation) {
+            return true;
+        }
+        return this.validateSoundness(this.graph);
     }
 
-    /**
-     * Checks the amount of start events (There has to be exactly one)
-     * @method validateStartEvents
-     * @param startEvents
-     * @returns {boolean}
-     */
-    validateStartEvents(startEvents) {
-        if (startEvents.length != 1) {
-            this.messages.push({
-                'text':'There must be only one start event',
-                'type':'danger'
-            });
-            return false;
-        }
-        return true;
-    };
 
-    /**
-     * Checks the amount of end events (There has to be at least one).
-     * @method validateEndEvents
-     * @param endEvents
-     * @returns {boolean}
-     */
-    validateEndEvents(endEvents) {
-        if (endEvents.length <= 0) {
-            this.messages.push({
-                'text':'There must be at least one end event',
-                'type': 'danger'
-            });
-            return false;
-        }
-        return true;
-    }
 
     /**
      * Validates the given graph for structural soundness.
@@ -169,6 +137,7 @@ var ResourceValidator = class {
      * @returns {boolean}
      */
     validateSoundness(graph) {
+        console.log(graph);
         var search = function(node, visited, adjacencyList) {
             if (visited.indexOf(node) >= 0) {
                 return;
@@ -182,29 +151,6 @@ var ResourceValidator = class {
         };
 
         var res = [];
-        graph.startEvents.forEach(function(event){
-            var visited = [];
-            search(event,visited,graph.adjacencyList);
-            var err = false;
-            for (var node in graph.adjacencyList) {
-                if (graph.adjacencyList.hasOwnProperty(node)) {
-                    err = err || (visited.indexOf(node) < 0)
-                }
-            }
-            res.push(!err);
-        });
-
-        graph.endEvents.forEach(function(event){
-            var visited = [];
-            search(event,visited,graph.reverseList);
-            var err = false;
-            for (var node in graph.reverseList) {
-                if (graph.reverseList.hasOwnProperty(node)) {
-                    err = err || (visited.indexOf(node) < 0)
-                }
-            }
-            res.push(!err)
-        });
 
         var isReallyValid = true;
         res.forEach(function (el) {
@@ -226,4 +172,4 @@ var ResourceValidator = class {
     }
 };
 
-module.exports = SoundnessValidator;
+module.exports = ResourceValidator;
