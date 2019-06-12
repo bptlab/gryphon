@@ -2,6 +2,7 @@
 var Scenario = require('./../models/scenario').model;
 var parseToBPMNObject = require('./json').parseToBPMNObject;
 var parseToOLC = require('./json').parseToOLC;
+const fetch = require('node-fetch');
 
 /**
  * An validator that checks a fragment with resource activities whether all required data objects are connected.
@@ -26,7 +27,7 @@ var ResourceValidator = class {
      * Creates an graph out of the given fragment, including all start end end-nodes and adjecency lists in both directions.
      * @methode parseIntoGraph
      * @param bpmnObject
-     * @returns {{startEvents: Array, endEvents: Array, adjacencyList: {}, reverseList: {}}}
+     * @returns {{resourceTasks: {}, dataObjects: {}}
      */
     parseIntoGraph(bpmnObject) {
         let resourceTasks = {};
@@ -125,11 +126,11 @@ var ResourceValidator = class {
      * @method validateEverything
      * @returns {boolean}
      */
-    validateEverything() {
+    async validateEverything() {
         if (!this.needsValidation) {
             return true;
         }
-        return this.validateResourceTaskDataAssiciations(this.graph);
+        return await this.validateResourceTaskDataAssociations(this.graph);
     }
 
     /**
@@ -138,11 +139,24 @@ var ResourceValidator = class {
      * @param graph
      * @returns {boolean}
      */
-    validateResourceTaskDataAssiciations(graph) {
-        console.log(graph);
+    async validateResourceTaskDataAssociations(graph) {
+
         let errorsFound = false;
 
-        
+        for (const resourceTask in graph.resourceTasks) {
+            const resourceConfiguration = graph.resourceTasks[resourceTask];
+            const resp = await fetch("http://localhost:3500/methods/" + resourceConfiguration.method);
+            console.log(await resp.json());
+            
+            
+            //   fetch("http://localhost:3500/methods/" + resourceConfiguration.method).then(function(response) {
+            //     return response.json();
+            //   })
+            //   .then(function(myJson) {
+            //     console.log(JSON.stringify(myJson));
+            //   });
+        }
+
 
         if (errorsFound) {
             this.messages.push({
