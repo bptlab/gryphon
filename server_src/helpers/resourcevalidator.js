@@ -29,90 +29,94 @@ var ResourceValidator = class {
      * @returns {{startEvents: Array, endEvents: Array, adjacencyList: {}, reverseList: {}}}
      */
     parseIntoGraph(bpmnObject) {
-        var nodes = {};
-        var nodes_reverse = {};
+        let resourceTasks = {};
+        let dataObjects = {};
 
         if (bpmnObject['resource:resourceTask'] == undefined) {
             this.needsValidation = false;
             return {};
         }
 
-        console.log(JSON.stringify(bpmnObject));
-        
-        if (bpmnObject.sequenceFlow != undefined) {
-            nodes = this.parseSequenceFlow(bpmnObject.sequenceFlow);
-            nodes_reverse = this.parseSequenceFlowReverse(bpmnObject.sequenceFlow)
-        }
-        if (bpmnObject.dataObjectReference != undefined) {
-            console.log("yes DOs!");
-        }
-        if (bpmnObject.boundaryEvent != undefined) {
-            bpmnObject.boundaryEvent.forEach(function(boundaryEvent){
-                if (nodes[boundaryEvent.attachedToRef] == undefined) {
-                    nodes[boundaryEvent.attachedToRef] = []
-                }
-                nodes[boundaryEvent.attachedToRef].push(boundaryEvent.id);
+        resourceTasks = this.parseResourceTasks(bpmnObject['resource:resourceTask']);
 
-                if (nodes_reverse[boundaryEvent.id] == undefined) {
-                    nodes_reverse[boundaryEvent.id] = []
-                }
-                nodes_reverse[boundaryEvent.id].push(boundaryEvent.attachedToRef)
-            })
+        if (Array.isArray(bpmnObject.dataObjectReference)) {
+            dataObjects = this.parseDataObjects(bpmnObject.dataObjectReference);
         }
 
         return {
-            adjacencyList: nodes,
-            reverseList: nodes_reverse
+            resourceTasks: resourceTasks,
+            dataObjects: dataObjects
         }
     }
 
     /**
-     * Returns a function that appends the ID of the element given to the returned function to the array gien to this
-     * method.
-     * @method parseNodes
+     * Returns an object containing resource tasks, resource task ids are the keys, value includes resource task configuration and incoming and outgoing data object associations.
+     * Example:
+     * {
+     *   ResourceTask_0d8zznp: {
+     *     host: undefined,
+     *     method: '1',
+     *     problem: '1',
+     *     dataInput:
+     *       [ 'DataObjectReference_144bl6d', 'DataObjectReference_0cs52v3' ],
+     *     dataOutput: 
+     *       [ 'DataObjectReference_1o6uebw' ]
+     *   }
+     * }
+     * 
+     * @method parseResourceTasks
      * @param node_list {Array}
-     * @returns {Function}
+     * @returns {}
      */
-    parseNodes(node_list) {
-        return function(element) {
-            node_list.push(element.id)
-        }
+    parseResourceTasks(node_list) {
+        const resourceTasks = {};
+
+        node_list.forEach((resourceTask) => {
+            const newResourceTask = {};
+            newResourceTask.host = resourceTask.host;            
+            newResourceTask.method = resourceTask.method;            
+            newResourceTask.problem = resourceTask.problem;
+            if (Array.isArray(resourceTask.dataInputAssociation)) {
+                newResourceTask.dataInput = resourceTask.dataInputAssociation.map((inputAssociation) => {
+                    return inputAssociation.sourceRef[0];
+                });
+            }
+            if (Array.isArray(resourceTask.dataOutputAssociation)) {
+                newResourceTask.dataOutput = resourceTask.dataOutputAssociation.map((outputAssociation) => {
+                    return outputAssociation.targetRef[0];
+                });
+            }
+
+            resourceTasks[resourceTask.id] = newResourceTask;
+        });
+
+        return resourceTasks;
     }
 
     /**
-     * Creates an adjacency list for the given sequence-flows.
-     *
-     * @methode parseSequenceFlow
-     * @param sequenceFlow {Array} A list of sequence flows.
-     * @returns {{}}
+     * Returns an object containing the data objects of the fragment, DO ids are the keys, value includes state and dataclass, as well as the name.
+     * Example:
+     * {
+     *   DataObjectReference_144bl6d: {
+     *     name: 'Parcel[undefined]',
+     *     dataObjectRef: 'DataObject_0te5ax1',
+     *     'griffin:state': 'undefined',
+     *     'griffin:dataclass': 'Parcel'
+     *   }
+     * }
+     * 
+     * @methode parseDataObjects
+     * @param dataObjects {Array}
+     * @returns {}
      */
-    parseSequenceFlow(sequenceFlow) {
-        var nodes = {};
-        sequenceFlow.forEach(function(flow){
-            if (nodes[flow.sourceRef] == undefined) {
-                nodes[flow.sourceRef] = []
-            }
-            nodes[flow.sourceRef].push(flow.targetRef);
+    parseDataObjects(dataObjectsList) {
+        const dataObjects = {};
+        dataObjectsList.forEach((dataObject) => {
+            const newDataObject = dataObject;
+            dataObjects[dataObject.id] = newDataObject;
+            delete newDataObject.id;
         });
-        return nodes;
-    }
-
-    /**
-     * Creates an adjacency list for the given sequence-flows. The sequence flows are reversed before read,
-     * this method creates an reversed adjacency list.
-     * @method parseSequenceFlowReverse
-     * @param sequenceFlow {Array} A list of sequence flows.
-     * @returns {{}}
-     */
-    parseSequenceFlowReverse(sequenceFlow) {
-        var nodes = {};
-        sequenceFlow.forEach(function(flow){
-            if (nodes[flow.targetRef] == undefined) {
-                nodes[flow.targetRef] = []
-            }
-            nodes[flow.targetRef].push(flow.sourceRef);
-        });
-        return nodes;
+        return dataObjects;
     }
 
     /**
@@ -125,10 +129,8 @@ var ResourceValidator = class {
         if (!this.needsValidation) {
             return true;
         }
-        return this.validateSoundness(this.graph);
+        return this.validateResourceTaskDataAssiciations(this.graph);
     }
-
-
 
     /**
      * Validates the given graph for structural soundness.
@@ -136,36 +138,22 @@ var ResourceValidator = class {
      * @param graph
      * @returns {boolean}
      */
-    validateSoundness(graph) {
+    validateResourceTaskDataAssiciations(graph) {
         console.log(graph);
-        var search = function(node, visited, adjacencyList) {
-            if (visited.indexOf(node) >= 0) {
-                return;
-            }
-            visited.push(node);
-            if (node in adjacencyList) {
-                adjacencyList[node].forEach(function(node){
-                    search(node, visited, adjacencyList)
-                });
-            }
-        };
+        let errorsFound = false;
 
-        var res = [];
+        
 
-        var isReallyValid = true;
-        res.forEach(function (el) {
-            isReallyValid = isReallyValid && el;
-        });
-        if (isReallyValid) {
+        if (errorsFound) {
             this.messages.push({
-                'text': 'Your graph is structural sound!',
-                'type': 'success'
+                'text': 'You have a misconfiguration in your Resource Tasks incoming/outgoing data objects',
+                'type': 'danger'
             });
             return true;
         } else {
             this.messages.push({
-                'text': 'Your graph is not structural sound!',
-                'type': 'danger'
+                'text': 'Resource Tasks configured correctly',
+                'type': 'success'
             });
             return false;
         }
