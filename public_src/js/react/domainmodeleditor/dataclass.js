@@ -60,7 +60,7 @@ var TypeSelectDB = React.createClass({
     }
 });
 
-var TypeSelectTest = React.createClass({
+var SaveInDB = React.createClass({
     getInitialState: function() {
         return {save: this.props.autoSave};
     },
@@ -81,7 +81,7 @@ var TypeSelectTest = React.createClass({
                         checked={this.props.autoSave}
                         onChange={this.handleChange}
                     />
-                    Save
+                    Save in DB
                 </label>
             </div>
         );
@@ -128,7 +128,7 @@ var DataClassAttributeComponent = React.createClass({
                             onKeyDown={this.props.handleEnterSubmit}
                         />
                     </div>
-                    <div className="col-sm-5">
+                    <div className="col-sm-4">
                         <select className="selectpicker" onChange={this.handleDataTypeChange} value={this.props.datatype} data-live-search="true" id={this.props.name + "-dtselect"}>
                             <optgroup label="Scalar Type">
                                 {availableFixedTypes}
@@ -138,14 +138,14 @@ var DataClassAttributeComponent = React.createClass({
                             </optgroup>
                         </select>
                     </div>
-                    <div>
-                    <TypeSelectTest
+                    <div className="col-sm-1">
+                        <button type="button" className="btn btn-danger" onClick={this.props.onDelete}><i className="fa fa-times"></i></button>
+                    </div>
+                    <div className="col-sm-2">
+                    <SaveInDB
                         autoSave={this.props.autoSave}
                         handleAutoSaveChange={this.props.handleAutoSaveChange}
                     />
-                    </div>
-                    <div className="col-sm-1">
-                        <button type="button" className="btn btn-danger" onClick={this.props.onDelete}><i className="fa fa-times"></i></button>
                     </div>
                 </div>
             </li>
