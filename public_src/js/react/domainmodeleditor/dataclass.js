@@ -32,6 +32,62 @@ var TypeSelect = React.createClass({
     }
 });
 
+var TypeSelectDB = React.createClass({
+    getInitialState: function() {
+        return {isDBClass: this.props.is_DBClass};
+    },
+    handleChange: function(event) {
+        var isDBClass = event.target.checked === true;
+        this.setState({isDBClass: isDBClass});
+        this.props.handleTypeDB(isDBClass);
+    },
+    componentWillReceiveProps: function(nextProps) {
+        this.setState({isDBClass: nextProps.is_DBClass});
+    },
+    render: function() {
+        return (
+            <div className="checkbox">
+                <label>
+                    <input
+                        type="checkbox"
+                        checked={this.state.isDBClass}
+                        onChange={this.handleChange}
+                    />
+                    Use as DB type
+                </label>
+            </div>
+        );
+    }
+});
+
+var SaveInDB = React.createClass({
+    getInitialState: function() {
+        return {save: this.props.autoSave};
+    },
+    handleChange: function(event) {
+        var save = event.target.checked === true;
+        this.setState({save: save});
+        this.props.handleAutoSaveChange(save);
+    },
+    componentWillReceiveProps: function(nextProps) {
+        this.setState({save: nextProps.autoSave});
+    },
+    render: function() {
+        return (
+            <div className="checkbox">
+                <label>
+                    <input
+                        type="checkbox"
+                        checked={this.props.autoSave}
+                        onChange={this.handleChange}
+                    />
+                    Save in DB
+                </label>
+            </div>
+        );
+    }
+});
+
 var DataClassAttributeComponent = React.createClass({
     getDefaultProps: function() {
         return {
@@ -43,6 +99,9 @@ var DataClassAttributeComponent = React.createClass({
     },
     handleDataTypeChange: function(e) {
         this.props.handleDataTypeChange(e);
+    },
+    handleAutoSaveChange: function(e) {
+        this.props.handleAutoSaveChange(e);
     },
     render: function() {
         var availableFixedTypes = ["String","Integer","Double","Boolean","Enum","Date","File"].map(function(dt){
@@ -69,7 +128,7 @@ var DataClassAttributeComponent = React.createClass({
                             onKeyDown={this.props.handleEnterSubmit}
                         />
                     </div>
-                    <div className="col-sm-5">
+                    <div className="col-sm-4">
                         <select className="selectpicker" onChange={this.handleDataTypeChange} value={this.props.datatype} data-live-search="true" id={this.props.name + "-dtselect"}>
                             <optgroup label="Scalar Type">
                                 {availableFixedTypes}
@@ -82,6 +141,12 @@ var DataClassAttributeComponent = React.createClass({
                     <div className="col-sm-1">
                         <button type="button" className="btn btn-danger" onClick={this.props.onDelete}><i className="fa fa-times"></i></button>
                     </div>
+                    <div className="col-sm-2">
+                    <SaveInDB
+                        autoSave={this.props.autoSave}
+                        handleAutoSaveChange={this.props.handleAutoSaveChange}
+                    />
+                    </div>
                 </div>
             </li>
         );
@@ -90,7 +155,7 @@ var DataClassAttributeComponent = React.createClass({
         $('#' + this.props.name + '-dtselect').selectpicker();
     },
     componentDidUpdate: function() {
-        $('#' + this.props.name + '-dtselect').selectpicker('refresh');
+        $('#' + this.props.name + '-dtselect').selectpicker();
     }
 });
 
@@ -113,6 +178,12 @@ var DataClassHeaderComponent = React.createClass({
                       >
                         <i className="fa fa-info-circle"></i>
                       </a>
+                    </div>
+                    <div className="col-sm-8 col-md-6 col-lg-4">
+                        <TypeSelectDB
+                            is_DBClass={this.props.is_DBClass}
+                            handleTypeDB={this.props.handleTypeDB}
+                        />
                     </div>
                 </div>
             </div>
@@ -171,11 +242,12 @@ var DataClassComponent = React.createClass({
     },
     handleAttrAdd: function(newItem) {
         if (NameCheck.check(newItem) && NameCheck.isUnique(newItem, this.state.items)) {
-            var newItems = this.state.items.concat([{name: newItem, datatype: 'String'}]);
+            var newItems = this.state.items.concat([{name: newItem, datatype: 'String', autoSave: false}]);
             this.setState({items: newItems,newname:""});
             this.props.handleUpdate({
                 name: this.props.name,
                 is_event: this.props.is_event,
+                is_DBClass: this.props.is_DBClass,
                 attributes: newItems,
                 _id: this.props.id
             });
@@ -193,6 +265,7 @@ var DataClassComponent = React.createClass({
         this.props.handleUpdate({
             name: this.props.name,
             is_event: this.props.is_event,
+            is_DBClass: this.props.is_DBClass,
             attributes: this.state.items,
             _id: this.props.id
         });
@@ -202,6 +275,16 @@ var DataClassComponent = React.createClass({
         this.props.handleUpdate({
             name: this.props.name,
             is_event: is_event,
+            is_DBClass: this.props.is_DBClass,
+            attributes: this.state.items,
+            _id: this.props.id
+        });
+    },
+    handleTypeDB: function(new_is_DBType) {
+        this.props.handleUpdate({
+            name: this.props.name,
+            is_event: this.props.is_event,
+            is_DBClass: new_is_DBType,
             attributes: this.state.items,
             _id: this.props.id
         });
@@ -210,6 +293,7 @@ var DataClassComponent = React.createClass({
         this.props.handleUpdate({
             name: e.target.value,
             is_event: this.props.is_event,
+            is_DBClass: this.props.is_DBClass,
             attributes: this.state.items,
             _id: this.props.id
         });
@@ -217,6 +301,15 @@ var DataClassComponent = React.createClass({
     exportClass: function() {
         this.update();
         this.props.handleExport();
+    },
+    handleCheckboxChange: function(i) {
+        return (function (e) {
+            //var value = e.target.checked == true;
+            var items = this.state.items;
+            items[i].autoSave = e;
+            this.setState({items: items});
+            this.update();
+        }).bind(this);
     },
     handleAttrNameChange: function(i) {
         return (function(e) {
@@ -242,6 +335,7 @@ var DataClassComponent = React.createClass({
             this.props.handleUpdate({
                 name: this.props.name,
                 is_event: this.props.is_event,
+                is_DBClass: this.props.is_DBClass,
                 attributes: this.state.items,
                 _id: this.props.id
             });
@@ -261,12 +355,14 @@ var DataClassComponent = React.createClass({
                 <DataClassAttributeComponent
                     name={item.name}
                     key={"dataclass"+i}
+                    autoSave={item.autoSave}
                     datatype={item.datatype}
                     onDelete={this.handleRemove(i)}
                     handleDataTypeChange={this.handleAttrTypeChange(i)}
                     handleNameChange={this.handleAttrNameChange(i)}
                     availableDataTypes={this.props.availableDataTypes}
                     handleEnterSubmit={this.handleEnterSubmit}
+                    handleAutoSaveChange={this.handleCheckboxChange(i)}
                 />);
         }.bind(this));
 
@@ -277,9 +373,11 @@ var DataClassComponent = React.createClass({
                     id={this.props.id}
                     dmid={this.props.dmid}
                     handleType={this.handleType}
+                    handleTypeDB={this.handleTypeDB}
                     handleDelete={this.props.handleDelete}
                     exportClass={this.exportClass}
                     is_event={this.props.is_event}
+                    is_DBClass={this.props.is_DBClass}
                     scenid={this.props.scenid}
                     changed={this.props.modelChanged}
                 />
