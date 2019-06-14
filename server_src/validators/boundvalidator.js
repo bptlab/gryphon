@@ -6,7 +6,7 @@
  * @class BoundValidator
  * @type {{new(*): {validateEventBasedGateways: (function()), getSequenceFlowTarget: (function(int): *), validateEvents: (function()), validateEverything: (function())}}}
  */
-var EventValidator = class {
+var BoundValidator = class {
     /**
      * Initiates this validator with the given fragment
      * @method constructor
@@ -45,4 +45,4 @@ var EventValidator = class {
 
 };
 
-module.exports = EventValidator;
+module.exports = BoundValidator;
