@@ -2,7 +2,6 @@
 
 var Scenario = require('./../models/scenario').model;
 var parseToBPMNObject = require('./../helpers/json').parseToBPMNObject;
-var parseToOLC = require('./../helpers/json').parseToOLC;
 var parseOLCPaths = require('./../helpers/json').parseOLCPaths;
 
 var BoundValidator = require('./boundvalidator');

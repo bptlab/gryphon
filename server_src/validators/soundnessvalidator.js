@@ -1,7 +1,4 @@
 'use strict';
-var Scenario = require('./../models/scenario').model;
-var parseToBPMNObject = require('./../helpers/json').parseToBPMNObject;
-var parseToOLC = require('./../helpers/json').parseToOLC;
 
 /**
  * An validator that checks a fragment for structural soundness.

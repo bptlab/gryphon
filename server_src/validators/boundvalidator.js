@@ -1,7 +1,5 @@
 'use strict';
 
-var Scenario = require('./../models/scenario').model;
-
 /**
  * Validates the given fragment for mistakes in the bound definition.
  *

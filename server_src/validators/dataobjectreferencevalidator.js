@@ -1,7 +1,4 @@
 'use strict';
-var Scenario = require('./../models/scenario').model;
-var Fragment = require('./../models/fragment').model;
-var parseToOLC = require('./../helpers/json').parseToOLC;
 
 /**
  * A validator that checks validity of data object references
