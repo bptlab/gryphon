@@ -1,3 +1,6 @@
-theme: jekyll-theme-leap-day
-title: gryphon-case-modeler
-description: modeler for fragment-based case models
+title: Gryphon
+description: Modeler for fragment-based case models
+baseurl: "" # the subpath of your site, e.g. /blog
+# Build settings
+markdown: kramdown
+theme: jekyll-theme-minimal
