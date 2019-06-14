@@ -1,9 +1,9 @@
 'use strict';
 
 var Scenario = require('./../models/scenario').model;
-var parseToBPMNObject = require('./json').parseToBPMNObject;
-var parseToOLC = require('./json').parseToOLC;
-var parseOLCPaths = require('./json').parseOLCPaths;
+var parseToBPMNObject = require('./../helpers/json').parseToBPMNObject;
+var parseToOLC = require('./../helpers/json').parseToOLC;
+var parseOLCPaths = require('./../helpers/json').parseOLCPaths;
 
 var BoundValidator = require('./boundvalidator');
 var SoundnessValidator = require('./soundnessvalidator');

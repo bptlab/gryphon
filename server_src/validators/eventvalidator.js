@@ -1,8 +1,8 @@
 'use strict';
 
 var Scenario = require('./../models/scenario').model;
-var parseToBPMNObject = require('./json').parseToBPMNObject;
-var parseToOLC = require('./json').parseToOLC;
+var parseToBPMNObject = require('./../helpers/json').parseToBPMNObject;
+var parseToOLC = require('./../helpers/json').parseToOLC;
 
 /**
  * Validates the given fragment for mistakes in event-references.

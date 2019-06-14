@@ -6,7 +6,7 @@ var DomainModel = require('./../models/domainmodel').model;
 var _ = require('lodash');
 var Config = require('./../../config');
 var RestClient = require('node-rest-client').Client;
-var Validator = require('./../helpers/validator').Validator;
+var Validator = require('./../validators/validator').Validator;
 var Export =  require('./../models/export').model;
 var parseToOLC = require('./../helpers/json').parseToOLC;
 

@@ -4,7 +4,7 @@ var Config = require('./../../config');
 var Fragment = require('./../models/fragment').model;
 var Scenario = require('./../models/scenario').model;
 var JSONHelper = require('./../helpers/json');
-var Validator = require('./../helpers/validator').Validator;
+var Validator = require('./../validators/validator').Validator;
 var _ = require('lodash');
 
 /**
