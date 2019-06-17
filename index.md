@@ -34,6 +34,8 @@ The following software is necessary to build and run the editor:
   - inside the mongo client create a database named gryphondb with the command `use gryphondb`
     - if you named your database differently, you need to adapt the database name in `config.js` by editing the property `MONGODB_HOST: 'mongodb://localhost/YOUR_DATABASE_NAME`
 5. Run `grunt` (in the gyphon directory) to build the UI files and to compile all script sources.
+6. Run the express server by calling node `bin/www` on the command line.
+7. You can now access the editor in your browser at [http://localhost:3000/](http://localhost:3000/)
 
 ## Running gryphon
 Once your environment is set up, you can start the editor as follows
@@ -41,6 +43,13 @@ Once your environment is set up, you can start the editor as follows
 2. Start the MongoDB server (if it is not already started) by running `mongod --dbpath ../mongodata` on the command line.
 3. Run the express server by calling node `bin/www` on the command line.
 4. You can now access the editor in your browser at [http://localhost:3000/](http://localhost:3000/)
+
+- Incase you are still unsure of installing and running Gryphon on your system, you can also follow the Screencast below:
+
+<video width="550" autoplay="" loop="" muted="">
+    <source src="vid\install-gryphon.webm" type="video/webm">
+    Your browser does not support HTML video.
+</video>
 
 # Using Gryphon in Docker
 FOR ALL PEOPLE WHO JUST WANT TO USE THE EDITOR IN AN EASY AND WINDOWS COMPATIBLE WAY READ THIS: If you just want to run the editor, instead of modifying it (even though that doesn’t really matter, you could also edit it this way, just the building part will take longer), you can run the whole thing in a docker container in 3 easy steps:
