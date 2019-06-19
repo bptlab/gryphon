@@ -122,20 +122,39 @@ var OLCValidator = class {
      * @param doref
      */
     validateDataObjectReference(doref) {
-        var referencedDataClass = doref['griffin:dataclass'].trim();
-        var referencedState = doref['griffin:state'].trim();
-        if (!(referencedDataClass in this.olc)) {
-            this.messages.push({
-                'text': 'You referenced an invalid dataclass. (' + doref['griffin:dataclass'] + ')',
-                'type': 'danger'
-            })
-        } else {
-            if (this.olc[referencedDataClass] != null && !(referencedState in this.olc[referencedDataClass])) {
+        var referencedDataClass = undefined;
+        var validDataClass = false;
+        var referencedState = undefined;
+
+        if ('griffin:dataclass' in doref) {
+            referencedDataClass = doref['griffin:dataclass'].trim();
+            validDataClass = referencedDataClass in this.olc;
+            if (!validDataClass) {
                 this.messages.push({
-                    'text': 'You referenced an invalid state (' + referencedState + ') for data object ' + referencedDataClass + '. Available states: \'' + Object.keys(this.olc[referencedDataClass]).join("\', \'") + '\'',
+                    'text': 'You referenced an invalid dataclass. (' + doref['griffin:dataclass'] + ')',
                     'type': 'danger'
-                })
+                });
+            } 
+        } else {
+            this.messages.push({
+                'text': 'You must specify a dataclass.',
+                'type': 'danger'
+            });
+        }
+
+        if ('griffin:state' in doref) {
+            var referencedState = doref['griffin:state'].trim();
+            if (validDataClass && !(referencedState in this.olc[referencedDataClass])) {
+                this.messages.push({
+                    'text': 'You referenced an invalid state (\'' + referencedState + '\') for data object \'' + referencedDataClass + '\'. Available states: \'' + Object.keys(this.olc[referencedDataClass]).join("\', \'") + '\'',
+                    'type': 'danger'
+                });
             }
+        } else {
+            this.messages.push({
+                'text': 'You must specify a state.',
+                'type': 'danger'
+            });
         }
     }
 
