@@ -119,10 +119,11 @@ var SoundnessValidator = class {
      * @method validateEverything
      * @returns {boolean}
      */
-    validateEverything() {
-        if(this.validateStartEvents(this.graph.startEvents)&&this.validateEndEvents(this.graph.endEvents))
-            return this.validateSoundness(this.graph);
-        return false;
+    async validateEverything() {
+        if (this.validateStartEvents(this.graph.startEvents) && this.validateEndEvents(this.graph.endEvents)) {
+            this.validateSoundness(this.graph)
+        }
+        return this.messages;
     }
 
     /**

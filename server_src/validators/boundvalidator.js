@@ -21,25 +21,25 @@ var BoundValidator = class {
      * Validates every event feature of the given fragment
      * @method validateEverything
      */
-    validateEverything() {
+    async validateEverything() {
         if (!this.fragment.bound.hasBound) {
-            return true;
+            return [];
         }
         if (this.fragment.bound.limit == null) {
             this.messages.push({
                 'text':'The bound limit must be a number',
                 'type':'danger'
             });
-            return false;
+            return this.messages;
         }
         if (this.fragment.bound.limit < 1) {
             this.messages.push({
                 'text':'The bound limit must be greater than zero',
                 'type':'danger'
             });
-            return false;
+            return this.messages;
         }
-        return true;
+        return [];
     }
 
 

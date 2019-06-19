@@ -22,8 +22,9 @@ var DataObjectReferenceValidator = class {
      * Validates every feature of the given fragment.
      * @method validateEverything
      */
-    validateEverything() {
+    async validateEverything() {
         this.validateReferences();
+        return this.messages;
     }
 
     /**

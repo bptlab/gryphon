@@ -21,9 +21,10 @@ var EventValidator = class {
      * Validates every event feature of the given fragment
      * @method validateEverything
      */
-    validateEverything() {
+    async validateEverything() {
         this.validateEvents();
         this.validateEventBasedGateways();
+        return this.messages;
     }
 
     /**

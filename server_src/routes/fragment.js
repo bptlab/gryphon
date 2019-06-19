@@ -207,17 +207,17 @@ router.delete('/:fragID', function(req, res) {
  * Validates the given fragment.
  * @class getValidateFragment
  */
-router.get('/:fragID/validate', function(req, res) {
-   var id = req.params.fragID;
-    Fragment.findOne({_id:id},function(err, result){
+router.get('/:fragID/validate', async function(req, res) {
+    var id = req.params.fragID;
+    Fragment.findOne({_id:id}, async function(err, result){
         if (err) {
             console.error(err);
             res.status(500).end();
             return;
         }
         if (result !== null) {
-            var validator = new Validator(result,function() {
-                validator.validateEverything();
+            var validator = await new Validator(result, async function() {
+                await validator.validateEverything();
                 res.json({
                     messages:validator.messages
                 })

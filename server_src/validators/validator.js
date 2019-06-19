@@ -56,7 +56,8 @@ var GeneralValidator = class {
      * Validates every feature of the fragment that was loaded.
      * @method validateEverything
      */
-    validateEverything() {
+    async validateEverything() {
+        const runningValidators = [];
         this.validators.forEach(function(validator){
             if (validator == BoundValidator) {
                 validator = new validator(this.fragment)
@@ -69,20 +70,14 @@ var GeneralValidator = class {
       			} else {
                 validator = new validator(this.bpmnObject);
             }
-            this.validateWithSimpleValidator(validator);
+            runningValidators.push(validator.validateEverything());
+        }.bind(this));
+        const resolvedValidators = await Promise.all(runningValidators);
+        
+        resolvedValidators.forEach(function (validatorResult) {
+            this.messages = this.messages.concat(validatorResult);
         }.bind(this));
     }
-
-    /**
-     * Uses a simple validator (that needs to have an validateEverything() method) to validate the loaded fragment.
-     * @method validateWithSimpleValidator
-     * @param validator
-     */
-    validateWithSimpleValidator(validator) {
-        validator.validateEverything();
-        this.messages = this.messages.concat(validator.messages);
-    }
-
 };
 
 module.exports = {

@@ -23,8 +23,9 @@ var OLCValidator = class {
      * Validates every feature of the given fragment.
      * @method validateEverything
      */
-    validateEverything() {
+    async validateEverything() {
         this.validateDataObjectFlow();
+        return this.messages;
     }
 
     /**
