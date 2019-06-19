@@ -2,6 +2,8 @@ var React = require('react');
 var API = require('./../../api');
 var NameCheck = require('./../../namecheck');
 var SideBarManager = require('./../../sidebarmanager');
+var Redirecter = require('./../../redirecter');
+var MessageHandler = require('./../../messagehandler');
 
 var CreateScenarioModal = React.createClass({
     getInitialState: function() {
@@ -11,8 +13,14 @@ var CreateScenarioModal = React.createClass({
     },
     handleSubmit: function() {
         if (NameCheck.check(this.state.name)) {
-            API.createScenario(this.state.name);
-            SideBarManager.reload();
+            API.createScenario(this.state.name, function(data){
+                if ("err_code" in data) {
+                    MessageHandler.handleMessage(data.type, data.text);
+                } else {
+                    SideBarManager.reload();
+                    Redirecter.redirectToScenario(data.responseJSON._id);
+                }
+            });
             $('#createScenarioModal').modal('hide');
         }
     },
@@ -51,8 +59,8 @@ var CreateScenarioModal = React.createClass({
                                 </fieldset>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="button" className="btn btn-primary" onClick={this.handleSubmit}>Create scenario</button>
+                                <button type="button" className="btn" data-dismiss="modal">Close</button>
+                                <button type="button" className="btn btn-default btn-primary" onClick={this.handleSubmit}>Create scenario</button>
                             </div>
                         </form>
                     </div>

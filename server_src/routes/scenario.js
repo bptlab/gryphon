@@ -63,6 +63,7 @@ router.post('/', function(req, res) {
 
                 var db_scenario = new Scenario({
                     name: scenario.name,
+					description: (scenario.description ? scenario.description : ""),
                     terminationconditions: (scenario.terminationconditions ? scenario.terminationconditions : []), //Config.DEFAULT_TERMINATION_CONDITION]),
                     revision: 1,
                     domainmodel: -1,
@@ -86,7 +87,7 @@ router.post('/', function(req, res) {
                         new_domainmodel.revision = scenario.domainmodel.revision;
                         new_domainmodel.dataclasses = scenario.domainmodel.dataclasses.map(function(dclass){
                             if (typeof dclass.olc !== 'string') {
-                                dclass.olc = "";
+                                dclass.olc = dclass.olc.content ? dclass.olc.content : "";
                             }
                             return dclass;
                         });
@@ -101,6 +102,12 @@ router.post('/', function(req, res) {
                     var new_fragment = new Fragment();
                     new_fragment.name = "First Fragment";
                     new_fragment.content = Config.DEFAULT_FRAGMENT_XML;
+                    new_fragment.preconditions = [""];
+                    new_fragment.policy = Config.DEFAULT_FRAGMENT_POLICY;
+                    new_fragment.bound = {
+                        hasBound: false,
+                        limit: Config.DEFAULT_FRAGMENT_INSTANTIATION_AMOUNT
+                    },
                     new_fragment.revision = 1;
                     new_fragment.save();
                     scenario.fragments = [];
@@ -114,6 +121,9 @@ router.post('/', function(req, res) {
                             new_fragment.name = fragment.name;
                             new_fragment.content = fragment.content;
                             new_fragment.revision = fragment.revision;
+                            new_fragment.preconditions = fragment.preconditions;
+                            new_fragment.policy = fragment.policy;
+                            new_fragment.bound = fragment.bound;
                             new_fragment.save();
                             scenario.fragments = [];
                             db_scenario.fragments.push(new_fragment._id);
@@ -133,12 +143,7 @@ router.post('/', function(req, res) {
                             }]
                         );
                     } else {
-                        res.json(
-                            [{
-                                "type": "success",
-                                "text": "Import into Gryphon successful."
-                            }]
-                        );
+                        res.json(db_scenario);
                     }
                 })
             } catch (err) {
@@ -194,9 +199,14 @@ router.post('/associatefragment', function(req, res) {
                 if (result.fragments.indexOf(fragment_id) === -1) {
                     result.fragments.push(fragment_id);
                     result.revision++;
-                    result.save()
+                    result.save(function(save_err){
+                        if(save_err) {
+                            console.error(save_err);
+                            res.status(500).end();
+                        }
+                    });
+                    res.json(result);
                 }
-                res.json(result)
             } else {
                 res.status(404).end();
             }
@@ -324,12 +334,17 @@ router.get('/:scenID', function(req, res) {
                 result = result.toObject();
                 if (populate) {
                     result.domainmodel.dataclasses = result.domainmodel.dataclasses.map(function(dclass){
-                        if (dclass.olc != undefined) dclass.olc = parseToOLC(dclass.olc);
+                        if (dclass.olc != undefined) {
+                            // the xml for the olc will be kept in olc.content
+                            var xml = dclass.olc;
+                            dclass.olc = parseToOLC(xml);
+                            dclass.olc.content = xml;
+                        }
                         return dclass;
                     });
                 }
-                res.append('Content-disposition','attachment');
-                res.append('filename', result.name + '.json');
+                var filename = result.name + '.json';
+                res.append('Content-disposition','attachment; filename=' + filename);
             }
             res.json(result)
         } else {
@@ -378,7 +393,10 @@ router.post('/:scenID/export', function(req, res) {
                     result = result.toObject();
                     result.domainmodel.dataclasses = result.domainmodel.dataclasses.map(function(dclass){
                         if (dclass.olc != undefined) {
-                            dclass.olc = parseToOLC(dclass.olc);
+                            // the xml for the olc will be kept in olc.content
+                            var xml = dclass.olc;
+                            dclass.olc = parseToOLC(xml);
+                            dclass.olc.content = xml;
                         }
                         return dclass;
                     });
@@ -438,6 +456,11 @@ router.post('/:scenID', function(req, res) {
 
             if (new_scen.name != null && result.name !== new_scen.name) {
                 result.name = new_scen.name;
+                changed = true;
+            }
+
+			if (new_scen.description != null && result.description !== new_scen.description) {
+                result.description = new_scen.description;
                 changed = true;
             }
 

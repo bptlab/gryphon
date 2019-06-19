@@ -12,6 +12,7 @@ var Schema = mongoose.Schema;
  */
 var ScenarioSchema = new Schema({
     name: {type: String, index: { unique: true }},
+	description: String,
     terminationconditions: [{type: String}],
     revision: Number,
     fragments: [{type: mongoose.Schema.Types.ObjectId, ref: 'Fragment'}],

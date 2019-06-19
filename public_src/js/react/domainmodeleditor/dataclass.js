@@ -1,158 +1,10 @@
 var React = require('react');
-var MessageHandler = require('./../../messagehandler');
-var NameCheck = require('./../../namecheck');
+var MessageHandler = require('../../messagehandler');
+var NameCheck = require('../../namecheck');
+var DataClassAttributeComponent = require('./dataclassattribute');
+var DataClassHeaderComponent = require('./dataclassheader');
+var DataClassFooterComponent = require('./dataclassfooter');
 var Link = require('react-router').Link;
-
-var TypeSelect = React.createClass({
-    getInitialState: function() {
-        var type;
-        if (this.props.is_event) {type = "event"} else {type = "data"}
-        return {value: type};
-    },
-    handleChange: function(event) {
-        var newState = event.target.value;
-        if (newState == this.state.value)
-          return;
-
-        this.setState({value: newState});
-        this.props.handleType(newState);
-    },
-    componentWillReceiveProps: function(nextProps) {
-        var type;
-        if (nextProps.is_event) {type = "event"} else {type = "data"}
-        this.setState({value: type});
-    },
-    render: function() {
-        var value = this.state.value;
-        return (
-            <select value={value} onChange={this.handleChange} className="form-control">
-                <option value="data">Data</option>
-                <option value="event">Event</option>
-            </select>
-        );
-    }
-});
-
-var DataClassAttributeComponent = React.createClass({
-    getDefaultProps: function() {
-        return {
-            onClick: function() {}
-        }
-    },
-    handleNameChange: function(e) {
-        this.props.handleNameChange(e);
-    },
-    handleDataTypeChange: function(e) {
-        this.props.handleDataTypeChange(e);
-    },
-    render: function() {
-        var availableFixedTypes = ["String","Integer","Double","Boolean","Enum","Date"].map(function(dt){
-            var key="fixedType_" + dt;
-            return (
-                <option value={dt} key={key}>{dt}</option>
-            )
-        });
-        var availableTypes = this.props.availableDataTypes.map(function(dt){
-            var key = "classType_" + dt;
-            return (
-                <option value={dt} key={key}>{dt}</option>
-            )
-        });
-        return (
-            <li className="list-group-item clearfix">
-                <div className="row">
-                    <div className="col-sm-5">
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={this.props.name}
-                            onChange={this.handleNameChange}
-                            onKeyDown={this.props.handleEnterSubmit}
-                        />
-                    </div>
-                    <div className="col-sm-5">
-                        <select className="selectpicker" onChange={this.handleDataTypeChange} value={this.props.datatype} data-live-search="true" id={this.props.name + "-dtselect"}>
-                            <optgroup label="Scalar Type">
-                                {availableFixedTypes}
-                            </optgroup>
-                            <optgroup label="Class-Reference">
-                                {availableTypes}
-                            </optgroup>
-                        </select>
-                    </div>
-                    <div className="col-sm-1">
-                        <button type="button" className="btn btn-danger" onClick={this.props.onDelete}><i className="fa fa-times"></i></button>
-                    </div>
-                </div>
-            </li>
-        );
-    },
-    componentDidMount: function() {
-        $('#' + this.props.name + '-dtselect').selectpicker();
-    },
-    componentDidUpdate: function() {
-        $('#' + this.props.name + '-dtselect').selectpicker();
-    }
-});
-
-var DataClassHeaderComponent = React.createClass({
-    render: function() {
-        return (
-            <div className="panel-heading clearfix">
-                <div className="row">
-                    <div className="col-sm-6">
-                        <TypeSelect
-                            is_event={this.props.is_event}
-                            handleType={this.props.handleType}
-                        />
-                    </div>
-                </div>
-            </div>
-        )
-    }
-});
-
-var DataClassFooterComponent = React.createClass({
-    getInitialState: function() {
-        return {newname: ''}
-    },
-    handleChange: function(e) {
-        this.setState({newname: e.target.value});
-    },
-    handleAdd: function() {
-        if (this.props.handleAdd(this.state.newname)) {
-            this.setState({newname: ''});
-        }
-    },
-    handleEnterSubmit: function(e) {
-        if (e.keyCode == 13) {
-            this.handleAdd()
-        }
-    },
-    render: function() {
-        return (
-            <div className="panel-footer">
-                <div className="row">
-                    <div className="col-sm-12">
-                        <div className="input-group">
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="New attribute"
-                                value = {this.state.newname}
-                                onChange = {this.handleChange}
-                                onKeyDown = {this.handleEnterSubmit}
-                            />
-                            <div className="input-group-btn">
-                                <button className="btn btn-primary" onClick={this.handleAdd}>New attribute</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )
-    }
-});
 
 var DataClassComponent = React.createClass({
     getInitialState: function() {
@@ -189,9 +41,8 @@ var DataClassComponent = React.createClass({
             _id: this.props.id
         });
     },
-    handleType: function(type) {
-        var is_event = false;
-        if (type == "event") {is_event = true;}
+    handleType: function(new_is_event) {
+        var is_event = new_is_event;
         this.props.handleUpdate({
             name: this.props.name,
             is_event: is_event,

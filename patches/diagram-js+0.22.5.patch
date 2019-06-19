@@ -1,0 +1,40 @@
+patch-package
+--- a/node_modules/diagram-js/lib/layout/ManhattanLayout.js
++++ b/node_modules/diagram-js/lib/layout/ManhattanLayout.js
+@@ -51,6 +51,15 @@ function getBendpoints(a, b, directions) {
+ 
+   var xmid, ymid;
+ 
++  // hack: selfloop
++  if (a.x == b.x && a.y == b.y) {
++    return [
++      { x: a.x + INTERSECTION_THRESHOLD, y: a.y - 1.5 * INTERSECTION_THRESHOLD },
++      { x: a.x, y: a.y - 2.5 * INTERSECTION_THRESHOLD },
++      { x: a.x - INTERSECTION_THRESHOLD, y: a.y - 1.5 * INTERSECTION_THRESHOLD },
++    ];
++  }
++
+   // one point, next to a
+   if (directions === 'h:v') {
+     return [ { x: b.x, y: a.y } ];
+@@ -102,6 +111,10 @@ function connectPoints(a, b, directions) {
+ 
+   var points = [];
+ 
++  // olc selfloop hack
++  if ((a.x == b.x && a.y == b.y)) {
++    points = getBendpoints(a, b, directions);
++  }
+   if (!pointsAligned(a, b)) {
+     points = getBendpoints(a, b, directions);
+   }
+@@ -147,7 +160,8 @@ function connectRectangles(source, target, start, end, hints) {
+   end = end || getMid(target);
+ 
+   // overlapping elements
+-  if (!directions) {
++  // hack for selfloops
++  if (!directions && source.id != target.id) {
+     return;
+   }
+ 

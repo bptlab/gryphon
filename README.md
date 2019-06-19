@@ -22,22 +22,6 @@ The following software is necessary to build and run the editor:
     -   add the `bin` directory to your path (default directory is
         `C:\Program Files\MongoDB\Server\3.4\bin`)
 
-When using Windows you have to install the following additional
-dependencies:
-
--   Install **Python 2.7.X (not Python 3)**, available
-    [here](https://www.python.org/downloads/release/python-2713/). Add
-    the directory containing the python.exe executable to your PATH
--   Install Microsoft \*Visual Studio Community Edition 2015 (not
-    2017)\*, available
-    [here](https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx).
-    -   Be sure to select Windows 10 SDK and Windows 8.1 SDK during
-        installation
--   Configure npm to use the right version of Visual Studio:
-    `npm config set msvs_version 2015`
--   Configure npm with the path to your Python executable:
-    `npm config set python C:\YOUR_PYTHON_DIRECTORY\python.exe`
-
 ### Initial setup
 
 1.  Clone the source code repository from
@@ -80,21 +64,25 @@ Once your environment is set up, you can start the editor as follows
 
 ### Using Gryphon in Docker
 
-FOR ALL PEOPLE WHO JUST WANT TO USE THE EDITOR IN AN EASY AND WINDOWS COMPATIBLE WAY READ THIS:
 If you just want to run the editor, instead of modifying it (even though that doesn't really matter,
 you could also edit it this way, just the building part will take longer), you can run the whole
 thing in a docker container in 3 easy steps:
 
-Step One: Grab a cup of coffee.
-Step Two: Install Docker.
-Step Three: Run "docker build -t griffindocker ."
-Step Four: Grab another cup of coffee.
-Step Five: Run "docker run -p 3000:3000 -it --rm --name griffin griffindocker"
+1.  Install Docker.
+2.  `cd` into the gryphon dir and run `docker build -t bpt/gryphon .`
+3.  Run `docker run -it --rm -p 3000:3000 --name gryphon -v gryphon-mongodb-data:/var/lib/mongodb bpt/gryphon`
+
+
+### Using Gryphon in Docker Compose
+MOST EASY AND CONVENIENT WAY TO RUN GRYPHON
+
+1. Install docker & docker-compose
+1. `docker-compose up`
 
 ### Troubleshooting
 If running npm install fails:
-Check wether you have installed all build-essentials (Otherwise run: sudo apt-get install build-essential)
-Run: sudo npm install -g node-gyp
+Check wether you have installed all build-essentials (Otherwise run: `sudo apt-get install build-essential`)
+Run: `sudo npm install -g node-gyp`
 Try again.
 
 When running on Windows, make sure to have the following additional dependencies installed:

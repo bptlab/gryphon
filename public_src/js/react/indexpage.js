@@ -87,7 +87,7 @@ var IndexComponent = React.createClass({
             <div className="col-md-12">
 
               <div className="row">
-                <div className="col-md-10">
+                <div className="col-md-12">
                   <div className="panel panel-default">
 
                     <div className="panel-body bgcolor">
@@ -100,8 +100,8 @@ var IndexComponent = React.createClass({
                     </div>
                     <div className="panel-footer">
                       <div className="row">
-                        <div className="col-md-2 col-xs-6"><a href="about">About</a></div>
-                        <div className="col-md-2 col-xs-6"><a href="gettingstarted">Getting Started</a></div>
+                        <div className="col-md-2 col-xs-6"><a href="#aboutModal" data-toggle="modal" data-target="#aboutModal">About</a></div>
+                        <div className="col-md-2 col-xs-6"><a href="https://bptlab.github.io/gryphon/">Getting Started</a></div>
                       </div>
                     </div>
 
@@ -143,6 +143,15 @@ var IndexComponent = React.createClass({
                           data-target="#createScenarioModal"
                       >
                           <i className="fa fa-plus"></i> create new case model
+                      </a>
+                    </div>
+                    <div className="col-md-2">
+                      <a
+                          href="#"
+                          data-toggle="modal"
+                          data-target="#importCaseModelModal"
+                      >
+                          <i className="fa fa-plus"></i> import case model
                       </a>
                     </div>
                   </div>

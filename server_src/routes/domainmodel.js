@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var changeDClassReferences = require('./../helpers/updaterefs').changeDClassReferences;
+var parseToOLC = require('./../helpers/json').parseToOLC;
+var parseOLCPaths = require('./../helpers/json').parseOLCPaths;
+
 
 var DomainModel = require('./../models/domainmodel').model;
 var _ = require('lodash');
@@ -122,6 +125,33 @@ router.post('/', function(req, res) {
         } else {
             res.json(db_domainmodel);
         }
+    });
+});
+
+/**
+ * This endpoint returns the OLC paths of all objects in a domain model as JSON object.
+ * @class getOLCPaths
+ */
+router.get('/:dmID/olcPaths', function(req, res) {
+    var dm_id = req.params.dmID;
+    DomainModel.findOne({_id:dm_id},function(err, result){
+        if (err) {
+            console.error(err);
+            res.status(500).end();
+            return;
+        }
+        if (result === null) {
+            res.status(404).end();
+            return;
+        }
+
+        var olcPaths = parseOLCPaths(result);
+        if (olcPaths === null) {
+            res.status(500).end();
+            return;
+        }
+
+        res.json(olcPaths);
     });
 });
 

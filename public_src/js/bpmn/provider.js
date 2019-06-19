@@ -17,7 +17,7 @@ var processProps = require('bpmn-js-properties-panel/lib/provider/bpmn/parts/Pro
 var is = require('bpmn-js/lib/util/ModelUtil').is;
 var cmdHelper = require('bpmn-js-properties-panel/lib/helper/CmdHelper');
 
-var forEach = require('lodash/collection/forEach');
+var forEach = require('lodash/forEach');
 
 /**
  * The whole generation is encapsulated in an generator that provides a special
@@ -169,6 +169,29 @@ function generateProvider(fragmentid) {
         }
     }
 
+
+    /**
+     * This function creates the properties for the ScriptTask
+     */
+    function createScriptTaskProperties(group, element, elementRegistry) {
+        if (is(element, "bpmn:ScriptTask")) {
+            var stateEntry = entryFactory.textField({
+                id: 'ScriptTaskJar',
+                description: '',
+                label: 'Script Jar File',
+                modelProperty: 'scripttaskjar'
+            });
+            group.entries.push(stateEntry);
+            stateEntry = entryFactory.textField({
+                id: 'ScriptTaskClassPath',
+                description: '',
+                label: 'Script Task Class Path',
+                modelProperty: 'scripttaskclasspath'
+            });
+            group.entries.push(stateEntry);
+        }
+    }
+
     /**
      * This function generates the additional fields WebServiceURL, Method and Body
      * In case the visitied object is an ServiceTask
@@ -177,62 +200,104 @@ function generateProvider(fragmentid) {
         if (is(element, "bpmn:ServiceTask")) {
             var stateEntry = entryFactory.textField({
                 id: 'WebServiceURL',
-                description: '',
-                label: 'Webservice to call (URL)',
+                description: 'The URL of the web service that is called.',
+                label: 'web service URL',
                 modelProperty: 'webserviceurl'
             });
             group.entries.push(stateEntry);
             stateEntry = entryFactory.textField({
                 id: 'WebServiceMethod',
-                description: '',
-                label: 'Webservice to call (HTTP-Method)',
+                description: 'The HTTP method that should be used, e.g. GET or POST.',
+                label: 'HTTP method',
                 modelProperty: 'webservicemethod'
             });
             group.entries.push(stateEntry);
             stateEntry = entryFactory.textField({
+                id: 'ContentType',
+                description: 'The Content-Type of the Webservice Request, ' +
+                                'ENUM[application/json, application/x-www-form-urlencoded, application/atom+xml, ' +
+                                'application/octet-stream, application/svg+xml, application/xhtml+xml, application/xml, ' +
+                                'multipart/form-data, text/html, text/plain, text/xml',
+                label: 'Content-Type',
+                modelProperty: 'contenttype'
+            });
+            group.entries.push(stateEntry);
+            stateEntry = entryFactory.textField({
                 id: 'WebServiceBody',
-                description: '',
-                label: 'Webservice to call (Body)',
+                description: 'The body that is send to the web service. Content must be according to your content-type.',
+                label: 'body (optional)',
                 modelProperty: 'webservicebody'
             });
             group.entries.push(stateEntry);
+	    stateEntry = entryFactory.textField({
+                id: 'WebServiceHeader',
+                description: 'The header that is sent to the web service. This should be a JSON object.',
+                label: 'header (optional)',
+                modelProperty: 'webserviceheader'
+            });
+            group.entries.push(stateEntry);
+
         }
+    }
+
+     /**
+     * This function generates the additional field TaskRole
+     * In case the visitied object is a Task but neither a
+     * ServiceTask, SendTask, or ReceiveTask
+     */
+    function createTaskProperties(group, element, elementRegistry) {
+        if (is(element, "bpmn:Task") &&
+	    !is(element, "bpmn:ServiceTask") &&
+	    !is(element, "bpmn:SendTask") &&
+        !is(element, "bpmn:EmptyTask") &&
+   	    !is(element, "bpmn:ReceiveTask")) {
+            var stateEntry = entryFactory.textField({
+                id: 'TaskRole',
+                description: 'The role required to execute this task.',
+                label: 'required role for task',
+                modelProperty: 'taskrole'
+            });
+            group.entries.push(stateEntry);
+	    }
     }
 
     /**
      * This function generates the general-tab for the propertys panel.
-     * It uses a lot of function created by bpmn-js and the 3 custom generators
-     * createWebServiceTaskProperties, createMessageEventProperties and
-     * createDataObjectProperties to generate the custom elements for gryphon.
-     * It returns all generated groups.
+     * It uses a lot of function created by bpmn-js and the 4 custom generators
+     * createWebServiceTaskProperties, createMessageEventProperties,
+     * createDataObjectProperties, and createTaskProperties to generate the
+     * custom elements for gryphon. It returns all generated groups.
      */
-    function createGeneralTabGroups(element, bpmnFactory, elementRegistry) {
+    function createGeneralTabGroups(element, bpmnFactory, elementRegistry, translate) {
 
         var generalGroup = {
             id: 'general',
             label: 'General',
             entries: []
         };
-        idProps(generalGroup, element, elementRegistry);
-        processProps(generalGroup, element);
+        idProps(generalGroup, element, translate);
+        processProps(generalGroup, element, translate);
 
         var detailsGroup = {
             id: 'details',
             label: 'Details',
             entries: []
         };
-        linkProps(detailsGroup, element);
-        eventProps(detailsGroup, element, bpmnFactory);
-        createDataObjectProperties(detailsGroup, element, bpmnFactory);
-        createMessageEventProperties(detailsGroup, element, bpmnFactory);
-        createWebServiceTaskProperties(detailsGroup, element, bpmnFactory);
+        linkProps(detailsGroup, element, translate);
+        eventProps(detailsGroup, element, bpmnFactory, translate);
+        createDataObjectProperties(detailsGroup, element, bpmnFactory, translate);
+        createMessageEventProperties(detailsGroup, element, bpmnFactory, translate);
+        createWebServiceTaskProperties(detailsGroup, element, bpmnFactory, translate);
+        createScriptTaskProperties(detailsGroup, element, bpmnFactory, translate);
+        createTaskProperties(detailsGroup, element, bpmnFactory, translate);
+
         var documentationGroup = {
             id: 'documentation',
             label: 'Documentation',
             entries: []
         };
 
-        documentationProps(documentationGroup, element, bpmnFactory);
+        documentationProps(documentationGroup, element, bpmnFactory, translate);
 
         return[
             generalGroup,
@@ -242,7 +307,7 @@ function generateProvider(fragmentid) {
 
     }
 
-    function Provider(eventBus, bpmnFactory, elementRegistry) {
+    function Provider(eventBus, bpmnFactory, elementRegistry, translate) {
 
         PropertiesActivator.call(this, eventBus);
 
@@ -252,7 +317,7 @@ function generateProvider(fragmentid) {
             var generalTab = {
                 id: 'general',
                 label: 'General',
-                groups: createGeneralTabGroups(element, bpmnFactory, elementRegistry)
+                groups: createGeneralTabGroups(element, bpmnFactory, elementRegistry, translate)
             };
 
             return [

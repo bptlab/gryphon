@@ -37,3 +37,12 @@ public/swagger/swagger-ui.js
 # Ignore all IDE files
 .idea
 *.iml
+
+# Ignore macos files
+.DS_Store
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json

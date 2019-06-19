@@ -1,85 +1,10 @@
 var React = require('react');
-var MessageHandler = require('./../../messagehandler');
-var NameCheck = require('./../../namecheck');
-var API = require('./../../api');
-var Config = require('./../../config');
+var MessageHandler = require('../../messagehandler');
+var NameCheck = require('../../namecheck');
+var API = require('../../api');
+var Config = require('../../config');
 var DataClassComponent = require('./dataclass');
-var OLCEditorComponent = require('./../olceditor');
-
-var CreateNewClassComponent = React.createClass({
-    getInitialState: function() {
-        return {
-            newname: ''
-        }
-    },
-    handleChange: function(e) {
-        this.setState({newname: e.target.value});
-    },
-    handleSubmit: function(type) {
-        var is_event = false;
-        if (type == "event") {is_event = true;}
-        var newItem = this.state.newname;
-        if (NameCheck.check(newItem)) {
-            if (this.props.onSubmit(newItem, is_event)) {
-                this.setState({newname: ''});
-            }
-        }
-    },
-    submitData: function() {
-        this.handleSubmit("data");
-    },
-    submitEvent: function() {
-        this.handleSubmit("event");
-    },
-    handleEnterSubmit: function(e) {
-        if (e.keyCode == 13) {
-            this.submitData()
-        }
-    },
-    render: function() {
-        return (
-            <div className="panel panel-default">
-                <div className="panel-heading">
-                    Create a new class
-                </div>
-                <div className="panel-body">
-                    <div className="input-group">
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="domainmodelDataClassName"
-                            placeholder="New class"
-                            value = {this.state.newname}
-                            onChange = {this.handleChange}
-                            onKeyDown = {this.handleEnterSubmit}
-                            />
-                        <div className="input-group-btn">
-                            <button className="btn btn-primary" onClick={this.submitData}>Create dataclass</button>
-                            <button className="btn btn-primary" onClick={this.submitEvent}>Create eventclass</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-});
-
-var OperationsComponent = React.createClass({
-    render: function() {
-        return (
-            <div className="panel panel-default">
-                <div className="panel-heading">
-                    Operations
-                </div>
-                <div className="panel-body">
-                    <div className="btn-group btn-block">
-                        <button className="btn btn-success" onClick={this.props.onSave}>Save</button>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-});
+var OLCEditorComponent = require('../olceditor');
 
 var DomainModelEditorComponent = React.createClass({
     getInitialState: function() {
@@ -136,6 +61,17 @@ var DomainModelEditorComponent = React.createClass({
             return true; //signal successful creation (evaluated by invoking component)
         }
     },
+    stripLineFeeds: function(newDm) {
+      for (let i = 0; i < newDm.dataclasses.length; i++) {
+        let dataclass = newDm.dataclasses[i];
+        let newOlc = dataclass.olc.replace(/name="([^"]+)&#10;"/g, function(string, matchedGroup){
+          console.log("Stripping newline from state name: ", string, " matchedGroup: ", matchedGroup);
+          return "name=\"" + matchedGroup + "\"";
+        });
+        dataclass.olc = newOlc;
+      }
+      return newDm;
+    },
     handleOlcChanged: function(olcDm) {
         var targetClassId = this.props.params.dataclassId;
         var mergedDomainModelClasses = this.state.dm.dataclasses.map(function(dataclass) {
@@ -153,12 +89,15 @@ var DomainModelEditorComponent = React.createClass({
         var newDm = this.state.dm;
         newDm.dataclasses = mergedDomainModelClasses;
 
+        // While we're at it, strip these weird line feeds
+        newDM = this.stripLineFeeds(newDm);
+
         this.setState({'dm':newDm, 'changed':true}, function () {
           this.handleExport();
         });
     },
     validateAttrType: function(type){
-        var types = ["String","Integer","Double","Boolean","Enum","Date"];
+        var types = ["String","Integer","Double","Boolean","Enum","Date","File"];
         if (types.indexOf(type) >= 0) {
             return true;
         }
@@ -201,10 +140,10 @@ var DomainModelEditorComponent = React.createClass({
               scenid = {this.props.scenario._id}
               />;
 
-            editorCssClasses = "panel-body";
-            if (this.state.editorIsCollapsed) {
-              editorCssClasses += " collapse";
-            }
+        var editorCssClasses = "panel-body";
+        if (this.state.editorIsCollapsed) {
+          editorCssClasses += " collapse";
+        }
 
         return (
               <div>
@@ -216,26 +155,34 @@ var DomainModelEditorComponent = React.createClass({
                 </div>
 
                 <div className="row">
-                  <div className="col-md-12">
-                    <div className="panel panel-default">
-                      <div className="panel-heading">
-                        <a data-toggle="collapse" href="#editorCollapse">
-                          <h3 className="panel-title">OLC Editor</h3>
-                        </a>
-                      </div>
-                      <div className={editorCssClasses} id="editorCollapse">
-                        <OLCEditorComponent
-                          scenarioId={this.props.params.scenarioId}
-                          domainmodelId={this.props.params.domainmodelId}
-                          dataclassId={this.props.params.dataclassId}
-                          changeHandler={this.handleOlcChanged}
-                          diagramLoadedCallback={this.collapseOlcEditor}
-                          ref="OLCEditor"
-                        />
-                      </div>
+                <div className="col-md-12">
+                  <div className="panel panel-default">
+                    <div className="panel-heading">
+                      <a data-toggle="collapse" href="#editorCollapse">
+                        <span className="h3 panel-title">OLC Editor</span>
+                      </a>
+                      &nbsp;
+                      <a
+                        data-toggle="tooltip"
+                        data-container="body"
+                        title="This editor allows to model the object lifecycle (OLC) of a data class. The OLC defines states and valid state transitions for data objects of that data class. Fragments are validated against the OLC, e.g. no activities are allowed to change the state of a data object if this transition is not allowed in the OLC."
+                      >
+                        <i className="fa fa-info-circle"></i>
+                      </a>
+                    </div>
+                    <div className={editorCssClasses} id="editorCollapse">
+                      <OLCEditorComponent
+                        scenarioId={this.props.params.scenarioId}
+                        domainmodelId={this.props.params.domainmodelId}
+                        dataclassId={this.props.params.dataclassId}
+                        changeHandler={this.handleOlcChanged}
+                        diagramLoadedCallback={this.collapseOlcEditor}
+                        ref="OLCEditor"
+                      />
                     </div>
                   </div>
                 </div>
+              </div>
 
               </div>
         )

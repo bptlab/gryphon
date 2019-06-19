@@ -1,139 +1,88 @@
 var React = require('react');
 var API = require('./../../api');
 var MessageHandler = require('./../../messagehandler');
-var NameCheck = require('./../../namecheck');
-var InputWithToggleComponent = require('./inputwithtoggle');
+var DataObjectReference = require('./../dataobjectreference');
 
 var TerminationConditionsComponent = React.createClass({
     getInitialState: function() {
         return {
-            'name': '',
-            'terminationconditions': [],
-            '_id': '',
+            'terminationconditions': [''],
+            _id: ''
         }
     },
     componentDidMount: function() {
         this.setState({
-            name: this.props.scenario.name,
             terminationconditions: this.props.scenario.terminationconditions,
-            _id: this.props.scenario._id,
-        });
-    },
-    handleNameChange: function(e) {
-      return function(e) {
-        console.log("e: ", e);
-        this.setState({name: e.target.value});
-      }.bind(this);
-    },
-    validateTerminationCondition: function(terminationcondition) {
-        var split = terminationcondition.split(", ");
-        var ret = true;
-        split.forEach(function(dataobject){
-            var end = dataobject.indexOf("[");
-            var realend = dataobject.indexOf("]");
-            if (end == dataobject.length - 1 || end == -1 || realend < dataobject.length - 1) {
-                MessageHandler.handleMessage("danger","You must specify a state for your termination condition in: " + dataobject);
-                return false;
-            } else {
-                var substr = dataobject.substring(0,end);
-                console.log(substr);
-                var found = false;
-                this.props.scenario.domainmodel.dataclasses.forEach(function(dataclass){
-                    found = found || (dataclass.name == substr);
-                }.bind(this));
-                if (!found) {
-                    MessageHandler.handleMessage("danger","You referenced an invalid dataclass: " + dataobject);
-                    return false;
-                }
-            }
-        }.bind(this));
-        return ret;
-    },
-    handleTerminationConditionChange: function(index) {
-        return handler = function(e) {
-            var terminationconditions = this.state.terminationconditions;
-            terminationconditions[index] = e.target.value;
-            this.setState({terminationconditions: terminationconditions});
-        }.bind(this);
-    },
-    validateTerminationConditionChange: function(index) {
-        return function(e) {
-            var terminationconditions = this.state.terminationconditions;
-            terminationconditions[index] = e.target.value;
-            var state = this.validateTerminationCondition(e.target.value);
-            // Dibbilydubbely find my grandgrandparent!
-            if (state == false) {
-                $(e.target).parent().parent().parent().addClass('has-error');
-            } else {
-                $(e.target).parent().parent().parent().removeClass('has-error');
-            }
-        }.bind(this);
-
+            _id: this.props.scenario._id
+          });
     },
     componentDidUpdate: function() {
         if (this.props.scenario._id != this.state._id) {
             this.setState({
-                name: this.props.scenario.name,
                 terminationconditions: this.props.scenario.terminationconditions,
-                _id: this.props.scenario._id,
+                _id: this.props.scenario._id
             });
         }
     },
-    handleSubmit: function() {
-        if (NameCheck.check(this.state.name)) {
-            var validationSuccess = true;
-            this.state.terminationconditions.forEach(function(terminationCondition) {
-              console.log("validating ", terminationCondition);
-              if (!this.validateTerminationCondition(terminationCondition)) {
-                validationSuccess = false;
-              }
-            }.bind(this));
-
-            if (validationSuccess) {
-              API.exportScenario(this.state);
-              MessageHandler.handleMessage("success","Saved scenario-details!");
-            }
-        }
-    },
-    handleAddTerminationCondition: function(e) {
+    handleAdd: function() {
         var terminationconditions = this.state.terminationconditions;
         terminationconditions.push("");
         this.setState({terminationconditions: terminationconditions});
     },
-    handleTerminationConditionDelete: function(index) {
-        return function(e) {
+    handleDelete: function(index) {
+        return function() {
             var terminationconditions = this.state.terminationconditions;
             terminationconditions.splice(index, 1);
-            this.setState({terminationconditions: terminationconditions}, this.handleSubmit);
+            this.setState({terminationconditions: terminationconditions}, this.submitAll);
         }.bind(this);
     },
+    handleSubmit: function(index) {
+        return function(terminationCondition) {
+            var terminationconditions = this.state.terminationconditions;
+            terminationconditions[index] = terminationCondition;
+            this.setState({terminationconditions: terminationconditions}, this.submitAll);
+        }.bind(this);
+    },
+    submitAll: function(index) {
+        API.exportScenario(this.state, function() {
+            MessageHandler.handleMessage("success","Saved termination conditions!");
+        }.bind(this));
+    },
     render: function() {
-        var terminationConditions = this.state.terminationconditions.map(function(terminationcondition, index) {
+        var terminationConditionComponents = this.state.terminationconditions.map(function(terminationCondition, index) {
             return (
-              <InputWithToggleComponent
-                initialValue={terminationcondition}
-                placeholder="New Termination Condition"
-                deletable={true}
-                handleChange={this.handleTerminationConditionChange(index)}
-                handleDelete={this.handleTerminationConditionDelete(index)}
-                handleSubmit={this.handleSubmit}
+              <DataObjectReference
+                scenario = {this.props.scenario}
+                handleDelete = {this.handleDelete(index)}
+                handleSubmit = {this.handleSubmit(index)}
+
+                dataObjectReference = {terminationCondition}
                 key={"terminationCondition" + index}
               />
             );
         }.bind(this));
+
         return (
             <form className="form-horizontal">
               <h3>Termination Conditions</h3>
 
-              {terminationConditions}
+              {terminationConditionComponents}
 
               <button
                   type="button"
                   className="btn btn-link btn-sm"
-                  onClick={this.handleAddTerminationCondition}
+                  onClick={this.handleAdd}
               >
                   <i className="fa fa-plus"></i> add termination condition
               </button>
+
+              <a
+                data-toggle="tooltip"
+                title="A case can terminate if one of its termination conditions is fulfilled. Each termination condition specifies that certain data objects need to be in a specific state, e.g. Application[archived], CreditCard[activated]."
+              >
+                <i className="fa fa-info-circle"></i>
+              </a>
+
             </form>
         );
     }

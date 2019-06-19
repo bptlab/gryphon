@@ -1,5 +1,5 @@
 {
-  "name": "HPI Griffin",
+  "name": "HPI BPT-Lab Gryphon",
   "prefix": "griffin",
   "uri": "http://wat",
   "xml":{
@@ -48,6 +48,25 @@
       ]
     },
     {
+      "name": "ScriptTask",
+      "isAbstract": false,
+      "extends": [
+        "bpmn:ScriptTask"
+      ],
+      "properties": [
+        {
+          "name": "scripttaskjar",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "scripttaskclasspath",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
       "name": "WebServiceTask",
       "isAbstract": false,
       "extends": [
@@ -60,16 +79,44 @@
           "type": "String"
         },
         {
+          "name": "webservicemethod",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "contenttype",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
           "name": "webservicebody",
           "isAttr": true,
           "type": "String"
         },
         {
-          "name": "webservicemethod",
+          "name": "webserviceheader",
           "isAttr": true,
           "type": "String"
         }
       ]
+    },
+    {
+	"name": "TaskWithRole",
+	"isAbstract": false,
+	"extends": [ "bpmn:Task" ],
+	"properties": [
+	    {
+		"name": "taskrole",
+		"isAttr": true,
+		"type": "String"
+	    }
+	]
+    },
+    {
+      "name": "EmptyActivity",
+      "isAbstract": false,
+      "extends": [ "bpmn:CallActivity" ],
+      "properties": []
     }
   ],
   "enumerations": []

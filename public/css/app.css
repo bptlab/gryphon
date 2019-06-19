@@ -19,6 +19,11 @@
 
 .messagebar-inner {
     padding: 5px;
+    pointer-events: none;
+}
+
+.alert-dismissable .close, .alert-dismissible .close {
+    pointer-events: all;
 }
 
 .main-content-bpmn {

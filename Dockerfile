@@ -17,8 +17,11 @@ RUN npm install -g node-gyp grunt-cli
 # Copy package.json early for module dependencies (to allow for npm caching)
 COPY package.json /var/gryphon/
 
+# Copy patches
+COPY patches /var/gryphon/patches
+
 # Install dependencies
-RUN cd /var/gryphon && npm install
+RUN cd /var/gryphon && npm install --unsafe-perm
 
 # Copy project data
 COPY . /var/gryphon/
@@ -29,4 +32,3 @@ RUN cd /var/gryphon && grunt
 CMD mongod --logpath /var/log/mongodb/mongodb.log --fork --dbpath /var/lib/mongodb && node /var/gryphon/bin/www
 
 EXPOSE 3000
-EXPOSE 27017

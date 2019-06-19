@@ -60,17 +60,39 @@ Editor.prototype.handleChange = function(event, object) {
     if (object.element.businessObject != null) {
         var bo = object.element.businessObject;
         if (bo.$type == "bpmn:DataObjectReference") {
-            console.log(bo);
             if (bo.name != null) {
                 var end = bo.name.indexOf("[");
                 var realend = bo.name.indexOf("]");
                 if (end >= 0 && realend >= 0 && realend > end) {
-                    bo.dataclass = bo.name.substring(0,end);
-                    bo.state = bo.name.substring(end+1,realend);
+                    bo.dataclass = bo.name.substring(0,end).trim();
+                    bo.state = bo.name.substring(end+1,realend).trim();
                 }
+                // Re-generate name (to discard trimmed whitespace)
+                bo.name = bo.dataclass + "[" + bo.state + "]";
             }
         }
     }
 };
+
+Editor.prototype.downloadSVG = function(filename) {
+
+    // Replace non-alphanumeric characters (except for '-' and '.') with '-'
+    filename = filename.replace(/[^a-zA-Z0-9\-.]+/g, '-');
+    
+    this.renderer.saveSVG({}, function(err, svgStr) {
+
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgStr));
+        element.setAttribute('download', filename);
+      
+        element.style.display = 'none';
+        document.body.appendChild(element);
+      
+        element.click();
+      
+        document.body.removeChild(element);
+
+    });
+}
 
 module.exports = Editor;

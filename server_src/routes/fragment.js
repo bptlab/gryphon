@@ -5,6 +5,7 @@ var Fragment = require('./../models/fragment').model;
 var Scenario = require('./../models/scenario').model;
 var JSONHelper = require('./../helpers/json');
 var Validator = require('./../helpers/validator').Validator;
+var _ = require('lodash');
 
 /**
  * You can find further information about all endpoints in the swagger.yaml
@@ -50,7 +51,6 @@ router.post('/:fragID', function(req, res) {
             return;
         }
         if (result !== null) {
-
             var changed = false;
 
             if (new_frag.name != null && result.name !== new_frag.name) {
@@ -62,6 +62,21 @@ router.post('/:fragID', function(req, res) {
                 changed = true;
                 result.content = new_frag.content;
             }
+
+            if (new_frag.preconditions != null && ! (_.isEqual(result.preconditions, new_frag.preconditions))) {
+                changed = true;
+                result.preconditions = new_frag.preconditions;
+            }
+
+			if (new_frag.policy != null && result.policy !== new_frag.policy) {
+				changed = true;
+				result.policy = new_frag.policy;
+			}
+
+			if (new_frag.bound != null && ! (_.isEqual(result.bound, new_frag.bound))) {
+				changed = true;
+				result.bound = new_frag.bound;
+			}
 
             if (changed) {
                 result.revision++;
@@ -110,6 +125,9 @@ router.post('/', function(req, res) {
     var db_fragment = new Fragment({
         name: fragment.name,
         content: (fragment.content ? fragment.content : Config.DEFAULT_FRAGMENT_XML),
+        preconditions: (fragment.preconditions ? fragment.preconditions : [""]),
+        policy: (fragment.policy ? fragment.policy : Config.DEFAULT_FRAGMENT_POLICY),
+        bound: (fragment.bound ? fragment.bound : {hasBound: false, limit: Config.DEFAULT_FRAGMENT_INSTANTIATION_AMOUNT}),
         revision: 1
     });
 

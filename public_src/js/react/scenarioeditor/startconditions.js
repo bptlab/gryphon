@@ -1,7 +1,7 @@
 var React = require('react');
 var API = require('./../../api');
 var MessageHandler = require('./../../messagehandler');
-var InputWithToggleComponent = require('./inputwithtoggle');
+var InputWithToggleComponent = require('./../inputwithtoggle');
 
 var MapAnotherAttributeComponent = React.createClass({
   render: function() {
@@ -37,6 +37,13 @@ var MapAnotherDataClassComponent = React.createClass({
             >
                 <i className="fa fa-plus"></i> map another data class
             </button>
+
+            <a
+              data-toggle="tooltip"
+              title="If data classes are added to the mapping the case start trigger will create data objects of that classes in the specified lifecycle state."
+            >
+              <i className="fa fa-info-circle"></i>
+            </a>
           </td>
           <td></td>
           <td></td>
@@ -85,17 +92,31 @@ var CaseStartTriggerRowComponent = React.createClass({
                 type="text"
                 disabled="disabled"
                 value={this.props.state}
-                className="form-control" />
+                id={this.props._id + "-dtselect-state"}
+                className="form-control"
+            />
         );
         if (this.props.enableClassSelect) {
+            var availableStates = [];
+            var classname = this.props.classname;
+            if (this.props.classname in this.props.olcPaths) {
+                availableStates = Object.keys(this.props.olcPaths[this.props.classname]);
+            }
+
             state = (
-                <input type="text"
-                       className="form-control"
-                       value={this.props.state}
-                       onChange={this.props.handleStateChange}
-                       disabled={this.state.disabled}
-                       />
-            )
+                <select className="form-control"
+                    onChange={this.props.handleStateChange}
+                    value={this.props.state}
+                    id={this.props._id + "-dtselect-state"}
+                    disabled={this.state.disabled}
+                    className="form-control"
+                >
+                    <option value="">Nothing</option>
+                    {availableStates.map((statename) => {
+                        return <option value={statename} key={"availableStates_" + classname + "_" + statename}>{statename}</option>
+                    })}
+                </select>
+            );
         }
 
         return (
@@ -175,7 +196,6 @@ var CaseStartTriggerComponent = React.createClass({
     },
     handleClassMappingChange: function(index, tindex, attr) {
         return function(e) {
-            console.log('handleClassMappingChange()');
             var condition = this.props.condition;
             condition['dataclasses'][index]['mapping'][tindex][attr] = e.target.value;
             this.props.handleUpdate(condition);
@@ -192,7 +212,11 @@ var CaseStartTriggerComponent = React.createClass({
     handleDelete: function(index, tindex) {
         return function(e) {
             var condition = this.props.condition;
-            condition['dataclasses'][index]['mapping'].splice(tindex,1);
+            if (condition['dataclasses'][index]['mapping'].length == 1) {
+                condition['dataclasses'].splice(index, 1);
+            } else {
+                condition['dataclasses'][index]['mapping'].splice(tindex,1);
+            }
             this.props.handleUpdate(condition);
             this.props.handleSubmit();
         }.bind(this)
@@ -252,6 +276,7 @@ var CaseStartTriggerComponent = React.createClass({
                         attr = {tuple.attr}
                         path = {tuple.path}
                         availableClasses = {availableClasses}
+                        olcPaths = {this.props.olcPaths}
                         availableAttributes = {availableAttributes}
                         key = {tuple._id}
                     />
@@ -285,6 +310,7 @@ var CaseStartTriggerComponent = React.createClass({
                                 initialValue={this.props.condition.query}
                                 placeholder="New Event Query"
                                 label="Event Query"
+                                tooltip="This Esper EPL query will be registered with Unicorn. When a matching event occurs, the case start trigger will be triggered and instantiate a new case."
                                 deletable={false}
                                 handleChange={this.handleQueryChange}
                                 handleSubmit={this.props.handleSubmit}
@@ -300,7 +326,16 @@ var CaseStartTriggerComponent = React.createClass({
                             <th>Data Class</th>
                             <th>State</th>
                             <th>Attribute</th>
-                            <th>JSON Path Expression</th>
+                            <th>
+                              JSON Path Expression
+                              &nbsp;
+                              <a
+                                data-toggle="tooltip"
+                                title="The JsonPath expression is applied to the event matching the event query and the resulting values are stored in the specified data object attributes."
+                              >
+                                <i className="fa fa-info-circle"></i>
+                              </a>
+                            </th>
                             <th></th>
                         </tr>
                         </thead>
@@ -325,7 +360,8 @@ var ScenarioCaseStartTriggerForm = React.createClass({
     getInitialState: function() {
         return {
             'startconditions':[],
-            '_id':''
+            '_id':'',
+            'olcPaths' : {}
         }
     },
     handleUpdate: function(index){
@@ -342,10 +378,16 @@ var ScenarioCaseStartTriggerForm = React.createClass({
             this.setState(
                 {
                     '_id':this.props.scenario._id,
-                    'startconditions':this.props.scenario.startconditions
-                }
-            )
+                    'startconditions':this.props.scenario.startconditions,
+                },
+                this.loadOLCPaths
+            );
         }
+    },
+    loadOLCPaths: function() {
+      API.loadOLCPaths(this.props.scenario.domainmodel._id,function(data){
+          this.setState({olcPaths: data});
+      }.bind(this));
     },
     handleSubmit: function() {
         API.exportScenario(this.state);
@@ -378,6 +420,7 @@ var ScenarioCaseStartTriggerForm = React.createClass({
                     condition={condition}
                     handleUpdate={this.handleUpdate(index)}
                     availableClasses={this.props.scenario.domainmodel.dataclasses}
+                    olcPaths={this.state.olcPaths}
                     handleSubmit={this.handleSubmit}
                     handleDelete={this.handleDelete(index)}
                     key={id}
@@ -401,6 +444,13 @@ var ScenarioCaseStartTriggerForm = React.createClass({
                 >
                     <i className="fa fa-plus"></i> add case start trigger
                 </button>
+
+                <a
+                  data-toggle="tooltip"
+                  title="Case start triggers automatically instantiate cases whenever a specified external event occurs."
+                >
+                  <i className="fa fa-info-circle"></i>
+                </a>
               </div>
             </div>
           </div>

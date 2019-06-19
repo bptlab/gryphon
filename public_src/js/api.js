@@ -54,6 +54,10 @@ API.prototype.exportDomainModel = function(dm, callback) {
     });
 };
 
+API.prototype.loadOLCPaths = function(dmid, callback) {
+    $.getJSON(this.createURL("domainmodel/" + dmid + "/olcPaths"), callback);
+};
+
 API.prototype.associateFragment = function(scen_id, frag_id, callback) {
     var url = "scenario/associatefragment?";
     url += "scenario_id=" + scen_id;
@@ -75,7 +79,15 @@ API.prototype.getAllScenarios = function(populate, callback) {
 };
 
 API.prototype.exportFragment = function(fragment, callback) {
-    $.post(this.createURL("fragment/" + fragment._id),fragment,callback);
+    $.ajax({
+      url: this.createURL("fragment/" + fragment._id),
+      type: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(fragment)
+    }).done(function() {
+      if(callback)
+        callback();
+    });
 };
 
 API.prototype.exportScenario = function(scenario, callback) {
@@ -102,7 +114,23 @@ API.prototype.createScenario = function(name, callback) {
     var scenario = {
         name: name
     };
-    $.post(this.createURL("scenario"),scenario,callback);
+    $.ajax({
+        url: this.createURL("scenario"),
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(scenario),
+        complete: callback
+    });
+};
+
+API.prototype.importCaseModel = function(casemodel, callback) {
+    $.ajax({
+        url: this.createURL("scenario"),
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(casemodel),
+        complete: callback
+    });
 };
 
 API.prototype.deleteFragment = function(id, callback) {

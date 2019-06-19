@@ -74,4 +74,49 @@ var parseToOLC = function(xml) {
     return parsed;
 };
 
-module.exports = {parseToBPMNObject: parseToBPMNObject,parseToOLC: parseToOLC};
+/**
+ * This method creates adjacency lists for every dataclass according to it's olc.
+ * If there is no valid olc model for the dataclass (including at least one state) it's invalid.
+ * @method parseOLCPaths
+ * @param domainmodel {Domainmodel}
+ * @returns {{}}
+ */
+var parseOLCPaths = function(domainmodel) {
+    var olcPaths = {};
+    domainmodel.dataclasses.forEach(function(dclass){
+        if (dclass.olc != undefined) {
+            var olc = parseToOLC(dclass.olc);
+            var adjlist = {};
+            var namemap  = {};
+            if ('state' in olc) {
+
+                olc['state'].forEach(function(state){
+                    if ('name' in state) {
+                        namemap[state['id']] = state['name'];
+                    } else {
+                        namemap[state['id']] = state['id'];
+                    }
+                    adjlist[namemap[state['id']]] = [];
+                });
+
+                if ('sequenceFlow' in olc) {
+                    olc['sequenceFlow'].forEach(function(seqFlow){
+                        if ((seqFlow['sourceRef'] in namemap) && (seqFlow['targetRef'] in namemap)) {
+                            adjlist[namemap[seqFlow['sourceRef']]].push(namemap[seqFlow['targetRef']]);
+                        }
+                    });
+                    olcPaths[dclass.name] = adjlist;
+                } else {
+                    olcPaths[dclass.name] = null;
+                }
+            } else {
+                olcPaths[dclass.name] = null;
+            }
+        } else {
+            olcPaths[dclass.name] = null;
+        }
+    }.bind(this))
+    return olcPaths;
+};
+
+module.exports = {parseToBPMNObject: parseToBPMNObject, parseToOLC: parseToOLC, parseOLCPaths: parseOLCPaths};
