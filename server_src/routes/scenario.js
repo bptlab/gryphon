@@ -248,9 +248,9 @@ router.post('/associatedomainmodel', function(req, res) {
  * Validates the given scenario.
  * @class getValidateScenario
  */
-router.get('/:scenID/validate', function(req, res){
+router.get('/:scenID/validate', async function(req, res){
     var scenID = req.params.scenID;
-    Scenario.findOne({_id:scenID}).populate('fragments').populate('domainmodel').exec(function(err, result) {
+    Scenario.findOne({_id:scenID}).populate('fragments').populate('domainmodel').exec(async function(err, result) {
         if (err) {
             console.error(err);
             res.status(500).end();
@@ -291,9 +291,9 @@ router.get('/:scenID/validate', function(req, res){
                     })
                 }
             });
-            result.fragments.forEach(function(fragment) {
-                var val = new Validator(fragment,function() {
-                    val.validateEverything();
+            await result.fragments.forEach(async function(fragment) {
+                var val = await new Validator(fragment, async function() {
+                    await val.validateEverything();
                     messages = messages.concat(val.messages);
                     result_count++;
                     if (result_count == result.fragments.length) {
