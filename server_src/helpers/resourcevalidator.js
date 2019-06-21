@@ -127,47 +127,86 @@ var ResourceValidator = class {
         if (!this.needsValidation) {
             return true;
         }
-        return await this.validateResourceTaskDataAssociations(this.graph);
+        await this.validateResourceTaskDataAssociations();
+        return this.messages;
     }
 
     /**
      * Validates the given graph for structural soundness.
      * @method validateSoundness
-     * @param graph
      * @returns {boolean}
      */
-    async validateResourceTaskDataAssociations(graph) {
-
+    async validateResourceTaskDataAssociations() {
         let errorsFound = false;
 
-        for (const resourceTask in graph.resourceTasks) {
-            const resourceConfiguration = graph.resourceTasks[resourceTask];
+        for (const resourceTask in this.graph.resourceTasks) {
+            const resourceConfiguration = this.graph.resourceTasks[resourceTask];
             const resp = await fetch("http://localhost:3500/methods/" + resourceConfiguration.method);
-            console.log(await resp.json());
-            
-            
-            //   fetch("http://localhost:3500/methods/" + resourceConfiguration.method).then(function(response) {
-            //     return response.json();
-            //   })
-            //   .then(function(myJson) {
-            //     console.log(JSON.stringify(myJson));
-            //   });
+            const optimizationDefinition = await resp.json();
+            optimizationDefinition.inputs.forEach(function (input) {
+                if (!this.checkResourceTaskHasInputDOWithName(resourceTask, input.name)) {
+                    errorsFound = true;
+                    this.messages.push({
+                        'text': 'The resource task \'' + resourceTask + '\' requires a DO of class \'' + input.name + '\' as input.',
+                        'type': 'danger'
+                    });
+                }
+            }.bind(this));
+            optimizationDefinition.outputs.forEach(function (output) {
+                if (!this.checkResourceTaskHasOutputDOWithName(resourceTask, output.name)) {
+                    errorsFound = true;
+                    this.messages.push({
+                        'text': 'The resource task \'' + resourceTask + '\' requires a DO of class \'' + output.name + '\' as output.',
+                        'type': 'danger'
+                    });
+                }
+            }.bind(this));
         }
 
-
         if (errorsFound) {
-            this.messages.push({
-                'text': 'You have a misconfiguration in your Resource Tasks incoming/outgoing data objects',
-                'type': 'danger'
-            });
-            return true;
-        } else {
             this.messages.push({
                 'text': 'Resource Tasks configured correctly',
                 'type': 'success'
             });
+        }
+    }
+
+    /**
+     * Checks if the task has a data object of the given class as input or output.
+     * The class is matched by string (name of class).
+     * 
+     * @param {string} doType must be either 'dataInput' or 'dataOutput'
+     * @param {string} resourceTaskId the name of the task that should be checked
+     * @param {string} nameOfRequiredInput the name of the data object that the task should have as input or output (depends on doType)
+     * @returns {boolean}
+     */
+    checkResourceTaskHasDOWithName(doType, resourceTaskId, nameOfRequiredInput) {
+        if (!(doType in this.graph.resourceTasks[resourceTaskId])) {
             return false;
         }
+        console.log('has ' + doType);
+        for (const dataObject of this.graph.resourceTasks[resourceTaskId][doType]) {
+            console.log(this.graph.dataObjects[dataObject].name);
+            console.log(nameOfRequiredInput);
+            if (dataObject in this.graph.dataObjects && this.graph.dataObjects[dataObject].name.startsWith(nameOfRequiredInput + '[')) {
+                console.log(resourceTaskId + " has DO " + doType + "\'" + nameOfRequiredInput + "\'");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @see checkResourceTaskHasDOWithName
+     */
+    checkResourceTaskHasInputDOWithName(resourceTaskId, nameOfRequiredInput) {
+        return this.checkResourceTaskHasDOWithName('dataInput', resourceTaskId, nameOfRequiredInput);
+    }
+    /**
+     * @see checkResourceTaskHasDOWithName
+     */
+    checkResourceTaskHasOutputDOWithName(resourceTaskId, nameOfRequiredInput) {
+        return this.checkResourceTaskHasDOWithName('dataOutput', resourceTaskId, nameOfRequiredInput);
     }
 };
 
