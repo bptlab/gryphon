@@ -1,7 +1,4 @@
 'use strict';
-var Scenario = require('./../models/scenario').model;
-var parseToBPMNObject = require('./json').parseToBPMNObject;
-var parseToOLC = require('./json').parseToOLC;
 const fetch = require('node-fetch');
 
 /**
