@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>helpers/json.js</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="icon" href="../assets/favicon.ico">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+                <h1><img src="../assets/css/logo.png" title="" width="117" height="52"></h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+                    <h2 class="off-left">APIs</h2>
+                    <div id="api-tabview" class="tabview">
+                        <ul class="tabs">
+                            <li><a href="#api-classes">Classes</a></li>
+                            <li><a href="#api-modules">Modules</a></li>
+                        </ul>
+                
+                        <div id="api-tabview-filter">
+                            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+                        </div>
+                
+                        <div id="api-tabview-panel">
+                            <ul id="api-classes" class="apis classes">
+                                <li><a href="../classes/arrayEquals.html">arrayEquals</a></li>
+                                <li><a href="../classes/changeDClassAttrReferences.html">changeDClassAttrReferences</a></li>
+                                <li><a href="../classes/changeDClassReferences.html">changeDClassReferences</a></li>
+                                <li><a href="../classes/deleteExportTarget.html">deleteExportTarget</a></li>
+                                <li><a href="../classes/deleteFragment.html">deleteFragment</a></li>
+                                <li><a href="../classes/deleteScenario.html">deleteScenario</a></li>
+                                <li><a href="../classes/DomainModelSchema.html">DomainModelSchema</a></li>
+                                <li><a href="../classes/EventValidator.html">EventValidator</a></li>
+                                <li><a href="../classes/ExportSchema.html">ExportSchema</a></li>
+                                <li><a href="../classes/FragmentSchema.html">FragmentSchema</a></li>
+                                <li><a href="../classes/GeneralValidator.html">GeneralValidator</a></li>
+                                <li><a href="../classes/getAssociatedDomainModelFragment.html">getAssociatedDomainModelFragment</a></li>
+                                <li><a href="../classes/getDomainModel.html">getDomainModel</a></li>
+                                <li><a href="../classes/getDomainModels.html">getDomainModels</a></li>
+                                <li><a href="../classes/getExportTargets.html">getExportTargets</a></li>
+                                <li><a href="../classes/getFragment.html">getFragment</a></li>
+                                <li><a href="../classes/getFragments.html">getFragments</a></li>
+                                <li><a href="../classes/getFragmentStructure.html">getFragmentStructure</a></li>
+                                <li><a href="../classes/getFragmentXML.html">getFragmentXML</a></li>
+                                <li><a href="../classes/getScenario.html">getScenario</a></li>
+                                <li><a href="../classes/getScenarios.html">getScenarios</a></li>
+                                <li><a href="../classes/getValidateExportURL.html">getValidateExportURL</a></li>
+                                <li><a href="../classes/getValidateFragment.html">getValidateFragment</a></li>
+                                <li><a href="../classes/getValidateScenario.html">getValidateScenario</a></li>
+                                <li><a href="../classes/OLCValidator.html">OLCValidator</a></li>
+                                <li><a href="../classes/parseToBPMNObject.html">parseToBPMNObject</a></li>
+                                <li><a href="../classes/parseToOLC.html">parseToOLC</a></li>
+                                <li><a href="../classes/postAssociateDomainmodelToScenario.html">postAssociateDomainmodelToScenario</a></li>
+                                <li><a href="../classes/postAssociateFragmentToScenario.html">postAssociateFragmentToScenario</a></li>
+                                <li><a href="../classes/postDomainModel.html">postDomainModel</a></li>
+                                <li><a href="../classes/postExportTarget.html">postExportTarget</a></li>
+                                <li><a href="../classes/postFragment.html">postFragment</a></li>
+                                <li><a href="../classes/postNewDomainModel.html">postNewDomainModel</a></li>
+                                <li><a href="../classes/postNewExportTarget.html">postNewExportTarget</a></li>
+                                <li><a href="../classes/postNewFragment.html">postNewFragment</a></li>
+                                <li><a href="../classes/postNewScenario.html">postNewScenario</a></li>
+                                <li><a href="../classes/postScenario.html">postScenario</a></li>
+                                <li><a href="../classes/postScenarioExport.html">postScenarioExport</a></li>
+                                <li><a href="../classes/ScenarioSchema.html">ScenarioSchema</a></li>
+                                <li><a href="../classes/SoundnessValidator.html">SoundnessValidator</a></li>
+                            </ul>
+                
+                
+                            <ul id="api-modules" class="apis modules">
+                                <li><a href="../modules/helpers.array.html">helpers.array</a></li>
+                                <li><a href="../modules/helpers.json.html">helpers.json</a></li>
+                                <li><a href="../modules/helpers.updaterefs.html">helpers.updaterefs</a></li>
+                                <li><a href="../modules/helpers.validator.html">helpers.validator</a></li>
+                                <li><a href="../modules/models.domainmodel.html">models.domainmodel</a></li>
+                                <li><a href="../modules/models.export.html">models.export</a></li>
+                                <li><a href="../modules/models.fragment.html">models.fragment</a></li>
+                                <li><a href="../modules/models.scenario.html">models.scenario</a></li>
+                                <li><a href="../modules/routes.domainmodel.html">routes.domainmodel</a></li>
+                                <li><a href="../modules/routes.export.html">routes.export</a></li>
+                                <li><a href="../modules/routes.fragment.html">routes.fragment</a></li>
+                                <li><a href="../modules/routes.scenario.html">routes.scenario</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+                    Show:
+                    <label for="api-show-inherited">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </div>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<h1 class="file-heading">File: helpers/json.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+var xml2json = require(&#x27;xml2json&#x27;);
+
+/**
+ * @module helpers.json
+ */
+
+/**
+ * Given an xml-string that contains a valid BPMN-XML this function parses it and generates an JS-Object out of it.
+ * @class parseToBPMNObject
+ * @param xml {string}
+ * @returns {{}}
+ */
+var parseToBPMNObject = function(xml) {
+
+    if (xml == &quot;&quot; || xml == undefined) {
+        return {}   ;
+    }
+    // What am I doing here? I remove all namespaces to make parsing easier. All but the griffin notations.
+    xml = xml.replace(/&lt;bpmn:/g, &#x27;&lt;&#x27;);
+    xml = xml.replace(/&lt;bpmndi:/g, &#x27;&lt;&#x27;);
+    xml = xml.replace(/&lt;di:/g, &#x27;&lt;&#x27;);
+    xml = xml.replace(/&lt;dc:/g, &#x27;&lt;&#x27;);
+
+
+    xml = xml.replace(/&lt;\/bpmn:/g, &#x27;&lt;/&#x27;);
+    xml = xml.replace(/&lt;\/bpmndi:/g, &#x27;&lt;/&#x27;);
+    xml = xml.replace(/&lt;\/di:/g, &#x27;&lt;/&#x27;);
+    xml = xml.replace(/&lt;\/dc:/g, &#x27;&lt;/&#x27;);
+
+    xml = xml.replace(/ xsi:/g, &#x27; &#x27;);
+
+    var options = {
+        object: true,
+        reversible: false,
+        coerce: false,
+        sanitize: true,
+        trim: true,
+        arrayNotation: true
+    };
+
+    var parsed = xml2json.toJson(xml, options);
+
+    return parsed.definitions[0].process[0];
+};
+
+/**
+ * Given an valid BPMN-XML-String this function generates an OLC-object out of it.
+ * @class parseToOLC
+ * @param xml {string}
+ * @returns {{}}
+ */
+var parseToOLC = function(xml) {
+    var parsed = parseToBPMNObject(xml);
+    delete parsed[&quot;id&quot;];
+    delete parsed[&quot;isExecutable&quot;];
+    if (&quot;intermediateThrowEvent&quot; in parsed) {
+        parsed[&quot;state&quot;] = parsed[&quot;intermediateThrowEvent&quot;].map(function(task){
+            task.id = task.id.replace(&quot;IntermediateThrowEvent&quot;,&quot;State&quot;);
+            return task;
+        });
+        delete parsed[&quot;task&quot;];
+    }
+    if (&quot;sequenceFlow&quot; in parsed) {
+        parsed[&quot;sequenceFlow&quot;] = parsed[&quot;sequenceFlow&quot;].map(function(sequenceFlow){
+            if (&quot;sourceRef&quot; in sequenceFlow) {
+                sequenceFlow[&#x27;sourceRef&#x27;] = sequenceFlow[&#x27;sourceRef&#x27;].replace(&quot;IntermediateThrowEvent&quot;,&quot;State&quot;);
+            }
+            if (&quot;targetRef&quot; in sequenceFlow) {
+                sequenceFlow[&#x27;targetRef&#x27;] = sequenceFlow[&#x27;targetRef&#x27;].replace(&quot;IntermediateThrowEvent&quot;,&quot;State&quot;);
+            }
+            return sequenceFlow;
+        })
+    }
+    return parsed;
+};
+
+module.exports = {parseToBPMNObject: parseToBPMNObject,parseToOLC: parseToOLC};
+
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>
