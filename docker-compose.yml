@@ -1,7 +1,7 @@
 version: '3'
 services:
     gryphon:
-        image: bptlab/gryphon:dev
+        image: bptlab/gryphon:master
         volumes:
             - gryphon-mongodb-data:/var/lib/mongodb
         ports:

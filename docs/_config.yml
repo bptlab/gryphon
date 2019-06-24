@@ -1,0 +1,6 @@
+title: Gryphon
+description: Modeler for fragment-based case models
+baseurl: "/gryphon" # the subpath of your site, e.g. /blog
+# Build settings
+markdown: kramdown
+theme: jekyll-theme-minimal
