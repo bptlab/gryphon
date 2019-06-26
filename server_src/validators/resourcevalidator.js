@@ -68,12 +68,13 @@ var ResourceValidator = class {
      */
     parseResourceTasks(node_list) {
         const resourceTasks = {};
-
         node_list.forEach((resourceTask) => {
             const newResourceTask = {};
-            newResourceTask.host = resourceTask.host;            
-            newResourceTask.method = resourceTask.method;            
-            newResourceTask.problem = resourceTask.problem;
+            ['name', 'host', 'method', 'problem'].forEach((attribute) => {
+                if (attribute in resourceTask) {
+                    newResourceTask[attribute] = resourceTask[attribute];
+                }
+            });
             if (Array.isArray(resourceTask.dataInputAssociation)) {
                 newResourceTask.dataInput = resourceTask.dataInputAssociation.map((inputAssociation) => {
                     return inputAssociation.sourceRef[0];
@@ -84,7 +85,6 @@ var ResourceValidator = class {
                     return outputAssociation.targetRef[0];
                 });
             }
-
             resourceTasks[resourceTask.id] = newResourceTask;
         });
 
@@ -141,13 +141,14 @@ var ResourceValidator = class {
 
         for (const resourceTask in this.graph.resourceTasks) {
             const resourceConfiguration = this.graph.resourceTasks[resourceTask];
+            const resourceTaskIdentifier = ('name' in resourceConfiguration) ? resourceConfiguration.name : resourceTask;
             const resp = await fetch("http://localhost:3500/methods/" + resourceConfiguration.method);
             const optimizationDefinition = await resp.json();
             optimizationDefinition.inputs.forEach(function (input) {
                 if (!this.checkResourceTaskHasInputDOWithName(resourceTask, input.name)) {
                     errorsFound = true;
                     this.messages.push({
-                        'text': 'The resource task \'' + resourceTask + '\' requires a DO of class \'' + input.name + '\' as input.',
+                        'text': 'The resource task \'' + resourceTaskIdentifier + '\' requires a data object of class \'' + input.name + '\' as input.',
                         'type': 'danger'
                     });
                 }
@@ -156,14 +157,14 @@ var ResourceValidator = class {
                 if (!this.checkResourceTaskHasOutputDOWithName(resourceTask, output.name)) {
                     errorsFound = true;
                     this.messages.push({
-                        'text': 'The resource task \'' + resourceTask + '\' requires a DO of class \'' + output.name + '\' as output.',
+                        'text': 'The resource task \'' + resourceTaskIdentifier + '\' requires a data object of class \'' + output.name + '\' as output.',
                         'type': 'danger'
                     });
                 }
             }.bind(this));
         }
 
-        if (errorsFound) {
+        if (!errorsFound) {
             this.messages.push({
                 'text': 'Resource Tasks configured correctly',
                 'type': 'success'
@@ -173,7 +174,7 @@ var ResourceValidator = class {
 
     /**
      * Checks if the task has a data object of the given class as input or output.
-     * The class is matched by string (name of class).
+     * The class is matched by string (name of class, case insensitive).
      * 
      * @param {string} doType must be either 'dataInput' or 'dataOutput'
      * @param {string} resourceTaskId the name of the task that should be checked
@@ -184,13 +185,12 @@ var ResourceValidator = class {
         if (!(doType in this.graph.resourceTasks[resourceTaskId])) {
             return false;
         }
-        console.log('has ' + doType);
         for (const dataObject of this.graph.resourceTasks[resourceTaskId][doType]) {
-            console.log(this.graph.dataObjects[dataObject].name);
-            console.log(nameOfRequiredInput);
-            if (dataObject in this.graph.dataObjects && this.graph.dataObjects[dataObject].name.startsWith(nameOfRequiredInput + '[')) {
-                console.log(resourceTaskId + " has DO " + doType + "\'" + nameOfRequiredInput + "\'");
-                return true;
+            if (dataObject in this.graph.dataObjects) {
+                const dataObjectNameInFragment = this.graph.dataObjects[dataObject].name.toLowerCase();
+                if (dataObjectNameInFragment.startsWith(nameOfRequiredInput.toLowerCase() + '[')) {
+                    return true;
+                }
             }
         }
         return false;
