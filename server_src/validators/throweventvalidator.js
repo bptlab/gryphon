@@ -23,11 +23,11 @@ var ThrowEventValidator = class {
      * Validates every feature of the given fragment.
      * @method validateEverything
      */
-    validateEverything() {
-	if(this.bpmnObject.dataObjectReference != undefined && this.bpmnObject.intermediateThrowEvent != undefined) {
+    async validateEverything() {
+        if(this.bpmnObject.dataObjectReference != undefined && this.bpmnObject.intermediateThrowEvent != undefined) {
             this.bpmnObject.intermediateThrowEvent.forEach(this.validateThrowEvent());
         }
-	
+        return this.messages;
     }
     
     /**

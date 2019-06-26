@@ -1,7 +1,4 @@
 'use strict';
-var Scenario = require('./../models/scenario').model;
-var parseToBPMNObject = require('./json').parseToBPMNObject;
-var parseToOLC = require('./json').parseToOLC;
 
 /**
  * A validator that checks for olc-conformance.
@@ -26,8 +23,9 @@ var OLCValidator = class {
      * Validates every feature of the given fragment.
      * @method validateEverything
      */
-    validateEverything() {
+    async validateEverything() {
         this.validateDataObjectFlow();
+        return this.messages;
     }
 
     /**
