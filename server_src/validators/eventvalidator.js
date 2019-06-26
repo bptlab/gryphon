@@ -1,9 +1,5 @@
 'use strict';
 
-var Scenario = require('./../models/scenario').model;
-var parseToBPMNObject = require('./json').parseToBPMNObject;
-var parseToOLC = require('./json').parseToOLC;
-
 /**
  * Validates the given fragment for mistakes in event-references.
  *
@@ -25,9 +21,10 @@ var EventValidator = class {
      * Validates every event feature of the given fragment
      * @method validateEverything
      */
-    validateEverything() {
+    async validateEverything() {
         this.validateEvents();
         this.validateEventBasedGateways();
+        return this.messages;
     }
 
     /**

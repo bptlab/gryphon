@@ -1,7 +1,4 @@
 'use strict';
-var Scenario = require('./../models/scenario').model;
-var Fragment = require('./../models/fragment').model;
-var parseToOLC = require('./json').parseToOLC;
 
 /**
  * A validator that checks validity of data object references
@@ -25,8 +22,9 @@ var DataObjectReferenceValidator = class {
      * Validates every feature of the given fragment.
      * @method validateEverything
      */
-    validateEverything() {
+    async validateEverything() {
         this.validateReferences();
+        return this.messages;
     }
 
     /**

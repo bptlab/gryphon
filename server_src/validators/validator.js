@@ -1,9 +1,8 @@
 'use strict';
 
 var Scenario = require('./../models/scenario').model;
-var parseToBPMNObject = require('./json').parseToBPMNObject;
-var parseToOLC = require('./json').parseToOLC;
-var parseOLCPaths = require('./json').parseOLCPaths;
+var parseToBPMNObject = require('./../helpers/json').parseToBPMNObject;
+var parseOLCPaths = require('./../helpers/json').parseOLCPaths;
 
 var BoundValidator = require('./boundvalidator');
 var SoundnessValidator = require('./soundnessvalidator');
@@ -29,12 +28,12 @@ var GeneralValidator = class {
      * @param initDone {function} A function that should get called when the DB-initiation is done.
      * @param validators {array} A list of Classes that should be used as validator (Event Soundness and OLC on Default)
      */
-    constructor(fragment,initDone, validators) {
+    constructor(fragment, initDone, validators) {
         if (validators == undefined) {
             validators = [BoundValidator, EventValidator, SoundnessValidator, OLCValidator, DataObjectReferenceValidator, ThrowEventValidator];
         }
         if (initDone == undefined) {
-            initDone = function() {
+            initDone = function () {
                 this.validateEverything();
             }
         }
@@ -42,13 +41,13 @@ var GeneralValidator = class {
         this.fragment = fragment;
         this.bpmnObject = parseToBPMNObject(fragment.content);
         this.messages = [];
-        Scenario.findOne({fragments:fragment._id}).populate('domainmodel').exec(function(err, result) {
+        Scenario.findOne({ fragments: fragment._id }).populate('domainmodel').exec(function (err, result) {
             if (result == null) {
                 throw "Can't find domainmodel for fragment";
             }
             this.scenario = result;
             this.olc = parseOLCPaths(result.domainmodel);
-	    this.dm = result.domainmodel;
+            this.dm = result.domainmodel;
             initDone();
         }.bind(this))
     }
@@ -57,8 +56,10 @@ var GeneralValidator = class {
      * Validates every feature of the fragment that was loaded.
      * @method validateEverything
      */
-    validateEverything() {
-        this.validators.forEach(function(validator){
+    async validateEverything() {
+        const runningValidators = [];
+
+        this.validators.forEach(function (validator) {
             if (validator == BoundValidator) {
                 validator = new validator(this.fragment)
             } else if (validator == OLCValidator) {
@@ -66,24 +67,18 @@ var GeneralValidator = class {
             } else if (validator == DataObjectReferenceValidator) {
                 validator = new validator(this.fragment.preconditions, this.olc);
             } else if (validator == ThrowEventValidator) {
-      				validator = new validator(this.bpmnObject, this.dm)
-      			} else {
+                validator = new validator(this.bpmnObject, this.dm)
+            } else {
                 validator = new validator(this.bpmnObject);
             }
-            this.validateWithSimpleValidator(validator);
+            runningValidators.push(validator.validateEverything());
+        }.bind(this));
+
+        const resolvedValidators = await Promise.all(runningValidators);
+        resolvedValidators.forEach(function (validatorResult) {
+            this.messages = this.messages.concat(validatorResult);
         }.bind(this));
     }
-
-    /**
-     * Uses a simple validator (that needs to have an validateEverything() method) to validate the loaded fragment.
-     * @method validateWithSimpleValidator
-     * @param validator
-     */
-    validateWithSimpleValidator(validator) {
-        validator.validateEverything();
-        this.messages = this.messages.concat(validator.messages);
-    }
-
 };
 
 module.exports = {
