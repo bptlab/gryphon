@@ -20,4 +20,13 @@ var arrayEquals = function(a, b) {
     return true;
 };
 
-module.exports = {arrayEquals: arrayEquals};
+var arrayGetUniqueElements = function(baseArray, similarArray) {
+    return baseArray.filter(element => {
+        return !similarArray.includes(element);
+    });
+}   
+
+module.exports = {
+    arrayEquals: arrayEquals,
+    arrayGetUniqueElements: arrayGetUniqueElements
+};
