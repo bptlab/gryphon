@@ -67,7 +67,7 @@ var GeneralValidator = class {
                 validator = new validator(this.bpmnObject, this.olc)
             } else if (validator == DataObjectReferenceValidator) {
                 validator = new validator(this.fragment.preconditions, this.olc);
-            } else if (validator == ThrowEventValidator) {
+            } else if (validator == ThrowEventValidator || validator == ResourceValidator) {
                 validator = new validator(this.bpmnObject, this.dm)
             } else {
                 validator = new validator(this.bpmnObject);
