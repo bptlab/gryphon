@@ -13,9 +13,10 @@ var ResourceValidator = class {
      * @method constructor
      * @param bpmnObject
      */
-    constructor(bpmnObject) {
+    constructor(bpmnObject, dm) {
         this.bpmnObject = bpmnObject;
         this.messages = [];
+        this.resourceDataModels = this.parseResourceDataModels(dm.dataclasses);
         this.graph = this.parseIntoGraph(bpmnObject);
         this.needsValidation = true;
     }
@@ -45,6 +46,20 @@ var ResourceValidator = class {
             resourceTasks: resourceTasks,
             dataObjects: dataObjects
         }
+    }
+
+    parseResourceDataModels(dataModel) {
+        const resourceDataModels = {};
+
+        dataModel.filter(function (dataModel) {
+            return dataModel.is_resource;
+        }).forEach(function (dataModel) {
+            dataModel.olc = undefined;
+            dataModel.attributes = undefined;
+            resourceDataModels[dataModel.name] = dataModel;
+        });
+        
+        return resourceDataModels;
     }
 
     /**
@@ -127,7 +142,7 @@ var ResourceValidator = class {
         if (!this.needsValidation) {
             return true;
         }
-        await this.validateResourceTaskDataAssociations();
+        await this.validateResourceTasksDataAssociations();
         return this.messages;
     }
 
@@ -136,35 +151,13 @@ var ResourceValidator = class {
      * @method validateSoundness
      * @returns {boolean}
      */
-    async validateResourceTaskDataAssociations() {
-        let errorsFound = false;
-
+    async validateResourceTasksDataAssociations() {
+        const executedTaskValidation = [];
         for (const resourceTask in this.graph.resourceTasks) {
-            const resourceConfiguration = this.graph.resourceTasks[resourceTask];
-            const resourceTaskIdentifier = ('name' in resourceConfiguration) ? resourceConfiguration.name : resourceTask;
-            const resp = await fetch("http://localhost:3500/methods/" + resourceConfiguration.method);
-            const optimizationDefinition = await resp.json();
-            optimizationDefinition.inputs.forEach(function (input) {
-                if (!this.checkResourceTaskHasInputDOWithName(resourceTask, input.name)) {
-                    errorsFound = true;
-                    this.messages.push({
-                        'text': 'The resource task \'' + resourceTaskIdentifier + '\' requires a data object of class \'' + input.name + '\' as input.',
-                        'type': 'danger'
-                    });
-                }
-            }.bind(this));
-            optimizationDefinition.outputs.forEach(function (output) {
-                if (!this.checkResourceTaskHasOutputDOWithName(resourceTask, output.name)) {
-                    errorsFound = true;
-                    this.messages.push({
-                        'text': 'The resource task \'' + resourceTaskIdentifier + '\' requires a data object of class \'' + output.name + '\' as output.',
-                        'type': 'danger'
-                    });
-                }
-            }.bind(this));
+            executedTaskValidation.push(this.validateResourceTaskDataAssociations(resourceTask));
         }
-
-        if (!errorsFound) {
+        const resolvedTaskValidation = await Promise.all(executedTaskValidation);
+        if (! resolvedTaskValidation.some(validationSucceeded => !validationSucceeded)) {
             this.messages.push({
                 'text': 'Resource Tasks configured correctly',
                 'type': 'success'
@@ -172,41 +165,106 @@ var ResourceValidator = class {
         }
     }
 
-    /**
-     * Checks if the task has a data object of the given class as input or output.
-     * The class is matched by string (name of class, case insensitive).
-     * 
-     * @param {string} doType must be either 'dataInput' or 'dataOutput'
-     * @param {string} resourceTaskId the name of the task that should be checked
-     * @param {string} nameOfRequiredInput the name of the data object that the task should have as input or output (depends on doType)
-     * @returns {boolean}
-     */
-    checkResourceTaskHasDOWithName(doType, resourceTaskId, nameOfRequiredInput) {
-        if (!(doType in this.graph.resourceTasks[resourceTaskId])) {
-            return false;
+    async validateResourceTaskDataAssociations(resourceTaskName) {
+        let isValid = false;
+        const resourceConfiguration = this.graph.resourceTasks[resourceTaskName];
+        const resourceTaskIdentifier = ('name' in resourceConfiguration) ? resourceConfiguration.name : resourceTaskName;
+        const resp = await fetch("http://localhost:3500/methods/" + resourceConfiguration.method);
+        const optimizationDefinition = await resp.json();
+
+        // Only resource data objects are considered!
+        const optimizationTask = {
+            inputs: [],
+            outputs: []
+        };
+
+        const chosenOptimization = {
+            inputs: [],
+            outputs: [],
+        };
+
+        optimizationTask.inputs = this.getResourceDataObjectsConntectedWithResourceTask('dataInput', resourceTaskName);
+        optimizationTask.outputs = this.getResourceDataObjectsConntectedWithResourceTask('dataOutput', resourceTaskName);
+
+        optimizationDefinition.inputs.forEach(function (input) {
+            chosenOptimization.inputs.push(input.id);
+        }.bind(this));
+        optimizationDefinition.outputs.forEach(function (output) {
+            chosenOptimization.outputs.push(output.id);
+        }.bind(this));
+
+        const superfluousTaskInputs = ResourceValidator.getUniqueELements(optimizationTask.inputs, chosenOptimization.inputs);
+        const missingTaskInputs = ResourceValidator.getUniqueELements(chosenOptimization.inputs, optimizationTask.inputs);
+        const superfluousTaskOutputs = ResourceValidator.getUniqueELements(optimizationTask.outputs, chosenOptimization.outputs);
+        const missingTaskOutputs = ResourceValidator.getUniqueELements(chosenOptimization.outputs, optimizationTask.outputs);
+
+        // It is not an error if there are additional, unnecessary data inputs
+        if ((missingTaskInputs.length + superfluousTaskOutputs.length + missingTaskOutputs.length) === 0) {
+            isValid = true;
         }
-        for (const dataObject of this.graph.resourceTasks[resourceTaskId][doType]) {
-            if (dataObject in this.graph.dataObjects) {
-                const dataObjectNameInFragment = this.graph.dataObjects[dataObject].name.toLowerCase();
-                if (dataObjectNameInFragment.startsWith(nameOfRequiredInput.toLowerCase() + '[')) {
-                    return true;
-                }
-            }
-        }
-        return false;
+
+        superfluousTaskInputs.forEach(function(element) {
+            this.messages.push({
+                'text': `Resource Task '${resourceTaskIdentifier}' does not need ${element} as input.`,
+                'type': 'warning'
+            });
+        }.bind(this));
+        missingTaskInputs.forEach(function(element) {
+            this.messages.push({
+                'text': `Resource Task '${resourceTaskIdentifier}' needs ${element} as input.`,
+                'type': 'danger'
+            });
+        }.bind(this));
+        superfluousTaskOutputs.forEach(function(element) {
+            this.messages.push({
+                'text': `Resource Task '${resourceTaskIdentifier}' does not produce ${element} as output.`,
+                'type': 'danger'
+            });
+        }.bind(this));
+        missingTaskOutputs.forEach(function(element) {
+            this.messages.push({
+                'text': `Resource Task '${resourceTaskIdentifier}' requires ${element} as output.`,
+                'type': 'danger'
+            });
+        }.bind(this));
+
+        return isValid;
     }
 
+    static getUniqueELements(baseArray, similarArray) {
+        return baseArray.filter(element => {
+            return !similarArray.includes(element);
+        });
+    }    
+
     /**
-     * @see checkResourceTaskHasDOWithName
+     * Iterates over all input or output data objects connected to the given resource task.
+     * While iterating, if the current data object is an instance of a resource data model, the resource id is appended to a list.
+     * This list is returned in the end.
+     * The data objects and data models are matched by string (name of class, case insensitive).
+     *
+     * @param {string} doType must be either 'dataInput' or 'dataOutput'
+     * @param {string} resourceTaskName the name of the task that should be checked
+     * @returns {array} of resource ids which are connected as either input or output (depending on provided doType)
      */
-    checkResourceTaskHasInputDOWithName(resourceTaskId, nameOfRequiredInput) {
-        return this.checkResourceTaskHasDOWithName('dataInput', resourceTaskId, nameOfRequiredInput);
-    }
-    /**
-     * @see checkResourceTaskHasDOWithName
-     */
-    checkResourceTaskHasOutputDOWithName(resourceTaskId, nameOfRequiredInput) {
-        return this.checkResourceTaskHasDOWithName('dataOutput', resourceTaskId, nameOfRequiredInput);
+    getResourceDataObjectsConntectedWithResourceTask(doType, resourceTaskName) {
+        const resourceDataObjects = [];
+
+        if (!(doType in this.graph.resourceTasks[resourceTaskName])) {
+            return resourceDataObjects;
+        }
+
+        for (const dataObject of this.graph.resourceTasks[resourceTaskName][doType]) {
+            if (!(dataObject in this.graph.dataObjects)) {
+                continue;
+            }
+            const dataObjectClassNameInFragment = this.graph.dataObjects[dataObject]['griffin:dataclass'];
+            if (!(dataObjectClassNameInFragment in this.resourceDataModels)) {
+                continue;
+            }
+            resourceDataObjects.push(this.resourceDataModels[dataObjectClassNameInFragment].resource_id);
+        }
+        return resourceDataObjects;
     }
 };
 
