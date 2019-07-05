@@ -48,6 +48,22 @@ var ResourceValidator = class {
         }
     }
 
+    /**
+    * Returns an object containing the data models of resources defined in this scenario, data model names are the keys, value the data model configuration.
+    * Example:
+    * {
+    *   Parcel: {
+    *     name: 'Parcel',
+    *     isEvent: false,
+    *     isResource: true,
+    *     resource_id: '5d14c4e61b0b6d2cd4b4c549'
+    *   }
+    * }
+    *
+    * @methode parseResourceDataModels
+    * @param dataModel {Array}
+    * @returns {}
+    */
     parseResourceDataModels(dataModel) {
         const resourceDataModels = {};
 
