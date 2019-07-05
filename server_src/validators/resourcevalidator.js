@@ -222,25 +222,25 @@ var ResourceValidator = class {
 
         superfluousTaskInputs.forEach(function(element) {
             this.messages.push({
-                'text': `Resource Task '${resourceTaskIdentifier}' does not need ${element} as input.`,
+                'text': `Resource Task '${resourceTaskIdentifier}' does not need ${this.tryToFindNameForResourceTypeId(element)} as input.`,
                 'type': 'warning'
             });
         }.bind(this));
         missingTaskInputs.forEach(function(element) {
             this.messages.push({
-                'text': `Resource Task '${resourceTaskIdentifier}' needs ${element} as input.`,
+                'text': `Resource Task '${resourceTaskIdentifier}' needs ${this.tryToFindNameForResourceTypeId(element)} as input.`,
                 'type': 'danger'
             });
         }.bind(this));
         superfluousTaskOutputs.forEach(function(element) {
             this.messages.push({
-                'text': `Resource Task '${resourceTaskIdentifier}' does not produce ${element} as output.`,
+                'text': `Resource Task '${resourceTaskIdentifier}' does not produce ${this.tryToFindNameForResourceTypeId(element)} as output.`,
                 'type': 'danger'
             });
         }.bind(this));
         missingTaskOutputs.forEach(function(element) {
             this.messages.push({
-                'text': `Resource Task '${resourceTaskIdentifier}' requires ${element} as output.`,
+                'text': `Resource Task '${resourceTaskIdentifier}' requires ${this.tryToFindNameForResourceTypeId(element)} as output.`,
                 'type': 'danger'
             });
         }.bind(this));
@@ -277,6 +277,17 @@ var ResourceValidator = class {
             resourceDataObjects.push(this.resourceDataModels[dataObjectClassNameInFragment].resource_id);
         }
         return resourceDataObjects;
+    }
+
+    tryToFindNameForResourceTypeId(typeId) {
+        // Search if there already is a defined data model in this scenario, based on the given resource type id
+        let typeDefinition = Object.values(this.resourceDataModels).find(function (resourceDataModel) {
+            return resourceDataModel.resource_id === typeId;
+        });
+        if (typeDefinition) {
+            return typeDefinition.name;
+        }
+        return 'Resourcetype with id ' + typeId;
     }
 };
 
