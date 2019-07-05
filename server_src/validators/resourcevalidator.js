@@ -1,5 +1,6 @@
 'use strict';
 const fetch = require('node-fetch');
+const { arrayGetUniqueElements } = require('./../helpers/array');
 
 /**
  * An validator that checks a fragment with resource activities whether all required data objects are connected.
@@ -209,10 +210,10 @@ var ResourceValidator = class {
             chosenOptimization.outputs.push(output.id);
         }.bind(this));
 
-        const superfluousTaskInputs = ResourceValidator.getUniqueELements(optimizationTask.inputs, chosenOptimization.inputs);
-        const missingTaskInputs = ResourceValidator.getUniqueELements(chosenOptimization.inputs, optimizationTask.inputs);
-        const superfluousTaskOutputs = ResourceValidator.getUniqueELements(optimizationTask.outputs, chosenOptimization.outputs);
-        const missingTaskOutputs = ResourceValidator.getUniqueELements(chosenOptimization.outputs, optimizationTask.outputs);
+        const superfluousTaskInputs = arrayGetUniqueElements(optimizationTask.inputs, chosenOptimization.inputs);
+        const missingTaskInputs = arrayGetUniqueElements(chosenOptimization.inputs, optimizationTask.inputs);
+        const superfluousTaskOutputs = arrayGetUniqueElements(optimizationTask.outputs, chosenOptimization.outputs);
+        const missingTaskOutputs = arrayGetUniqueElements(chosenOptimization.outputs, optimizationTask.outputs);
 
         // It is not an error if there are additional, unnecessary data inputs
         if ((missingTaskInputs.length + superfluousTaskOutputs.length + missingTaskOutputs.length) === 0) {
@@ -247,11 +248,6 @@ var ResourceValidator = class {
         return isValid;
     }
 
-    static getUniqueELements(baseArray, similarArray) {
-        return baseArray.filter(element => {
-            return !similarArray.includes(element);
-        });
-    }    
 
     /**
      * Iterates over all input or output data objects connected to the given resource task.
