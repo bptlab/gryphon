@@ -186,6 +186,7 @@ var ResourceValidator = class {
         let isValid = false;
         const resourceConfiguration = this.graph.resourceTasks[resourceTaskName];
         const resourceTaskIdentifier = ('name' in resourceConfiguration) ? resourceConfiguration.name : resourceTaskName;
+        //TODO: Add config for the host
         const resp = await fetch("http://localhost:3500/methods/" + resourceConfiguration.method);
         const optimizationDefinition = await resp.json();
 
@@ -200,8 +201,8 @@ var ResourceValidator = class {
             outputs: [],
         };
 
-        optimizationTask.inputs = this.getResourceDataObjectsConntectedWithResourceTask('dataInput', resourceTaskName);
-        optimizationTask.outputs = this.getResourceDataObjectsConntectedWithResourceTask('dataOutput', resourceTaskName);
+        optimizationTask.inputs = this.getResourceTypeIdConntectedWithResourceTask('dataInput', resourceTaskName);
+        optimizationTask.outputs = this.getResourceTypeIdConntectedWithResourceTask('dataOutput', resourceTaskName);
 
         optimizationDefinition.inputs.forEach(function (input) {
             chosenOptimization.inputs.push(input.id);
@@ -210,10 +211,10 @@ var ResourceValidator = class {
             chosenOptimization.outputs.push(output.id);
         }.bind(this));
 
-        const superfluousTaskInputs = arrayGetUniqueElements(optimizationTask.inputs, chosenOptimization.inputs);
-        const missingTaskInputs = arrayGetUniqueElements(chosenOptimization.inputs, optimizationTask.inputs);
-        const superfluousTaskOutputs = arrayGetUniqueElements(optimizationTask.outputs, chosenOptimization.outputs);
-        const missingTaskOutputs = arrayGetUniqueElements(chosenOptimization.outputs, optimizationTask.outputs);
+        const superfluousTaskInputs = arrayGetUniqueElements(optimizationTask.inputs.resourceTypes, chosenOptimization.inputs);
+        const missingTaskInputs = arrayGetUniqueElements(chosenOptimization.inputs, optimizationTask.inputs.resourceTypes);
+        const superfluousTaskOutputs = arrayGetUniqueElements(optimizationTask.outputs.resourceTypes, chosenOptimization.outputs);
+        const missingTaskOutputs = arrayGetUniqueElements(chosenOptimization.outputs, optimizationTask.outputs.resourceTypes);
 
         // It is not an error if there are additional, unnecessary data inputs
         if ((missingTaskInputs.length + superfluousTaskOutputs.length + missingTaskOutputs.length) === 0) {
@@ -222,32 +223,44 @@ var ResourceValidator = class {
 
         superfluousTaskInputs.forEach(function(element) {
             this.messages.push({
-                'text': `Resource Task '${resourceTaskIdentifier}' does not need ${this.tryToFindNameForResourceTypeId(element)} as input.`,
+                'text': `Resource Task '${resourceTaskIdentifier}' does not need resource data object '${this.tryToFindNameForResourceTypeId(element)}' as input.`,
                 'type': 'warning'
             });
         }.bind(this));
         missingTaskInputs.forEach(function(element) {
             this.messages.push({
-                'text': `Resource Task '${resourceTaskIdentifier}' needs ${this.tryToFindNameForResourceTypeId(element)} as input.`,
+                'text': `Resource Task '${resourceTaskIdentifier}' needs resource data object '${this.tryToFindNameForResourceTypeId(element)}' as input.`,
                 'type': 'danger'
             });
         }.bind(this));
         superfluousTaskOutputs.forEach(function(element) {
             this.messages.push({
-                'text': `Resource Task '${resourceTaskIdentifier}' does not produce ${this.tryToFindNameForResourceTypeId(element)} as output.`,
+                'text': `Resource Task '${resourceTaskIdentifier}' does not produce resource data object '${this.tryToFindNameForResourceTypeId(element)}' as output.`,
                 'type': 'danger'
             });
         }.bind(this));
         missingTaskOutputs.forEach(function(element) {
             this.messages.push({
-                'text': `Resource Task '${resourceTaskIdentifier}' requires ${this.tryToFindNameForResourceTypeId(element)} as output.`,
+                'text': `Resource Task '${resourceTaskIdentifier}' requires resource data object '${this.tryToFindNameForResourceTypeId(element)}' as output.`,
+                'type': 'danger'
+            });
+        }.bind(this));
+        optimizationTask.inputs.otherDataObjects.forEach(function(element) {
+            this.messages.push({
+                'text': `Resource Task '${resourceTaskIdentifier}' does not need data object '${element}' as input.`,
+                'type': 'warning'
+            });
+        }.bind(this));
+        optimizationTask.outputs.otherDataObjects.forEach(function(element) {
+            this.messages.push({
+                'text': `Resource Task '${resourceTaskIdentifier}' does not produce data object '${element}' as output.`,
                 'type': 'danger'
             });
         }.bind(this));
 
         return isValid;
     }
-
+ 
 
     /**
      * Iterates over all input or output data objects connected to the given resource task.
@@ -259,11 +272,15 @@ var ResourceValidator = class {
      * @param {string} resourceTaskName the name of the task that should be checked
      * @returns {array} of resource ids which are connected as either input or output (depending on provided doType)
      */
-    getResourceDataObjectsConntectedWithResourceTask(doType, resourceTaskName) {
-        const resourceDataObjects = [];
+    getResourceTypeIdConntectedWithResourceTask(doType, resourceTaskName) {
+        const resourceTypeIds = [];
+        const otherDataObjectNames = [];
 
         if (!(doType in this.graph.resourceTasks[resourceTaskName])) {
-            return resourceDataObjects;
+            return {
+                resourceTypes: [],
+                otherDataObjects: []
+            };
         }
 
         for (const dataObject of this.graph.resourceTasks[resourceTaskName][doType]) {
@@ -272,11 +289,15 @@ var ResourceValidator = class {
             }
             const dataObjectClassNameInFragment = this.graph.dataObjects[dataObject]['griffin:dataclass'];
             if (!(dataObjectClassNameInFragment in this.resourceDataModels)) {
-                continue;
+                otherDataObjectNames.push(dataObjectClassNameInFragment);
+            } else {
+                resourceTypeIds.push(this.resourceDataModels[dataObjectClassNameInFragment].resource_id);
             }
-            resourceDataObjects.push(this.resourceDataModels[dataObjectClassNameInFragment].resource_id);
         }
-        return resourceDataObjects;
+        return {
+            resourceTypes: resourceTypeIds,
+            otherDataObjects: otherDataObjectNames,
+        };
     }
 
     tryToFindNameForResourceTypeId(typeId) {
