@@ -14,12 +14,7 @@
             "name": "host", 
             "isAttr": true, 
             "type": "Dropdown"
-          }, 
-          { 
-            "name": "problem", 
-            "isAttr": true, 
-            "type": "Dropdown" 
-          }, 
+          },
           { 
             "name": "method", 
             "isAttr": true, 

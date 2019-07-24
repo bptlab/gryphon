@@ -31,25 +31,17 @@ var Config = require('./../../../config');
 function generateProvider(fragmentid) {
     var dm = null;
     var resourceManagerHosts = [];
-    var resourceOptimizationProblems = [];
     var resourceOptimizationMethods = [];
     API.loadAssociatedDomainModel(fragmentid,function(dm2){
         dm = dm2;
     });
-    ResourceAPI.getServerInformation(function (data) {
-        resourceManagerHosts.push({"name": data["name"], "value": Config.RESOURCE_MANAGER_HOST});
-    })
-    ResourceAPI.getAvailableOptimizationProblems(function (data) {
+    
+    resourceManagerHosts.push({ "name": "Rembrandt", "value": Config.RESOURCE_MANAGER_HOST });
+
+    ResourceAPI.getAvailableOptimizations(function (data) {
         for (var i = 0; i < data.length; i++) {
             problem = data[i];
-            resourceOptimizationProblems.push({"name": problem["name"], "value": problem["id"]});
-
-            ResourceAPI.getAvailableOptimizationMethodsForProblem(problem["id"], function (data) {
-                for (var i = 0; i < data.length; i++) {
-                    method = data[i];
-                    resourceOptimizationMethods.push({"name": method["name"], "value": method["id"]});
-                }    
-            });
+            resourceOptimizationMethods.push({"name": problem["name"], "value": problem["id"]});
         }
     });
 
@@ -227,14 +219,6 @@ function generateProvider(fragmentid) {
                 label: 'Resource-Manager-Host:',
                 modelProperty: 'host',
                 selectOptions: resourceManagerHosts,
-            });
-            group.entries.push(stateEntry);
-            stateEntry = entryFactory.selectBox({
-                id: 'Problem',
-                description: 'Choose the appropriate optimization-problem.',
-                label: 'Problem Definition:',
-                modelProperty: 'problem',
-                selectOptions: resourceOptimizationProblems
             });
             group.entries.push(stateEntry);
             stateEntry = entryFactory.selectBox({
