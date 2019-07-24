@@ -1,6 +1,6 @@
 'use strict';
-const fetch = require('node-fetch');
 const { arrayGetUniqueElements } = require('./../helpers/array');
+const ResourceApi = require('./../helpers/resourceApi');
 
 /**
  * An validator that checks a fragment with resource activities whether all required data objects are connected.
@@ -186,9 +186,8 @@ var ResourceValidator = class {
         let isValid = false;
         const resourceConfiguration = this.graph.resourceTasks[resourceTaskName];
         const resourceTaskIdentifier = ('name' in resourceConfiguration) ? resourceConfiguration.name : resourceTaskName;
-        //TODO: Add config for the host
-        const resp = await fetch("http://localhost:3500/methods/" + resourceConfiguration.method);
-        const optimizationDefinition = await resp.json();
+
+        const optimizationDefinition = await ResourceApi.getOptimizations(resourceConfiguration.method);
 
         // Only resource data objects are considered!
         const optimizationTask = {
@@ -196,25 +195,13 @@ var ResourceValidator = class {
             outputs: []
         };
 
-        const chosenOptimization = {
-            inputs: [],
-            outputs: [],
-        };
-
         optimizationTask.inputs = this.getResourceTypeIdConntectedWithResourceTask('dataInput', resourceTaskName);
         optimizationTask.outputs = this.getResourceTypeIdConntectedWithResourceTask('dataOutput', resourceTaskName);
 
-        optimizationDefinition.inputs.forEach(function (input) {
-            chosenOptimization.inputs.push(input.id);
-        }.bind(this));
-        optimizationDefinition.outputs.forEach(function (output) {
-            chosenOptimization.outputs.push(output.id);
-        }.bind(this));
-
-        const superfluousTaskInputs = arrayGetUniqueElements(optimizationTask.inputs.resourceTypes, chosenOptimization.inputs);
-        const missingTaskInputs = arrayGetUniqueElements(chosenOptimization.inputs, optimizationTask.inputs.resourceTypes);
-        const superfluousTaskOutputs = arrayGetUniqueElements(optimizationTask.outputs.resourceTypes, chosenOptimization.outputs);
-        const missingTaskOutputs = arrayGetUniqueElements(chosenOptimization.outputs, optimizationTask.outputs.resourceTypes);
+        const superfluousTaskInputs = arrayGetUniqueElements(optimizationTask.inputs.resourceTypes, optimizationDefinition.inputs);
+        const missingTaskInputs = arrayGetUniqueElements(optimizationDefinition.inputs, optimizationTask.inputs.resourceTypes);
+        const superfluousTaskOutputs = arrayGetUniqueElements(optimizationTask.outputs.resourceTypes, optimizationDefinition.outputs);
+        const missingTaskOutputs = arrayGetUniqueElements(optimizationDefinition.outputs, optimizationTask.outputs.resourceTypes);
 
         // It is not an error if there are additional, unnecessary data inputs
         if ((missingTaskInputs.length + superfluousTaskOutputs.length + missingTaskOutputs.length) === 0) {
@@ -308,6 +295,7 @@ var ResourceValidator = class {
         if (typeDefinition) {
             return typeDefinition.name;
         }
+
         return 'Resourcetype with id ' + typeId;
     }
 };
