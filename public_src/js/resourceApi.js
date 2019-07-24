@@ -6,36 +6,33 @@ var ResourceAPI = function(host) {
 };
 
 ResourceAPI.prototype.createResourceURL = function(endpoint) {
-    return this.host.concat("resource-types/" + endpoint);
+    return this.host.concat("organization/resource-types/" + endpoint);
 };
 
 ResourceAPI.prototype.createProblemURL = function(endpoint) {
-    return this.host.concat("problems/" + endpoint);
+    return this.host.concat("optimization/recipes/" + endpoint);
 };
 
-ResourceAPI.prototype.getServerInformation = function(callback) {
-    $.getJSON(this.host.concat("server"), callback);
+ResourceAPI.prototype.getAvailableResourceTypes = function(callback) {
+    this.get(this.createResourceURL(""), callback);
 }
 
-ResourceAPI.prototype.getAvailableResourceTypes = function(callback) {
+ResourceAPI.prototype.getAvailableOptimizations = function(callback) {
+    this.get(this.createProblemURL(""), callback);
+}
+
+ResourceAPI.prototype.get = function (url, callback) {
     $.ajax({
         method: 'GET',
-        url: this.createResourceURL(""),
+        url: url,
         contentType: "application/vnd.api+json",
-        success: function(json) {
-            new JSONAPIDeserializer({ keyForAttribute: 'camelCase' }).deserialize(json, function (err, resourceTypes) {
-                callback(resourceTypes);
+        success: function (json) {
+            new JSONAPIDeserializer({ keyForAttribute: 'camelCase' }).deserialize(json, function (err, result) {
+                callback(result);
             });
         }
     });
 }
 
-ResourceAPI.prototype.getAvailableOptimizationProblems = function(callback) {
-    $.getJSON(this.createProblemURL(""), callback);
-}
-
-ResourceAPI.prototype.getAvailableOptimizationMethodsForProblem = function(problemId, callback) {
-    $.getJSON(this.createProblemURL(problemId + "/methods"), callback);
-}
 
 module.exports = new ResourceAPI(Config.RESOURCE_MANAGER_HOST);
