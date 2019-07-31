@@ -17,6 +17,7 @@ var FragmentSchema = new Schema({
 		hasBound: Boolean,
 		limit: Number
 	},
+    automaticActivation: Boolean,
     preconditions: [{type: String}],
     revision: Number
 });

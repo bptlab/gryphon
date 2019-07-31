@@ -6,7 +6,8 @@ var InstantiationPolicyComponent = React.createClass({
       policy: "",
       hasBound: "",
       limit: "",
-      _id: ""
+      _id: "",
+      automaticActivation: ""
     };
   },
   componentDidMount: function() {
@@ -16,7 +17,8 @@ var InstantiationPolicyComponent = React.createClass({
         ? this.props.fragment.bound.hasBound
         : false,
       limit: this.props.fragment.bound ? this.props.fragment.bound.limit : 10,
-      _id: this.props.fragment._id
+      _id: this.props.fragment._id,
+      automaticActivation: this.props.fragment.automaticActivation
     });
   },
   componentDidUpdate: function() {
@@ -27,7 +29,8 @@ var InstantiationPolicyComponent = React.createClass({
           ? this.props.fragment.bound.hasBound
           : false,
         limit: this.props.fragment.bound ? this.props.fragment.bound.limit : 10,
-        _id: this.props.fragment._id
+        _id: this.props.fragment._id,
+        automaticActivation: this.props.fragment.automaticActivation
       });
     }
   },
@@ -47,6 +50,11 @@ var InstantiationPolicyComponent = React.createClass({
       },
       this.submitBound
     );
+  },
+  handleAutomaticActivationChange: function(event) {
+    const value = event.target.checked;
+    this.setState({ automaticActivation: value });
+    this.props.changeAutomaticActivation(value);
   },
   submitBound() {
     const bound = {
@@ -111,6 +119,24 @@ var InstantiationPolicyComponent = React.createClass({
         </div>
         <br />
         <div className="row">
+          <div className="col-sm-2 checkbox">
+            <label>
+              <input
+                  name="automaticActivation"
+                  type="checkbox"
+                  checked={this.state.automaticActivation}
+                  onChange={this.handleAutomaticActivationChange}
+              />
+              Is activated automatically
+            </label>
+            &nbsp;
+            <a
+                data-toggle="tooltip"
+                title="If checked the fragment will be activated whenever the dataflow is enabled"
+            >
+              <i className="fa fa-info-circle" />
+            </a>
+          </div>
           <div className="col-sm-2 checkbox">
             <label>
               <input

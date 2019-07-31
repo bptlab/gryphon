@@ -50,7 +50,7 @@ var ThrowEventValidator = class {
 		    if (foundDc !== undefined &&
 			!foundDc.is_event) {
 			this.messages.push({
-			    'text': 'Data input of message send event is not a event class.',
+			    'text': 'Data input of message send event is not an event class.',
 			    'type': 'danger'
 			});
 		    }
