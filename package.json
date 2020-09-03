@@ -18,7 +18,7 @@
     "cookie-parser": "^1.4.4",
     "datatables": "^1.10.18",
     "debug": "^4.1.1",
-    "diagram-js": "^0.22.4",
+    "diagram-js": "^2.6.2",
     "eve": "^0.5.4",
     "express": "^4.16.4",
     "grunt": "^1.0.3",
